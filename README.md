@@ -1,6 +1,6 @@
 # SGA_ONLINE
 
-Modernizar o SGA da empresa Integra, torná-lo mais intuitivo e mais interativo, com a criação de uma versão web da SGA.
+Modernizar o SGA da empresa Integra, buscando criar uma versão web.
 
 ## Índice
 
