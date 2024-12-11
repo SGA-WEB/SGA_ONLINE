@@ -270,6 +270,7 @@ body {
     max-width: 256px;
     width: 94%;
     height: 2.4rem;
+    min-height: 2.4rem;
     justify-content: start;
     margin-bottom: 10px;
     gap: 10px;
