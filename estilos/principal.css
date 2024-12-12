@@ -349,7 +349,7 @@ body {
     padding-left: 0.375rem;
 }
 #menu_lateral .btn_menu.mini, #btn_configuracoes.mini {
-    min-height: 0;
+    min-height: 1.625rem;
     justify-content: center;
     width: 2.1875rem;
     height: 1.625rem;

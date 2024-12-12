@@ -19,4 +19,8 @@ export default function pikaday () {
             return new Date(year, month, day);
         }
     });
+
+    $("#input_date_final").flatpickr({
+        dateFormat: "d-m-Y",
+    })
 }
