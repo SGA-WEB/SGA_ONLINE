@@ -466,7 +466,6 @@ main {
     padding: 5px;
     border-radius: 5px;
     max-width: 127px;
-    letter-spacing: .1rem;
 }
 
 .config_grafico {
@@ -778,6 +777,12 @@ main {
         display: none;
     }
 } 
+
+@media screen and (max-width: 480px) and (orientation: portrait) {
+    #btn_configuracoes {
+        margin: auto 0 2rem 0 !important;
+    }
+}
 
 .rodar {
     transform: rotate(180deg);

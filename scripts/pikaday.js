@@ -22,5 +22,6 @@ export default function pikaday () {
 
     $("#input_date_final").flatpickr({
         dateFormat: "d-m-Y",
+        disableMobile: "true"
     })
 }
