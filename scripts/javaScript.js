@@ -303,7 +303,18 @@ window.addEventListener("resize",()=>{
   if (widthBody <= 640 && !menu_lateral.classList.contains("mini")) {
     btnMenuLateral()
   }
+  // if (widthBody <= 640) {
+  //   adjustMenuHeight()
+  // }
 });
+
+// function adjustMenuHeight() {
+//   const menu = document.querySelector('#menu_lateral');
+//   const height = window.innerHeight - 82; // Altura do viewport menos 82px
+//   menu.style.minHeight = `${height}px`;
+// }
+// window.addEventListener('load', adjustMenuHeight);
+
 
 // Menu Usuário:
 

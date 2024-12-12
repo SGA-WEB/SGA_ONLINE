@@ -558,7 +558,7 @@ main {
     #menu_lateral {
         max-width: 50%;
         min-width: 196px;
-        min-height: calc(100dvh - 82px); /* Ajusta a altura */
+        max-height: calc(100dvh - 82px); /* Ajusta a altura */
         align-items: center;
     }
 

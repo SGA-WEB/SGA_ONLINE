@@ -96,7 +96,8 @@
         padding: 0px;
         opacity: 0.85;
         position: fixed;
-        height: calc(100vh - 87px);
+        height: calc(100dvh - 87px);
+        max-height: calc(100dvh - 87px);
         z-index: 1;
     }
     .principal {
