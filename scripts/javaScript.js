@@ -4,7 +4,6 @@ import contato from "../modulos/contato/lista_contatos/contato.js";
 import {cadastro_contato, btnNav} from "../modulos/contato/cadastro_contato/cadastro_contato.js";
 import configuracao_usuario from "../modulos/configuracao_usuario/configuracao_usuario.js";
 import select2 from "./select.js";
-import pikaday from "./pikaday.js";
 import produto from "../modulos/produto/produto.js";
 import centro_de_estoque from "../modulos/centro_de_estoque/centro_de_estoque.js";
 
@@ -66,7 +65,6 @@ function carregarConteudo(url, elemento, modulo_contato) {
       select2()
       if (url === "../modulos/dashboard/dashboard.html") {
         dashBorad();
-        pikaday()
       }
       if (url === "../modulos/contato/lista_contatos/contato.html") {
         contato();
