@@ -3,6 +3,7 @@ export default function select2 () {
         $('.campo_select').select2({
             placeholder: 'Selecione a coluna',
             width: '140px',
+            height: '20px',
             minimumResultsForSearch: Infinity,
         });
     });
