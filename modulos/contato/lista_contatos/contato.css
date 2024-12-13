@@ -97,7 +97,6 @@
         opacity: 0.85;
         position: fixed;
         height: calc(100dvh - 87px);
-        max-height: calc(100dvh - 87px);
         z-index: 1;
     }
     .principal {

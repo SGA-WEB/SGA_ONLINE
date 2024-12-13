@@ -32,11 +32,17 @@ function visibilidadeSenha(senha, img) {
     $('.campo_select').on('select2:select', function (e) {
       // Sempre que o select for alterado muda o placeholder
       input_pesquisa.placeholder = "Pesquisar por " + e.params.data.text
+      mudarPlaceholder() // Chama a funcao de mudar o placeholder sempre que o select for alterado
     })
-
-    if (input_pesquisa.placeholder == "Pesquisar por Código" || input_pesquisa.placeholder == "Pesquisar por Quantidade") {
-      input_pesquisa.type = "number"
-    }
+    function mudarPlaceholder (){ 
+      if (input_pesquisa.placeholder == "Pesquisar por Código" || input_pesquisa.placeholder == "Pesquisar por Quantidade") {
+        input_pesquisa.type = "number"
+      } else {
+        input_pesquisa.type = "text"
+      }
+      input_pesquisa.value = "" 
+    } 
+    mudarPlaceholder() // Função é chamada assim que a pagina for carregada
   }
 
   export { visibilidadeSenha, dataAtual, mudarPesquisa}
