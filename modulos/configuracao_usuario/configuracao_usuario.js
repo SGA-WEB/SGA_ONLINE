@@ -34,7 +34,7 @@ export default function configuracao_usuario() {
 
     let btn_alterar_senha = document.querySelector(".btn_alterar_senha")
     btn_alterar_senha.addEventListener('click', () => {
-        window.location.href = "../redefinição de senha/envio_email/envio_email.html"
+        window.location.href = "../redefinicao_senha/envio_email/envio_email.html"
         window.localStorage.setItem("from_config_usuario", true)
     })
 
