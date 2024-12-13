@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SGA ONLINE</title>
+  <!-- Importando o arquivo CSS externo -->
+  <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="../imagens/icone_sga.ico" type="image/x-icon">
+</head>
+<body>
+
+  <!-- Lado Esquerdo com a Imagem -->
+  <div class="left-side">
+    <img src="imagens do site/motors tela de fundo.png" alt="Imagem Lado Esquerdo">
+  </div>
+
+  <!-- Lado Direito com o Formulário de Login -->
+  <div class="right-side">
+    <form class="login-form" id="loginForm">
+      <div class="logo">
+        <img src="imagens do site/Logo.png" alt="logo e nome">
+      </div>
+      <label for="email">Usuário:</label>
+      <input type="email" id="email" placeholder="Digite seu usuário">
+      
+      <label for="senha">Senha:</label>
+      <input type="password" id="senha" placeholder="Digite sua senha">
+        <div id="conteiner-select">
+        <a href="../redefinicao_senha/envio_email/envio_email.html" target="_self">Esqueci minha senha</a>
+        <select name="Selecione a empresa" id="selecione-a-empresa"> 
+  
+          <option value="default">Selecione a empresa</option>
+          <option>Empresa 1</option>
+  
+        </select> 
+        
+      </div>
+      
+      <div id="botao-login">
+        
+        <button type="submit" id="btn_entrar">Entrar</button>
+      </div>
+    </form>
+  </div>
+  <script src="script.js"></script>
+  <script type="MIME/javascript" src="../../SGA_ONLINE/Back_end/Banco de Dados/login/login.js"></script>
+</body>
+</html>

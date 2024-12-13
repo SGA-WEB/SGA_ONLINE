@@ -61,7 +61,7 @@ btn_redefinir.addEventListener("click", ()=> {
             window.location.href = "../../Principal/principal.html"
         } else {
             alert("Senha redefinida com sucesso!\nClique em 'ok' e faça seu login com a nova senha.")
-            window.location.href = "../SGA online-login/index.html"
+            window.location.href = "../../SGA_online-login/index.html"
         }
     } else {
         confirmacao(true)
