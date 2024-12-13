@@ -14,7 +14,12 @@
     padding: 0px;
     margin: 0px;
 }
-
+input:-webkit-autofill { /* Corrige o autofill */
+    background-color: var(--cinza2) !important; /* ou a cor desejada */
+    box-shadow: 0 0 0px 1000px var(--cinza2) inset !important; /* Corrige o background */
+    color: inherit; /* Mantém a cor do texto original */
+    border: inherit; /* Mantém a borda original */
+}
 html {
     font-size: 0.625rem;
 }
