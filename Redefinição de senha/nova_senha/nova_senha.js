@@ -1,6 +1,6 @@
 import { visibilidadeSenha }from "../../scripts/funcionalidades.js"
 let nova = false
-function confirmacao() {
+function confirmacao(btn) {
     function htmlValid() {
         if (confirmacao_senha.value !== nova_senha.value) {
             validador.innerHTML = "As senhas não correspondem"
@@ -13,6 +13,9 @@ function confirmacao() {
             senhasOk = true
             btn_redefinir.style.cursor = "pointer"
         }
+    }
+    if (btn) {
+        htmlValid()        
     }
     
     if (confirmacao_senha.value.length >= nova_senha.value.length){
@@ -61,6 +64,6 @@ btn_redefinir.addEventListener("click", ()=> {
             window.location.href = "../../SGA online-login/index.html"
         }
     } else {
-        
+        confirmacao(true)
     }
 })
