@@ -8,19 +8,29 @@ function navLink (link) {
         break;
         case "link_endereco":
             carregarConteudo("contato/cadastro_contato/endereco_contato/endereco_contato.html", document.querySelector(".modulo"),true);
-        break;
-        case "link_configuracoes":
-            carregarConteudo("contato/cadastro_contato/configuracoes_contato/configuracoes_contato.html", document.querySelector(".modulo"),true);
+            let intervalo = setInterval(() => {
+                if(document.querySelector(".modulo")){
+                    document.querySelector(".btn_salvar").addEventListener("click", () => { 
+                        alert("Contato salvo com sucesso!")
+                        carregarConteudo("contato/lista_contatos/contato.html", document.querySelector(".principal"))
+                    })
+                    clearInterval(intervalo);
+                }
+            }, 100)
         break;
     }
 }
 
 function estilo_nav (e) {
     let link = e
-    if (typeof(e) == "string") {
-        link = document.getElementById(e)
+    if (e == "voltar_contatos") {
+        carregarConteudo("contato/lista_contatos/contato.html", document.querySelector(".principal"))
+    } else {
+        if (typeof(e) == "string") {
+            link = document.getElementById(e)
+        }
+        link.classList.add("link_nav_selecionado") // Adiciona a classe ao link clicado
     }
-    link.classList.add("link_nav_selecionado") // Adiciona a classe ao link clicado
 
     let links_selecionado = document.querySelectorAll(".link_nav_selecionado") // Seleciona todos os links selecionados
     links_selecionado.forEach(e=>{
@@ -51,6 +61,11 @@ function cadastro_contato(link) {
         if(document.querySelector(".modulo") != null){
             fecharMenu(document.querySelector(".modulo").offsetWidth, 421)
         } 
+    })
+
+    document.querySelector(".btn_salvar").addEventListener("click", () => { 
+        alert("Contato salvo com sucesso!")
+        carregarConteudo("contato/lista_contatos/contato.html", document.querySelector(".principal"))
     })
 }
 

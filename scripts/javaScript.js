@@ -21,14 +21,6 @@ function mudarLogo(){ // Muda a logo do usuário de acordo com o nome dele
 }
 mudarLogo()
 
-$(document).ready(function () {
-  $('.campo_select').select2({
-      placeholder: 'Selecione a coluna',
-      width: '140px',
-      minimumResultsForSearch: Infinity,
-  });
-});
-
 let btns_modulos = document.querySelectorAll(".btn, .item_dropdown, #btn_configuracao_usuario") // Seleciona todos os botões dos modulos
 btns_modulos.forEach(e =>{
   e.addEventListener("click",()=>{

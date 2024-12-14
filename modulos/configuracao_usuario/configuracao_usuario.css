@@ -25,7 +25,7 @@
 .container_dados_usuario {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
+    justify-content: start;
     align-content: start;
     gap: 1rem;
     width: 100%;
@@ -186,6 +186,16 @@
     aspect-ratio: 1/1;
     font-size: clamp(6rem, 30vw, 12rem);
 }
+
+@media screen and (max-width: 1000px) {
+    .main {
+        justify-content: center;
+    }
+    .container_dados_usuario {
+        justify-content: center;
+    }
+}
+
 @media screen and (max-height: 550px){
     #popup_ver_foto div#logo_usuario_config {
         font-size: clamp(5rem, 20vh, 14rem);

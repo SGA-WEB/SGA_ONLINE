@@ -1,6 +1,7 @@
 // Função que minimiza o menu lateral:
 import { btnMenuLateral, carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
 import { mudarPesquisa } from "../../../scripts/funcionalidades.js"
+import select2 from "../../../scripts/select.js"
 
 export default function contato() {
     let input_pesquisa = document.querySelector(".input_pesquisa")
@@ -17,14 +18,7 @@ export default function contato() {
     })
 
     // Inicializa o select2
-    $(document).ready(function () {
-        $('.campo_select').select2({
-            placeholder: 'Selecione a coluna',
-            width: '140px',
-            minimumResultsForSearch: Infinity,
-        });
-    });
-
+    select2("140px")
     // Botão pesquisar:
     mudarPesquisa(input_pesquisa)
 

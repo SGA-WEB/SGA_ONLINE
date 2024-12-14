@@ -2,10 +2,11 @@ function visibilidadeSenha(senha, img) {
     // Pega o caminho atual da página
     const currentPath = window.location.pathname;
     // Calcula o nível relativo do diretório para chegar ao root
-    const depth = currentPath.split("/").length - 3;
+    console.log(currentPath)
+    const depth = currentPath.split("/").length - 2;
     // Monta o caminho para as imagens
     let path = "../".repeat(depth) + "imagens/";
-
+    console.log(path)
     if (senha.type === 'password') {
       senha.type = 'text';
       img.src = path + "visibility_off.png"

@@ -473,8 +473,7 @@ main {
     padding: 5px;
     border-radius: 5px;
     max-width: 127px;
-}
-
+} 
 .config_grafico {
     font-size: 0.9em;
 }
@@ -511,6 +510,9 @@ main {
     border-collapse: collapse;
     font-size: 0.9em;
 }
+#tabela_dashboard td, #tabela_dashboard th {
+    border: none;
+}
 
 .tabela th, td {
     padding: 7px 15px;
@@ -520,7 +522,7 @@ main {
 .tabela td:first-child, th:first-child{
     text-align: left;
 }
-.tabela td:last-child, th:last-child{
+#tabela_dashboard td:last-child, th:last-child{
     text-align: right;
 }
 
@@ -687,6 +689,41 @@ main {
     .graficos { 
         margin-right: 0;
     }
+    /* Configurações do campo_select */
+    /* BEM CSS: */
+    /* Estilos no escopo da config_grafico */
+    .config_grafico {
+        .select2-container--default .select2-selection--single {
+            height: 1.375rem !important;
+            line-height: 1.375rem  !important;
+            padding: 0 !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 1.375rem !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 1.375rem !important;
+        }
+    }
+
+    /* Estilos globais para dropdown gerado pelo Select2 */
+    .select2-container--default .select2-results__option--selected {
+        font-size: 0.8rem !important;
+    }
+
+    .select2-container--default .select2-results__option {
+        font-size: 0.8rem !important;
+        padding: 4px 10px !important;
+    }
+
+    .select2-container--default .select2-results__option--highlighted {
+        background-color: var(--azul1) !important;
+        color: var(--secundaria) !important;
+    }
+
+        
+
     .item_dashboard {
         margin: 0 0.7rem 0.7rem 0.7rem;
         padding: 0.5rem;
@@ -703,8 +740,8 @@ main {
         gap: 7px;
     }
     .input_date {
-        font-size: 12px;
-        width: 95px;
+        font-size: 0.75rem;
+        width: 6rem;
         padding: 3px;
     }
 }
@@ -828,6 +865,9 @@ main {
     background-color: var(--azul1-2);
     transition: .2s;
 }
+.btn.btn_menu {
+    transition: none;
+}
 
 .btn2 {
     background-color: var(--azul-1);
@@ -889,6 +929,7 @@ main {
     height: 100%;
     width: 100%;
     font-size: 1rem;
+    background-color: transparent;
 }
 .campo_input_noborder:focus, 
 .campo_input_noborder:active {

@@ -7,3 +7,13 @@
     gap: 1rem;
     flex: 1 1 250px;
 }
+
+#tabela_centro_estoque td, #tabela_centro_estoque th {
+    text-align: left;
+}
+
+@media screen and (max-width: 650px) {
+    #tabela_centro_estoque {
+        min-width: 350px;
+    }
+}
