@@ -1,13 +1,13 @@
 function getBasePath() {
-  if (window.location.hostname === "sga-web.github.io") {
-     
-      console.log(window.location.hostname)
-      return "/SGA_ONLINE/imagens/";
-  } else {
-      console.log(window.location.hostname)
-      // Ambiente local
-      return "/imagens/";
-  }
+  const hostname = window.location.hostname;
+
+    if (hostname.includes("github.io")) {
+        // Ambiente GitHub Pages
+        return "/SGA_ONLINE/imagens/";
+    } else {
+        // Ambiente local
+        return "/imagens/";
+    }
 }
 
 function visibilidadeSenha(senha, img) {
@@ -15,13 +15,13 @@ function visibilidadeSenha(senha, img) {
   let path = getBasePath();
 
   if (senha.type === 'password') {
-      senha.type = 'text';
-      img.src = path + "visibility_off.png"; // Caminho atualizado para ambiente
-      img.id = "view_on";
+    senha.type = 'text';
+    img.src = path + "visibility_off.png"; // Caminho atualizado para ambiente
+    img.id = "view_on";
   } else {
-      senha.type = 'password';
-      img.src = path + "visibility_on.png"; // Caminho atualizado para ambiente
-      img.id = "view_off";
+    senha.type = 'password';
+    img.src = path + "visibility_on.png"; // Caminho atualizado para ambiente
+    img.id = "view_off";
   }
 }
 

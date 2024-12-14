@@ -321,6 +321,8 @@ btn_configuracao_usuario.addEventListener("click",()=>{
   let item_hiden = false
   let btn_modulos_ativos = document.querySelectorAll(".modulo_selecionado, .modulo_pre-selecionado")
 
+  document.querySelector("#usuario_seta").style.transform = "rotate(0deg)"
+
   if(document.querySelector(".item_hiden")){ // Se tiver um item do menu hiden
     document.querySelector(".item_hiden").remove()
     item_hiden = true
