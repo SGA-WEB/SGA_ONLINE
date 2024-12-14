@@ -1,8 +1,10 @@
 function getBasePath() {
   if (window.location.hostname === "usuario.github.io") {
       // Ambiente do GitHub Pages (substitua "SGA_ONLINE" pelo nome do repositório)
+      console.log(window.location.hostname)
       return "/SGA_ONLINE/imagens/";
   } else {
+      console.log(window.location.hostname)
       // Ambiente local
       return "/imagens/";
   }
