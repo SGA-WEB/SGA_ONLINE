@@ -1,22 +1,28 @@
-function visibilidadeSenha(senha, img) {
-    // Pega o caminho atual da página
-    const currentPath = window.location.pathname;
-    // Calcula o nível relativo do diretório para chegar ao root
-    console.log(currentPath)
-    const depth = currentPath.split("/").length - 2;
-    // Monta o caminho para as imagens
-    let path = "../".repeat(depth) + "imagens/";
-    console.log(path)
-    if (senha.type === 'password') {
-      senha.type = 'text';
-      img.src = path + "visibility_off.png"
-      img.id = "view_on"
-    } else {
-      senha.type = 'password';
-      img.src = path + "visibility_on.png"
-      img.id = "view_off"
-    }
+function getBasePath() {
+  if (window.location.hostname === "usuario.github.io") {
+      // Ambiente do GitHub Pages (substitua "SGA_ONLINE" pelo nome do repositório)
+      return "/SGA_ONLINE/imagens/";
+  } else {
+      // Ambiente local
+      return "/imagens/";
   }
+}
+
+function visibilidadeSenha(senha, img) {
+  // Obter o caminho base correto para as imagens
+  let path = getBasePath();
+
+  if (senha.type === 'password') {
+      senha.type = 'text';
+      img.src = path + "visibility_off.png"; // Caminho atualizado para ambiente
+      img.id = "view_on";
+  } else {
+      senha.type = 'password';
+      img.src = path + "visibility_on.png"; // Caminho atualizado para ambiente
+      img.id = "view_off";
+  }
+}
+
 
   function dataAtual() {
     let p_data_cadastro = document.querySelector(".data_cadastro")
