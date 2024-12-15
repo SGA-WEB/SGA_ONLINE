@@ -599,7 +599,6 @@ main {
    
     #menu_lateral #btn_configuracoes {
         width: 100%;
-        justify-content: center;
         margin: auto 0 1rem 0; /* Espaçamento maior entre os botões */
         font-size: 1em;
     }

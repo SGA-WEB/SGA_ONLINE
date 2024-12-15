@@ -8,6 +8,8 @@ export default function dashBorad () {
   let azul1 = "#9CBBED50";
   let azul_1 = "#E9F0FF";
   let vermelho = 'rgba(255, 0, 0, 0.15)';
+
+  document.querySelector("#btn_dashboard").classList.add("modulo_selecionado")
   
   // Dados dos gráficos:
   let dado_entrada = [4,12,15,8]
