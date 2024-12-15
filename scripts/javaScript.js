@@ -6,6 +6,7 @@ import configuracao_usuario from "../modulos/configuracao_usuario/configuracao_u
 import select2 from "./select.js";
 import produto from "../modulos/produto/produto.js";
 import centro_de_estoque from "../modulos/centro_de_estoque/centro_de_estoque.js";
+import configuracoes from "../modulos/configuracoes/configuracoes.js";
 
 function mudarLogo(){ // Muda a logo do usuário de acordo com o nome dele
   let div_logo_usuario = document.querySelectorAll(".logo_usuario");
@@ -34,6 +35,13 @@ carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"
 let logo_sga_principal = document.querySelector("#logo_sga_principal")
 logo_sga_principal.addEventListener("click",()=>{
   carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"))
+  displayMenu("", true)
+  document.querySelector(".item_hiden")?.remove() // se o .item_hiden existir ele é removido
+  document.querySelector(".modulo_selecionado")?.classList.remove("modulo_selecionado") // Se tiver um módulo selecionado é retirada sua a classe
+  document.querySelector(".item_menu_selecionado")?.classList.remove("item_menu_selecionado") // Se tiver um item selecionado é retirada sua a classe
+  document.querySelector(".btn_menu_selecionado")?.classList.remove("btn_menu_selecionado")
+
+  document.querySelector("#btn_dashboard").classList.add("modulo_selecionado")
 }) // Clicar na logo volta para o dashboard
 
 // Função carregar conteúdo html dos módulos
@@ -76,6 +84,9 @@ function carregarConteudo(url, elemento, modulo_contato) {
       }
       if (url === "../modulos/centro_de_estoque/centro_de_estoque.html") {
         centro_de_estoque()
+      }
+      if (url === "../modulos/configuracoes/configuracoes.html") {
+        configuracoes()
       }
       if (modulo_contato) { // Se for um dos modulos do contato
         btnNav();

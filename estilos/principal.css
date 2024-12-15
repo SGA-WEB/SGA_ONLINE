@@ -1,6 +1,8 @@
 :root {
     --cinza1: #F6F6F6;
+    --cinza1-2: #f2f2f2;
     --cinza2: #E8E8E8;
+    --cinza2-3: #dbdbdb;
     --cinza3: #BFBFBF;
     --cinza4: #686868;
     --azul: #3964A8;
@@ -390,9 +392,9 @@ body {
     visibility: visible;
 }
 
-/* Main: */
+/* .main_principal: */
 
-main {
+.main_principal {
     display: flex;
     margin-top: 95px;
 }
@@ -732,7 +734,7 @@ main {
     canvas {
         font-size: 0.8rem;
     }
-    main {
+    .main_principal {
         margin-top: 65px;
     }
     .filtro_grafico {
@@ -803,7 +805,7 @@ main {
         min-height: calc(100vh - 66px);
     }
 
-    main {
+    .main_principal {
         margin-top: 85px;
     }
 }
@@ -858,7 +860,6 @@ main {
     padding: 0 .7rem;
     border-radius: 5px;
     transition: .2s;
-
 }
 .btn:hover {
     background-color: var(--azul1-2);
@@ -909,6 +910,16 @@ main {
 
 .visibilidade {
     cursor: pointer;
+}
+
+.titulo1 {
+    font: bolder 1.8rem arial;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+.titulo2 {
+    margin-bottom: 1rem;
+    font: 600 1.4rem arial;
 }
 
 /* Campo input com icones no canto */
