@@ -1,5 +1,5 @@
 import { visibilidadeSenha } from "../../scripts/funcionalidades.js";
-import { mudarLogo } from "../../scripts/javaScript.js";
+import { carregarConteudo, mudarLogo } from "../../scripts/javaScript.js";
 import popup from "../../scripts/popup.js";
 
 export default function configuracao_usuario() {
@@ -131,14 +131,14 @@ export default function configuracao_usuario() {
     // Botão voltar:
     let btn_voltar = document.querySelector(".btn_voltar")
     btn_voltar.addEventListener('click', () => {
-        window.location.href = "../../principal/principal.html"
+        carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"))
     })
 
     // Botão de salvar:
     let btn_salvar = document.querySelector(".btn_salvar")
     btn_salvar.addEventListener('click', () => {
         alert("Configurações salvas com sucesso!")
-        window.location.href = "../../principal/principal.html"
+        carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"))
     })
 
     // Pop Up ver foto:
