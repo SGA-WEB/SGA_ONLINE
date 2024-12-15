@@ -1,1 +1,50 @@
-<h1>Configurações</h1>
+<section class="cadastro-usuario">
+    <span class="voltar"><a href="../Principal/principal.html">Voltar</a></span>
+    <div class="tittle-cadastro">
+        <h2>Cadastro usuario</h2>
+    </div>
+    <div class="nome-usuario">
+        <span>Nome (Completo)</span>
+        <div class="Campo-nome">
+            <input type="text" id="digite-nome" name="Nome-usuario" placeholder="Digite o Nome" required>
+        </div>
+    </div>        
+    <div class="senha-container">
+        <div class="senha">
+            <span>Senha</span>
+            <input type="password" class="campo-senha" name="Senha" placeholder="Digite a Senha" required>
+        </div>
+        <div class="senha">
+            <span>Confirme a Senha</span>
+            <input type="password" class="campo-senha" name="confirmar-senha" placeholder="Confirme a senha">
+        </div>
+    </div>
+    <div class="email-container">
+        <div class="email">
+            <span>Email</span>
+            <input type="email" class="campo-email" name="email" placeholder="Digite o Email">
+        </div>
+        <div class="email">
+            <span>Confirme mail</span>
+            <input type="email" class="campo-email" name="confirme-email" placeholder="Confirme o email">
+        </div>
+    </div> 
+    <div class="fone-grupo-container">
+        <div class="fone-grupo">
+            <span>Fone</span>
+            <input type="tel" class="campo-fone" name="fone" placeholder="Digite o telefone">
+        </div>
+        <div class="fone-grupo">
+            <span>Grupo</span>
+            <select name="grupo" id="Selecione-o-grupo">
+                <option value="default">Selecione o grupo</option>
+            </select>
+        </div>
+    </div>
+   <div class="salvar-container">
+    <button class="button-salvar">
+        <img class="icone-salvar" src="../imagens/salvar.png" alt="icone-salvar">
+        <span>Salvar</span>
+    </button>
+   </div>
+</section>

@@ -1,0 +1,933 @@
+:root {
+    --cinza1: #F6F6F6;
+    --cinza2: #E8E8E8;
+    --azul: #3964A8;
+    --azul1: #9CBBED;
+    --azul-1: #E9F0FF;
+    --principal: #ffffff;
+    --secundaria: #000000;
+}
+* {
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+}
+a {
+    color: var(--secundaria);
+    text-decoration: none;
+}
+a:visited{
+    color: var(--secundaria);
+    text-decoration: none;
+}
+body {
+    background-color: var(--cinza1);
+    font: normal 1rem arial;
+    color: var(--secundaria);
+}
+
+/* cabeçalho */
+
+header {
+    position: fixed;
+    top: 0;
+    background-color: var(--principal);
+    width: 100%;
+    height: 82px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0px 3px 16px rgba(0, 0, 0, 0.10);
+    padding: 15px;
+    margin-bottom: 15px;
+    z-index: 2;
+}
+header #container_logo_busca {
+    display: flex;
+    flex-shrink: 1;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 710px;
+}
+.logo_sga {
+    max-height: 65px;
+    margin-right: 20px;
+    cursor: pointer;
+    width: 70px;
+}
+
+/* campo de busca */
+header #campo_busca {
+    display: flex;
+    flex-shrink: 1;
+    flex-basis: auto;
+    align-items: center;
+    width: 100%;
+    max-width: 450px;
+    min-width: 335px;
+}
+header #btn_filtros {
+    display: flex;
+    flex-shrink: 0;
+    flex-basis: content;
+    align-items: center;
+    background-color: transparent;
+    border: none;
+    margin: 10px;
+    cursor: pointer;
+}
+header #icone_filtro {
+    width: 30px;
+}
+header #campo_pesquisa {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 400px;
+    min-width: 280px;
+    height: 45px;
+    padding: 14px 10px 14px 20px;
+    border-radius: 10px;
+    border: none;
+    background-color: var(--cinza2);
+}
+header #campo_pesquisa input {
+    background-color: transparent;
+    border: none;
+    width: calc(100% - 30px);
+    height: 100%;
+    font: normal 0.9rem arial;
+    color: var(--secundaria)
+}
+header #campo_pesquisa input:focus {
+    outline: none;
+}
+header #campo_pesquisa input::placeholder {
+    color: #9F9F9F;
+}
+header #campo_pesquisa img {
+    width: 25px;
+    cursor:pointer;
+}
+
+/* Campo do usuário */
+header #campo_usuario {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 300px;
+}
+header #usuario {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 232px;
+    height: 54px;
+    padding: 5px 13px;
+    gap: 12px;
+    background-color: #F3F3F3;
+    border-radius: 10px;
+    cursor: pointer;
+}
+header #usuario #logo_usuario {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    background-color: aqua;
+    border-radius: 50%;
+    font: bold 18px arial;
+}
+header #nome-empresa_usuario span#nome_usuario {
+    display: block;
+    font: bold 14px arial;
+}
+header #nome-empresa_usuario span#empresa_usuario {
+    display: block;
+    font: normal 11px arial;
+}
+header #usuario_seta {
+    width: 16px;
+}
+
+/* Menu do usuário */
+
+#menu_usuario {
+    position: absolute;
+    top: 77px;
+    margin-left: 26px;
+    background-color: var(--principal);
+    padding: 10px 6px 30px 6px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.116);
+}
+#menu_usuario span {
+    padding: 5px;
+    cursor: pointer;
+    transition: .2s;
+}
+#menu_usuario span:hover {
+    background-color: var(--azul-1);
+    transition: .2s;
+}
+
+/* Botão de sair */
+
+header #btn_sair {
+    width: 50px;   
+    padding: 5px 0px;
+    margin-left: 5px;
+    background-color: #fdd1d1;
+    border: none;
+    border-radius: 8px;
+    font: bold 0.85rem arial;
+    cursor: pointer;
+    transition: .15s;
+}
+header #btn_sair:hover {
+    background-color: rgb(255, 147, 147);
+    transition: .15s;
+}
+header #btn_sair a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+/* Menu lateral */
+
+nav {
+    position: fixed;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    max-width: 274px;
+    height: calc(100vh - 97px);
+    background-color: var(--principal);
+    box-shadow: 2px -1px 6.4px rgba(0, 0, 0, 0.17);
+    border-radius: 0 5px 0 0;
+}
+#container_btn_fechar {
+    display: flex;
+    align-self: flex-end;
+    margin: 5px 5px 10px 5px;
+}
+nav #btn_fechar_menu {
+    width: 36px;
+    height: 26px;
+    border: none;
+    border-radius: 5px;
+    background-color: transparent;
+    cursor: pointer;
+    background-color: var(--azul-1);
+}
+nav #btn_fechar_menu:hover {
+    background-color: var(--azul1);
+}
+nav #btn_fechar_menu img {
+    width: 24px;
+}
+nav .item_menu {
+    width: 94%;
+    max-width: 256px ;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+nav .item_menu .btn_menu {
+    height: 39px;
+}
+nav .btn_menu {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 5px;
+    font: normal 1.1rem arial;
+    color: var(--secundaria);
+}
+nav .item_menu .btn_menu:hover {
+    background-color: var(--azul-1);
+}
+.seta_cima_baixo {
+    margin-right: 6px;
+}
+nav .btn {
+    max-width: 256px;
+    width: 94%;
+    height: 39px;
+    justify-content: start;
+    margin-bottom: 10px;
+    gap: 10px;
+    background-color: var(--azul-1);
+}
+nav .btn:hover {
+    background-color: var(--azul1);
+} 
+nav .btn_menu div {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+nav .img_icone_menu {
+    width: 21px;
+}
+nav #btn_configuracoes {
+    width: 256px;
+    margin: auto 9px 10px 9px;
+    justify-content: center;
+    gap: 10px;
+    font: normal 1.3rem arial;
+}
+nav #btn_configuracoes:hover {
+    background-color: var(--azul-1);
+}
+nav #btn_configuracoes img {
+    width: 30px ;
+}
+
+/* Menu dropdonw */
+
+.dropdown {
+    margin: 6px auto 6px 28px;
+}
+.dropdown a {
+    display: block;
+    padding: 5px 17px;
+    border-left: 2px solid var(--cinza2);
+}
+.dropdown a:hover {
+    border-left: 2px solid var(--azul);
+    color: #09476b;
+}
+
+.seta_cima_baixo {
+    width: 13px;
+}
+.modulo_selecionado {
+    background-color: var(--azul1) !important;
+}
+.seta_cima_baixo {
+    transform: rotate(0deg);
+    transition: .2s;
+}
+.modulo_selecionado .seta_cima_baixo {
+    transform: rotate(180deg);
+    transition: .2s;
+}
+.item_menu_selecionado {
+    border-left: 2px solid var(--azul) !important;
+    color: var(--azul) !important;
+}
+
+/* Estilos do menu minimizado */    
+
+header #container_logo_busca.mini {
+    justify-content: flex-start;
+}
+nav#menu_lateral.mini {
+    max-width: 36px;
+    min-width: 36px;
+}
+nav#menu_lateral.mini #btn_fechar_menu {
+    padding-left: 6px;
+}
+nav .btn_menu.mini, #btn_configuracoes.mini {
+    justify-content: center;
+    width: 35px;
+    height: 26px;
+}
+nav .btn.mini {
+    justify-content: center;
+    padding: 3px;
+}
+nav .item_menu.mini {
+    display: flex;
+    justify-content: center;
+}
+nav #container_btn_fechar.mini {
+    align-self: center;
+}
+nav .dropdown.mini, .span_modulo.mini, .seta_cima_baixo.mini {
+    display: none;
+}
+
+
+/* Estilo dos textos que aparece ao lado dos botões */
+.hide_text {
+    visibility: hidden;
+    position: absolute;
+    left: 43px;
+    font: normal 0.8em arial;
+    color: rgb(109, 109, 109);
+}
+
+.mini .btn_menu:hover .hide_text {
+    visibility: visible;
+}
+
+/* Main: */
+
+main {
+    display: flex;
+    margin-top: 95px;
+}
+.graficos {
+    display: flex;
+    flex-flow: row wrap;
+    width: calc(100% - 287px);
+    justify-content: start;
+    align-content: flex-start;
+    margin-right: 0.7rem;
+    margin-left: 274px; /* tamalho da barra lateral */
+}
+.graficos.mini {
+    width: calc(100% - 36px);
+    margin-left: 36px; /* tamalho da barra lateral */
+}
+/* Dashboard */
+
+.item_dashboard {
+    max-width: 800px;
+    min-width: 400px;
+    flex: 1 1 400px;
+    height: min-content;
+    background-color: var(--principal);
+    padding: 0.8rem;
+    margin: 0 0 1rem 1rem;
+    border-radius: 5px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.144);
+}
+.header_grafico {
+    display: flex;
+    flex-flow: column;
+    gap: 10px;
+    justify-content: space-between;
+    padding: 0 10px;
+    margin-bottom: 10px;
+}
+.header_grafico h2 {
+    text-align: center;
+    font: 600 1em arial;
+    margin-bottom: 10px;
+}
+.filtro_grafico {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    gap: 15px;
+}
+.filtro {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    font-size: 0.9em;
+}
+.filtro span {
+    white-space: nowrap;
+}
+.input_date {
+    background-color: var(--azul-1);
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+}
+
+.config_grafico {
+    font-size: 0.9em;
+}
+.config_grafico select {
+    background-color: var(--azul-1); /* Cor de fundo do select */
+    color: var(--secundaria); /* Cor do texto */
+    border-radius: 5px; /* Arredondar bordas */
+    border: none;
+}
+.config_grafico select:focus {
+    outline: none; /* Remove o contorno padrão quando focado */
+    border: none;
+}
+
+.config_grafico option {
+    background-color: var(--azul-1); /* Cor de fundo das opções */
+    color: var(--secundaria);
+}
+.config_grafico select option:hover {
+    cursor: pointer;
+    background-color: var(--azul1);
+}
+/* Cadastro usuario */
+
+.cadastro-usuario {
+    display:flex;
+    background-color: #ffffff;
+    width: 60%;
+    height: 500px;
+    padding: 1em 1em;
+    flex-direction: column;
+    margin: 0em 1em;
+    min-width: 100vh;
+    box-sizing: border-box;
+}
+
+.voltar {
+    display: flex;
+    width: 40px;
+    height: 25px;   
+}
+
+.tittle-cadastro {
+    display: flex;
+    height: 50px; 
+}
+
+.nome-usuario {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    height: 80px;
+}
+
+.Campo-nome {
+    display: flex;
+    width: 100%;
+    
+}
+
+#digite-nome {
+    width: 100%;
+    height: 30px;
+    border-radius: 6px;
+    padding: 8px;
+}
+
+.senha {
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.campo-senha {
+    width: 240px;
+    height: 30px;
+    border-radius: 6px;
+    padding: 8px;
+    display: flex;
+}
+
+
+.senha-container {
+    display: flex;
+    height: 80px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.email-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    height: 150px;
+}
+
+.email {
+    display: flex;
+    flex-direction: column;
+}
+
+.campo-email {
+    width: 100%;
+    height: 30px;
+    border-radius: 6px;
+    padding: 8px;
+}
+
+.fone-grupo-container {
+    display: flex;
+    justify-content: space-between;
+    height: 80px;
+    width: 100%;
+}
+
+.fone-grupo {
+    display: flex;
+    flex-direction: column;
+}
+
+.campo-fone {
+    display: flex;
+    width: 240px;
+    height: 30px;
+    border-radius: 6px;
+    padding: 8px; 
+}
+
+#Selecione-o-grupo {
+    display: flex;
+    width: 240px;
+    height: 30px;
+    border-radius: 6px;
+}
+
+.salvar-container {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+}
+.button-salvar {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background-color: rgb(220, 220, 255);
+    border: none;
+    width: 65px;
+}
+.icone-salvar {
+    display: flex;
+    cursor: pointer;
+
+}
+
+#digite-nome {
+    width: 100%;
+}
+
+/* Tabela dashboard: */
+#div_produtos_mais_vendidos {
+    padding: 0;
+    max-width: 500px;
+}
+#div_produtos_mais_vendidos .header_grafico {
+    padding: .8em;
+}
+.tabela_produtos {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+
+.tabela_produtos th, td {
+    padding: 7px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.tabela_produtos td:first-child, th:first-child{
+    text-align: left;
+}
+.tabela_produtos td:last-child, th:last-child{
+    text-align: right;
+}
+
+.tabela_produtos th {
+    background-color: var(--azul-1);
+    font-weight: bold;
+}
+
+.tabela_produtos tr:hover {
+    background-color: var(--cinza1);
+}
+@media (min-width: 1325px) {
+    .item_dashboard {
+        min-width: 500px;
+    }
+}
+@media (min-width: 1295px) {
+    .mini .item_dashboard {
+        min-width: 500px;
+    }
+}
+
+/* Estilos gerais */
+@media (max-width: 768px) {
+    header {
+        height: auto;
+        padding: 10px;
+    }
+    
+    header #campo_busca {
+        display: none;
+    }
+
+    header #container_logo_busca {
+        flex-direction: column;
+    }
+    
+    header #campo_usuario {
+        justify-content: flex-end;
+    }
+    
+    nav {
+        max-width: 50%;
+        min-width: 196px;
+        min-height: calc(100vh - 82px); /* Ajusta a altura */
+        align-items: center;
+    }
+
+    nav .dropdown {
+        margin-left: 8px;
+    }
+
+    nav .dropdown a {
+        padding: 5px 5px;
+        font-size: 0.9em;
+    }
+
+    nav .item_menu {
+        width: 100%;
+    }
+
+    nav .btn_menu {
+        padding: 10px; /* Aumenta o espaço para facilitar o toque em telas menores */
+        width: 94%;
+    }
+    
+    .seta_cima_baixo {
+        margin: 0 0 0 5px;
+    }
+
+    nav .btn_menu div{
+        gap: 5px;
+    }
+   
+    nav #btn_configuracoes {
+        width: 100%;
+        justify-content: center;
+        margin: auto 0 25px 0; /* Espaçamento maior entre os botões */
+        font-size: 1em;
+    }
+
+    .graficos {
+        margin-left: 196px; /* tamalho da barra lateral */
+        width: calc(100% - 206px);
+    }
+    .item_dashboard {
+        min-width: 265px;
+    }
+    .mini.item_dashboard {
+        min-width: 365px;
+    }
+
+}
+
+/* Estilos para dispositivos móveis */
+@media (max-width: 480px) {
+    header {
+        padding: 5px;
+        height: auto;
+    }
+
+    header #logo_sga {
+        width: 50px;
+        margin: 0;
+    }
+
+    header #campo_busca {
+        max-width: 100%; /* Permite que o campo de busca ocupe a largura total */
+        display: none;
+    }
+
+    header #campo_usuario {
+        flex-direction: row; /* Empilha o nome e a empresa do usuário */
+        align-items: end;
+        width: 12%;
+        margin-right: 5px;
+    }
+
+    header #btn_sair {
+        display: none;
+    }
+
+    #nome-empresa_usuario {
+        display: none;
+    }
+
+    nav {
+        position: fixed;
+        min-height: calc(100vh - 66px);
+    }
+    nav .btn {
+        width: 100%;
+    }
+
+    nav .btn.mini {
+        width: 35px !important;
+    }
+   
+    #usuario_seta {
+        display: none;
+    }
+
+    header #usuario {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        width: 39px;
+        height: 39px;
+        background-color:var(--principal);
+        border-radius: 10px;
+        cursor: pointer;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    #menu_usuario {
+        padding: 3px 0px 7px 0px;
+        top: 50px;
+    }
+    nav {
+        padding: 0px; /* Ajusta o padding do menu lateral */
+        opacity: 0.9;
+    }
+    nav .bnt {
+        width: 160px;
+    }
+
+    nav .item_menu {
+        margin-bottom: 10px; /* Reduz o espaçamento entre os itens do menu */
+        font-size: small;
+    }
+    
+    nav .btn_menu {
+        font-size: 0.9rem; /* Ajusta o tamanho da fonte */
+    }
+
+    nav #btn_configuracoes {
+        gap: 2px;
+        padding: 4px 2px;
+    }
+    
+    nav .dropdown {
+        margin: 6px 0px 6px 0px; /* Remove a margem esquerda em telas pequenas */
+    }
+
+    .seta_cima_baixo {
+        width: 10px; /* Reduz o tamanho das setas */
+    }
+
+    #modulo_administracao {
+        font-size: 13px;
+    }
+    .graficos {
+        font-size: 0.8rem;
+        width: calc(100% - 36px);
+        margin-left: 36px;
+        margin-right: 0;
+    }
+    .item_dashboard {
+        margin: 0 0.7rem 0.7rem 0.7rem;
+        padding: 0.5rem;
+        min-width: 200px;
+        flex: 1 1 200px;
+    }
+    canvas {
+        font-size: 0.8rem;
+    }
+    main {
+        margin-top: 65px;
+    }
+    .filtro_grafico {
+        gap: 7px;
+    }
+    .input_date {
+        font-size: 12px;
+        width: 95px;
+        padding: 3px;
+    }
+
+   
+}
+
+@media (max-height: 600px) {
+    .senha-container {
+        height: 120px;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .fone-grupo-container {
+        flex-wrap: wrap;
+        height: 120px;
+        gap: 20px;
+    }
+
+
+}
+
+/* Estilos para dispositivos com altura pequena ex: celular deitado */
+@media (max-height: 400px){ 
+   header {
+        padding: 5px;
+        height: auto;
+    }
+    header #logo_sga {
+        width: 50px;
+        margin: 0;
+    }
+
+    header #campo_busca {
+        max-width: 100%; /* Permite que o campo de busca ocupe a largura total */
+        display: none;
+    }
+
+    header #campo_usuario {
+        flex-direction: row; /* Empilha o nome e a empresa do usuário */
+        align-items: end;
+        width: min-content;
+        margin-right: 5px;
+    }
+
+    header #btn_sair {
+        display: none;
+    }
+
+    #nome-empresa_usuario {
+        display: none;
+    }
+    #usuario_seta {
+        display: none;
+    }
+
+    header #usuario {
+        display: flex;
+        justify-content: center;
+        align-content: center;
+        width: 39px;
+        height: 39px;
+        background-color:var(--principal);
+        border-radius: 10px;
+        cursor: pointer;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-items: stretch;
+    }
+
+    #menu_usuario {
+        padding: 3px 0px 7px 0px;
+        top: 50px;
+    }
+
+    nav {
+        padding: 0px; /* Ajusta o padding do menu lateral */
+        opacity: 0.9;
+        min-height: calc(100vh - 66px);
+    }
+
+    main {
+        margin-top: 64px;
+    }
+
+}
