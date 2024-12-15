@@ -255,7 +255,7 @@ body {
   background-color: #0056b3;
 }
 
-.logo-mobile {
+.logo_mobile {
   display: none;
 }
 
@@ -284,24 +284,22 @@ body {
     z-index: 2;
     width: 0%;
     height: auto;
-    
   }
 
-  .logo-mobile {
-    display: block;
-  }
-
-  .logo-desktop {
+  .logo_desktop {
     display: none;
   }
 
+  .logo_mobile {
+    display: block;
+  }
   /* Ajusta o formulário para ficar abaixo da imagem */
   .right-side {
     width: 100%;
     height: auto;
     display: flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     padding-top: 20px;
     border-radius: 200px;
   }
