@@ -13,7 +13,6 @@ export default function produto () {
                 // Botão que volta para a tela de produtos
                 carregarConteudo("produto/produto.html", document.querySelector(".principal"))
             })
-            console.log(document.querySelector(".btn_salvar"))
             document.querySelector(".btn_salvar").addEventListener("click", () => {
                 // Botão que salva o produto
                 alert("Produto salvo com sucesso!")

@@ -20,9 +20,11 @@
 }
 
 .main_config {
+    display: flex;
+    flex-direction: column;
     padding: 1rem;
     width: 100%;
-    max-width: 35%;
+    margin-left: 1rem;
 }
 
 .container_topico:first-of-type {
@@ -68,6 +70,7 @@
     box-sizing: border-box;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.144);
     border-radius: 5px;
+    max-width: 50rem;
 }
 
 .voltar {
@@ -109,7 +112,6 @@
 
 .campo-senha {
     width: 240px;
-    height: 30px;
     border-radius: 6px;
     padding: 8px;
     display: flex;
@@ -118,6 +120,8 @@
 
 .senha-container {
     display: flex;
+    flex-wrap: wrap;
+    flex: 1 1 480px;
     height: 80px;
     width: 100%;
     justify-content: space-between;

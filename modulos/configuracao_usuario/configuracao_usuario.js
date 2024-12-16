@@ -152,7 +152,9 @@ export default function configuracao_usuario() {
     mudarLogo() // Atualiza a logo assim que a página for carregada
     let btn_remover_foto = document.querySelector("#btn_remover_foto")
     btn_remover_foto.addEventListener('click', () => {
-       mudarLogo()
-       fechar_menu_editar()
+        let confirmar = window.confirm("Tem certeza que deseja remover a foto de perfil?")
+        fechar_menu_editar()
+        if(confirmar)
+            mudarLogo()
     })
 }    

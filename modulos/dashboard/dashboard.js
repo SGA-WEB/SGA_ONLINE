@@ -105,7 +105,7 @@ export default function dashBorad () {
             beginAtZero: true,
             title: {
               display: true,
-              text: 'Entradas', // Rótulo do eixo Y
+              text: 'Saídas', // Rótulo do eixo Y
               font: {
                 size: font
               }
