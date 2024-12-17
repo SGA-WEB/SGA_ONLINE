@@ -120,8 +120,6 @@
 
 .senha-container {
     display: flex;
-    flex-wrap: wrap;
-    flex: 1 1 480px;
     height: 80px;
     width: 100%;
     justify-content: space-between;
