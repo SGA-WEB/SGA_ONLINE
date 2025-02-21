@@ -1,3 +1,4 @@
+
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
@@ -14,36 +15,23 @@ const pool = new Pool({
     user: 'postgres',
     host: 'localhost',
     database: 'sga_online',
-    password: '1234',
+    password: '1213',
     port: 5432,
 });
 
-// Rota para buscar usuários
-app.get('/api/users', async (req, res) => {
+// Rota para buscar dados da tabela
+app.get('/api/dados', async (req, res) => {
+    console.log(res)
     try {
-        const { rows } = await pool.query('SELECT * FROM users');
-        res.json(rows);
+        const { rows } = await pool.query('SELECT * FROM sga.centro_estoque');
+        res.json({ success: true, data: rows }); // Retorna um objeto JSON
     } catch (err) {
         console.error(err);
-        res.status(500).send('Server error');
+        res.status(500).json({ success: false, message: 'Erro no servidor' }); // Retorna um objeto JSON em caso de erro
     }
 });
 
-// Rota para adicionar um usuário
-app.post('/api/users', async (req, res) => {
-    const { name, email } = req.body;
-    try {
-        const { rows } = await pool.query(
-            'INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *',
-            [name, email]
-        );
-        res.json(rows[0]);
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Server error');
-    }
-});
-
+// Iniciar o servidor
 app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+    console.log(`Servidor rodando na porta ${port}`);
 });

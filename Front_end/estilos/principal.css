@@ -536,6 +536,17 @@ body {
 .tabela tr:hover {
     background-color: var(--cinza1);
 }
+
+.tabela {
+    border: 1px solid var(--cinza2);
+    font-size: 1rem;
+}
+
+.tabela  td, .tabela th {
+    border-right: 1px solid var(--cinza2);
+    text-align: start;
+}
+
 @media (min-width: 1325px) {
     .item_dashboard {
         min-width: 495px;

@@ -3,17 +3,19 @@
      <div class="header">
         <div class="container_select">
             <p>Selecione a coluna desejada:</p>
-            <select id="" class="campo_select">
-                <option value="codigo">Código</option>
-                <option value="descricao">Descrição</option>
-                <option value="localizacao">Localização</option>
-                <option value="padrao">Padrão</option>
+            <select id="campo_select_centro_estoque" class="campo_select">
+                <option value="id_centro_estoque">Código</option>
+                <option value="descricao_centro_estoque">Descrição</option>
+                <option value="localizacao_centro_estoque">Localização</option>
+                <option value="padrao_centro_estoque">Padrão</option>
             </select>
         </div>
         <div class="container_campo_pesquisa_btn">
             <div class="campo_pesquisa" id="campo_pesquisa">
                 <input id="input_pesquisa_tabela" type="text" placeholder="Pesquisar por Código" class="input_pesquisa">
-                <img id="icone_pesquisa" src="../imagens/icone_pesquisa.png" alt="icone_pesquisa">
+                <button class="btn_pesquisar" id="btn_pesquisar_centro_estoque">
+                    <img id="icone_pesquisa" src="../imagens/icone_pesquisa.png" alt="icone_pesquisa">
+                </button>
             </div>
         </div>   
      </div>
@@ -27,25 +29,8 @@
                 <th id="tabela_padrao">Padrão</th>
             </tr>
         </thead>
-        <tbody>
-            <tr>
-                <td class="codigo">1</td>
-                <td class="descricao">Principal</td>
-                <td class="localizacao">Corredor 3</td>
-                <td class="padrao">S</td>
-            </tr>
-            <tr>
-                <td class="codigo">2</td>
-                <td class="descricao">Secundário</td>
-                <td class="localizacao">Corredor 1</td>
-                <td class="padrao">N</td>
-            </tr>
-            <tr>
-                <td class="codigo">3</td>
-                <td class="descricao">Principal</td>
-                <td class="localizacao">Corredor 5</td>
-                <td class="padrao">S</td>
-            </tr>
+        <tbody class="tbody tbody_centro_estoque">
+           
         </tbody>
     </table>
     </div>

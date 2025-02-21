@@ -72,15 +72,6 @@
     width: 1.2rem;
 }
 
-#tabela_contatos {
-    border: 1px solid var(--cinza2);
-    font-size: 1rem;
-}
-#tabela_contatos td, #tabela_contatos th {
-    border-right: 1px solid var(--cinza2);
-    text-align: start;
-}
-
 @media (max-width: 980px) {
     .modulo {
         padding: 0.5rem;
