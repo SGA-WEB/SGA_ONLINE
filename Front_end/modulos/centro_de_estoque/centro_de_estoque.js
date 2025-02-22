@@ -58,26 +58,60 @@ export default function centro_de_estoque() {
     function pesquisar(data) {
         // Função que pesquisa e manda os dados filtrados para a função carregarDadosNaTabela
 
-        let btn_pesquisar = document.querySelector('.btn_pesquisar') // Botão de pesquisar
-        let campo_select = document.querySelector('.campo_select') // Select que contém os campos da tabela
+        const btn_pesquisar = document.querySelector('.btn_pesquisar') // Botão de pesquisar
+        const campo_select = document.querySelector('.campo_select') // Select que contém os campos da tabela
+        const btn_limpar = document.querySelector('#btn_limpar_pesquisa_centro_estoque') // Botão de fechar
+        const input_pesquisar = document.querySelector('.input_pesquisa') // Input de pesquisa
 
-        btn_pesquisar.addEventListener('click',()=>{ // Quando o botão for clicado
+        btn_pesquisar.addEventListener('click', handlePesquisar) // Quando o botão de pesquisar for clicado
+        input_pesquisar.addEventListener('keyup', handlePesquisar) // Quando uma tecla for pressionada
+        btn_limpar.addEventListener('click', () => { // Quando o botão de limpar for clicado
+            input_pesquisar.value = "" // Limpa o input
+            handlePesquisar() // Chama a função de pesquisa
+        })
+
+        function handlePesquisar () {
             let value_input_pesquisa = document.querySelector('.input_pesquisa').value // Valor do input de pesquisa
 
-            let newData = data.filter(e => {
-                // Filtra os dados de acordo com o valor do input de pesquisa e o campo selecionado
-                let campo_selecionado = e[campo_select.value].toString().toLowerCase().trim() // Valor do campo selecionado
-                let pesquisa = value_input_pesquisa.toLowerCase().trim() // Valor do input de pesquisa
-                return (
-                    // se o campo selecionado for igual ao valor do input de pesquisa
-                    campo_selecionado.includes(pesquisa)
-                )
+            if (value_input_pesquisa == "") { // Se o input estiver vazio
+                btn_limpar.classList.add('hide') // Esconde o botão de fechar
+            } else { // Se tiver algum valor
+                btn_limpar.classList.remove('hide') // Mostra o botão de fechar
+            }
+
+            data = data.map(e => {
+                // Converte os campos booleanos para "s" ou "n"
+                if (typeof(e.padrao_centro_estoque) === 'boolean') {
+                    e.padrao_centro_estoque = e.padrao_centro_estoque ? "s" : "n"
+                } 
+                return e
             })
+            
+            let threshold
+            if (campo_select.value == "padrao_centro_estoque"){
+                // Se o campo selecionado for o "padrão", a pesquisa será feita com mais tolerância a variação de valores
+                threshold = 0.7
+            } else if (campo_select.value == "localizacao_centro_estoque") {
+                // Se o campo selecionado for "localização", a pesquisa será feita com tolerancia 0
+                threshold = 0
+            } else {
+                threshold = 0.3
+            }
+            const options = {
+                keys: [campo_select.value],
+                threshold: threshold
+            }
 
+            const fuse = new Fuse(data, options) // Inicializa o fuse com os dados e as configurações
+            
+            let newData = fuse.search(value_input_pesquisa) // Faz a pesquisa
+            newData = newData.map(e => e.item) // Pega apenas os itens do resultado da pesquisa
+
+            if (value_input_pesquisa == "") { // Se o input estiver vazio
+                newData = data // Exibe todos os dados
+            }
+            
             carregarDadosNaTabela(newData) // Manda os novos dados filtrados para a função carregarDadosNaTabela
-
-        })
+        }  
     }
-
-
 }

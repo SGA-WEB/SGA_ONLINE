@@ -42,7 +42,9 @@ function visibilidadeSenha(senha, img) {
 
   // Função que muda o placeholder do input de pesquisa de acordo com a opção do select
   function mudarPesquisa (input_pesquisa) { 
-    input_pesquisa.placeholder = "Pesquisar por " +  $('.campo_select').find(':selected').text() // Adiciona o texto do select no placeholder 
+    input_pesquisa.placeholder = "Pesquisar por " +  $('.campo_select')
+    .find(':selected')
+    .text() // Adiciona o texto do select no placeholder 
 
     // Adiciona evento de mudança de seleção no select2
     $('.campo_select').on('select2:select', function (e) {
@@ -50,13 +52,15 @@ function visibilidadeSenha(senha, img) {
       input_pesquisa.placeholder = "Pesquisar por " + e.params.data.text
       mudarPlaceholder() // Chama a funcao de mudar o placeholder sempre que o select for alterado
     })
+
     function mudarPlaceholder (){ 
       if (input_pesquisa.placeholder == "Pesquisar por Código" || input_pesquisa.placeholder == "Pesquisar por Quantidade") {
         input_pesquisa.type = "number"
       } else {
         input_pesquisa.type = "text"
       }
-      input_pesquisa.value = "" 
+      input_pesquisa.value = "" // Limpa o input de pesquisa
+      document.querySelector('.btn_limpar_pesquisa').classList.add('hide') // Esconde o botão de limpar pesquisa
     } 
     mudarPlaceholder() // Função é chamada assim que a pagina for carregada
   }
