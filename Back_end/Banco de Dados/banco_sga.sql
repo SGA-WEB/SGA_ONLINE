@@ -5,7 +5,7 @@
 -- Dumped from database version 15.12
 -- Dumped by pg_dump version 15.12
 
--- Started on 2025-02-21 17:10:38
+-- Started on 2025-02-23 17:58:25
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -27,6 +27,20 @@ CREATE SCHEMA sga;
 
 
 ALTER SCHEMA sga OWNER TO postgres;
+
+--
+-- TOC entry 1043 (class 1247 OID 24591)
+-- Name: categoria; Type: TYPE; Schema: public; Owner: postgres
+--
+
+CREATE TYPE public.categoria AS ENUM (
+    'Fornecedor',
+    'Cliente',
+    'Funcionário'
+);
+
+
+ALTER TYPE public.categoria OWNER TO postgres;
 
 SET default_tablespace = '';
 
@@ -75,7 +89,7 @@ CREATE SEQUENCE sga.centro_estqoue_id_centro_estqoue_seq
 ALTER TABLE sga.centro_estqoue_id_centro_estqoue_seq OWNER TO postgres;
 
 --
--- TOC entry 3769 (class 0 OID 0)
+-- TOC entry 3772 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: centro_estqoue_id_centro_estqoue_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -113,7 +127,7 @@ CREATE SEQUENCE sga.centro_possue_movimentacao_id_centro_movimentacao_seq
 ALTER TABLE sga.centro_possue_movimentacao_id_centro_movimentacao_seq OWNER TO postgres;
 
 --
--- TOC entry 3770 (class 0 OID 0)
+-- TOC entry 3773 (class 0 OID 0)
 -- Dependencies: 240
 -- Name: centro_possue_movimentacao_id_centro_movimentacao_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -151,7 +165,7 @@ CREATE SEQUENCE sga.centroestoque_possue_produto_id_centro_produto_seq
 ALTER TABLE sga.centroestoque_possue_produto_id_centro_produto_seq OWNER TO postgres;
 
 --
--- TOC entry 3771 (class 0 OID 0)
+-- TOC entry 3774 (class 0 OID 0)
 -- Dependencies: 263
 -- Name: centroestoque_possue_produto_id_centro_produto_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -188,7 +202,7 @@ CREATE SEQUENCE sga.certificado_digital_id_certificado_digital_seq_1
 ALTER TABLE sga.certificado_digital_id_certificado_digital_seq_1 OWNER TO postgres;
 
 --
--- TOC entry 3772 (class 0 OID 0)
+-- TOC entry 3775 (class 0 OID 0)
 -- Dependencies: 267
 -- Name: certificado_digital_id_certificado_digital_seq_1; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -226,7 +240,7 @@ CREATE SEQUENCE sga.conferencia_produto_id_conferencia_produto_seq
 ALTER TABLE sga.conferencia_produto_id_conferencia_produto_seq OWNER TO postgres;
 
 --
--- TOC entry 3773 (class 0 OID 0)
+-- TOC entry 3776 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: conferencia_produto_id_conferencia_produto_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -240,7 +254,11 @@ ALTER SEQUENCE sga.conferencia_produto_id_conferencia_produto_seq OWNED BY sga.c
 --
 
 CREATE TABLE sga.contato (
-    id_contato integer NOT NULL
+    id_contato integer NOT NULL,
+    razao_social character varying(255) NOT NULL,
+    nome_fantasia character varying(255) NOT NULL,
+    fone1 character varying(20) NOT NULL,
+    categoria character varying(50) NOT NULL
 );
 
 
@@ -274,7 +292,7 @@ CREATE SEQUENCE sga.contato_cliente_id_contato_cliente_seq
 ALTER TABLE sga.contato_cliente_id_contato_cliente_seq OWNER TO postgres;
 
 --
--- TOC entry 3774 (class 0 OID 0)
+-- TOC entry 3777 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: contato_cliente_id_contato_cliente_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -310,7 +328,7 @@ CREATE SEQUENCE sga.contato_fornecedor_id_contato_fornecedor_seq
 ALTER TABLE sga.contato_fornecedor_id_contato_fornecedor_seq OWNER TO postgres;
 
 --
--- TOC entry 3775 (class 0 OID 0)
+-- TOC entry 3778 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: contato_fornecedor_id_contato_fornecedor_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -334,7 +352,7 @@ CREATE SEQUENCE sga.contato_id_contato_seq
 ALTER TABLE sga.contato_id_contato_seq OWNER TO postgres;
 
 --
--- TOC entry 3776 (class 0 OID 0)
+-- TOC entry 3779 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: contato_id_contato_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -373,7 +391,7 @@ CREATE SEQUENCE sga.contato_podeser_contato_cliente_id_contato_contatocliente_se
 ALTER TABLE sga.contato_podeser_contato_cliente_id_contato_contatocliente_seq OWNER TO postgres;
 
 --
--- TOC entry 3777 (class 0 OID 0)
+-- TOC entry 3780 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: contato_podeser_contato_cliente_id_contato_contatocliente_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -421,7 +439,7 @@ CREATE SEQUENCE sga.dados_contador_dados_contador_seq_1
 ALTER TABLE sga.dados_contador_dados_contador_seq_1 OWNER TO postgres;
 
 --
--- TOC entry 3778 (class 0 OID 0)
+-- TOC entry 3781 (class 0 OID 0)
 -- Dependencies: 265
 -- Name: dados_contador_dados_contador_seq_1; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -490,7 +508,7 @@ CREATE SEQUENCE sga.empresa_possue_centroestoque_id_empresa_centroestoque_seq
 ALTER TABLE sga.empresa_possue_centroestoque_id_empresa_centroestoque_seq OWNER TO postgres;
 
 --
--- TOC entry 3779 (class 0 OID 0)
+-- TOC entry 3782 (class 0 OID 0)
 -- Dependencies: 270
 -- Name: empresa_possue_centroestoque_id_empresa_centroestoque_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -528,7 +546,7 @@ CREATE SEQUENCE sga.faz_usuario_transacao_id_usuario_transacao_seq
 ALTER TABLE sga.faz_usuario_transacao_id_usuario_transacao_seq OWNER TO postgres;
 
 --
--- TOC entry 3780 (class 0 OID 0)
+-- TOC entry 3783 (class 0 OID 0)
 -- Dependencies: 293
 -- Name: faz_usuario_transacao_id_usuario_transacao_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -564,7 +582,7 @@ CREATE SEQUENCE sga.grupo_produto_id_grupo_produto_seq
 ALTER TABLE sga.grupo_produto_id_grupo_produto_seq OWNER TO postgres;
 
 --
--- TOC entry 3781 (class 0 OID 0)
+-- TOC entry 3784 (class 0 OID 0)
 -- Dependencies: 247
 -- Name: grupo_produto_id_grupo_produto_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -601,7 +619,7 @@ CREATE SEQUENCE sga.localizacao_possue_produto_id_localizacaoproduto_seq
 ALTER TABLE sga.localizacao_possue_produto_id_localizacaoproduto_seq OWNER TO postgres;
 
 --
--- TOC entry 3782 (class 0 OID 0)
+-- TOC entry 3785 (class 0 OID 0)
 -- Dependencies: 261
 -- Name: localizacao_possue_produto_id_localizacaoproduto_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -637,7 +655,7 @@ CREATE SEQUENCE sga.modulo_id_modulo_seq
 ALTER TABLE sga.modulo_id_modulo_seq OWNER TO postgres;
 
 --
--- TOC entry 3783 (class 0 OID 0)
+-- TOC entry 3786 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: modulo_id_modulo_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -675,7 +693,7 @@ CREATE SEQUENCE sga.modulo_possue_tela_id_modulo_tela_seq
 ALTER TABLE sga.modulo_possue_tela_id_modulo_tela_seq OWNER TO postgres;
 
 --
--- TOC entry 3784 (class 0 OID 0)
+-- TOC entry 3787 (class 0 OID 0)
 -- Dependencies: 274
 -- Name: modulo_possue_tela_id_modulo_tela_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -711,7 +729,7 @@ CREATE SEQUENCE sga.movimentacao_estoque_id_movimentacao_estoque_seq
 ALTER TABLE sga.movimentacao_estoque_id_movimentacao_estoque_seq OWNER TO postgres;
 
 --
--- TOC entry 3785 (class 0 OID 0)
+-- TOC entry 3788 (class 0 OID 0)
 -- Dependencies: 232
 -- Name: movimentacao_estoque_id_movimentacao_estoque_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -749,7 +767,7 @@ CREATE SEQUENCE sga.movimentacao_possue_contato_id_movimentacao_contato_seq
 ALTER TABLE sga.movimentacao_possue_contato_id_movimentacao_contato_seq OWNER TO postgres;
 
 --
--- TOC entry 3786 (class 0 OID 0)
+-- TOC entry 3789 (class 0 OID 0)
 -- Dependencies: 236
 -- Name: movimentacao_possue_contato_id_movimentacao_contato_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -787,7 +805,7 @@ CREATE SEQUENCE sga.movimentacao_possue_produto_id_movimentacao_produto_seq
 ALTER TABLE sga.movimentacao_possue_produto_id_movimentacao_produto_seq OWNER TO postgres;
 
 --
--- TOC entry 3787 (class 0 OID 0)
+-- TOC entry 3790 (class 0 OID 0)
 -- Dependencies: 257
 -- Name: movimentacao_possue_produto_id_movimentacao_produto_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -825,7 +843,7 @@ CREATE SEQUENCE sga.movimentacao_possue_tipomovimentacao_id_tipo_movimentacao_se
 ALTER TABLE sga.movimentacao_possue_tipomovimentacao_id_tipo_movimentacao_seq OWNER TO postgres;
 
 --
--- TOC entry 3788 (class 0 OID 0)
+-- TOC entry 3791 (class 0 OID 0)
 -- Dependencies: 238
 -- Name: movimentacao_possue_tipomovimentacao_id_tipo_movimentacao_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -861,7 +879,7 @@ CREATE SEQUENCE sga.nota_fiscal_xml_id_nota_fiscal_xml_seq
 ALTER TABLE sga.nota_fiscal_xml_id_nota_fiscal_xml_seq OWNER TO postgres;
 
 --
--- TOC entry 3789 (class 0 OID 0)
+-- TOC entry 3792 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: nota_fiscal_xml_id_nota_fiscal_xml_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -899,7 +917,7 @@ CREATE SEQUENCE sga.notafiscal_possue_fornecedor_id_notafsical_fornecedor_seq
 ALTER TABLE sga.notafiscal_possue_fornecedor_id_notafsical_fornecedor_seq OWNER TO postgres;
 
 --
--- TOC entry 3790 (class 0 OID 0)
+-- TOC entry 3793 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: notafiscal_possue_fornecedor_id_notafsical_fornecedor_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -937,7 +955,7 @@ CREATE SEQUENCE sga.notafiscal_possue_produto_id_nota_produto_seq
 ALTER TABLE sga.notafiscal_possue_produto_id_nota_produto_seq OWNER TO postgres;
 
 --
--- TOC entry 3791 (class 0 OID 0)
+-- TOC entry 3794 (class 0 OID 0)
 -- Dependencies: 259
 -- Name: notafiscal_possue_produto_id_nota_produto_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -973,7 +991,7 @@ CREATE SEQUENCE sga.perfil_id_perfil_seq
 ALTER TABLE sga.perfil_id_perfil_seq OWNER TO postgres;
 
 --
--- TOC entry 3792 (class 0 OID 0)
+-- TOC entry 3795 (class 0 OID 0)
 -- Dependencies: 276
 -- Name: perfil_id_perfil_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -1011,7 +1029,7 @@ CREATE SEQUENCE sga.perfil_possue_modulo_id_perfil_modulo_seq
 ALTER TABLE sga.perfil_possue_modulo_id_perfil_modulo_seq OWNER TO postgres;
 
 --
--- TOC entry 3793 (class 0 OID 0)
+-- TOC entry 3796 (class 0 OID 0)
 -- Dependencies: 278
 -- Name: perfil_possue_modulo_id_perfil_modulo_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -1049,7 +1067,7 @@ CREATE SEQUENCE sga.perfil_possue_tela_id_perfil_tela_seq
 ALTER TABLE sga.perfil_possue_tela_id_perfil_tela_seq OWNER TO postgres;
 
 --
--- TOC entry 3794 (class 0 OID 0)
+-- TOC entry 3797 (class 0 OID 0)
 -- Dependencies: 280
 -- Name: perfil_possue_tela_id_perfil_tela_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -1063,7 +1081,11 @@ ALTER SEQUENCE sga.perfil_possue_tela_id_perfil_tela_seq OWNED BY sga.perfil_pos
 --
 
 CREATE TABLE sga.produto (
-    id_produto integer NOT NULL
+    id_produto integer NOT NULL,
+    produto character varying(255) NOT NULL,
+    quantidade integer NOT NULL,
+    preco_varejo numeric(10,2),
+    preco_atacado numeric(10,2)
 );
 
 
@@ -1085,7 +1107,7 @@ CREATE SEQUENCE sga.produto_id_produto_seq
 ALTER TABLE sga.produto_id_produto_seq OWNER TO postgres;
 
 --
--- TOC entry 3795 (class 0 OID 0)
+-- TOC entry 3798 (class 0 OID 0)
 -- Dependencies: 249
 -- Name: produto_id_produto_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -1123,7 +1145,7 @@ CREATE SEQUENCE sga.produto_possue_fornecedor_id_produto_fornecedor_seq
 ALTER TABLE sga.produto_possue_fornecedor_id_produto_fornecedor_seq OWNER TO postgres;
 
 --
--- TOC entry 3796 (class 0 OID 0)
+-- TOC entry 3799 (class 0 OID 0)
 -- Dependencies: 253
 -- Name: produto_possue_fornecedor_id_produto_fornecedor_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -1163,7 +1185,7 @@ CREATE SEQUENCE sga.produto_possue_grupo_id_produto_grupo_seq
 ALTER TABLE sga.produto_possue_grupo_id_produto_grupo_seq OWNER TO postgres;
 
 --
--- TOC entry 3797 (class 0 OID 0)
+-- TOC entry 3800 (class 0 OID 0)
 -- Dependencies: 251
 -- Name: produto_possue_grupo_id_produto_grupo_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -1201,7 +1223,7 @@ CREATE SEQUENCE sga.produto_possue_tributacao_id_produto_tributacao_seq
 ALTER TABLE sga.produto_possue_tributacao_id_produto_tributacao_seq OWNER TO postgres;
 
 --
--- TOC entry 3798 (class 0 OID 0)
+-- TOC entry 3801 (class 0 OID 0)
 -- Dependencies: 255
 -- Name: produto_possue_tributacao_id_produto_tributacao_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -1237,7 +1259,7 @@ CREATE SEQUENCE sga.subgrupo_produto_id_subgrupo_produto_seq
 ALTER TABLE sga.subgrupo_produto_id_subgrupo_produto_seq OWNER TO postgres;
 
 --
--- TOC entry 3799 (class 0 OID 0)
+-- TOC entry 3802 (class 0 OID 0)
 -- Dependencies: 245
 -- Name: subgrupo_produto_id_subgrupo_produto_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -1273,7 +1295,7 @@ CREATE SEQUENCE sga.tela_id_tela_seq
 ALTER TABLE sga.tela_id_tela_seq OWNER TO postgres;
 
 --
--- TOC entry 3800 (class 0 OID 0)
+-- TOC entry 3803 (class 0 OID 0)
 -- Dependencies: 272
 -- Name: tela_id_tela_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -1339,7 +1361,7 @@ CREATE SEQUENCE sga.tributacao_produto_id_tributacao_produto_seq
 ALTER TABLE sga.tributacao_produto_id_tributacao_produto_seq OWNER TO postgres;
 
 --
--- TOC entry 3801 (class 0 OID 0)
+-- TOC entry 3804 (class 0 OID 0)
 -- Dependencies: 242
 -- Name: tributacao_produto_id_tributacao_produto_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -1395,7 +1417,7 @@ CREATE SEQUENCE sga.usuario_conferencia_id_usuario_conferencia_seq
 ALTER TABLE sga.usuario_conferencia_id_usuario_conferencia_seq OWNER TO postgres;
 
 --
--- TOC entry 3802 (class 0 OID 0)
+-- TOC entry 3805 (class 0 OID 0)
 -- Dependencies: 284
 -- Name: usuario_conferencia_id_usuario_conferencia_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -1419,7 +1441,7 @@ CREATE SEQUENCE sga.usuario_id_usuario_seq
 ALTER TABLE sga.usuario_id_usuario_seq OWNER TO postgres;
 
 --
--- TOC entry 3803 (class 0 OID 0)
+-- TOC entry 3806 (class 0 OID 0)
 -- Dependencies: 282
 -- Name: usuario_id_usuario_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -1457,7 +1479,7 @@ CREATE SEQUENCE sga.usuario_possue_empresa_id_usuario_empresa_seq
 ALTER TABLE sga.usuario_possue_empresa_id_usuario_empresa_seq OWNER TO postgres;
 
 --
--- TOC entry 3804 (class 0 OID 0)
+-- TOC entry 3807 (class 0 OID 0)
 -- Dependencies: 288
 -- Name: usuario_possue_empresa_id_usuario_empresa_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -1495,7 +1517,7 @@ CREATE SEQUENCE sga.usuario_possue_perfil_id_usuario_perfil_seq
 ALTER TABLE sga.usuario_possue_perfil_id_usuario_perfil_seq OWNER TO postgres;
 
 --
--- TOC entry 3805 (class 0 OID 0)
+-- TOC entry 3808 (class 0 OID 0)
 -- Dependencies: 286
 -- Name: usuario_possue_perfil_id_usuario_perfil_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -1533,7 +1555,7 @@ CREATE SEQUENCE sga.usuario_sql_id_usuario_sql_seq
 ALTER TABLE sga.usuario_sql_id_usuario_sql_seq OWNER TO postgres;
 
 --
--- TOC entry 3806 (class 0 OID 0)
+-- TOC entry 3809 (class 0 OID 0)
 -- Dependencies: 291
 -- Name: usuario_sql_id_usuario_sql_seq; Type: SEQUENCE OWNED BY; Schema: sga; Owner: postgres
 --
@@ -1542,7 +1564,7 @@ ALTER SEQUENCE sga.usuario_sql_id_usuario_sql_seq OWNED BY sga.usuario_sql.id_us
 
 
 --
--- TOC entry 3382 (class 2604 OID 16453)
+-- TOC entry 3385 (class 2604 OID 16453)
 -- Name: centro_estoque id_centro_estoque; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1550,7 +1572,7 @@ ALTER TABLE ONLY sga.centro_estoque ALTER COLUMN id_centro_estoque SET DEFAULT n
 
 
 --
--- TOC entry 3387 (class 2604 OID 16493)
+-- TOC entry 3390 (class 2604 OID 16493)
 -- Name: centro_possue_movimentacao id_centro_movimentacao; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1558,7 +1580,7 @@ ALTER TABLE ONLY sga.centro_possue_movimentacao ALTER COLUMN id_centro_movimenta
 
 
 --
--- TOC entry 3398 (class 2604 OID 16575)
+-- TOC entry 3401 (class 2604 OID 16575)
 -- Name: centroestoque_possue_produto id_centro_produto; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1566,7 +1588,7 @@ ALTER TABLE ONLY sga.centroestoque_possue_produto ALTER COLUMN id_centro_produto
 
 
 --
--- TOC entry 3400 (class 2604 OID 16589)
+-- TOC entry 3403 (class 2604 OID 16589)
 -- Name: certificado_digital id_certificado_digital; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1574,7 +1596,7 @@ ALTER TABLE ONLY sga.certificado_digital ALTER COLUMN id_certificado_digital SET
 
 
 --
--- TOC entry 3384 (class 2604 OID 16472)
+-- TOC entry 3387 (class 2604 OID 16472)
 -- Name: conferencia_produto id_conferencia_produto; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1582,7 +1604,7 @@ ALTER TABLE ONLY sga.conferencia_produto ALTER COLUMN id_conferencia_produto SET
 
 
 --
--- TOC entry 3378 (class 2604 OID 16425)
+-- TOC entry 3381 (class 2604 OID 16425)
 -- Name: contato id_contato; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1590,7 +1612,7 @@ ALTER TABLE ONLY sga.contato ALTER COLUMN id_contato SET DEFAULT nextval('sga.co
 
 
 --
--- TOC entry 3377 (class 2604 OID 16418)
+-- TOC entry 3380 (class 2604 OID 16418)
 -- Name: contato_cliente id_contato_cliente; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1598,7 +1620,7 @@ ALTER TABLE ONLY sga.contato_cliente ALTER COLUMN id_contato_cliente SET DEFAULT
 
 
 --
--- TOC entry 3376 (class 2604 OID 16411)
+-- TOC entry 3379 (class 2604 OID 16411)
 -- Name: contato_fornecedor id_contato_fornecedor; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1606,7 +1628,7 @@ ALTER TABLE ONLY sga.contato_fornecedor ALTER COLUMN id_contato_fornecedor SET D
 
 
 --
--- TOC entry 3379 (class 2604 OID 16432)
+-- TOC entry 3382 (class 2604 OID 16432)
 -- Name: contato_podeser_contato_cliente id_contato_contatocliente; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1614,7 +1636,7 @@ ALTER TABLE ONLY sga.contato_podeser_contato_cliente ALTER COLUMN id_contato_con
 
 
 --
--- TOC entry 3399 (class 2604 OID 16582)
+-- TOC entry 3402 (class 2604 OID 16582)
 -- Name: dados_contador id_dados_contador; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1622,7 +1644,7 @@ ALTER TABLE ONLY sga.dados_contador ALTER COLUMN id_dados_contador SET DEFAULT n
 
 
 --
--- TOC entry 3401 (class 2604 OID 16603)
+-- TOC entry 3404 (class 2604 OID 16603)
 -- Name: empresa_possue_centroestoque id_empresa_centroestoque; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1630,7 +1652,7 @@ ALTER TABLE ONLY sga.empresa_possue_centroestoque ALTER COLUMN id_empresa_centro
 
 
 --
--- TOC entry 3412 (class 2604 OID 16689)
+-- TOC entry 3415 (class 2604 OID 16689)
 -- Name: faz_usuario_transacao id_usuario_transacao; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1638,7 +1660,7 @@ ALTER TABLE ONLY sga.faz_usuario_transacao ALTER COLUMN id_usuario_transacao SET
 
 
 --
--- TOC entry 3390 (class 2604 OID 16519)
+-- TOC entry 3393 (class 2604 OID 16519)
 -- Name: grupo_produto id_grupo_produto; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1646,7 +1668,7 @@ ALTER TABLE ONLY sga.grupo_produto ALTER COLUMN id_grupo_produto SET DEFAULT nex
 
 
 --
--- TOC entry 3397 (class 2604 OID 16568)
+-- TOC entry 3400 (class 2604 OID 16568)
 -- Name: localizacao_possue_produto id_localizacaoproduto; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1654,7 +1676,7 @@ ALTER TABLE ONLY sga.localizacao_possue_produto ALTER COLUMN id_localizacaoprodu
 
 
 --
--- TOC entry 3375 (class 2604 OID 16404)
+-- TOC entry 3378 (class 2604 OID 16404)
 -- Name: modulo id_modulo; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1662,7 +1684,7 @@ ALTER TABLE ONLY sga.modulo ALTER COLUMN id_modulo SET DEFAULT nextval('sga.modu
 
 
 --
--- TOC entry 3403 (class 2604 OID 16617)
+-- TOC entry 3406 (class 2604 OID 16617)
 -- Name: modulo_possue_tela id_modulo_tela; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1670,7 +1692,7 @@ ALTER TABLE ONLY sga.modulo_possue_tela ALTER COLUMN id_modulo_tela SET DEFAULT 
 
 
 --
--- TOC entry 3383 (class 2604 OID 16465)
+-- TOC entry 3386 (class 2604 OID 16465)
 -- Name: movimentacao_estoque id_movimentacao_estoque; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1678,7 +1700,7 @@ ALTER TABLE ONLY sga.movimentacao_estoque ALTER COLUMN id_movimentacao_estoque S
 
 
 --
--- TOC entry 3385 (class 2604 OID 16479)
+-- TOC entry 3388 (class 2604 OID 16479)
 -- Name: movimentacao_possue_contato id_movimentacao_contato; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1686,7 +1708,7 @@ ALTER TABLE ONLY sga.movimentacao_possue_contato ALTER COLUMN id_movimentacao_co
 
 
 --
--- TOC entry 3395 (class 2604 OID 16554)
+-- TOC entry 3398 (class 2604 OID 16554)
 -- Name: movimentacao_possue_produto id_movimentacao_produto; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1694,7 +1716,7 @@ ALTER TABLE ONLY sga.movimentacao_possue_produto ALTER COLUMN id_movimentacao_pr
 
 
 --
--- TOC entry 3386 (class 2604 OID 16486)
+-- TOC entry 3389 (class 2604 OID 16486)
 -- Name: movimentacao_possue_tipomovimentacao id_tipo_movimentacao; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1702,7 +1724,7 @@ ALTER TABLE ONLY sga.movimentacao_possue_tipomovimentacao ALTER COLUMN id_tipo_m
 
 
 --
--- TOC entry 3380 (class 2604 OID 16439)
+-- TOC entry 3383 (class 2604 OID 16439)
 -- Name: nota_fiscal_xml id_nota_fiscal_xml; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1710,7 +1732,7 @@ ALTER TABLE ONLY sga.nota_fiscal_xml ALTER COLUMN id_nota_fiscal_xml SET DEFAULT
 
 
 --
--- TOC entry 3381 (class 2604 OID 16446)
+-- TOC entry 3384 (class 2604 OID 16446)
 -- Name: notafiscal_possue_fornecedor id_notafsical_fornecedor; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1718,7 +1740,7 @@ ALTER TABLE ONLY sga.notafiscal_possue_fornecedor ALTER COLUMN id_notafsical_for
 
 
 --
--- TOC entry 3396 (class 2604 OID 16561)
+-- TOC entry 3399 (class 2604 OID 16561)
 -- Name: notafiscal_possue_produto id_nota_produto; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1726,7 +1748,7 @@ ALTER TABLE ONLY sga.notafiscal_possue_produto ALTER COLUMN id_nota_produto SET 
 
 
 --
--- TOC entry 3404 (class 2604 OID 16624)
+-- TOC entry 3407 (class 2604 OID 16624)
 -- Name: perfil id_perfil; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1734,7 +1756,7 @@ ALTER TABLE ONLY sga.perfil ALTER COLUMN id_perfil SET DEFAULT nextval('sga.perf
 
 
 --
--- TOC entry 3405 (class 2604 OID 16631)
+-- TOC entry 3408 (class 2604 OID 16631)
 -- Name: perfil_possue_modulo id_perfil_modulo; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1742,7 +1764,7 @@ ALTER TABLE ONLY sga.perfil_possue_modulo ALTER COLUMN id_perfil_modulo SET DEFA
 
 
 --
--- TOC entry 3406 (class 2604 OID 16638)
+-- TOC entry 3409 (class 2604 OID 16638)
 -- Name: perfil_possue_tela id_perfil_tela; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1750,7 +1772,7 @@ ALTER TABLE ONLY sga.perfil_possue_tela ALTER COLUMN id_perfil_tela SET DEFAULT 
 
 
 --
--- TOC entry 3391 (class 2604 OID 16526)
+-- TOC entry 3394 (class 2604 OID 16526)
 -- Name: produto id_produto; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1758,7 +1780,7 @@ ALTER TABLE ONLY sga.produto ALTER COLUMN id_produto SET DEFAULT nextval('sga.pr
 
 
 --
--- TOC entry 3393 (class 2604 OID 16540)
+-- TOC entry 3396 (class 2604 OID 16540)
 -- Name: produto_possue_fornecedor id_produto_fornecedor; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1766,7 +1788,7 @@ ALTER TABLE ONLY sga.produto_possue_fornecedor ALTER COLUMN id_produto_fornecedo
 
 
 --
--- TOC entry 3392 (class 2604 OID 16533)
+-- TOC entry 3395 (class 2604 OID 16533)
 -- Name: produto_possue_grupo id_produto_grupo; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1774,7 +1796,7 @@ ALTER TABLE ONLY sga.produto_possue_grupo ALTER COLUMN id_produto_grupo SET DEFA
 
 
 --
--- TOC entry 3394 (class 2604 OID 16547)
+-- TOC entry 3397 (class 2604 OID 16547)
 -- Name: produto_possue_tributacao id_produto_tributacao; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1782,7 +1804,7 @@ ALTER TABLE ONLY sga.produto_possue_tributacao ALTER COLUMN id_produto_tributaca
 
 
 --
--- TOC entry 3389 (class 2604 OID 16512)
+-- TOC entry 3392 (class 2604 OID 16512)
 -- Name: subgrupo_produto id_subgrupo_produto; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1790,7 +1812,7 @@ ALTER TABLE ONLY sga.subgrupo_produto ALTER COLUMN id_subgrupo_produto SET DEFAU
 
 
 --
--- TOC entry 3402 (class 2604 OID 16610)
+-- TOC entry 3405 (class 2604 OID 16610)
 -- Name: tela id_tela; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1798,7 +1820,7 @@ ALTER TABLE ONLY sga.tela ALTER COLUMN id_tela SET DEFAULT nextval('sga.tela_id_
 
 
 --
--- TOC entry 3388 (class 2604 OID 16500)
+-- TOC entry 3391 (class 2604 OID 16500)
 -- Name: tributacao_produto id_tributacao_produto; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1806,7 +1828,7 @@ ALTER TABLE ONLY sga.tributacao_produto ALTER COLUMN id_tributacao_produto SET D
 
 
 --
--- TOC entry 3407 (class 2604 OID 16645)
+-- TOC entry 3410 (class 2604 OID 16645)
 -- Name: usuario id_usuario; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1814,7 +1836,7 @@ ALTER TABLE ONLY sga.usuario ALTER COLUMN id_usuario SET DEFAULT nextval('sga.us
 
 
 --
--- TOC entry 3408 (class 2604 OID 16654)
+-- TOC entry 3411 (class 2604 OID 16654)
 -- Name: usuario_conferencia id_usuario_conferencia; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1822,7 +1844,7 @@ ALTER TABLE ONLY sga.usuario_conferencia ALTER COLUMN id_usuario_conferencia SET
 
 
 --
--- TOC entry 3410 (class 2604 OID 16668)
+-- TOC entry 3413 (class 2604 OID 16668)
 -- Name: usuario_possue_empresa id_usuario_empresa; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1830,7 +1852,7 @@ ALTER TABLE ONLY sga.usuario_possue_empresa ALTER COLUMN id_usuario_empresa SET 
 
 
 --
--- TOC entry 3409 (class 2604 OID 16661)
+-- TOC entry 3412 (class 2604 OID 16661)
 -- Name: usuario_possue_perfil id_usuario_perfil; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1838,7 +1860,7 @@ ALTER TABLE ONLY sga.usuario_possue_perfil ALTER COLUMN id_usuario_perfil SET DE
 
 
 --
--- TOC entry 3411 (class 2604 OID 16682)
+-- TOC entry 3414 (class 2604 OID 16682)
 -- Name: usuario_sql id_usuario_sql; Type: DEFAULT; Schema: sga; Owner: postgres
 --
 
@@ -1846,7 +1868,7 @@ ALTER TABLE ONLY sga.usuario_sql ALTER COLUMN id_usuario_sql SET DEFAULT nextval
 
 
 --
--- TOC entry 3713 (class 0 OID 16503)
+-- TOC entry 3716 (class 0 OID 16503)
 -- Dependencies: 244
 -- Data for Name: categoria_produto; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -1856,7 +1878,7 @@ COPY sga.categoria_produto (id_categoria_produto) FROM stdin;
 
 
 --
--- TOC entry 3699 (class 0 OID 16450)
+-- TOC entry 3702 (class 0 OID 16450)
 -- Dependencies: 230
 -- Data for Name: centro_estoque; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -1873,7 +1895,7 @@ COPY sga.centro_estoque (id_centro_estoque, descricao_centro_estoque, localizaca
 
 
 --
--- TOC entry 3710 (class 0 OID 16490)
+-- TOC entry 3713 (class 0 OID 16490)
 -- Dependencies: 241
 -- Data for Name: centro_possue_movimentacao; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -1883,7 +1905,7 @@ COPY sga.centro_possue_movimentacao (id_centro_movimentacao, id_movimentacao_est
 
 
 --
--- TOC entry 3733 (class 0 OID 16572)
+-- TOC entry 3736 (class 0 OID 16572)
 -- Dependencies: 264
 -- Data for Name: centroestoque_possue_produto; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -1893,7 +1915,7 @@ COPY sga.centroestoque_possue_produto (id_centro_produto, id_produto, id_centro_
 
 
 --
--- TOC entry 3737 (class 0 OID 16586)
+-- TOC entry 3740 (class 0 OID 16586)
 -- Dependencies: 268
 -- Data for Name: certificado_digital; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -1903,7 +1925,7 @@ COPY sga.certificado_digital (id_certificado_digital, numero_certificado) FROM s
 
 
 --
--- TOC entry 3704 (class 0 OID 16469)
+-- TOC entry 3707 (class 0 OID 16469)
 -- Dependencies: 235
 -- Data for Name: conferencia_produto; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -1913,17 +1935,29 @@ COPY sga.conferencia_produto (id_conferencia_produto, id_movimentacao_estoque, d
 
 
 --
--- TOC entry 3691 (class 0 OID 16422)
+-- TOC entry 3694 (class 0 OID 16422)
 -- Dependencies: 222
 -- Data for Name: contato; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
 
-COPY sga.contato (id_contato) FROM stdin;
+COPY sga.contato (id_contato, razao_social, nome_fantasia, fone1, categoria) FROM stdin;
+1	João Henrique Da Silva	João	(11)94758-3621	Fornecedor
+2	Rafaela Helena Costa	Rafaela	(11)91328-3651	Funcionário
+3	Mariana Lima	Mari	(11)91234-5678	Cliente
+4	Ricardo Almeida	Ricardo	(11)92345-6789	Fornecedor
+5	Juliana Santos	Ju	(11)93456-7890	Funcionário
+6	Lucas Oliveira	Lucas	(11)94567-8901	Cliente
+7	Patrícia Costa	Paty	(11)95678-9012	Fornecedor
+8	Gabriel Martins	Gabi	(11)96789-0123	Funcionário
+9	Camila Ribeiro	Cami	(11)97890-1234	Cliente
+10	Bruno Ferreira	Bruno	(11)98901-2345	Fornecedor
+11	Isabela Souza	Bela	(11)99012-3456	Funcionário
+12	Thiago Gomes	Thiago	(11)99123-4567	Cliente
 \.
 
 
 --
--- TOC entry 3689 (class 0 OID 16415)
+-- TOC entry 3692 (class 0 OID 16415)
 -- Dependencies: 220
 -- Data for Name: contato_cliente; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -1933,7 +1967,7 @@ COPY sga.contato_cliente (id_contato_cliente) FROM stdin;
 
 
 --
--- TOC entry 3687 (class 0 OID 16408)
+-- TOC entry 3690 (class 0 OID 16408)
 -- Dependencies: 218
 -- Data for Name: contato_fornecedor; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -1943,7 +1977,7 @@ COPY sga.contato_fornecedor (id_contato_fornecedor) FROM stdin;
 
 
 --
--- TOC entry 3693 (class 0 OID 16429)
+-- TOC entry 3696 (class 0 OID 16429)
 -- Dependencies: 224
 -- Data for Name: contato_podeser_contato_cliente; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -1953,7 +1987,7 @@ COPY sga.contato_podeser_contato_cliente (id_contato_contatocliente, id_contato_
 
 
 --
--- TOC entry 3735 (class 0 OID 16579)
+-- TOC entry 3738 (class 0 OID 16579)
 -- Dependencies: 266
 -- Data for Name: dados_contador; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -1963,7 +1997,7 @@ COPY sga.dados_contador (id_dados_contador, nome, cpf, crc, cnpj, cep, endereco,
 
 
 --
--- TOC entry 3738 (class 0 OID 16592)
+-- TOC entry 3741 (class 0 OID 16592)
 -- Dependencies: 269
 -- Data for Name: empresa; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -1973,7 +2007,7 @@ COPY sga.empresa (id_empresa, id_dados_contador, id_certificado_digital, nome_fa
 
 
 --
--- TOC entry 3740 (class 0 OID 16600)
+-- TOC entry 3743 (class 0 OID 16600)
 -- Dependencies: 271
 -- Data for Name: empresa_possue_centroestoque; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -1983,7 +2017,7 @@ COPY sga.empresa_possue_centroestoque (id_empresa_centroestoque, id_centro_estqo
 
 
 --
--- TOC entry 3763 (class 0 OID 16686)
+-- TOC entry 3766 (class 0 OID 16686)
 -- Dependencies: 294
 -- Data for Name: faz_usuario_transacao; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -1993,7 +2027,7 @@ COPY sga.faz_usuario_transacao (id_usuario_transacao, id_transacao, id_usuario_s
 
 
 --
--- TOC entry 3717 (class 0 OID 16516)
+-- TOC entry 3720 (class 0 OID 16516)
 -- Dependencies: 248
 -- Data for Name: grupo_produto; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2003,7 +2037,7 @@ COPY sga.grupo_produto (id_grupo_produto) FROM stdin;
 
 
 --
--- TOC entry 3731 (class 0 OID 16565)
+-- TOC entry 3734 (class 0 OID 16565)
 -- Dependencies: 262
 -- Data for Name: localizacao_possue_produto; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2013,7 +2047,7 @@ COPY sga.localizacao_possue_produto (id_localizacaoproduto, id_produto) FROM std
 
 
 --
--- TOC entry 3685 (class 0 OID 16401)
+-- TOC entry 3688 (class 0 OID 16401)
 -- Dependencies: 216
 -- Data for Name: modulo; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2023,7 +2057,7 @@ COPY sga.modulo (id_modulo) FROM stdin;
 
 
 --
--- TOC entry 3744 (class 0 OID 16614)
+-- TOC entry 3747 (class 0 OID 16614)
 -- Dependencies: 275
 -- Data for Name: modulo_possue_tela; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2033,7 +2067,7 @@ COPY sga.modulo_possue_tela (id_modulo_tela, id_modulo, id_tela) FROM stdin;
 
 
 --
--- TOC entry 3702 (class 0 OID 16462)
+-- TOC entry 3705 (class 0 OID 16462)
 -- Dependencies: 233
 -- Data for Name: movimentacao_estoque; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2043,7 +2077,7 @@ COPY sga.movimentacao_estoque (id_movimentacao_estoque) FROM stdin;
 
 
 --
--- TOC entry 3706 (class 0 OID 16476)
+-- TOC entry 3709 (class 0 OID 16476)
 -- Dependencies: 237
 -- Data for Name: movimentacao_possue_contato; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2053,7 +2087,7 @@ COPY sga.movimentacao_possue_contato (id_movimentacao_contato, id_contato, id_mo
 
 
 --
--- TOC entry 3727 (class 0 OID 16551)
+-- TOC entry 3730 (class 0 OID 16551)
 -- Dependencies: 258
 -- Data for Name: movimentacao_possue_produto; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2063,7 +2097,7 @@ COPY sga.movimentacao_possue_produto (id_movimentacao_produto, id_movimentacao_e
 
 
 --
--- TOC entry 3708 (class 0 OID 16483)
+-- TOC entry 3711 (class 0 OID 16483)
 -- Dependencies: 239
 -- Data for Name: movimentacao_possue_tipomovimentacao; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2073,7 +2107,7 @@ COPY sga.movimentacao_possue_tipomovimentacao (id_tipo_movimentacao, id_tipo_mov
 
 
 --
--- TOC entry 3695 (class 0 OID 16436)
+-- TOC entry 3698 (class 0 OID 16436)
 -- Dependencies: 226
 -- Data for Name: nota_fiscal_xml; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2083,7 +2117,7 @@ COPY sga.nota_fiscal_xml (id_nota_fiscal_xml) FROM stdin;
 
 
 --
--- TOC entry 3697 (class 0 OID 16443)
+-- TOC entry 3700 (class 0 OID 16443)
 -- Dependencies: 228
 -- Data for Name: notafiscal_possue_fornecedor; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2093,7 +2127,7 @@ COPY sga.notafiscal_possue_fornecedor (id_notafsical_fornecedor, id_nota_fiscal_
 
 
 --
--- TOC entry 3729 (class 0 OID 16558)
+-- TOC entry 3732 (class 0 OID 16558)
 -- Dependencies: 260
 -- Data for Name: notafiscal_possue_produto; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2103,7 +2137,7 @@ COPY sga.notafiscal_possue_produto (id_nota_produto, id_produto, id_nota_fiscal_
 
 
 --
--- TOC entry 3746 (class 0 OID 16621)
+-- TOC entry 3749 (class 0 OID 16621)
 -- Dependencies: 277
 -- Data for Name: perfil; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2113,7 +2147,7 @@ COPY sga.perfil (id_perfil) FROM stdin;
 
 
 --
--- TOC entry 3748 (class 0 OID 16628)
+-- TOC entry 3751 (class 0 OID 16628)
 -- Dependencies: 279
 -- Data for Name: perfil_possue_modulo; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2123,7 +2157,7 @@ COPY sga.perfil_possue_modulo (id_perfil_modulo, id_modulo, id_perfil) FROM stdi
 
 
 --
--- TOC entry 3750 (class 0 OID 16635)
+-- TOC entry 3753 (class 0 OID 16635)
 -- Dependencies: 281
 -- Data for Name: perfil_possue_tela; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2133,17 +2167,32 @@ COPY sga.perfil_possue_tela (id_perfil_tela, id_tela, id_perfil) FROM stdin;
 
 
 --
--- TOC entry 3719 (class 0 OID 16523)
+-- TOC entry 3722 (class 0 OID 16523)
 -- Dependencies: 250
 -- Data for Name: produto; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
 
-COPY sga.produto (id_produto) FROM stdin;
+COPY sga.produto (id_produto, produto, quantidade, preco_varejo, preco_atacado) FROM stdin;
+2	Bateria de carro	124	153.53	125.00
+4	Capa de volante	60	25.00	10.00
+5	Capertes	10	125.00	100.00
+6	Correia dentada	85	119.00	109.00
+7	Disco de freio	26	107.00	95.00
+8	Escapamento esportivo	50	263.44	220.52
+9	Filtro de óleo	52	31.50	21.50
+10	Parafuso da roda	500	25.25	15.25
+11	Radiador	20	781.05	750.00
+12	Rádio automotivo	20	455.95	400.00
+13	Retrovisor	100	145.82	120.70
+14	Turbina	20	254.60	220.30
+15	Vela de ignição	95	150.00	125.00
+1	Amortecedor	46	162.00	130.00
+3	Escapamento	26	362.00	330.00
 \.
 
 
 --
--- TOC entry 3723 (class 0 OID 16537)
+-- TOC entry 3726 (class 0 OID 16537)
 -- Dependencies: 254
 -- Data for Name: produto_possue_fornecedor; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2153,7 +2202,7 @@ COPY sga.produto_possue_fornecedor (id_produto_fornecedor, id_contato_fornecedor
 
 
 --
--- TOC entry 3721 (class 0 OID 16530)
+-- TOC entry 3724 (class 0 OID 16530)
 -- Dependencies: 252
 -- Data for Name: produto_possue_grupo; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2163,7 +2212,7 @@ COPY sga.produto_possue_grupo (id_produto_grupo, id_categoria_produto, id_subgru
 
 
 --
--- TOC entry 3725 (class 0 OID 16544)
+-- TOC entry 3728 (class 0 OID 16544)
 -- Dependencies: 256
 -- Data for Name: produto_possue_tributacao; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2173,7 +2222,7 @@ COPY sga.produto_possue_tributacao (id_produto_tributacao, id_tributacao_produto
 
 
 --
--- TOC entry 3715 (class 0 OID 16509)
+-- TOC entry 3718 (class 0 OID 16509)
 -- Dependencies: 246
 -- Data for Name: subgrupo_produto; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2183,7 +2232,7 @@ COPY sga.subgrupo_produto (id_subgrupo_produto) FROM stdin;
 
 
 --
--- TOC entry 3742 (class 0 OID 16607)
+-- TOC entry 3745 (class 0 OID 16607)
 -- Dependencies: 273
 -- Data for Name: tela; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2193,7 +2242,7 @@ COPY sga.tela (id_tela) FROM stdin;
 
 
 --
--- TOC entry 3700 (class 0 OID 16456)
+-- TOC entry 3703 (class 0 OID 16456)
 -- Dependencies: 231
 -- Data for Name: tipo_movimentacao_estqoue; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2203,7 +2252,7 @@ COPY sga.tipo_movimentacao_estqoue (id_tipo_movimentacao_estqoue) FROM stdin;
 
 
 --
--- TOC entry 3759 (class 0 OID 16671)
+-- TOC entry 3762 (class 0 OID 16671)
 -- Dependencies: 290
 -- Data for Name: transacao_sql; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2213,7 +2262,7 @@ COPY sga.transacao_sql (id_transacao, comando, tabela_afetada, data_execucao, re
 
 
 --
--- TOC entry 3712 (class 0 OID 16497)
+-- TOC entry 3715 (class 0 OID 16497)
 -- Dependencies: 243
 -- Data for Name: tributacao_produto; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2223,7 +2272,7 @@ COPY sga.tributacao_produto (id_tributacao_produto) FROM stdin;
 
 
 --
--- TOC entry 3752 (class 0 OID 16642)
+-- TOC entry 3755 (class 0 OID 16642)
 -- Dependencies: 283
 -- Data for Name: usuario; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2233,7 +2282,7 @@ COPY sga.usuario (id_usuario, nome, senha, email, celular, data_criacao, grupo) 
 
 
 --
--- TOC entry 3754 (class 0 OID 16651)
+-- TOC entry 3757 (class 0 OID 16651)
 -- Dependencies: 285
 -- Data for Name: usuario_conferencia; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2243,7 +2292,7 @@ COPY sga.usuario_conferencia (id_usuario_conferencia, id_conferencia_produto, id
 
 
 --
--- TOC entry 3758 (class 0 OID 16665)
+-- TOC entry 3761 (class 0 OID 16665)
 -- Dependencies: 289
 -- Data for Name: usuario_possue_empresa; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2253,7 +2302,7 @@ COPY sga.usuario_possue_empresa (id_usuario_empresa, id_empresa, id_usuario) FRO
 
 
 --
--- TOC entry 3756 (class 0 OID 16658)
+-- TOC entry 3759 (class 0 OID 16658)
 -- Dependencies: 287
 -- Data for Name: usuario_possue_perfil; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2263,7 +2312,7 @@ COPY sga.usuario_possue_perfil (id_usuario_perfil, id_perfil, id_usuario) FROM s
 
 
 --
--- TOC entry 3761 (class 0 OID 16679)
+-- TOC entry 3764 (class 0 OID 16679)
 -- Dependencies: 292
 -- Data for Name: usuario_sql; Type: TABLE DATA; Schema: sga; Owner: postgres
 --
@@ -2273,7 +2322,7 @@ COPY sga.usuario_sql (id_usuario_sql, nome, senha) FROM stdin;
 
 
 --
--- TOC entry 3807 (class 0 OID 0)
+-- TOC entry 3810 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: centro_estqoue_id_centro_estqoue_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2282,7 +2331,7 @@ SELECT pg_catalog.setval('sga.centro_estqoue_id_centro_estqoue_seq', 7, true);
 
 
 --
--- TOC entry 3808 (class 0 OID 0)
+-- TOC entry 3811 (class 0 OID 0)
 -- Dependencies: 240
 -- Name: centro_possue_movimentacao_id_centro_movimentacao_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2291,7 +2340,7 @@ SELECT pg_catalog.setval('sga.centro_possue_movimentacao_id_centro_movimentacao_
 
 
 --
--- TOC entry 3809 (class 0 OID 0)
+-- TOC entry 3812 (class 0 OID 0)
 -- Dependencies: 263
 -- Name: centroestoque_possue_produto_id_centro_produto_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2300,7 +2349,7 @@ SELECT pg_catalog.setval('sga.centroestoque_possue_produto_id_centro_produto_seq
 
 
 --
--- TOC entry 3810 (class 0 OID 0)
+-- TOC entry 3813 (class 0 OID 0)
 -- Dependencies: 267
 -- Name: certificado_digital_id_certificado_digital_seq_1; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2309,7 +2358,7 @@ SELECT pg_catalog.setval('sga.certificado_digital_id_certificado_digital_seq_1',
 
 
 --
--- TOC entry 3811 (class 0 OID 0)
+-- TOC entry 3814 (class 0 OID 0)
 -- Dependencies: 234
 -- Name: conferencia_produto_id_conferencia_produto_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2318,7 +2367,7 @@ SELECT pg_catalog.setval('sga.conferencia_produto_id_conferencia_produto_seq', 1
 
 
 --
--- TOC entry 3812 (class 0 OID 0)
+-- TOC entry 3815 (class 0 OID 0)
 -- Dependencies: 219
 -- Name: contato_cliente_id_contato_cliente_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2327,7 +2376,7 @@ SELECT pg_catalog.setval('sga.contato_cliente_id_contato_cliente_seq', 1, false)
 
 
 --
--- TOC entry 3813 (class 0 OID 0)
+-- TOC entry 3816 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: contato_fornecedor_id_contato_fornecedor_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2336,7 +2385,7 @@ SELECT pg_catalog.setval('sga.contato_fornecedor_id_contato_fornecedor_seq', 1, 
 
 
 --
--- TOC entry 3814 (class 0 OID 0)
+-- TOC entry 3817 (class 0 OID 0)
 -- Dependencies: 221
 -- Name: contato_id_contato_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2345,7 +2394,7 @@ SELECT pg_catalog.setval('sga.contato_id_contato_seq', 1, false);
 
 
 --
--- TOC entry 3815 (class 0 OID 0)
+-- TOC entry 3818 (class 0 OID 0)
 -- Dependencies: 223
 -- Name: contato_podeser_contato_cliente_id_contato_contatocliente_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2354,7 +2403,7 @@ SELECT pg_catalog.setval('sga.contato_podeser_contato_cliente_id_contato_contato
 
 
 --
--- TOC entry 3816 (class 0 OID 0)
+-- TOC entry 3819 (class 0 OID 0)
 -- Dependencies: 265
 -- Name: dados_contador_dados_contador_seq_1; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2363,7 +2412,7 @@ SELECT pg_catalog.setval('sga.dados_contador_dados_contador_seq_1', 1, false);
 
 
 --
--- TOC entry 3817 (class 0 OID 0)
+-- TOC entry 3820 (class 0 OID 0)
 -- Dependencies: 270
 -- Name: empresa_possue_centroestoque_id_empresa_centroestoque_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2372,7 +2421,7 @@ SELECT pg_catalog.setval('sga.empresa_possue_centroestoque_id_empresa_centroesto
 
 
 --
--- TOC entry 3818 (class 0 OID 0)
+-- TOC entry 3821 (class 0 OID 0)
 -- Dependencies: 293
 -- Name: faz_usuario_transacao_id_usuario_transacao_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2381,7 +2430,7 @@ SELECT pg_catalog.setval('sga.faz_usuario_transacao_id_usuario_transacao_seq', 1
 
 
 --
--- TOC entry 3819 (class 0 OID 0)
+-- TOC entry 3822 (class 0 OID 0)
 -- Dependencies: 247
 -- Name: grupo_produto_id_grupo_produto_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2390,7 +2439,7 @@ SELECT pg_catalog.setval('sga.grupo_produto_id_grupo_produto_seq', 1, false);
 
 
 --
--- TOC entry 3820 (class 0 OID 0)
+-- TOC entry 3823 (class 0 OID 0)
 -- Dependencies: 261
 -- Name: localizacao_possue_produto_id_localizacaoproduto_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2399,7 +2448,7 @@ SELECT pg_catalog.setval('sga.localizacao_possue_produto_id_localizacaoproduto_s
 
 
 --
--- TOC entry 3821 (class 0 OID 0)
+-- TOC entry 3824 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: modulo_id_modulo_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2408,7 +2457,7 @@ SELECT pg_catalog.setval('sga.modulo_id_modulo_seq', 1, false);
 
 
 --
--- TOC entry 3822 (class 0 OID 0)
+-- TOC entry 3825 (class 0 OID 0)
 -- Dependencies: 274
 -- Name: modulo_possue_tela_id_modulo_tela_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2417,7 +2466,7 @@ SELECT pg_catalog.setval('sga.modulo_possue_tela_id_modulo_tela_seq', 1, false);
 
 
 --
--- TOC entry 3823 (class 0 OID 0)
+-- TOC entry 3826 (class 0 OID 0)
 -- Dependencies: 232
 -- Name: movimentacao_estoque_id_movimentacao_estoque_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2426,7 +2475,7 @@ SELECT pg_catalog.setval('sga.movimentacao_estoque_id_movimentacao_estoque_seq',
 
 
 --
--- TOC entry 3824 (class 0 OID 0)
+-- TOC entry 3827 (class 0 OID 0)
 -- Dependencies: 236
 -- Name: movimentacao_possue_contato_id_movimentacao_contato_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2435,7 +2484,7 @@ SELECT pg_catalog.setval('sga.movimentacao_possue_contato_id_movimentacao_contat
 
 
 --
--- TOC entry 3825 (class 0 OID 0)
+-- TOC entry 3828 (class 0 OID 0)
 -- Dependencies: 257
 -- Name: movimentacao_possue_produto_id_movimentacao_produto_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2444,7 +2493,7 @@ SELECT pg_catalog.setval('sga.movimentacao_possue_produto_id_movimentacao_produt
 
 
 --
--- TOC entry 3826 (class 0 OID 0)
+-- TOC entry 3829 (class 0 OID 0)
 -- Dependencies: 238
 -- Name: movimentacao_possue_tipomovimentacao_id_tipo_movimentacao_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2453,7 +2502,7 @@ SELECT pg_catalog.setval('sga.movimentacao_possue_tipomovimentacao_id_tipo_movim
 
 
 --
--- TOC entry 3827 (class 0 OID 0)
+-- TOC entry 3830 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: nota_fiscal_xml_id_nota_fiscal_xml_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2462,7 +2511,7 @@ SELECT pg_catalog.setval('sga.nota_fiscal_xml_id_nota_fiscal_xml_seq', 1, false)
 
 
 --
--- TOC entry 3828 (class 0 OID 0)
+-- TOC entry 3831 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: notafiscal_possue_fornecedor_id_notafsical_fornecedor_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2471,7 +2520,7 @@ SELECT pg_catalog.setval('sga.notafiscal_possue_fornecedor_id_notafsical_fornece
 
 
 --
--- TOC entry 3829 (class 0 OID 0)
+-- TOC entry 3832 (class 0 OID 0)
 -- Dependencies: 259
 -- Name: notafiscal_possue_produto_id_nota_produto_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2480,7 +2529,7 @@ SELECT pg_catalog.setval('sga.notafiscal_possue_produto_id_nota_produto_seq', 1,
 
 
 --
--- TOC entry 3830 (class 0 OID 0)
+-- TOC entry 3833 (class 0 OID 0)
 -- Dependencies: 276
 -- Name: perfil_id_perfil_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2489,7 +2538,7 @@ SELECT pg_catalog.setval('sga.perfil_id_perfil_seq', 1, false);
 
 
 --
--- TOC entry 3831 (class 0 OID 0)
+-- TOC entry 3834 (class 0 OID 0)
 -- Dependencies: 278
 -- Name: perfil_possue_modulo_id_perfil_modulo_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2498,7 +2547,7 @@ SELECT pg_catalog.setval('sga.perfil_possue_modulo_id_perfil_modulo_seq', 1, fal
 
 
 --
--- TOC entry 3832 (class 0 OID 0)
+-- TOC entry 3835 (class 0 OID 0)
 -- Dependencies: 280
 -- Name: perfil_possue_tela_id_perfil_tela_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2507,7 +2556,7 @@ SELECT pg_catalog.setval('sga.perfil_possue_tela_id_perfil_tela_seq', 1, false);
 
 
 --
--- TOC entry 3833 (class 0 OID 0)
+-- TOC entry 3836 (class 0 OID 0)
 -- Dependencies: 249
 -- Name: produto_id_produto_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2516,7 +2565,7 @@ SELECT pg_catalog.setval('sga.produto_id_produto_seq', 1, false);
 
 
 --
--- TOC entry 3834 (class 0 OID 0)
+-- TOC entry 3837 (class 0 OID 0)
 -- Dependencies: 253
 -- Name: produto_possue_fornecedor_id_produto_fornecedor_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2525,7 +2574,7 @@ SELECT pg_catalog.setval('sga.produto_possue_fornecedor_id_produto_fornecedor_se
 
 
 --
--- TOC entry 3835 (class 0 OID 0)
+-- TOC entry 3838 (class 0 OID 0)
 -- Dependencies: 251
 -- Name: produto_possue_grupo_id_produto_grupo_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2534,7 +2583,7 @@ SELECT pg_catalog.setval('sga.produto_possue_grupo_id_produto_grupo_seq', 1, fal
 
 
 --
--- TOC entry 3836 (class 0 OID 0)
+-- TOC entry 3839 (class 0 OID 0)
 -- Dependencies: 255
 -- Name: produto_possue_tributacao_id_produto_tributacao_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2543,7 +2592,7 @@ SELECT pg_catalog.setval('sga.produto_possue_tributacao_id_produto_tributacao_se
 
 
 --
--- TOC entry 3837 (class 0 OID 0)
+-- TOC entry 3840 (class 0 OID 0)
 -- Dependencies: 245
 -- Name: subgrupo_produto_id_subgrupo_produto_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2552,7 +2601,7 @@ SELECT pg_catalog.setval('sga.subgrupo_produto_id_subgrupo_produto_seq', 1, fals
 
 
 --
--- TOC entry 3838 (class 0 OID 0)
+-- TOC entry 3841 (class 0 OID 0)
 -- Dependencies: 272
 -- Name: tela_id_tela_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2561,7 +2610,7 @@ SELECT pg_catalog.setval('sga.tela_id_tela_seq', 1, false);
 
 
 --
--- TOC entry 3839 (class 0 OID 0)
+-- TOC entry 3842 (class 0 OID 0)
 -- Dependencies: 242
 -- Name: tributacao_produto_id_tributacao_produto_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2570,7 +2619,7 @@ SELECT pg_catalog.setval('sga.tributacao_produto_id_tributacao_produto_seq', 1, 
 
 
 --
--- TOC entry 3840 (class 0 OID 0)
+-- TOC entry 3843 (class 0 OID 0)
 -- Dependencies: 284
 -- Name: usuario_conferencia_id_usuario_conferencia_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2579,7 +2628,7 @@ SELECT pg_catalog.setval('sga.usuario_conferencia_id_usuario_conferencia_seq', 1
 
 
 --
--- TOC entry 3841 (class 0 OID 0)
+-- TOC entry 3844 (class 0 OID 0)
 -- Dependencies: 282
 -- Name: usuario_id_usuario_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2588,7 +2637,7 @@ SELECT pg_catalog.setval('sga.usuario_id_usuario_seq', 1, false);
 
 
 --
--- TOC entry 3842 (class 0 OID 0)
+-- TOC entry 3845 (class 0 OID 0)
 -- Dependencies: 288
 -- Name: usuario_possue_empresa_id_usuario_empresa_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2597,7 +2646,7 @@ SELECT pg_catalog.setval('sga.usuario_possue_empresa_id_usuario_empresa_seq', 1,
 
 
 --
--- TOC entry 3843 (class 0 OID 0)
+-- TOC entry 3846 (class 0 OID 0)
 -- Dependencies: 286
 -- Name: usuario_possue_perfil_id_usuario_perfil_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2606,7 +2655,7 @@ SELECT pg_catalog.setval('sga.usuario_possue_perfil_id_usuario_perfil_seq', 1, f
 
 
 --
--- TOC entry 3844 (class 0 OID 0)
+-- TOC entry 3847 (class 0 OID 0)
 -- Dependencies: 291
 -- Name: usuario_sql_id_usuario_sql_seq; Type: SEQUENCE SET; Schema: sga; Owner: postgres
 --
@@ -2615,7 +2664,7 @@ SELECT pg_catalog.setval('sga.usuario_sql_id_usuario_sql_seq', 1, false);
 
 
 --
--- TOC entry 3496 (class 2606 OID 16691)
+-- TOC entry 3499 (class 2606 OID 16691)
 -- Name: faz_usuario_transacao id; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2624,7 +2673,7 @@ ALTER TABLE ONLY sga.faz_usuario_transacao
 
 
 --
--- TOC entry 3444 (class 2606 OID 16507)
+-- TOC entry 3447 (class 2606 OID 16507)
 -- Name: categoria_produto id_categoria_produto; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2633,7 +2682,7 @@ ALTER TABLE ONLY sga.categoria_produto
 
 
 --
--- TOC entry 3428 (class 2606 OID 16455)
+-- TOC entry 3431 (class 2606 OID 16455)
 -- Name: centro_estoque id_centro_estqoue; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2642,7 +2691,7 @@ ALTER TABLE ONLY sga.centro_estoque
 
 
 --
--- TOC entry 3440 (class 2606 OID 16495)
+-- TOC entry 3443 (class 2606 OID 16495)
 -- Name: centro_possue_movimentacao id_centro_movimentacao; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2651,7 +2700,7 @@ ALTER TABLE ONLY sga.centro_possue_movimentacao
 
 
 --
--- TOC entry 3464 (class 2606 OID 16577)
+-- TOC entry 3467 (class 2606 OID 16577)
 -- Name: centroestoque_possue_produto id_centro_produto; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2660,7 +2709,7 @@ ALTER TABLE ONLY sga.centroestoque_possue_produto
 
 
 --
--- TOC entry 3468 (class 2606 OID 16591)
+-- TOC entry 3471 (class 2606 OID 16591)
 -- Name: certificado_digital id_certificado_digital; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2669,7 +2718,7 @@ ALTER TABLE ONLY sga.certificado_digital
 
 
 --
--- TOC entry 3434 (class 2606 OID 16474)
+-- TOC entry 3437 (class 2606 OID 16474)
 -- Name: conferencia_produto id_conferencia_produto; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2678,7 +2727,7 @@ ALTER TABLE ONLY sga.conferencia_produto
 
 
 --
--- TOC entry 3420 (class 2606 OID 16427)
+-- TOC entry 3423 (class 2606 OID 16427)
 -- Name: contato id_contato; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2687,7 +2736,7 @@ ALTER TABLE ONLY sga.contato
 
 
 --
--- TOC entry 3418 (class 2606 OID 16420)
+-- TOC entry 3421 (class 2606 OID 16420)
 -- Name: contato_cliente id_contato_cliente; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2696,7 +2745,7 @@ ALTER TABLE ONLY sga.contato_cliente
 
 
 --
--- TOC entry 3422 (class 2606 OID 16434)
+-- TOC entry 3425 (class 2606 OID 16434)
 -- Name: contato_podeser_contato_cliente id_contato_contatocliente; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2705,7 +2754,7 @@ ALTER TABLE ONLY sga.contato_podeser_contato_cliente
 
 
 --
--- TOC entry 3416 (class 2606 OID 16413)
+-- TOC entry 3419 (class 2606 OID 16413)
 -- Name: contato_fornecedor id_contato_fornecedor; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2714,7 +2763,7 @@ ALTER TABLE ONLY sga.contato_fornecedor
 
 
 --
--- TOC entry 3466 (class 2606 OID 16584)
+-- TOC entry 3469 (class 2606 OID 16584)
 -- Name: dados_contador id_dados_contador; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2723,7 +2772,7 @@ ALTER TABLE ONLY sga.dados_contador
 
 
 --
--- TOC entry 3470 (class 2606 OID 16598)
+-- TOC entry 3473 (class 2606 OID 16598)
 -- Name: empresa id_empresa; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2732,7 +2781,7 @@ ALTER TABLE ONLY sga.empresa
 
 
 --
--- TOC entry 3472 (class 2606 OID 16605)
+-- TOC entry 3475 (class 2606 OID 16605)
 -- Name: empresa_possue_centroestoque id_empresa_centroestqoue; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2741,7 +2790,7 @@ ALTER TABLE ONLY sga.empresa_possue_centroestoque
 
 
 --
--- TOC entry 3448 (class 2606 OID 16521)
+-- TOC entry 3451 (class 2606 OID 16521)
 -- Name: grupo_produto id_grupo_produto; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2750,7 +2799,7 @@ ALTER TABLE ONLY sga.grupo_produto
 
 
 --
--- TOC entry 3462 (class 2606 OID 16570)
+-- TOC entry 3465 (class 2606 OID 16570)
 -- Name: localizacao_possue_produto id_localizacao_produto; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2759,7 +2808,7 @@ ALTER TABLE ONLY sga.localizacao_possue_produto
 
 
 --
--- TOC entry 3414 (class 2606 OID 16406)
+-- TOC entry 3417 (class 2606 OID 16406)
 -- Name: modulo id_modulo; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2768,7 +2817,7 @@ ALTER TABLE ONLY sga.modulo
 
 
 --
--- TOC entry 3476 (class 2606 OID 16619)
+-- TOC entry 3479 (class 2606 OID 16619)
 -- Name: modulo_possue_tela id_modulo_tela; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2777,7 +2826,7 @@ ALTER TABLE ONLY sga.modulo_possue_tela
 
 
 --
--- TOC entry 3436 (class 2606 OID 16481)
+-- TOC entry 3439 (class 2606 OID 16481)
 -- Name: movimentacao_possue_contato id_movimentacao_contato; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2786,7 +2835,7 @@ ALTER TABLE ONLY sga.movimentacao_possue_contato
 
 
 --
--- TOC entry 3432 (class 2606 OID 16467)
+-- TOC entry 3435 (class 2606 OID 16467)
 -- Name: movimentacao_estoque id_movimentacao_estoque; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2795,7 +2844,7 @@ ALTER TABLE ONLY sga.movimentacao_estoque
 
 
 --
--- TOC entry 3458 (class 2606 OID 16556)
+-- TOC entry 3461 (class 2606 OID 16556)
 -- Name: movimentacao_possue_produto id_movimentacao_produto; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2804,7 +2853,7 @@ ALTER TABLE ONLY sga.movimentacao_possue_produto
 
 
 --
--- TOC entry 3424 (class 2606 OID 16441)
+-- TOC entry 3427 (class 2606 OID 16441)
 -- Name: nota_fiscal_xml id_nota_fiscal_xml; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2813,7 +2862,7 @@ ALTER TABLE ONLY sga.nota_fiscal_xml
 
 
 --
--- TOC entry 3460 (class 2606 OID 16563)
+-- TOC entry 3463 (class 2606 OID 16563)
 -- Name: notafiscal_possue_produto id_nota_produto; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2822,7 +2871,7 @@ ALTER TABLE ONLY sga.notafiscal_possue_produto
 
 
 --
--- TOC entry 3426 (class 2606 OID 16448)
+-- TOC entry 3429 (class 2606 OID 16448)
 -- Name: notafiscal_possue_fornecedor id_notafsical_fornecedor; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2831,7 +2880,7 @@ ALTER TABLE ONLY sga.notafiscal_possue_fornecedor
 
 
 --
--- TOC entry 3478 (class 2606 OID 16626)
+-- TOC entry 3481 (class 2606 OID 16626)
 -- Name: perfil id_perfil; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2840,7 +2889,7 @@ ALTER TABLE ONLY sga.perfil
 
 
 --
--- TOC entry 3480 (class 2606 OID 16633)
+-- TOC entry 3483 (class 2606 OID 16633)
 -- Name: perfil_possue_modulo id_perfil_modulo; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2849,7 +2898,7 @@ ALTER TABLE ONLY sga.perfil_possue_modulo
 
 
 --
--- TOC entry 3482 (class 2606 OID 16640)
+-- TOC entry 3485 (class 2606 OID 16640)
 -- Name: perfil_possue_tela id_perfil_tela; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2858,7 +2907,7 @@ ALTER TABLE ONLY sga.perfil_possue_tela
 
 
 --
--- TOC entry 3450 (class 2606 OID 16528)
+-- TOC entry 3453 (class 2606 OID 16528)
 -- Name: produto id_produto; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2867,7 +2916,7 @@ ALTER TABLE ONLY sga.produto
 
 
 --
--- TOC entry 3454 (class 2606 OID 16542)
+-- TOC entry 3457 (class 2606 OID 16542)
 -- Name: produto_possue_fornecedor id_produto_fornecedor; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2876,7 +2925,7 @@ ALTER TABLE ONLY sga.produto_possue_fornecedor
 
 
 --
--- TOC entry 3452 (class 2606 OID 16535)
+-- TOC entry 3455 (class 2606 OID 16535)
 -- Name: produto_possue_grupo id_produto_grupo; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2885,7 +2934,7 @@ ALTER TABLE ONLY sga.produto_possue_grupo
 
 
 --
--- TOC entry 3456 (class 2606 OID 16549)
+-- TOC entry 3459 (class 2606 OID 16549)
 -- Name: produto_possue_tributacao id_produto_tributacao; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2894,7 +2943,7 @@ ALTER TABLE ONLY sga.produto_possue_tributacao
 
 
 --
--- TOC entry 3446 (class 2606 OID 16514)
+-- TOC entry 3449 (class 2606 OID 16514)
 -- Name: subgrupo_produto id_subgrupo_produto; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2903,7 +2952,7 @@ ALTER TABLE ONLY sga.subgrupo_produto
 
 
 --
--- TOC entry 3474 (class 2606 OID 16612)
+-- TOC entry 3477 (class 2606 OID 16612)
 -- Name: tela id_tela; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2912,7 +2961,7 @@ ALTER TABLE ONLY sga.tela
 
 
 --
--- TOC entry 3438 (class 2606 OID 16488)
+-- TOC entry 3441 (class 2606 OID 16488)
 -- Name: movimentacao_possue_tipomovimentacao id_tipo_movimentacao; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2921,7 +2970,7 @@ ALTER TABLE ONLY sga.movimentacao_possue_tipomovimentacao
 
 
 --
--- TOC entry 3430 (class 2606 OID 16460)
+-- TOC entry 3433 (class 2606 OID 16460)
 -- Name: tipo_movimentacao_estqoue id_tipo_movimentacao_estqoue; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2930,7 +2979,7 @@ ALTER TABLE ONLY sga.tipo_movimentacao_estqoue
 
 
 --
--- TOC entry 3492 (class 2606 OID 16677)
+-- TOC entry 3495 (class 2606 OID 16677)
 -- Name: transacao_sql id_transacao_sql; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2939,7 +2988,7 @@ ALTER TABLE ONLY sga.transacao_sql
 
 
 --
--- TOC entry 3442 (class 2606 OID 16502)
+-- TOC entry 3445 (class 2606 OID 16502)
 -- Name: tributacao_produto id_tributacao_produto; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2948,7 +2997,7 @@ ALTER TABLE ONLY sga.tributacao_produto
 
 
 --
--- TOC entry 3484 (class 2606 OID 16649)
+-- TOC entry 3487 (class 2606 OID 16649)
 -- Name: usuario id_usuario; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2957,7 +3006,7 @@ ALTER TABLE ONLY sga.usuario
 
 
 --
--- TOC entry 3490 (class 2606 OID 16670)
+-- TOC entry 3493 (class 2606 OID 16670)
 -- Name: usuario_possue_empresa id_usuario_empresa; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2966,7 +3015,7 @@ ALTER TABLE ONLY sga.usuario_possue_empresa
 
 
 --
--- TOC entry 3488 (class 2606 OID 16663)
+-- TOC entry 3491 (class 2606 OID 16663)
 -- Name: usuario_possue_perfil id_usuario_perfil; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2975,7 +3024,7 @@ ALTER TABLE ONLY sga.usuario_possue_perfil
 
 
 --
--- TOC entry 3494 (class 2606 OID 16684)
+-- TOC entry 3497 (class 2606 OID 16684)
 -- Name: usuario_sql id_usuario_sql; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2984,7 +3033,7 @@ ALTER TABLE ONLY sga.usuario_sql
 
 
 --
--- TOC entry 3486 (class 2606 OID 16656)
+-- TOC entry 3489 (class 2606 OID 16656)
 -- Name: usuario_conferencia usuario_possue_conferencia; Type: CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -2993,7 +3042,7 @@ ALTER TABLE ONLY sga.usuario_conferencia
 
 
 --
--- TOC entry 3509 (class 2606 OID 16797)
+-- TOC entry 3512 (class 2606 OID 16797)
 -- Name: produto_possue_grupo categoria_produto_produto_possue_grupo_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3002,7 +3051,7 @@ ALTER TABLE ONLY sga.produto_possue_grupo
 
 
 --
--- TOC entry 3507 (class 2606 OID 16752)
+-- TOC entry 3510 (class 2606 OID 16752)
 -- Name: centro_possue_movimentacao centro_estqoue_centro_possue_movimentacao_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3011,7 +3060,7 @@ ALTER TABLE ONLY sga.centro_possue_movimentacao
 
 
 --
--- TOC entry 3522 (class 2606 OID 16747)
+-- TOC entry 3525 (class 2606 OID 16747)
 -- Name: centroestoque_possue_produto centro_estqoue_centroestoque_possue_produto_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3020,7 +3069,7 @@ ALTER TABLE ONLY sga.centroestoque_possue_produto
 
 
 --
--- TOC entry 3526 (class 2606 OID 16742)
+-- TOC entry 3529 (class 2606 OID 16742)
 -- Name: empresa_possue_centroestoque centro_estqoue_empresa_possue_centroestoque_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3029,7 +3078,7 @@ ALTER TABLE ONLY sga.empresa_possue_centroestoque
 
 
 --
--- TOC entry 3524 (class 2606 OID 16852)
+-- TOC entry 3527 (class 2606 OID 16852)
 -- Name: empresa certificado_digital_empresa_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3038,7 +3087,7 @@ ALTER TABLE ONLY sga.empresa
 
 
 --
--- TOC entry 3534 (class 2606 OID 16787)
+-- TOC entry 3537 (class 2606 OID 16787)
 -- Name: usuario_conferencia conferencia_produto_usuario_possue_conferencia_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3047,7 +3096,7 @@ ALTER TABLE ONLY sga.usuario_conferencia
 
 
 --
--- TOC entry 3497 (class 2606 OID 16717)
+-- TOC entry 3500 (class 2606 OID 16717)
 -- Name: contato_podeser_contato_cliente contato_cliente_contato_podeser_contato_cliente_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3056,7 +3105,7 @@ ALTER TABLE ONLY sga.contato_podeser_contato_cliente
 
 
 --
--- TOC entry 3498 (class 2606 OID 16727)
+-- TOC entry 3501 (class 2606 OID 16727)
 -- Name: contato_podeser_contato_cliente contato_contato_podeser_contato_cliente_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3065,7 +3114,7 @@ ALTER TABLE ONLY sga.contato_podeser_contato_cliente
 
 
 --
--- TOC entry 3499 (class 2606 OID 16707)
+-- TOC entry 3502 (class 2606 OID 16707)
 -- Name: contato_podeser_contato_cliente contato_fornecedor_contato_podeser_contato_cliente_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3074,7 +3123,7 @@ ALTER TABLE ONLY sga.contato_podeser_contato_cliente
 
 
 --
--- TOC entry 3500 (class 2606 OID 16712)
+-- TOC entry 3503 (class 2606 OID 16712)
 -- Name: notafiscal_possue_fornecedor contato_fornecedor_notafiscal_possue_fornecedor_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3083,7 +3132,7 @@ ALTER TABLE ONLY sga.notafiscal_possue_fornecedor
 
 
 --
--- TOC entry 3513 (class 2606 OID 16702)
+-- TOC entry 3516 (class 2606 OID 16702)
 -- Name: produto_possue_fornecedor contato_fornecedor_produto_possue_fornecedor_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3092,7 +3141,7 @@ ALTER TABLE ONLY sga.produto_possue_fornecedor
 
 
 --
--- TOC entry 3503 (class 2606 OID 16722)
+-- TOC entry 3506 (class 2606 OID 16722)
 -- Name: movimentacao_possue_contato contato_movimentacao_possue_contato_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3101,7 +3150,7 @@ ALTER TABLE ONLY sga.movimentacao_possue_contato
 
 
 --
--- TOC entry 3525 (class 2606 OID 16847)
+-- TOC entry 3528 (class 2606 OID 16847)
 -- Name: empresa dados_contador_empresa_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3110,7 +3159,7 @@ ALTER TABLE ONLY sga.empresa
 
 
 --
--- TOC entry 3527 (class 2606 OID 16862)
+-- TOC entry 3530 (class 2606 OID 16862)
 -- Name: empresa_possue_centroestoque empresa_empresa_possue_centroestoque_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3119,7 +3168,7 @@ ALTER TABLE ONLY sga.empresa_possue_centroestoque
 
 
 --
--- TOC entry 3538 (class 2606 OID 16857)
+-- TOC entry 3541 (class 2606 OID 16857)
 -- Name: usuario_possue_empresa empresa_usuario_possue_empresa_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3128,7 +3177,7 @@ ALTER TABLE ONLY sga.usuario_possue_empresa
 
 
 --
--- TOC entry 3510 (class 2606 OID 16807)
+-- TOC entry 3513 (class 2606 OID 16807)
 -- Name: produto_possue_grupo grupo_produto_produto_possue_grupo_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3137,7 +3186,7 @@ ALTER TABLE ONLY sga.produto_possue_grupo
 
 
 --
--- TOC entry 3528 (class 2606 OID 16697)
+-- TOC entry 3531 (class 2606 OID 16697)
 -- Name: modulo_possue_tela modulo_modulo_possue_tela_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3146,7 +3195,7 @@ ALTER TABLE ONLY sga.modulo_possue_tela
 
 
 --
--- TOC entry 3530 (class 2606 OID 16692)
+-- TOC entry 3533 (class 2606 OID 16692)
 -- Name: perfil_possue_modulo modulo_perfil_possue_modulo_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3155,7 +3204,7 @@ ALTER TABLE ONLY sga.perfil_possue_modulo
 
 
 --
--- TOC entry 3508 (class 2606 OID 16762)
+-- TOC entry 3511 (class 2606 OID 16762)
 -- Name: centro_possue_movimentacao movimentacao_estoque_centro_possue_movimentacao_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3164,7 +3213,7 @@ ALTER TABLE ONLY sga.centro_possue_movimentacao
 
 
 --
--- TOC entry 3502 (class 2606 OID 16782)
+-- TOC entry 3505 (class 2606 OID 16782)
 -- Name: conferencia_produto movimentacao_estoque_conferencia_produto_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3173,7 +3222,7 @@ ALTER TABLE ONLY sga.conferencia_produto
 
 
 --
--- TOC entry 3504 (class 2606 OID 16777)
+-- TOC entry 3507 (class 2606 OID 16777)
 -- Name: movimentacao_possue_contato movimentacao_estoque_movimentacao_possue_contato_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3182,7 +3231,7 @@ ALTER TABLE ONLY sga.movimentacao_possue_contato
 
 
 --
--- TOC entry 3517 (class 2606 OID 16767)
+-- TOC entry 3520 (class 2606 OID 16767)
 -- Name: movimentacao_possue_produto movimentacao_estoque_movimentacao_possue_produto_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3191,7 +3240,7 @@ ALTER TABLE ONLY sga.movimentacao_possue_produto
 
 
 --
--- TOC entry 3505 (class 2606 OID 16772)
+-- TOC entry 3508 (class 2606 OID 16772)
 -- Name: movimentacao_possue_tipomovimentacao movimentacao_estoque_movimentacao_possue_tipomovimentacao_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3200,7 +3249,7 @@ ALTER TABLE ONLY sga.movimentacao_possue_tipomovimentacao
 
 
 --
--- TOC entry 3501 (class 2606 OID 16737)
+-- TOC entry 3504 (class 2606 OID 16737)
 -- Name: notafiscal_possue_fornecedor nota_fiscal_xml_notafiscal_possue_fornecedor_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3209,7 +3258,7 @@ ALTER TABLE ONLY sga.notafiscal_possue_fornecedor
 
 
 --
--- TOC entry 3519 (class 2606 OID 16732)
+-- TOC entry 3522 (class 2606 OID 16732)
 -- Name: notafiscal_possue_produto nota_fiscal_xml_notafiscal_possue_produto_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3218,7 +3267,7 @@ ALTER TABLE ONLY sga.notafiscal_possue_produto
 
 
 --
--- TOC entry 3531 (class 2606 OID 16887)
+-- TOC entry 3534 (class 2606 OID 16887)
 -- Name: perfil_possue_modulo perfil_perfil_possue_modulo_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3227,7 +3276,7 @@ ALTER TABLE ONLY sga.perfil_possue_modulo
 
 
 --
--- TOC entry 3532 (class 2606 OID 16882)
+-- TOC entry 3535 (class 2606 OID 16882)
 -- Name: perfil_possue_tela perfil_perfil_possue_tela_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3236,7 +3285,7 @@ ALTER TABLE ONLY sga.perfil_possue_tela
 
 
 --
--- TOC entry 3536 (class 2606 OID 16877)
+-- TOC entry 3539 (class 2606 OID 16877)
 -- Name: usuario_possue_perfil perfil_usuario_possue_perfil_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3245,7 +3294,7 @@ ALTER TABLE ONLY sga.usuario_possue_perfil
 
 
 --
--- TOC entry 3523 (class 2606 OID 16812)
+-- TOC entry 3526 (class 2606 OID 16812)
 -- Name: centroestoque_possue_produto produto_centroestoque_possue_produto_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3254,7 +3303,7 @@ ALTER TABLE ONLY sga.centroestoque_possue_produto
 
 
 --
--- TOC entry 3521 (class 2606 OID 16817)
+-- TOC entry 3524 (class 2606 OID 16817)
 -- Name: localizacao_possue_produto produto_localizacao_possue_produto_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3263,7 +3312,7 @@ ALTER TABLE ONLY sga.localizacao_possue_produto
 
 
 --
--- TOC entry 3518 (class 2606 OID 16827)
+-- TOC entry 3521 (class 2606 OID 16827)
 -- Name: movimentacao_possue_produto produto_movimentacao_possue_produto_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3272,7 +3321,7 @@ ALTER TABLE ONLY sga.movimentacao_possue_produto
 
 
 --
--- TOC entry 3520 (class 2606 OID 16822)
+-- TOC entry 3523 (class 2606 OID 16822)
 -- Name: notafiscal_possue_produto produto_notafiscal_possue_produto_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3281,7 +3330,7 @@ ALTER TABLE ONLY sga.notafiscal_possue_produto
 
 
 --
--- TOC entry 3514 (class 2606 OID 16837)
+-- TOC entry 3517 (class 2606 OID 16837)
 -- Name: produto_possue_fornecedor produto_produto_possue_fornecedor_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3290,7 +3339,7 @@ ALTER TABLE ONLY sga.produto_possue_fornecedor
 
 
 --
--- TOC entry 3511 (class 2606 OID 16842)
+-- TOC entry 3514 (class 2606 OID 16842)
 -- Name: produto_possue_grupo produto_produto_possue_grupo_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3299,7 +3348,7 @@ ALTER TABLE ONLY sga.produto_possue_grupo
 
 
 --
--- TOC entry 3515 (class 2606 OID 16832)
+-- TOC entry 3518 (class 2606 OID 16832)
 -- Name: produto_possue_tributacao produto_produto_possue_tributacao_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3308,7 +3357,7 @@ ALTER TABLE ONLY sga.produto_possue_tributacao
 
 
 --
--- TOC entry 3512 (class 2606 OID 16802)
+-- TOC entry 3515 (class 2606 OID 16802)
 -- Name: produto_possue_grupo subgrupo_produto_produto_possue_grupo_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3317,7 +3366,7 @@ ALTER TABLE ONLY sga.produto_possue_grupo
 
 
 --
--- TOC entry 3529 (class 2606 OID 16872)
+-- TOC entry 3532 (class 2606 OID 16872)
 -- Name: modulo_possue_tela tela_modulo_possue_tela_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3326,7 +3375,7 @@ ALTER TABLE ONLY sga.modulo_possue_tela
 
 
 --
--- TOC entry 3533 (class 2606 OID 16867)
+-- TOC entry 3536 (class 2606 OID 16867)
 -- Name: perfil_possue_tela tela_perfil_possue_tela_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3335,7 +3384,7 @@ ALTER TABLE ONLY sga.perfil_possue_tela
 
 
 --
--- TOC entry 3506 (class 2606 OID 16757)
+-- TOC entry 3509 (class 2606 OID 16757)
 -- Name: movimentacao_possue_tipomovimentacao tipo_movimentacao_estqoue_movimentacao_possue_tipomovimentac453; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3344,7 +3393,7 @@ ALTER TABLE ONLY sga.movimentacao_possue_tipomovimentacao
 
 
 --
--- TOC entry 3540 (class 2606 OID 16907)
+-- TOC entry 3543 (class 2606 OID 16907)
 -- Name: faz_usuario_transacao transacao_sql_faz_usuario_transacao_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3353,7 +3402,7 @@ ALTER TABLE ONLY sga.faz_usuario_transacao
 
 
 --
--- TOC entry 3516 (class 2606 OID 16792)
+-- TOC entry 3519 (class 2606 OID 16792)
 -- Name: produto_possue_tributacao tributacao_produto_produto_possue_tributacao_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3362,7 +3411,7 @@ ALTER TABLE ONLY sga.produto_possue_tributacao
 
 
 --
--- TOC entry 3541 (class 2606 OID 16912)
+-- TOC entry 3544 (class 2606 OID 16912)
 -- Name: faz_usuario_transacao usuario_sql_faz_usuario_transacao_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3371,7 +3420,7 @@ ALTER TABLE ONLY sga.faz_usuario_transacao
 
 
 --
--- TOC entry 3535 (class 2606 OID 16902)
+-- TOC entry 3538 (class 2606 OID 16902)
 -- Name: usuario_conferencia usuario_usuario_possue_conferencia_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3380,7 +3429,7 @@ ALTER TABLE ONLY sga.usuario_conferencia
 
 
 --
--- TOC entry 3539 (class 2606 OID 16892)
+-- TOC entry 3542 (class 2606 OID 16892)
 -- Name: usuario_possue_empresa usuario_usuario_possue_empresa_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3389,7 +3438,7 @@ ALTER TABLE ONLY sga.usuario_possue_empresa
 
 
 --
--- TOC entry 3537 (class 2606 OID 16897)
+-- TOC entry 3540 (class 2606 OID 16897)
 -- Name: usuario_possue_perfil usuario_usuario_possue_perfil_fk; Type: FK CONSTRAINT; Schema: sga; Owner: postgres
 --
 
@@ -3397,7 +3446,7 @@ ALTER TABLE ONLY sga.usuario_possue_perfil
     ADD CONSTRAINT usuario_usuario_possue_perfil_fk FOREIGN KEY (id_usuario) REFERENCES sga.usuario(id_usuario) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
--- Completed on 2025-02-21 17:10:39
+-- Completed on 2025-02-23 17:58:25
 
 --
 -- PostgreSQL database dump complete
