@@ -1,5 +1,6 @@
 // Função que minimiza o menu lateral:
 import { btnMenuLateral, carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
+import buscarDados from "../../../scripts/buscarDados.js"
 import { mudarPesquisa } from "../../../scripts/funcionalidades.js"
 import select2 from "../../../scripts/select.js"
 
@@ -27,4 +28,6 @@ export default function contato() {
     btn_criar_contato.addEventListener("click",()=>{
         carregarConteudo("contato/cadastro_contato/criar_contato/criar_contato.html",document.querySelector(".principal"))
     })
+
+    buscarDados("sga.contato") // Busca os dados da tabela, exibe na tela e permite pesquisar
 }

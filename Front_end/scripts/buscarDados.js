@@ -2,7 +2,7 @@ export default function buscarDados (query) {
     async function fetchDados() {
         // Busca os dados no servidor
         try {
-            const response = await fetch('http://localhost:5000/api/dados');
+            const response = await fetch('http://localhost:5000/api/dados?tabela=' + query);
             const result = await response.json(); // Converte a resposta para JSON
             if (result.success) {
                 // Exibe os dados na página
@@ -68,7 +68,7 @@ export default function buscarDados (query) {
 
         const btn_pesquisar = document.querySelector('.btn_pesquisar') // Botão de pesquisar
         const campo_select = document.querySelector('.campo_select') // Select que contém os campos da tabela
-        const btn_limpar = document.querySelector('#btn_limpar_pesquisa_centro_estoque') // Botão de fechar
+        const btn_limpar = document.querySelector('.btn_limpar_pesquisa') // Botão de fechar
         const input_pesquisar = document.querySelector('.input_pesquisa') // Input de pesquisa
 
         btn_pesquisar.addEventListener('click', handlePesquisar) // Quando o botão de pesquisar for clicado
@@ -95,19 +95,22 @@ export default function buscarDados (query) {
                 return e
             })
             
-            let threshold
+            let threshold // Define a tolerância da pesquisa
             if (campo_select.value == "padrao_centro_estoque"){
                 // Se o campo selecionado for o "padrão", a pesquisa será feita com mais tolerância a variação de valores
                 threshold = 0.7
             } else if (campo_select.value == "localizacao_centro_estoque") {
                 // Se o campo selecionado for "localização", a pesquisa será feita com tolerancia 0
                 threshold = 0
+            } else if (campo_select.value.includes("id")) {
+                // Se o campo selecionado contiver "id" em alguma parte do valor, a pesquisa será feita com tolerancia 0
+                threshold = 0
             } else {
                 threshold = 0.3
             }
             const options = {
                 keys: [campo_select.value],
-                threshold: threshold
+                threshold: threshold,
             }
 
             const fuse = new Fuse(data, options) // Inicializa o fuse com os dados e as configurações

@@ -4,7 +4,7 @@
         <div class="container_select">
             <p>Coluna:</p>
             <select id="select_coluna" class="campo_select">
-                <option value="codigo">Código</option>
+                <option value="id_produto">Código</option>
                 <option value="produto">Produto</option>
                 <option value="quantidade">Quantidade</option>
                 <option value="preco_varejo">Preço Varejo</option>
@@ -12,9 +12,14 @@
             </select>
         </div>
         <div class="container_campo_pesquisa_btn">
-            <div class="campo_pesquisa" id="campo_pesquisa">
-                <input id="input_pesquisa_tabela" type="text" placeholder="Pesquisar por Produto" class="input_pesquisa">
-                <img id="icone_pesquisa" src="../imagens/icone_pesquisa.png" alt="icone_pesquisa">
+            <div class="campo_pesquisa" id="campo_pesquisa_produto">
+                <input id="input_pesquisa_tabela" type="text" placeholder="Pesquisar por Código" class="input_pesquisa">
+                <button class="btn_limpar_pesquisa hide center" id="btn_limpar_pesquisa_produto">
+                    <img id="icone_fechar" src="../imagens/icone_fechar.svg" alt="icone_fechar">
+                </button>
+                <button class="btn_pesquisar center" id="btn_pesquisar_produto">
+                    <img id="icone_pesquisa" src="../imagens/icone_pesquisa.png" alt="icone_pesquisa">
+                </button>
             </div>
         </div>        
     </div>
@@ -33,105 +38,8 @@
                     <th id="tabela_preco_atacado">Preço Atacado</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td class="codigo">01</td>
-                    <td class="produto">Amortecedor</td>
-                    <td class="Qtde">46</td>
-                    <td class="preco_varejo">R$162,00</td>
-                    <td class="preco_atacado">R$135,00</td>
-                </tr>
-                <tr>
-                    <td class="codigo">02</td>
-                    <td class="produto">Bateria de carro</td>
-                    <td class="Qtde">200</td>
-                    <td class="preco_varejo">R$815,55</td>
-                    <td class="preco_atacado">R$790,45</td>
-                </tr>
-                <tr>
-                    <td class="codigo">03</td>
-                    <td class="produto">Capa de volante</td>
-                    <td class="Qtde">60</td>
-                    <td class="preco_varejo">R$25,00</td>
-                    <td class="preco_atacado">R$10,00</td>
-                </tr>
-                <tr>
-                    <td class="codigo">04</td>
-                    <td class="produto">Capertes</td>
-                    <td class="Qtde">10</td>
-                    <td class="preco_varejo">R$125,00</td>
-                    <td class="preco_atacado">R$100,00</td>
-                </tr>
-                <tr>
-                    <td class="codigo">05</td>
-                    <td class="produto">Correia dentada</td>
-                    <td class="Qtde">85</td>
-                    <td class="preco_varejo">R$119,00</td>
-                    <td class="preco_atacado">R$109,00</td>
-                </tr>
-                <tr>
-                    <td class="codigo">06</td>
-                    <td class="produto">Disco de freio</td>
-                    <td class="Qtde">26</td>
-                    <td class="preco_varejo">R$107,00</td>
-                    <td class="preco_atacado">R$95,00</td>
-                </tr>
-                <tr>
-                    <td class="codigo">07</td>
-                    <td class="produto">Escapamento esportivo</td>
-                    <td class="Qtde">50</td>
-                    <td class="preco_varejo">R$263,44</td>
-                    <td class="preco_atacado">R$220,52</td>
-                </tr>
-                <tr>
-                    <td class="codigo">08</td>
-                    <td class="produto">Filtro de óleo</td>
-                    <td class="Qtde">52</td>
-                    <td class="preco_varejo">R$31,50</td>
-                    <td class="preco_atacado">R$21,50</td>
-                </tr>
-                <tr>
-                    <td class="codigo">09</td>
-                    <td class="produto">Parafuso da roda</td>
-                    <td class="Qtde">500</td>
-                    <td class="preco_varejo">R$25,25</td>
-                    <td class="preco_atacado">R$15,25</td>
-                </tr>
-                <tr>
-                    <td class="codigo">10</td>
-                    <td class="produto">Radiador</td>
-                    <td class="Qtde">20</td>
-                    <td class="preco_varejo">R$781,05</td>
-                    <td class="preco_atacado">R$750,00</td>
-                </tr>
-                <tr>
-                    <td class="codigo">11</td>
-                    <td class="produto">Rádio automotivo</td>
-                    <td class="Qtde">20</td>
-                    <td class="preco_varejo">R$455,95</td>
-                    <td class="preco_atacado">R$400,00</td>
-                </tr>
-                <tr>
-                    <td class="codigo">12</td>
-                    <td class="produto">Retrovisor</td>
-                    <td class="Qtde">100</td>
-                    <td class="preco_varejo">R$145,82</td>
-                    <td class="preco_atacado">R$120,70</td>
-                </tr>
-                <tr>
-                    <td class="codigo">13</td>
-                    <td class="produto">Turbina</td>
-                    <td class="Qtde">20</td>
-                    <td class="preco_varejo">R$254,60</td>
-                    <td class="preco_atacado">R$220,30</td>
-                </tr>
-                <tr>
-                    <td class="codigo">14</td>
-                    <td class="produto">Vela de ignição</td>
-                    <td class="Qtde">95</td>
-                    <td class="preco_varejo">R$150,00</td>
-                    <td class="preco_atacado">R$125,00</td>
-                </tr>
+            <tbody class="tbody">
+                
             </tbody>
         </table>
     </div>

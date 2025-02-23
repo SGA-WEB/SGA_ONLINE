@@ -1,5 +1,6 @@
 import { carregarConteudo } from "../../scripts/javaScript.js"
 import { dataAtual, mudarPesquisa } from "../../scripts/funcionalidades.js"
+import buscarDados from "../../scripts/buscarDados.js"
 import select2 from "../../scripts/select.js"
 export default function produto () {
     let btn_add = document.querySelector("#btn_adicionar")
@@ -25,5 +26,7 @@ export default function produto () {
     })
     mudarPesquisa(document.querySelector(".input_pesquisa"))
     select2("9em")
+
+    buscarDados("sga.produto") // Busca os dados da tabela, exibe na tela e permite pesquisar
 }
 
