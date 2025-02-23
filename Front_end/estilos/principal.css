@@ -559,6 +559,11 @@ body {
     text-align: start;
 }
 
+.td_nenhum_dado {
+    margin: 1rem 0rem 1rem 1rem;
+    white-space: nowrap;
+}
+
 @media (min-width: 1325px) {
     .item_dashboard {
         min-width: 495px;
