@@ -3,9 +3,21 @@ import { dataAtual, mudarPesquisa } from "../../scripts/funcionalidades.js"
 import buscarDados from "../../scripts/buscarDados.js"
 import select2 from "../../scripts/select.js"
 export default function produto () {
+    /*
+        Autor: matheushnunes
+        Data: 23/02/2025
+
+        Função:
+        - Carrega o módulo de produtos;
+        - Ao clicar no botão de adicionar produto, o módulo de cadastro de produto é carregado;
+        - Exibe os produtos na tela através da busca no servidor;
+    */
+
+
     let btn_add = document.querySelector("#btn_adicionar")
     btn_add.addEventListener("click",() => {
-     carregarConteudo("produto/cadastro_produto/cadastro_produto.html",  document.querySelector(".principal"))
+     carregarConteudo("produto/cadastro_produto/cadastro_produto.html",  document.querySelector(".principal")) // Carrega o módulo de cadastro de produto
+
      let intervalo = setInterval(() => { //verifica se o modulo foi carregado
         if (document.querySelector(".modulo")) {
             dataAtual() // Pega a data atual e adiciona ao input

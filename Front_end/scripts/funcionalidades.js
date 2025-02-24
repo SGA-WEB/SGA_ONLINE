@@ -1,3 +1,12 @@
+/*
+  Arquivo com funções que são utilizadas em mais de uma página;
+  Funções:
+    - getBasePath: Retorna o caminho base correto para as imagens.
+    - visibilidadeSenha: Mostra ou esconde a senha do input de senha;
+    - dataAtual: Mostra a data atual no formato dd/mm/aaaa;
+    - mudarPesquisa: Muda o placeholder do input de pesquisa de acordo com a opção do select;
+*/
+
 function getBasePath() {
   const hostname = window.location.hostname;
 

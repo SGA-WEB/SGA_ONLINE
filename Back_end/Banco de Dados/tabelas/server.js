@@ -25,7 +25,7 @@ app.get('/api/dados', async (req, res) => {
         return res.status(400).json({ success: false, message: 'Parâmetros inválidos' });
     }
     try {
-        const { rows } = await pool.query(`SELECT * FROM ${tabela}`);
+        const { rows } = await pool.query(`SELECT * FROM ${tabela}`); // Query para buscar todos os dados da tabela
         res.json({ success: true, data: rows }); // Retorna um objeto JSON
     } catch (err) {
         console.error(err);

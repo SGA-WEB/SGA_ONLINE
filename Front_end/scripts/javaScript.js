@@ -1,3 +1,15 @@
+/*
+  Autor: matheushnunes
+  Script que controla a navegação entre todos os módulos do site
+  E tem as funcionalidades da tela principal
+
+  Funções:
+    - mudarLogo: Muda a logo do usuário de acordo com o seu nome;
+    - carregarConteudo: Carrega o conteúdo HTML dos módulos;
+    - menu lateral: Funções que controlam a visibilidade e o estilo do menu lateral e dos itens do menu dropdown;
+    - menu do usuário: Funções que controlam a visibilidade e o estilo do menu do usuário;
+*/
+
 // Modulos da tela principal:
 import dashBorad from "../modulos/dashboard/dashboard.js";
 import contato from "../modulos/contato/lista_contatos/contato.js";
@@ -267,19 +279,19 @@ itens_dropdown.forEach(e=>{
     e.addEventListener("click",e=>{ // Adiciona a função de clicar em todos
       document.querySelector(".modulo_pre-selecionado")?.classList.remove("modulo_pre-selecionado") // Se tiver um módulo pre-selecionado é retirada sua a classe
         itens_dropdown.forEach(i=>{
-            if (i.id == e.currentTarget.id){
-              let modulo_selecionado = document.querySelector(".modulo_selecionado") // Pega o modulo que estáva selecionado antes do item ser clicado 
-              if (modulo_selecionado) { // Se tiver um módulo selecionado
-                modulo_selecionado.classList.remove("modulo_selecionado") // Remove a classe "modulo_selecionado" de todos os módulos selecionados
-              }
-              let modulo_selecionado_atual = e.currentTarget.parentElement.parentElement.firstElementChild // Pega somente o ultimo módulo selecionado
-              modulo_selecionado_atual.classList.add("modulo_selecionado") // Adiciona a classe "modulo_selecionado" somente no módulo clicado
-              modulo_selecionado_atual.classList.add("btn_menu_selecionado") // Adiciona a classe "btn_menu_selecionado" somente no módulo clicado
-
-              e.currentTarget.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
-            } else {
-              i.classList.remove("item_menu_selecionado") // Tira a classe de todos os outros items
+          if (i.id == e.currentTarget.id){
+            let modulo_selecionado = document.querySelector(".modulo_selecionado") // Pega o modulo que estáva selecionado antes do item ser clicado 
+            if (modulo_selecionado) { // Se tiver um módulo selecionado
+              modulo_selecionado.classList.remove("modulo_selecionado") // Remove a classe "modulo_selecionado" de todos os módulos selecionados
             }
+            let modulo_selecionado_atual = e.currentTarget.parentElement.parentElement.firstElementChild // Pega somente o ultimo módulo selecionado
+            modulo_selecionado_atual.classList.add("modulo_selecionado") // Adiciona a classe "modulo_selecionado" somente no módulo clicado
+            modulo_selecionado_atual.classList.add("btn_menu_selecionado") // Adiciona a classe "btn_menu_selecionado" somente no módulo clicado
+
+            e.currentTarget.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
+          } else {
+            i.classList.remove("item_menu_selecionado") // Tira a classe de todos os outros items
+          }
         })
     })
 })

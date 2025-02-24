@@ -1,4 +1,17 @@
 export default function buscarDados (query) {
+    /*
+        Autor: matheushnunes
+        Data: 23/02/2025
+        
+        Parâmetros:
+        query: String que contém o nome da tabela que será buscada no servidor
+
+        Função:
+        Buscar os dados no servidor e exibe na página;
+        Possui uma função de pesquisa que filtra os dados exibidos na tabela;
+        A pesquisa é feita com base no campo selecionado no select e no valor digitado no input de pesquisa;
+    */
+
     async function fetchDados() {
         // Busca os dados no servidor
         try {
@@ -27,6 +40,10 @@ export default function buscarDados (query) {
     
         if (data.length !== 0 ) { // Se houver dados
             td_info ? td_info.remove() : null // Se houver o parágrafo de informação, ele é removido
+
+            const firstDataKey = Object.keys(data[0])[0]; // Pega a primeira chave do primeiro objeto do array de dados, que no caso é o id
+            data.sort((a, b) => a[firstDataKey] - b[firstDataKey]) // Ordena os dados pelo id
+
             data.map(obj => { // Para cada objeto no array de dados
                 let tr = document.createElement('tr') // Cria uma linha
                 tr.setAttribute('class','table_tr')

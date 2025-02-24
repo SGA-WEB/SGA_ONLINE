@@ -5,11 +5,12 @@ import { mudarPesquisa } from "../../../scripts/funcionalidades.js"
 import select2 from "../../../scripts/select.js"
 
 export default function contato() {
-    let input_pesquisa = document.querySelector(".input_pesquisa")
     /*
         * Função que fecha o menu lateral se a tela tiver menos de 480px de largura
         * e muda o nome da coluna de código na tabela
     */
+   
+    let input_pesquisa = document.querySelector(".input_pesquisa")
     // Fecha o menu lateral se a tela tiver menos de 480px de largura no resize
     fecharMenu(document.querySelector(".tabela").offsetWidth,480)
     window.addEventListener('resize', (e) => {

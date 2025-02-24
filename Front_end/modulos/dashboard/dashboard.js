@@ -2,6 +2,19 @@
 import { click_btn_menu, btnMenuLateral } from "../../scripts/javaScript.js";
 let local_click_btn_menu = click_btn_menu
 export default function dashBorad () {
+  /*
+    Autor: matheushnunes;
+
+    Função para criar os gráficos de entrada, saída e diferença de produtos no dashboard;
+    Os gráficos são criados com a biblioteca Chart.js;
+
+    Funcionalidades e funções:
+    - Criar graficos de entrada, saída e diferença;
+    - atualizarGraficos(): Atualiza os gráficos de acordo com o tamanho da tela;
+    - fecharMenu(): Fecha o menu lateral quando a tela for menor que 480px;
+    - Select2(): Estiliza os selects do HTML e altera o tipo do gráfico de acordo com o valor selecionado;
+  */
+
   let cinza1 = "#F6F6F6";
   let cinza2 = "#E8E8E8";
   let azul = "#3964A8";
@@ -184,6 +197,7 @@ export default function dashBorad () {
     });
   }
   criarGraficoDiferenca('line')
+
   // Responsividade do gráfico:
   const pai = document.querySelector('.filtro_grafico');
   const filho = document.querySelectorAll('.filtro');

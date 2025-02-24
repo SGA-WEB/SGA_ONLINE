@@ -1,4 +1,18 @@
 export default function popup (status, idx = 0, btn) {
+    /*
+        Autor: matheushnunes;
+
+        Parâmetros:
+        - status: String que define se o popup será aberto ou fechado;
+        - idx: Número que define qual popup será aberto ou fechado (caso haja mais de um na página);
+        - btn: Elemento que chamou a função;
+
+        Função:
+        - Abre ou fecha um popup;
+        - Fecha o popup quando o usuário clicar fora dele;
+    */
+
+
     let btn_fechar_popup = document.querySelectorAll(".btn_fechar_popup")[idx]
     let container_popup = document.querySelectorAll(".container_popup")[idx]
     
@@ -22,5 +36,4 @@ export default function popup (status, idx = 0, btn) {
     btn_fechar_popup.addEventListener("click", () => {
         container_popup.style.display = "none"
     })
-
 }
