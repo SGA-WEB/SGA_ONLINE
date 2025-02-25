@@ -10,12 +10,15 @@ app.use(cors());
 app.use(express.json());
 
 // Configuração do PostgreSQL
+
+// Verifica se a variável de ambiente DATABASE_URL está definida
+const connectionString = process.env.DATABASE_URL || 'postgres://postgres:1213@localhost:5432/sga_online';
+
 const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'sga_online',
-    password: '1213',
-    port: 5432,
+    connectionString,
+    ssl: {
+        rejectUnauthorized: false, // Necessário para conexões seguras
+    },
 });
 
 // Rota para buscar dados da tabela
