@@ -7,7 +7,7 @@ export default function buscarDados (query) {
         query: String que contém o nome da tabela que será buscada no servidor
 
         Função:
-        Buscar os dados no servidor e exibe na página;
+        Buscar os dados no servidor e exibir na página;
         Possui uma função de pesquisa que filtra os dados exibidos na tabela;
         A pesquisa é feita com base no campo selecionado no select e no valor digitado no input de pesquisa;
     */
@@ -15,7 +15,7 @@ export default function buscarDados (query) {
     async function fetchDados() {
         // Busca os dados no servidor
         try {
-            const response = await fetch('https://sgaonline-production.up.railway.app/api/dados?tabela=' + query);
+            const response = await fetch('https://sga-online.onrender.com/dados?tabela=' + query);
             const result = await response.json(); // Converte a resposta para JSON
             if (result) {
                 // Exibe os dados na página
