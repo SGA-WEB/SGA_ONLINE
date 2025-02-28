@@ -15,7 +15,7 @@ export default function buscarDados (query) {
     async function fetchDados() {
         // Busca os dados no servidor
         try {
-            const response = await fetch('http://localhost:3000/api/dados?tabela=' + query);
+            const response = await fetch('https://sgaonline-production.up.railway.app/api/dados?tabela=' + query);
             const result = await response.json(); // Converte a resposta para JSON
             if (result) {
                 // Exibe os dados na página
