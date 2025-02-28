@@ -15,12 +15,12 @@ export default function buscarDados (query) {
     async function fetchDados() {
         // Busca os dados no servidor
         try {
-            const response = await fetch('https://sga-online.onrender.com/dados?tabela=' + query);
+            const response = await fetch('http://localhost:5000/api/dados?tabela=' + query);
             const result = await response.json(); // Converte a resposta para JSON
-            if (result) {
+            if (result.success) {
                 // Exibe os dados na página
-                carregarDadosNaTabela(result)
-                pesquisar(result)
+                carregarDadosNaTabela(result.data)
+                pesquisar(result.data)
             } else {
                 // Exibe a mensagem de erro
                 console.error('Erro no servidor:', result.message);

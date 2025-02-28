@@ -6,44 +6,20 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Configuração do CORS
-app.use(cors({
-    origin: 'https://sga-web.github.io', // URL do seu front-end no GitHub Pages
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true, // Permite o envio de credenciais (cookies, tokens)
-}));
-
-// Configuração do PostgreSQL (usando variáveis de ambiente)
+// Configuração do PostgreSQL
 const pool = new Pool({
     user: process.env.PGUSER,
     host: process.env.PGHOST,
     database: process.env.PGDATABASE,
     password: process.env.PGPASSWORD,
-    port: process.env.PGPORT || 5432,
-    ssl: {
-        rejectUnauthorized: false, // Permite a conexão mesmo sem verificar o certificado
-    },
+    port: process.env.PGPORT,
 });
 
-// Middleware para log de requisições
-app.use((req, res, next) => {
-    console.log(`${req.method} ${req.url}`);
-    next();
-});
-
-// Rota para buscar dados de uma tabela
-app.get('/api/dados', async (req, res) => {
-    const { tabela } = req.query;
-
-    // Validação do nome da tabela
-    if (!tabela || !/^[a-zA-Z_]+$/.test(tabela)) {
-        return res.status(400).json({ error: 'Nome da tabela inválido' });
-    }
-
+// Rota de exemplo
+app.get('/', async (req, res) => {
     try {
-        const { rows } = await pool.query(`SELECT * FROM ${tabela}`); // Faz a consulta
-        res.json(rows);  // Retorna os dados em formato JSON
+        const { rows } = await pool.query('SELECT * FROM sga.produtos');
+        res.json(rows);
     } catch (err) {
         console.error('Erro ao buscar dados:', err);
         res.status(500).json({ error: 'Erro no servidor', details: err.message });
