@@ -525,7 +525,7 @@ body {
     font-size: 0.9em;
 }
 #tabela_dashboard td, #tabela_dashboard th {
-    border: none;
+    border-right: none;
 }
 
 .tabela th, td {
@@ -536,8 +536,8 @@ body {
 .tabela td:first-child, th:first-child{
     text-align: left;
 }
-#tabela_dashboard td:last-child, th:last-child{
-    text-align: right;
+#tabela_dashboard td:last-child, #tabela_dashboard th:last-child{
+    text-align: right !important;
 }
 
 .tabela th {

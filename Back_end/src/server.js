@@ -6,25 +6,32 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
+app.use(cors()); // Habilita o CORS
+
 // Configuração do PostgreSQL
 const pool = new Pool({
-    user: process.env.PGUSER,
-    host: process.env.PGHOST,
-    database: process.env.PGDATABASE,
-    password: process.env.PGPASSWORD,
-    port: process.env.PGPORT,
+    user: 'neondb_owner',
+    host: 'ep-small-bar-a8bydmrx-pooler.eastus2.azure.neon.tech',
+    database: 'neondb',
+    password: 'npg_Y3ZNL6fxehGI',
+    port: 5432,
+    ssl: {
+        rejectUnauthorized: false, // Permite a conexão mesmo sem verificar o certificado
+    },
 });
 
 // Rota de exemplo
-app.get('/', async (req, res) => {
+app.get('/api/dados', async (req, res) => {
     try {
-        const { rows } = await pool.query('SELECT * FROM sga.produtos');
-        res.json(rows);
+        const { tabela } = req.query; // Recebe o nome da tabela da query string
+        const { rows } = await pool.query(`SELECT * FROM ${tabela}`); // Faz a consulta
+        res.json(rows);  // Retorna os dados em formato JSON
     } catch (err) {
-        console.error('Erro ao buscar dados:', err);
-        res.status(500).json({ error: 'Erro no servidor', details: err.message });
+        console.error(err);
+        res.status(500).send('Erro no servidor');
     }
 });
+
 
 // Rota de health check
 app.get('/health', (req, res) => {
