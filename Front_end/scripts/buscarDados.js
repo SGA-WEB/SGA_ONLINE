@@ -94,6 +94,10 @@ export default function buscarDados (query) {
             input_pesquisar.value = "" // Limpa o input
             handlePesquisar() // Chama a função de pesquisa
         })
+        $('.campo_select').on('change', () => {
+            input_pesquisar.value = "" // Limpa o input
+            handlePesquisar()
+        }) // Quando o select for alterado
 
         function handlePesquisar () {
             let value_input_pesquisa = document.querySelector('.input_pesquisa').value // Valor do input de pesquisa
@@ -134,7 +138,6 @@ export default function buscarDados (query) {
             
             let newData = fuse.search(value_input_pesquisa) // Faz a pesquisa
             newData = newData.map(e => e.item) // Pega apenas os itens do resultado da pesquisa
-
             if (value_input_pesquisa == "") { // Se o input estiver vazio
                 newData = data // Exibe todos os dados
             }

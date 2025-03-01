@@ -78,10 +78,10 @@
         margin: 0 0.5rem 0.5rem 0.5rem;
     }
     #tabela_contatos {
-        font-size: 0.8rem;
+        font-size: 0.9rem;
     }
     #tabela_contatos td, #tabela_contatos th {
-        padding: 0.1rem 0.2rem;
+        padding: 0.3rem 0.3rem;
     }
 }
 
@@ -101,7 +101,7 @@
         overflow-x: auto;
     }
     #tabela_contatos {
-        min-width: 491px;
+        min-width: 32.625rem; /* 522px */
     }
 }
 
