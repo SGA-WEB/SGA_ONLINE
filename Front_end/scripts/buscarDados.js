@@ -135,13 +135,46 @@ export default function buscarDados (query) {
             }
 
             const fuse = new Fuse(data, options) // Inicializa o fuse com os dados e as configurações
+
+            let newData
+
+            if (value_input_pesquisa.includes('*')) {
+                // Remove o curinga e ajusta a lógica de pesquisa
+                let padrao = value_input_pesquisa.replace(/\*/g, ''); // Remove todos os "*"
+                
+                value_input_pesquisa = value_input_pesquisa.toUpperCase() // Converte o valor da pesquisa para maiúsculo
+                padrao = padrao.toUpperCase() // Converte o padrão para maiúsculo
+
+                // Se tiver algum caractere coringa "*" na pesquisa:
+                if (value_input_pesquisa.startsWith('*') && value_input_pesquisa.endsWith('*')) {
+                    // *a*: Contém "a" em qualquer lugar
+                    newData = data.filter(item => {
+                        let itemUpperCase = item[campo_select.value].toUpperCase()
+                        return itemUpperCase.includes(padrao)
+                    });
+                    
+                } else if (value_input_pesquisa.startsWith('*')) {
+                    // *a: Termina com "a"
+                    newData = data.filter(item => {
+                        let itemUpperCase = item[campo_select.value].toUpperCase()
+                        return itemUpperCase.endsWith(padrao)
+                    });
+
+                } else if (value_input_pesquisa.endsWith('*')) {
+                    // a*: Começa com "a"
+                    newData = data.filter(item => {
+                        let itemUpperCase = item[campo_select.value].toUpperCase()
+                        return itemUpperCase.startsWith(padrao)
+                    });
+                }
+            } else { // Se não tiver o caractere coringa "*" na pesquisa o fuse é utilizado
+                newData = fuse.search(value_input_pesquisa) // Faz a pesquisa
+                newData = newData.map(e => e.item) // Pega apenas os itens do resultado da pesquisa
+            }
             
-            let newData = fuse.search(value_input_pesquisa) // Faz a pesquisa
-            newData = newData.map(e => e.item) // Pega apenas os itens do resultado da pesquisa
             if (value_input_pesquisa == "") { // Se o input estiver vazio
                 newData = data // Exibe todos os dados
             }
-            
             carregarDadosNaTabela(newData) // Manda os novos dados filtrados para a função carregarDadosNaTabela
         }  
     }
