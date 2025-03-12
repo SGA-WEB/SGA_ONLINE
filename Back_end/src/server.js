@@ -20,6 +20,13 @@ const pool = new Pool({
     },
 });
 
+app.use(express.json()); // Permite que o servidor processe JSON no corpo da requisição
+app.use(express.urlencoded({ extended: true })); // Permite processar dados de formulário
+
+const path = require('path');
+// Configura o servidor para servir arquivos estáticos da pasta "Front_end"
+app.use(express.static(path.join(__dirname, 'Front_end')));
+
 // Rota de exemplo
 app.get('/api/dados', async (req, res) => {
     try {
@@ -43,6 +50,30 @@ app.use((err, req, res, next) => {
     console.error('Erro global:', err);
     res.status(500).json({ error: 'Erro interno no servidor' });
 });
+
+//// 🔐 Rota para validar o login
+app.post('/api/login', async (req, res) => {
+    try {
+        const { email, senha } = req.body; // Captura os dados do corpo da requisição
+
+        // Consulta para verificar se existe um usuário com o email e a senha fornecidos
+        const result = await pool.query('SELECT * FROM sga.usuario WHERE email = $1 AND senha = $2', [email, senha]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Email ou senha inválidos' });
+        }
+
+        // Se a consulta retornou um usuário, o login foi bem-sucedido
+        res.json({ message: 'Login bem-sucedido' });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro interno no servidor' });
+    }
+});
+
+
+
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);

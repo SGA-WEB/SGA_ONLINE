@@ -15,14 +15,13 @@ import dashBorad from "../modulos/dashboard/dashboard.js";
 import contato from "../modulos/contato/lista_contatos/contato.js";
 import {cadastro_contato, btnNav} from "../modulos/contato/cadastro_contato/cadastro_contato.js";
 import configuracao_usuario from "../modulos/configuracao_usuario/configuracao_usuario.js";
+import select2 from "./select.js";
 import produto from "../modulos/produto/produto.js";
 import centro_de_estoque from "../modulos/centro_de_estoque/centro_de_estoque.js";
 import configuracoes from "../modulos/configuracoes/configuracoes.js";
 
-import select2 from "./select.js";
-
 function mudarLogo(){ // Muda a logo do usuário de acordo com o nome dele
-  let div_logo_usuario = document.querySelectorAll(".logo_usuario"); // Seleciona as 2 divs que contém a logo do usuário
+  let div_logo_usuario = document.querySelectorAll(".logo_usuario");
   div_logo_usuario.forEach(e => {
       // Pega a primeira letra do primeiro nome e a primeira letra do ultimo nome no nome do usuário:
       let nome_usuario = document.querySelector("#nome_usuario").textContent.trim();
@@ -37,31 +36,30 @@ mudarLogo()
 
 let btns_modulos = document.querySelectorAll(".btn, .item_dropdown, #btn_configuracao_usuario") // Seleciona todos os botões dos modulos
 btns_modulos.forEach(e =>{
-  // Carrega o modulo de acordo com o botão clicado
   e.addEventListener("click",()=>{
     // e.id.slice(4): remove o "btn_" do id
     carregarConteudo(`${e.id.slice(4)}/${e.id.slice(4)}.html`, document.querySelector(".principal"))
   })
 })
 
-carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal")) // Carrega o dashboard por padrão assim que a página for carregada 
+carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal")) // Carrega por padrão assim que a página for carregada o dashboard
 
 let logo_sga_principal = document.querySelector("#logo_sga_principal")
 logo_sga_principal.addEventListener("click",()=>{
-  carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal")) // Ao clicar na logo do SGA volta para o dashboard
-  displayMenu("", true) // Fecha o menu lateral
-  document.querySelector(".item_hiden")?.remove() // Se existir o texto que mostra o modulo selecionado é removido
+  carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"))
+  displayMenu("", true)
+  document.querySelector(".item_hiden")?.remove() // se o .item_hiden existir ele é removido
   document.querySelector(".modulo_selecionado")?.classList.remove("modulo_selecionado") // Se tiver um módulo selecionado é retirada sua a classe
   document.querySelector(".item_menu_selecionado")?.classList.remove("item_menu_selecionado") // Se tiver um item selecionado é retirada sua a classe
-  document.querySelector(".btn_menu_selecionado")?.classList.remove("btn_menu_selecionado") // Se tiver um botão selecionado é retirada sua classe
+  document.querySelector(".btn_menu_selecionado")?.classList.remove("btn_menu_selecionado")
 
-  document.querySelector("#btn_dashboard").classList.add("modulo_selecionado") // Adiciona a classe "modulo_selecionado" no botão do dashboard
+  document.querySelector("#btn_dashboard").classList.add("modulo_selecionado")
 }) // Clicar na logo volta para o dashboard
 
-// Função de carregar conteúdo html dos módulos
+// Função carregar conteúdo html dos módulos
 function carregarConteudo(url, elemento, modulo_contato) {
-  elemento.innerHTML = "<p>Carregando...</p>"; // Limpa o conteúdo atual antes de carregar o novo
-
+  // Limpa o conteúdo atual antes de carregar o novo
+  elemento.innerHTML = "<p>Carregando...</p>";
   url = "../modulos/" + url;
   if (url === "../modulos/contato/contato.html") {
     url = "../modulos/contato/lista_contatos/contato.html";
@@ -198,7 +196,6 @@ function btnMenuLateral(target){
         }
     }
 }
-
 let btns_menu = document.querySelectorAll(".btn_menu") // Seleciona todos os botões dos modulos
 btns_menu.forEach((e)=>{
   e.addEventListener("click",(e)=>{

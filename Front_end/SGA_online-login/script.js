@@ -46,3 +46,31 @@ document.addEventListener('DOMContentLoaded', function() {
       // Não é mais necessário se os erros forem exibidos via alert
   }
 });
+
+document.getElementById('loginForm').addEventListener('submit', async (event) => {
+    event.preventDefault(); // Evita que a página recarregue
+
+    const email = document.getElementById('email').value;
+    const senha = document.getElementById('senha').value;
+    const mensagemErro = document.getElementById('mensagemErro');
+
+    try {
+        const resposta = await fetch('http://localhost:3000/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, senha }),
+        });
+
+        const dados = await resposta.json();
+
+        if (resposta.ok) {
+            alert('Login bem-sucedido!');
+            window.location.href = '/Front_end/Principal/principal.html'; // Redireciona para outra página
+        } else {
+            mensagemErro.textContent = dados.erro; // Exibe erro na tela
+        }
+    } catch (error) {
+        console.error('Erro na requisição:', error);
+        mensagemErro.textContent = 'Erro ao conectar com o servidor!';
+    }
+});
