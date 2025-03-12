@@ -2,7 +2,14 @@ const { Pool } = require('pg');
 
 
 const pool = new Pool({
-    connectionString: 'postgres://neondb_owner:npg_Y3ZNL6fxehGI@ep-small-bar-a8bydmrx-pooler.eastus2.azure.neon.tech:5432/neondb?sslmode=require',
+    user: 'neondb_owner',
+    host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech',
+    database: 'neondb',
+    password: 'npg_Y3ZNL6fxehGI',
+    port: 5432,
+    ssl: {
+        rejectUnauthorized: false, // Permite a conexão mesmo sem verificar o certificado
+    },
   });
 
 // Teste de conexão e consulta dos dados da tabela
@@ -12,7 +19,7 @@ async function testConnection() {
         console.log('Conexão com o banco de dados estabelecida com sucesso!');
 
         // Consulta os dados da tabela usuarios que se você colocar sga.usuario não aparece mas apenas usuario como está, sim.
-        const result = await client.query('SELECT * FROM usuario');
+        const result = await client.query('SELECT * FROM sga.usuario');
 
         // Imprime os dados no console
         console.log('Dados da tabela usuario:', result.rows);
