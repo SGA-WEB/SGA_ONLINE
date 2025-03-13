@@ -1,0 +1,47 @@
+.tabela {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+.tabela th, td, .acoes_tabela{
+    padding: 7px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.tabela td:first-child, th:first-child{
+    text-align: left;
+}
+.tabela tr:hover {
+    background-color: var(--cinza1);
+}
+
+.tabela {
+    border: 1px solid var(--cinza2);
+    font-size: 1rem;
+}
+
+.tabela  td, .tabela th {
+    border-right: 1px solid var(--cinza2);
+    text-align: start;
+}
+
+.tabela th {
+    background-color: var(--azul-1);
+    font-weight: bold;
+}
+
+/* CRUD: */
+
+.acoes_tabela {
+    position: relative;
+    right: 7rem; /* Posiciona os botões à direita */
+    width: 3rem; /* Mantém os botões compactos */
+    text-align: right; /* Alinha os botões à direita */
+    white-space: nowrap; /* Impede que os botões quebrem de linha */
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.table_tr .dado_tabela:last-of-type {
+}
