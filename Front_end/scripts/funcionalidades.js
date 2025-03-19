@@ -74,4 +74,16 @@ function visibilidadeSenha(senha, img) {
     mudarPlaceholder() // Função é chamada assim que a pagina for carregada
   }
 
-  export { visibilidadeSenha, dataAtual, mudarPesquisa}
+  function visibilidadeMenulateral (elementoWidth, minWidth) {
+    let menu_lateral = document.querySelector("#menu_lateral")
+    let principal = document.querySelector(".principal")
+
+    if (elementoWidth <= minWidth){
+      menu_lateral.classList.add("opacidade")
+      principal.classList.add("opacidade")
+    } else {
+      menu_lateral.classList.remove("opacidade")
+      principal.classList.remove("opacidade")
+    }
+  } 
+  export { visibilidadeSenha, dataAtual, mudarPesquisa, visibilidadeMenulateral}
