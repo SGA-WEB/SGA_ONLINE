@@ -23,13 +23,15 @@ function visibilidadeSenha(senha, img) {
   // Obter o caminho base correto para as imagens
   let path = getBasePath();
 
+  console.log(path)
+
   if (senha.type === 'password') {
     senha.type = 'text';
-    img.src = path + "visibility_off.png"; // Caminho atualizado para ambiente
+    img.src = `../${path}visibility_off.png`;
     img.id = "view_on";
   } else {
     senha.type = 'password';
-    img.src = path + "visibility_on.png"; // Caminho atualizado para ambiente
+    img.src =`../${path}visibility_off.png`;
     img.id = "view_off";
   }
 }

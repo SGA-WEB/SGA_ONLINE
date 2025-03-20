@@ -97,6 +97,7 @@
 
 .icone_editar {
     width: 1rem;
+    cursor: pointer;
 }
 
 #container_campo_input_senha {
