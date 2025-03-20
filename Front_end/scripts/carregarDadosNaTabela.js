@@ -1,4 +1,7 @@
 // Objetivo: Função que carrega os dados na tabela e função que pesquisa os dados
+// Cria os botões de editar, visualizar e excluir (CRUD) e os adiciona nas tabelas
+
+import crudLayout from "./crudLayout.js" // Importa a função que cria os botões de editar, visualizar e excluir (CRUD)
 
 function carregarDadosNaTabela (data) {
     // Data: Array de objetos que contém os dados que serão exibidos na tabela (JSON)
@@ -14,24 +17,24 @@ function carregarDadosNaTabela (data) {
         const firstDataKey = Object.keys(data[0])[0]; // Pega a primeira chave do primeiro objeto do array de dados, que no caso é o id
         data.sort((a, b) => a[firstDataKey] - b[firstDataKey]) // Ordena os dados pelo id
 
-        data.map(obj => { // Para cada objeto no array de dados
+        data.map(objDado => { // Para cada objeto no array de dados
             let tr = document.createElement('tr') // Cria uma linha
             tr.setAttribute('class','table_tr')
     
-            for (let e in obj) { // Para cada campo no objeto
+            for (let e in objDado) { // Para cada campo no objeto
                 let td = document.createElement('td')
                 td.setAttribute('class','dado_tabela')
-                td.setAttribute('id', e + "_" + obj[e]) // nome do campo + valor do campo
-                if (typeof(obj[e]) == 'boolean') { 
+                td.setAttribute('id', e + "_" + objDado[e]) // nome do campo + valor do campo
+                if (typeof(objDado[e]) == 'boolean') { 
                     // Se o campo for booleano, exibe "S" ou "N"
-                    if (obj[e]) {
+                    if (objDado[e]) {
                         td.textContent = "S"
                     } else {
                         td.textContent = "N"
                     }
                 } else {
                     // Se não, exibe o valor do campo
-                    td.textContent = obj[e]
+                    td.textContent = objDado[e]
                 }
 
                 
@@ -39,32 +42,7 @@ function carregarDadosNaTabela (data) {
             }
 
             // CRUD:
-            let acoes = document.createElement('div') // Cria um div para as ações do CRUD
-            acoes.setAttribute('class','acoes_tabela')
-
-            let btn_editar = document.createElement('button') // Cria o botão de editar
-            btn_editar.setAttribute('class','btn_editar')
-            let img_editar = document.createElement('img') // Cria a imagem do botão de editar
-            img_editar.setAttribute('src','../imagens/icone_editar.svg')
-            btn_editar.appendChild(img_editar) // Adiciona a imagem no botão
-
-            let btn_visualizar = document.createElement('button') // Cria o botão de visualizar
-            btn_visualizar.setAttribute('class','btn_visualizar')
-            let img_visualizar = document.createElement('img') // Cria a imagem do botão de visualizar
-            img_visualizar.setAttribute('src','../imagens/visibility_on.png')
-            btn_visualizar.appendChild(img_visualizar) // Adiciona a imagem no botão
-
-            let btn_excluir = document.createElement('button') // Cria o botão de excluir
-            btn_excluir.setAttribute('class','btn_excluir')
-            let img_excluir = document.createElement('img') // Cria a imagem do botão de excluir
-            img_excluir.setAttribute('src','../imagens/icone_excluir.svg')
-            btn_excluir.appendChild(img_excluir) // Adiciona a imagem no botão
-
-            acoes.appendChild(btn_editar) // Adiciona o botão de editar nas ações
-            acoes.appendChild(btn_visualizar) // Adiciona o botão de visualizar nas ações
-            acoes.appendChild(btn_excluir) // Adiciona o botão de excluir nas ações
-
-            tr.appendChild(acoes) // Adiciona as ações na linha
+            crudLayout(objDado, tr) // Adiciona os botões de editar, visualizar e excluir na linha
 
             tabela.appendChild(tr) // Adiciona a linha na tabela
         })
