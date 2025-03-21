@@ -59,7 +59,7 @@ logo_sga_principal.addEventListener("click",()=>{
 }) // Clicar na logo volta para o dashboard
 
 // Função de carregar conteúdo html dos módulos
-function carregarConteudo(url, elemento, modulo_contato) {
+function carregarConteudo(url, elemento, modulo_contato, funcao) {
   elemento.innerHTML = "<p>Carregando...</p>"; // Limpa o conteúdo atual antes de carregar o novo
 
   url = "../modulos/" + url;
@@ -77,6 +77,10 @@ function carregarConteudo(url, elemento, modulo_contato) {
     elemento.innerHTML = html;
     requestAnimationFrame(() => { // Aguarda o carregamento completo do conteúdo HTML antes de executar as funções do JavaScript
       select2()
+      
+      if (funcao) {
+        funcao()
+      }
       if (url === "../modulos/dashboard/dashboard.html") {
         dashBorad();
       }

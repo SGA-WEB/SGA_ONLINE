@@ -51,13 +51,6 @@ a.link_nav_selecionado {
     width: 100%;
 }
 
-.p_codigo_contato { 
-    background-color: var(--azul-1);
-    padding: 0.4rem .5rem;
-    border-radius: 5px;
-    height: fit-content;
-}
-
 .div_data_cadastro {
     display: flex;
     align-items: center;
@@ -237,8 +230,6 @@ a.link_nav_selecionado {
     }
     .small_width {
         max-width: 100%;
-    }
-    .select_conainer {
     }
 }
 
