@@ -12,7 +12,7 @@
 
 // Modulos da tela principal:
 import dashBorad from "../modulos/dashboard/dashboard.js";
-import contato from "../modulos/contato/lista_contatos/contato.js";
+import contato from "../modulos/contato/contato.js";
 import {cadastro_contato, btnNav} from "../modulos/contato/cadastro_contato/cadastro_contato.js";
 import configuracao_usuario from "../modulos/configuracao_usuario/configuracao_usuario.js";
 import produto from "../modulos/produto/produto.js";
@@ -63,9 +63,6 @@ function carregarConteudo(url, elemento, modulo_contato, funcao) {
   elemento.innerHTML = "<p>Carregando...</p>"; // Limpa o conteúdo atual antes de carregar o novo
 
   url = "../modulos/" + url;
-  if (url === "../modulos/contato/contato.html") {
-    url = "../modulos/contato/lista_contatos/contato.html";
-  }
 
   // Carrega o conteúdo do arquivo HTML usando fetch
   fetch(url)
@@ -84,7 +81,7 @@ function carregarConteudo(url, elemento, modulo_contato, funcao) {
       if (url === "../modulos/dashboard/dashboard.html") {
         dashBorad();
       }
-      if (url === "../modulos/contato/lista_contatos/contato.html") {
+      if (url === "../modulos/contato/contato.html") {
         contato();
       }
       if (url === "../modulos/contato/cadastro_contato/criar_contato/criar_contato.html") {
@@ -117,8 +114,6 @@ function carregarConteudo(url, elemento, modulo_contato, funcao) {
   });
 
 }
-
-
 
 // Função que fecha o menu lateral se a tela tiver menos de um determinado width de largura
 function fecharMenu(width, minWidth) {

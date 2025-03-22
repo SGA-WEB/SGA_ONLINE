@@ -1,0 +1,19 @@
+.modulo_main {
+    margin-bottom: 2rem;
+    row-gap: 1.7rem;
+}
+
+.h3_titulo {
+    display: block;
+    grid-column: 1 / -1;
+    margin-bottom: 1rem;
+    font: 600 1.2rem arial;
+}
+
+.campo_contato {
+    margin: 0;
+}
+
+.container_small_width {
+    row-gap: 1.7rem;
+}

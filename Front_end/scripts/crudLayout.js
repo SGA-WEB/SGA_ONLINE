@@ -1,5 +1,9 @@
 import { carregarConteudo } from "./javaScript.js";
 import visualizar_produto from "../modulos/produto/visualizar_produto/visualizar_produto.js";
+import editar_produto from "../modulos/produto/editar_produto/editar_produto.js";
+
+import visualizar_contato from "../modulos/contato/visualizar_contato/visualizar_contato.js"
+
 export default function crudLayout (obj, tr) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
     acoes.setAttribute('class','acoes_tabela')
@@ -9,7 +13,6 @@ export default function crudLayout (obj, tr) {
         if (key.startsWith('id_')) {
             key = key.replace('id_', '')
             nomeTabelaAtual = key.replace('_', ' de ');
-            console.log(nomeTabelaAtual)
         }
     }
 
@@ -41,6 +44,12 @@ export default function crudLayout (obj, tr) {
     function executarAcao(acao) {
         // Carrega na tela a página da ação de acordo com a tabela atual
 
+        let funcoes = { // Funções de acordo com a ação
+            visualizar_produto: visualizar_produto,
+            editar_produto: editar_produto,
+            visualizar_contato: visualizar_contato,
+        }
+
         switch (nomeTabelaAtual) { // Carrega a página de visualização de acordo com a tabela atual
             case "centro de estoque":
                 carregarConteudo(
@@ -54,7 +63,15 @@ export default function crudLayout (obj, tr) {
                     `produto/${acao}_produto/${acao}_produto.html`,
                     document.querySelector('.principal'),
                     false,
-                    visualizar_produto(obj)
+                    funcoes[`${acao}_produto`](obj) // Chama a função de acordo com a ação
+                );
+            break;
+            case "contato":
+                carregarConteudo(
+                    `contato/${acao}_contato/criar_contato/criar_contato.html`,
+                    document.querySelector('.principal'),
+                    false,
+                    funcoes[`${acao}_contato`](obj)
                 );
             break;
             default:

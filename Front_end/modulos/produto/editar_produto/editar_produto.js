@@ -1,9 +1,9 @@
-import { carregarConteudo } from "../../../scripts/javaScript.js"
-import { esperarCarregarConteudo } from "../../../scripts/funcionalidades.js"
+import { carregarConteudo } from '../../../scripts/javaScript.js'
+import { esperarCarregarConteudo } from '../../../scripts/funcionalidades.js'
 
-export default function visualizar_produto (dados) {
+export default function editar_produto (dados) {
     esperarCarregarConteudo(moduloCarregado)
-    
+   
     function moduloCarregado() {
         let codigo_produto = document.querySelector('.codigo_id')
         let valor_varejo = document.querySelector('#valor_varejo')

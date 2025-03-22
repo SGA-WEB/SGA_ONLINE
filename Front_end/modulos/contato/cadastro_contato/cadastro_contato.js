@@ -44,6 +44,7 @@ function estilo_nav (e) {
 }
 
 function cadastro_contato(link) {
+    console.log("cadastro_contato")
     // Mudar de tela ao clicar no menu superior da tela de contato:
     let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
     links_nav[0].classList.add("link_nav_selecionado") // Adiciona a classe ao primeiro link assim que o modulo for carregado
@@ -70,6 +71,7 @@ function cadastro_contato(link) {
 }
 
 function btnNav() {
+    console.log("btnNav")
     let btn_nav = document.querySelectorAll(".btn_nav")
     btn_nav.forEach(e=>{
         e.addEventListener("click", (e)=>{

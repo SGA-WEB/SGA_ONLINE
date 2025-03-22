@@ -87,5 +87,46 @@ function visibilidadeSenha(senha, img) {
       menu_lateral.classList.remove("opacidade")
       principal.classList.remove("opacidade")
     }
-  } 
-  export { visibilidadeSenha, dataAtual, mudarPesquisa, visibilidadeMenulateral}
+  }
+
+  function esperarCarregarConteudo (funcao) {
+    // Observa a adição do elemento .data_cadastro e chama a função dataAtual:
+    // Função de callback do MutationObserver
+    function callback(mutationsList, observer) {
+      for (let mutation of mutationsList) {
+          if (mutation.type === 'childList') {
+              // Verifica se o elemento .data_cadastro foi adicionado
+              const elemento = document.querySelector('.data_cadastro');
+              const modulo = document.querySelector('.modulo');
+              if (elemento) {
+                  observer.disconnect(); // Para de observar
+                  dataAtual();  // Chama a função dataAtual
+              }
+              if (modulo) {
+                funcao()
+              }
+          }
+      }
+    }
+
+    // Configuração do observer
+    const config = {
+        childList: true, // Observa adição/remoção de nós filhos
+        subtree: true   // Observa todos os descendentes
+    };
+
+    // Cria o observer
+    const observer = new MutationObserver(callback);
+
+    // Inicia a observação no body (ou em outro nó específico)
+    observer.observe(document.body, config);
+  }
+  
+  
+  export { 
+    visibilidadeSenha, 
+    dataAtual, 
+    mudarPesquisa, 
+    visibilidadeMenulateral,
+    esperarCarregarConteudo
+  }
