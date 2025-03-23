@@ -1,5 +1,5 @@
-import { carregarConteudo } from "../../scripts/javaScript.js"
-import { dataAtual, mudarPesquisa } from "../../scripts/funcionalidades.js"
+import { carregarConteudo, fecharMenu } from "../../scripts/javaScript.js"
+import { dataAtual, mudarPesquisa, visibilidadeMenulateral } from "../../scripts/funcionalidades.js"
 import buscarDados from "../../scripts/buscarDados.js"
 import select2 from "../../scripts/select.js"
 export default function produto () {
@@ -40,5 +40,14 @@ export default function produto () {
     select2("9em")
 
     buscarDados("sga.produto") // Busca os dados da tabela, exibe na tela e permite pesquisar
+
+    fecharMenu(document.querySelector(".tabela").offsetWidth,480)
+    window.addEventListener('resize', (e) => {
+        if (document.querySelector(".tabela") != null){
+            fecharMenu(document.querySelector(".tabela").offsetWidth, 750)
+
+            visibilidadeMenulateral(document.querySelector(".tabela").offsetWidth, 750)
+        } 
+    })  
 }
 

@@ -315,6 +315,21 @@ body {
     gap: 10px;
 }
 
+/* Modo fixo do menu lateral: */
+#menu_lateral.opacidade  {
+    padding: 0px;
+    opacity: 0.85;
+    position: fixed;
+    height: calc(100dvh - 87px);
+    z-index: 1;
+}
+
+.principal.opacidade {
+    margin-left: 36px;
+    width: calc(100% - 36px);
+}
+
+
 /* Menu dropdonw */
 
 .dropdown {
