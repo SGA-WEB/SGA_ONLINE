@@ -30,7 +30,7 @@ app.post('/usuarios', async (req, res) => {
         INSERT INTO sga.usuario (nome, email, celular, senha, data_criacao)
         VALUES ($1, $2, $3, $4, NOW())
     `;
-        const result = await pool.query(query, [nome, email || null, celular, senha || null]);
+        const result = await pool.query(query, [nome, email, celular, senha]);
         res.status(201).json({ message: 'Usuário cadastrado com sucesso!', result });
     } catch (err) {
         console.error('Erro ao inserir usuário:', err);
