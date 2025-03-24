@@ -13,7 +13,7 @@
 // Modulos da tela principal:
 import dashBorad from "../modulos/dashboard/dashboard.js";
 import contato from "../modulos/contato/contato.js";
-import {cadastro_contato, btnNav} from "../modulos/contato/cadastro_contato/cadastro_contato.js";
+import cadastro_contato from "../modulos/contato/cadastro_contato/cadastro_contato.js";
 import configuracao_usuario from "../modulos/configuracao_usuario/configuracao_usuario.js";
 import produto from "../modulos/produto/produto.js";
 import centro_de_estoque from "../modulos/centro_de_estoque/centro_de_estoque.js";
@@ -59,7 +59,7 @@ logo_sga_principal.addEventListener("click",()=>{
 }) // Clicar na logo volta para o dashboard
 
 // Função de carregar conteúdo html dos módulos
-function carregarConteudo(url, elemento, modulo_contato, funcao) {
+function carregarConteudo(url, elemento, funcao) {
   elemento.innerHTML = "<p>Carregando...</p>"; // Limpa o conteúdo atual antes de carregar o novo
 
   url = "../modulos/" + url;
@@ -78,18 +78,12 @@ function carregarConteudo(url, elemento, modulo_contato, funcao) {
       if (funcao) {
         funcao()
       }
+
       if (url === "../modulos/dashboard/dashboard.html") {
         dashBorad();
       }
       if (url === "../modulos/contato/contato.html") {
         contato();
-      }
-      if (url === "../modulos/contato/cadastro_contato/criar_contato/criar_contato.html") {
-        cadastro_contato();
-        btnNav();
-      }
-      if (url === "../modulos/contato/cadastro_contato/configuracoes_contato/configuracoes_contato.html") {
-        configuracoes_contato();
       }
       if (url === "../modulos/configuracao_usuario/configuracao_usuario.html") {
         configuracao_usuario();
@@ -103,16 +97,12 @@ function carregarConteudo(url, elemento, modulo_contato, funcao) {
       if (url === "../modulos/configuracoes/configuracoes.html") {
         configuracoes()
       }
-      if (modulo_contato) { // Se for um dos modulos do contato
-        btnNav();
-      }
     });
   })
   .catch(error => {
     elemento.innerHTML = "<p>Erro ao carregar o conteúdo.</p>";
     console.error(error);
   });
-
 }
 
 // Função que fecha o menu lateral se a tela tiver menos de um determinado width de largura

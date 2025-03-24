@@ -3,6 +3,7 @@ import { btnMenuLateral, carregarConteudo, fecharMenu } from "../../scripts/java
 import buscarDados from "../../scripts/buscarDados.js"
 import { mudarPesquisa } from "../../scripts/funcionalidades.js"
 import select2 from "../../scripts/select.js"
+import cadastro_contato from "./cadastro_contato/cadastro_contato.js"
 
 export default function contato() {
     /*
@@ -27,7 +28,7 @@ export default function contato() {
     // Botão criar contato:
     let btn_criar_contato = document.querySelector("#btn_criar_contato")
     btn_criar_contato.addEventListener("click",()=>{
-        carregarConteudo("contato/cadastro_contato/criar_contato/criar_contato.html",document.querySelector(".principal"))
+        carregarConteudo("contato/cadastro_contato/criar_contato/criar_contato.html",document.querySelector(".principal"), cadastro_contato)
     })
     buscarDados("sga.contato") // Busca os dados da tabela, exibe na tela e permite pesquisar
 }

@@ -10,13 +10,13 @@
 function getBasePath() {
   const hostname = window.location.hostname;
 
-    if (hostname.includes("github.io")) {
-        // Ambiente GitHub Pages
-        return "/SGA_ONLINE/imagens/";
-    } else {
-        // Ambiente local
-        return "/imagens/";
-    }
+  if (hostname.includes("github.io")) {
+    // Ambiente GitHub Pages
+    return "/SGA_ONLINE/imagens/";
+  } else {
+    // Ambiente local
+    return "/imagens/";
+  }
 }
 
 function visibilidadeSenha(senha, img) {
@@ -31,102 +31,89 @@ function visibilidadeSenha(senha, img) {
     img.id = "view_on";
   } else {
     senha.type = 'password';
-    img.src =`../${path}visibility_off.png`;
+    img.src = `../${path}visibility_off.png`;
     img.id = "view_off";
   }
 }
 
 
-  function dataAtual() {
-    let p_data_cadastro = document.querySelector(".data_cadastro")
-    let data = new Date()
-    let dia = data.getDate()
-    let mes = data.getMonth() + 1 // Mes comeca em 0
-    if (dia <= 9) { // Se o dia for menor que 9 adiciona um 0 na frente
-        dia = "0" + dia
-    }
-    if (mes <= 9) { // Se o mes for menor que 9 adiciona um 0 na frente
-        mes = "0" + mes
-    }
+function dataAtual() {
+  let p_data_cadastro = document.querySelector(".data_cadastro")
+  let data = new Date()
+  let dia = data.getDate()
+  let mes = data.getMonth() + 1 // Mes comeca em 0
+  if (dia <= 9) { // Se o dia for menor que 9 adiciona um 0 na frente
+    dia = "0" + dia
+  }
+  if (mes <= 9) { // Se o mes for menor que 9 adiciona um 0 na frente
+    mes = "0" + mes
+  }
+  if (p_data_cadastro) {
     p_data_cadastro.innerHTML = `${dia}/${mes}/${data.getFullYear()}`
   }
+}
 
-  // Função que muda o placeholder do input de pesquisa de acordo com a opção do select
-  function mudarPesquisa (input_pesquisa) { 
-    input_pesquisa.placeholder = "Pesquisar por " +  $('.campo_select')
+// Função que muda o placeholder do input de pesquisa de acordo com a opção do select
+function mudarPesquisa(input_pesquisa) {
+  input_pesquisa.placeholder = "Pesquisar por " + $('.campo_select')
     .find(':selected')
     .text() // Adiciona o texto do select no placeholder 
 
-    // Adiciona evento de mudança de seleção no select2
-    $('.campo_select').on('select2:select', function (e) {
-      // Sempre que o select for alterado muda o placeholder
-      input_pesquisa.placeholder = "Pesquisar por " + e.params.data.text
-      mudarPlaceholder() // Chama a funcao de mudar o placeholder sempre que o select for alterado
-    })
+  // Adiciona evento de mudança de seleção no select2
+  $('.campo_select').on('select2:select', function (e) {
+    // Sempre que o select for alterado muda o placeholder
+    input_pesquisa.placeholder = "Pesquisar por " + e.params.data.text
+    mudarPlaceholder() // Chama a funcao de mudar o placeholder sempre que o select for alterado
+  })
 
-    function mudarPlaceholder (){ 
-      if (input_pesquisa.placeholder == "Pesquisar por Código" || input_pesquisa.placeholder == "Pesquisar por Quantidade") {
-        input_pesquisa.type = "number"
-      } else {
-        input_pesquisa.type = "text"
-      }
-      input_pesquisa.value = "" // Limpa o input de pesquisa
-      document.querySelector('.btn_limpar_pesquisa').classList.add('hide') // Esconde o botão de limpar pesquisa
-    } 
-    mudarPlaceholder() // Função é chamada assim que a pagina for carregada
-  }
-
-  function visibilidadeMenulateral (elementoWidth, minWidth) {
-    let menu_lateral = document.querySelector("#menu_lateral")
-    let principal = document.querySelector(".principal")
-
-    if (elementoWidth <= minWidth){
-      menu_lateral.classList.add("opacidade")
-      principal.classList.add("opacidade")
+  function mudarPlaceholder() {
+    if (input_pesquisa.placeholder == "Pesquisar por Código" || input_pesquisa.placeholder == "Pesquisar por Quantidade") {
+      input_pesquisa.type = "number"
     } else {
-      menu_lateral.classList.remove("opacidade")
-      principal.classList.remove("opacidade")
+      input_pesquisa.type = "text"
     }
+    input_pesquisa.value = "" // Limpa o input de pesquisa
+    document.querySelector('.btn_limpar_pesquisa').classList.add('hide') // Esconde o botão de limpar pesquisa
   }
+  mudarPlaceholder() // Função é chamada assim que a pagina for carregada
+}
 
-  function esperarCarregarConteudo (funcao) {
-    // Observa a adição do elemento .data_cadastro e chama a função dataAtual:
-    // Função de callback do MutationObserver
-    function callback(mutationsList, observer) {
-      for (let mutation of mutationsList) {
-          if (mutation.type === 'childList') {
-              // Verifica se o elemento .data_cadastro foi adicionado
-              const elemento = document.querySelector('.data_cadastro');
-              const modulo = document.querySelector('.modulo');
-              if (elemento) {
-                  observer.disconnect(); // Para de observar
-                  dataAtual();  // Chama a função dataAtual
-              }
-              if (modulo) {
-                funcao()
-              }
-          }
-      }
+function visibilidadeMenulateral(elementoWidth, minWidth) {
+  let menu_lateral = document.querySelector("#menu_lateral")
+  let principal = document.querySelector(".principal")
+
+  if (elementoWidth <= minWidth) {
+    menu_lateral.classList.add("opacidade")
+    principal.classList.add("opacidade")
+  } else {
+    menu_lateral.classList.remove("opacidade")
+    principal.classList.remove("opacidade")
+  }
+}
+
+function esperarCarregarConteudo(funcao) {
+  let observer = new MutationObserver((mutationsList, observer) => {
+    for (let mutation of mutationsList) {
+        if (mutation.type === 'childList') {
+            const data_cadastro = document.querySelector('.data_cadastro');
+            const modulo = document.querySelector('.modulo');
+            if (data_cadastro || modulo) {
+              observer.disconnect(); // Desconecta imediatamente
+              funcao(); // Chama a função apenas uma vez
+              break; // Sai do loop para evitar chamadas adicionais
+            }
+        }
     }
+  });
 
-    // Configuração do observer
-    const config = {
-        childList: true, // Observa adição/remoção de nós filhos
-        subtree: true   // Observa todos os descendentes
-    };
+  observer.observe(document.body, { childList: true, subtree: true });
+}
 
-    // Cria o observer
-    const observer = new MutationObserver(callback);
 
-    // Inicia a observação no body (ou em outro nó específico)
-    observer.observe(document.body, config);
-  }
-  
-  
-  export { 
-    visibilidadeSenha, 
-    dataAtual, 
-    mudarPesquisa, 
-    visibilidadeMenulateral,
-    esperarCarregarConteudo
-  }
+export {
+  visibilidadeSenha,
+  dataAtual,
+  mudarPesquisa,
+  visibilidadeMenulateral,
+  esperarCarregarConteudo
+}

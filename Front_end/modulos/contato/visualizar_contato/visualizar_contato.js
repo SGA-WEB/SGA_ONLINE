@@ -3,15 +3,38 @@ import { dataAtual } from "../../../scripts/funcionalidades.js";
 import { esperarCarregarConteudo } from "../../../scripts/funcionalidades.js";
 
 export default function visualizar_contato () {
-    esperarCarregarConteudo(visualizar_contato)
+    esperarCarregarConteudo(visualizarContatoMain)
+
+    function visualizarContatoMain () {
+        // Mudar de tela ao clicar no menu superior da tela de contato:
+        let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
+        links_nav[0].classList.add("link_nav_selecionado") // Adiciona a classe ao primeiro link assim que o modulo for carregado
+        links_nav.forEach(link=>{
+            link.addEventListener("click",(e)=>{ // Adiciona o evento de clicar em todos os links 
+               estilo_nav(e.target)
+            })
+        })
+    
+        // Mudar o input de data de cadastro para o dia atual:
+        dataAtual()
+    
+        fecharMenu(document.querySelector(".modulo").offsetWidth, 584)
+        window.addEventListener('resize', (e) => { 
+            if(document.querySelector(".modulo") != null){
+                fecharMenu(document.querySelector(".modulo").offsetWidth, 421)
+            } 
+        })
+    
+        btnsProximoEVoltar()
+    }
 
     function navLink (link) {
         switch (link) {
             case "link_contato":
-                carregarConteudo("contato/visualizar_contato/criar_contato/criar_contato.html", document.querySelector(".principal"));
+                carregarConteudo("contato/visualizar_contato/criar_contato/criar_contato.html", document.querySelector(".principal"),true ,visualizar_contato);
             break;
             case "link_endereco":
-                carregarConteudo("contato/visualizar_contato/endereco_contato/endereco_contato.html", document.querySelector(".modulo"));
+                carregarConteudo("contato/visualizar_contato/endereco_contato/endereco_contato.html", document.querySelector(".modulo"),true ,visualizar_contato);
             break;
         }
     }
@@ -37,31 +60,8 @@ export default function visualizar_contato () {
         })
         navLink(link.id)
     }
-    
-    function visualizar_contato(link) {
-        // Mudar de tela ao clicar no menu superior da tela de contato:
-        let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
-        links_nav[0].classList.add("link_nav_selecionado") // Adiciona a classe ao primeiro link assim que o modulo for carregado
-        links_nav.forEach(link=>{
-            link.addEventListener("click",(e)=>{ // Adiciona o evento de clicar em todos os links 
-               estilo_nav(e.target)
-            })
-        })
-    
-        // Mudar o input de data de cadastro para o dia atual:
-        dataAtual()
-    
-        fecharMenu(document.querySelector(".modulo").offsetWidth, 584)
-        window.addEventListener('resize', (e) => { 
-            if(document.querySelector(".modulo") != null){
-                fecharMenu(document.querySelector(".modulo").offsetWidth, 421)
-            } 
-        })
 
-        btnNav()
-    }
-    
-    function btnNav() {
+    function btnsProximoEVoltar() {
         let btn_nav = document.querySelectorAll(".btn_nav")
         btn_nav.forEach(e=>{
             e.addEventListener("click", (e)=>{
