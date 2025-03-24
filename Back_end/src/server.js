@@ -20,17 +20,12 @@ const pool = new Pool({
     },
 });
 
-// Rota de exemplo
-app.get('/api/dados', async (req, res) => {
-    try {
-        const { tabela } = req.query; // Recebe o nome da tabela da query string
-        const { rows } = await pool.query(`SELECT * FROM ${tabela}`); // Faz a consulta
-        res.json(rows);  // Retorna os dados em formato JSON
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Erro no servidor');
-    }
-});
+app.use(express.json()); // Permite que o servidor processe JSON no corpo da requisição
+app.use(express.urlencoded({ extended: true })); // Permite processar dados de formulário
+
+const path = require('path');
+// Configura o servidor para servir arquivos estáticos da pasta "Front_end"
+app.use(express.static(path.join(__dirname, 'Front_end')));
 
 
 // Rota de health check
@@ -43,6 +38,35 @@ app.use((err, req, res, next) => {
     console.error('Erro global:', err);
     res.status(500).json({ error: 'Erro interno no servidor' });
 });
+
+//// 🔐 Rota para validar o login
+app.post('/api/login', async (req, res) => {
+    try {
+        const { email, senha } = req.body;
+
+        // Verifica se o e-mail existe no banco
+        const userResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1', [email]);
+
+        if (userResult.rows.length === 0) {
+            return res.status(404).json({ error: 'E-mail não encontrado' });
+        }
+
+        // Verifica se a senha está correta
+        const senhaResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1 AND senha = $2', [email, senha]);
+
+        if (senhaResult.rows.length === 0) {
+            return res.status(401).json({ error: 'Senha incorreta' });
+        }
+
+        // Se passou pelas verificações, login foi bem-sucedido
+        res.json({ message: 'Login bem-sucedido' });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Erro interno no servidor' });
+    }
+});
+
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
