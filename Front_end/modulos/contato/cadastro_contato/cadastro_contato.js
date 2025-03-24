@@ -5,21 +5,18 @@ export default function cadastro_contato () {
     esperarCarregarConteudo(cadastroContatoMain)
 
     let cont = 0
-
+    console.log(cont)
     function cadastroContatoMain() {
         // Mudar de tela ao clicar no menu superior da tela de contato:
         let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
         if (cont == 0) 
             links_nav[0].classList.add("link_nav_selecionado") // Adiciona a classe ao primeiro link assim que o modulo for carregado
-        console.log(links_nav)
-        links_nav.forEach(link => {
-            link.removeEventListener("click", handleClick); // Remove o evento anterior
-            link.addEventListener("click", handleClick); // Adiciona o evento
-        });
 
-        function handleClick(e) {
-            estilo_nav(e.target);
-        }
+        document.querySelectorAll('.link_nav:not(.link_nav_selecionado)').forEach(link => { // Seleciona todos os links que não possuem a classe link_nav_selecionado
+            link.addEventListener("click", (e) => { 
+                estilo_nav(e.target);
+            });
+        });
     
         // Mudar o input de data de cadastro para o dia atual:
         dataAtual()
@@ -54,11 +51,10 @@ export default function cadastro_contato () {
 
         let links_selecionado = document.querySelectorAll(".link_nav") // Seleciona todos os links selecionados
         links_selecionado.forEach(e=>{
-            console.log(e, link)
-            if (e.id != link.id){ // Se o link selecionado for diferente do link clicado
-                e.classList.remove("link_nav_selecionado") // Retira a classe
-            }
+            e.classList.remove("link_nav_selecionado") // Retira a classe
         })
+
+        e.classList.add("link_nav_selecionado") // Adiciona a classe ao link clicado
         navLink(link.id)
     }
 
