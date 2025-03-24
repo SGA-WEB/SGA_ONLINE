@@ -27,18 +27,6 @@ const path = require('path');
 // Configura o servidor para servir arquivos estáticos da pasta "Front_end"
 app.use(express.static(path.join(__dirname, 'Front_end')));
 
-// Rota de exemplo
-app.get('/api/dados', async (req, res) => {
-    try {
-        const { tabela } = req.query; // Recebe o nome da tabela da query string
-        const { rows } = await pool.query(`SELECT * FROM ${tabela}`); // Faz a consulta
-        res.json(rows);  // Retorna os dados em formato JSON
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Erro no servidor');
-    }
-});
-
 
 // Rota de health check
 app.get('/health', (req, res) => {
@@ -54,16 +42,23 @@ app.use((err, req, res, next) => {
 //// 🔐 Rota para validar o login
 app.post('/api/login', async (req, res) => {
     try {
-        const { email, senha } = req.body; // Captura os dados do corpo da requisição
+        const { email, senha } = req.body;
 
-        // Consulta para verificar se existe um usuário com o email e a senha fornecidos
-        const result = await pool.query('SELECT * FROM sga.usuario WHERE email = $1 AND senha = $2', [email, senha]);
+        // Verifica se o e-mail existe no banco
+        const userResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1', [email]);
 
-        if (result.rows.length === 0) {
-            return res.status(404).json({ error: 'Email ou senha inválidos' });
+        if (userResult.rows.length === 0) {
+            return res.status(404).json({ error: 'E-mail não encontrado' });
         }
 
-        // Se a consulta retornou um usuário, o login foi bem-sucedido
+        // Verifica se a senha está correta
+        const senhaResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1 AND senha = $2', [email, senha]);
+
+        if (senhaResult.rows.length === 0) {
+            return res.status(401).json({ error: 'Senha incorreta' });
+        }
+
+        // Se passou pelas verificações, login foi bem-sucedido
         res.json({ message: 'Login bem-sucedido' });
 
     } catch (error) {
@@ -71,8 +66,6 @@ app.post('/api/login', async (req, res) => {
         res.status(500).json({ error: 'Erro interno no servidor' });
     }
 });
-
-
 
 
 app.listen(port, () => {

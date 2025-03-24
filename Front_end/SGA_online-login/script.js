@@ -67,10 +67,12 @@ document.getElementById('loginForm').addEventListener('submit', async (event) =>
             alert('Login bem-sucedido!');
             window.location.href = '/Front_end/Principal/principal.html'; // Redireciona para outra página
         } else {
-            mensagemErro.textContent = dados.erro; // Exibe erro na tela
+            mensagemErro.textContent = dados.error; // Exibe erro específico na tela
+            mensagemErro.style.color = 'red';
         }
     } catch (error) {
         console.error('Erro na requisição:', error);
         mensagemErro.textContent = 'Erro ao conectar com o servidor!';
+        mensagemErro.style.color = 'red';
     }
 });
