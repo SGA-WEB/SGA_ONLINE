@@ -2,7 +2,7 @@
 
 function carregarDadosNaTabela (data) {
     // Data: Array de objetos que contém os dados que serão exibidos na tabela (JSON)
-
+    console.log(data)
     let tabela = document.querySelector(".tbody") // Tabela onde os dados serão exibidos
     let [...tr_tabela] = document.querySelectorAll(".table_tr")
     tr_tabela.map(e => e.remove(e)) // Remove todos os elementos da tabela
