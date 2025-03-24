@@ -23,13 +23,15 @@ function visibilidadeSenha(senha, img) {
   // Obter o caminho base correto para as imagens
   let path = getBasePath();
 
+  console.log(path)
+
   if (senha.type === 'password') {
     senha.type = 'text';
-    img.src = path + "visibility_off.png"; // Caminho atualizado para ambiente
+    img.src = `../${path}visibility_off.png`;
     img.id = "view_on";
   } else {
     senha.type = 'password';
-    img.src = path + "visibility_on.png"; // Caminho atualizado para ambiente
+    img.src =`../${path}visibility_off.png`;
     img.id = "view_off";
   }
 }
@@ -74,4 +76,16 @@ function visibilidadeSenha(senha, img) {
     mudarPlaceholder() // Função é chamada assim que a pagina for carregada
   }
 
-  export { visibilidadeSenha, dataAtual, mudarPesquisa}
+  function visibilidadeMenulateral (elementoWidth, minWidth) {
+    let menu_lateral = document.querySelector("#menu_lateral")
+    let principal = document.querySelector(".principal")
+
+    if (elementoWidth <= minWidth){
+      menu_lateral.classList.add("opacidade")
+      principal.classList.add("opacidade")
+    } else {
+      menu_lateral.classList.remove("opacidade")
+      principal.classList.remove("opacidade")
+    }
+  } 
+  export { visibilidadeSenha, dataAtual, mudarPesquisa, visibilidadeMenulateral}
