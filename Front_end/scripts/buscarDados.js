@@ -1,6 +1,6 @@
 import {carregarDadosNaTabela, pesquisar} from './carregarDadosNaTabela.js';
 import configuracao_usuario from '../modulos/configuracao_usuario/configuracao_usuario.js';
-export default function buscarDados (query, tabela = true) {
+export default function buscarDados (query, tabela = true, funcao) {
     /*
         Autor: matheushnunes
         Data: 23/02/2025
@@ -25,7 +25,7 @@ export default function buscarDados (query, tabela = true) {
                     carregarDadosNaTabela(result)
                     pesquisar(result)
                 } else {
-                    configuracao_usuario(result)
+                    funcao(result)
                 }
             } else {
                 // Exibe a mensagem de erro
