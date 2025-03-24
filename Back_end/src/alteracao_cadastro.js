@@ -24,6 +24,8 @@ app.use(express.json());
 // Rota para receber os dados do front-end
 app.post('/usuarios', async (req, res) => {
     const { nome, email, celular, senha } = req.body;
+    
+    console.log('Dados recebidos:', { nome, email, celular, senha });
 
     try {
         const query = `
