@@ -20,6 +20,17 @@ const pool = new Pool({
     },
 });
 
+app.get('/api/dados', async (req, res) => {
+    try {
+        const { tabela } = req.query; // Recebe o nome da tabela da query string
+        const { rows } = await pool.query(`SELECT * FROM ${tabela}`); // Faz a consulta
+        res.json(rows);  // Retorna os dados em formato JSON
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Erro no servidor');
+    }
+});
+
 app.use(express.json()); // Permite que o servidor processe JSON no corpo da requisição
 app.use(express.urlencoded({ extended: true })); // Permite processar dados de formulário
 

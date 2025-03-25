@@ -5,7 +5,6 @@ export default function cadastro_contato () {
     esperarCarregarConteudo(cadastroContatoMain)
 
     let cont = 0
-    console.log(cont)
     function cadastroContatoMain() {
         // Mudar de tela ao clicar no menu superior da tela de contato:
         let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
@@ -32,30 +31,30 @@ export default function cadastro_contato () {
         cont++
     }
 
-    function navLink (link) {
-        switch (link) {
-            case "link_contato":
-                carregarConteudo("contato/cadastro_contato/criar_contato/criar_contato.html", document.querySelector(".principal"), cadastroContatoMain);
-            break;
-            case "link_endereco":
-                carregarConteudo("contato/cadastro_contato/endereco_contato/endereco_contato.html", document.querySelector(".modulo"), cadastroContatoMain);
-            break;
-        }
-    }
-    
     function estilo_nav (e) {
         let link = e
         if (e == "voltar_contatos") {
             carregarConteudo("contato/contato.html", document.querySelector(".principal"))
         }
-
+        
         let links_selecionado = document.querySelectorAll(".link_nav") // Seleciona todos os links selecionados
         links_selecionado.forEach(e=>{
             e.classList.remove("link_nav_selecionado") // Retira a classe
         })
-
+        
         e.classList.add("link_nav_selecionado") // Adiciona a classe ao link clicado
         navLink(link.id)
+    }
+    
+    function navLink (link) {
+        switch (link) {
+            case "link_contato":
+                carregarConteudo("contato/cadastro_contato/criar_contato/criar_contato.html", document.querySelector(".modulo"), cadastroContatoMain);
+            break;
+            case "link_endereco":
+                carregarConteudo("contato/cadastro_contato/endereco_contato/endereco_contato.html", document.querySelector(".modulo"), cadastroContatoMain);
+            break;
+        }
     }
 
     function btnsProximoEVoltar() {

@@ -57,7 +57,7 @@ logo_sga_principal.addEventListener("click",()=>{
 }) // Clicar na logo volta para o dashboard
 
 // Função de carregar conteúdo html dos módulos
-function carregarConteudo(url, elemento, funcao) {
+function carregarConteudo(url, elemento, funcao, adicionar) {
   elemento.innerHTML = "<p>Carregando...</p>"; // Limpa o conteúdo atual antes de carregar o novo
 
   url = "../modulos/" + url;
@@ -69,7 +69,12 @@ function carregarConteudo(url, elemento, funcao) {
     return response.text();
   })
   .then(html => {
-    elemento.innerHTML = html;
+    elemento.innerHTML = ""; // Limpa o conteúdo atual antes de adicionar o novo
+    if (adicionar) {
+      elemento.innerHTML += html;
+    } else {
+      elemento.innerHTML = html;
+    }
     requestAnimationFrame(() => { // Aguarda o carregamento completo do conteúdo HTML antes de executar as funções do JavaScript
       select2()
       
