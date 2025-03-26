@@ -10,7 +10,7 @@ export default function centro_de_estoque() {
 
     let btnAdicionar = document.querySelector("#btn_adicionar");
     btnAdicionar.addEventListener("click",() => {
-        carregarConteudo("produto/cadastro_produto/cadastro_produto.html",  document.querySelector(".principal")) // Carrega o módulo de cadastro de produto
+        carregarConteudo("centro_de_estoque/cadastro_centro_de_estoque/cadastro_centro_de_estoque.html",  document.querySelector(".principal")) // Carrega o módulo de cadastro de produto
    
         let intervalo = setInterval(() => { //verifica se o modulo foi carregado
            if (document.querySelector(".modulo")) {
