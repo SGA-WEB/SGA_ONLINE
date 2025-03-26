@@ -1,5 +1,6 @@
 import {carregarDadosNaTabela, pesquisar} from './carregarDadosNaTabela.js';
-export default function buscarDados (query) {
+import configuracao_usuario from '../modulos/configuracao_usuario/configuracao_usuario.js';
+export default function buscarDados (query, tabela = true, funcao) {
     /*
         Autor: matheushnunes
         Data: 23/02/2025
@@ -20,8 +21,12 @@ export default function buscarDados (query) {
             const result = await response.json(); // Converte a resposta para JSON
             if (result) {
                 // Exibe os dados na página
-                carregarDadosNaTabela(result)
-                pesquisar(result)
+                if (tabela){
+                    carregarDadosNaTabela(result)
+                    pesquisar(result)
+                } else {
+                    funcao(result)
+                }
             } else {
                 // Exibe a mensagem de erro
                 console.error('Erro no servidor:', result.message);

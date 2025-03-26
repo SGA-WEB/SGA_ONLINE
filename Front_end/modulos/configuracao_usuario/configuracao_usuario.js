@@ -1,8 +1,10 @@
+import buscarDados from "../../scripts/buscarDados.js";
 import { visibilidadeSenha } from "../../scripts/funcionalidades.js";
 import { carregarConteudo, mudarLogo } from "../../scripts/javaScript.js";
 import popup from "../../scripts/popup.js";
+import salvar from "./salvar.js";
 
-export default function configuracao_usuario() {
+export default function configuracao_usuario( data ) {
     function fechar_menu_editar() {
         menu_editar_foto.classList.add("hide")
     }
@@ -157,4 +159,6 @@ export default function configuracao_usuario() {
         if(confirmar)
             mudarLogo()
     })
+
+    buscarDados("sga.usuario", false, salvar)
 }    
