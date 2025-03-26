@@ -6,7 +6,7 @@ const app = express();
 // Para conseguir usar o navegador com diferentes dominios 
 app.use(cors());  
 
-// Configuração do banco de dados
+// Configuração do PostgreSQL
 const pool = new Pool({
     user: 'neondb_owner',
     host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech',
@@ -14,7 +14,7 @@ const pool = new Pool({
     password: 'npg_Y3ZNL6fxehGI',
     port: 5432,
     ssl: {
-        rejectUnauthorized: false,
+        rejectUnauthorized: false, // Permite a conexão mesmo sem verificar o certificado
     },
 });
 
@@ -40,8 +40,38 @@ app.post('/usuarios', async (req, res) => {
     }
 });
 
+app.get('/usuarios', async (req, res) => {
+    try {
+        console.log(" Buscando todos os usuários...");
+        const result = await pool.query('SELECT * FROM sga.usuario'); // Busca todos os usuários
+        
+        console.log("Dados encontrados:", result.rows);
+        res.status(200).json(result.rows); // Retorna os dados encontrados
+    } catch (error) {
+        console.error("Erro ao buscar usuários:", error);
+        res.status(500).json({ message: 'Erro ao buscar usuários', error: error.message });
+    }
+});
+
 // Inicializa o servidor - 'node alteracao_cadastro.js'
 const port = 3000;
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+
+// Teste de conexão e consulta dos dados da tabela
+async function testConnection() {
+    try {
+        const client = await pool.connect();  // Conecta ao banco
+        console.log('Conexão com o banco de dados estabelecida com sucesso!');
+
+        const result = await client.query('SELECT * FROM sga.usuario');
+        console.log('Dados da tabela usuario:', result.rows);
+
+        client.release();  // Libera a conexão após o teste
+    } catch (err) {
+        console.error('Erro ao conectar ou consultar o banco de dados:', err);
+    }
+}
+
+testConnection()
