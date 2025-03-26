@@ -28,6 +28,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* Para Firefox */
 input[type="number"] {
+    appearance: textfield;
     -moz-appearance: textfield;
 }
 
@@ -314,6 +315,21 @@ body {
     gap: 10px;
 }
 
+/* Modo fixo do menu lateral: */
+#menu_lateral.opacidade  {
+    padding: 0px;
+    opacity: 0.85;
+    position: fixed;
+    height: calc(100dvh - 87px);
+    z-index: 1;
+}
+
+.principal.opacidade {
+    margin-left: 36px;
+    width: calc(100% - 36px);
+}
+
+
 /* Menu dropdonw */
 
 .dropdown {
@@ -519,44 +535,12 @@ body {
 #div_produtos_mais_vendidos .header_grafico {
     padding: .8em;
 }
-.tabela {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9em;
-}
 #tabela_dashboard td, #tabela_dashboard th {
     border-right: none;
 }
 
-.tabela th, td {
-    padding: 7px 15px;
-    border-bottom: 1px solid #ddd;
-}
-
-.tabela td:first-child, th:first-child{
-    text-align: left;
-}
 #tabela_dashboard td:last-child, #tabela_dashboard th:last-child{
     text-align: right !important;
-}
-
-.tabela th {
-    background-color: var(--azul-1);
-    font-weight: bold;
-}
-
-.tabela tr:hover {
-    background-color: var(--cinza1);
-}
-
-.tabela {
-    border: 1px solid var(--cinza2);
-    font-size: 1rem;
-}
-
-.tabela  td, .tabela th {
-    border-right: 1px solid var(--cinza2);
-    text-align: start;
 }
 
 .td_nenhum_dado {
