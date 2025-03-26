@@ -2,6 +2,7 @@ import { carregarConteudo, fecharMenu } from "../../scripts/javaScript.js"
 import { dataAtual, mudarPesquisa, visibilidadeMenulateral } from "../../scripts/funcionalidades.js"
 import buscarDados from "../../scripts/buscarDados.js"
 import select2 from "../../scripts/select.js"
+
 export default function produto () {
     /*
         Autor: matheushnunes
@@ -49,5 +50,7 @@ export default function produto () {
             visibilidadeMenulateral(document.querySelector(".tabela").offsetWidth, 750)
         } 
     })  
+
+    
 }
 

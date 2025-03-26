@@ -5,6 +5,8 @@ import editar_produto from "../modulos/produto/editar_produto/editar_produto.js"
 import visualizar_contato from "../modulos/contato/visualizar_contato/visualizar_contato.js"
 import editar_contato from "../modulos/contato/editar_contato/editar_contato.js";
 
+import popup from "./popup.js"
+
 export default function crudLayout (obj, tr) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
     acoes.setAttribute('class','acoes_tabela')
@@ -61,12 +63,16 @@ export default function crudLayout (obj, tr) {
                 );
             break;
             case "produto":
-                carregarConteudo(
-                    `produto/${acao}_produto/${acao}_produto.html`,
-                    document.querySelector('.principal'),
-                    false,
-                    funcoes[`${acao}_produto`](obj) // Chama a função de acordo com a ação
-                );
+                if (acao == 'excluir') {
+                    popup('abrir',0,btn_excluir)
+                } else {
+                    carregarConteudo(
+                        `produto/${acao}_produto/${acao}_produto.html`,
+                        document.querySelector('.principal'),
+                        false,
+                        funcoes[`${acao}_produto`](obj) // Chama a função de acordo com a ação
+                    );
+                }
             break;
             case "contato":
                 carregarConteudo(
@@ -81,7 +87,7 @@ export default function crudLayout (obj, tr) {
                         true
                     );
                 }, 400);
-                break;
+            break;
             default:
                 console.warn(`Nenhuma ação definida para ${nomeTabelaAtual}`);
             break;
@@ -94,6 +100,10 @@ export default function crudLayout (obj, tr) {
 
     btn_editar.addEventListener('click',() => {
        executarAcao('editar')
+    })
+
+    btn_excluir.addEventListener('click',() => {
+        executarAcao('excluir')
     })
 
     tr.appendChild(acoes) // Adiciona as ações na linha
