@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificação de código</title>
+    <link rel="stylesheet" href="../estilo_redefinicao.css">
+    <link rel="stylesheet" href="nova_senha.css">
+    <link rel="shortcut icon" href="../../imagens/icone_sga.ico" type="image/x-icon">
+</head>
+<body>
+    <main class="principal">
+        <img class="logo_sga" src="../../imagens/logo_sga.png" alt="">
+        <section class="janela_redefinicao">
+            <h1 class="titulo_redefinicao">Redefinição de senha</h1>
+            <label class="campo" for="senha">
+                <p>Crie uma senha nova:</p>
+                <div class="campo_senha" id="campo_senha">
+                    <input class="campo_input" type="password" name="senha" id="senha" placeholder="Digite uma senha">
+                    <img class="visibilidade" id="view_senha" src="../../imagens/visibility_on.png" alt="visibilidade da senha off">
+                </div>
+            </label>
+            <label class="campo" for="confirmacao_senha">
+                <p>Digite a senha novamente:</p>
+                <div class="campo_senha" id="campo_confirmacao_senha">
+                    <input class="campo_input" type="password" name="confirmacao_senha" id="confirmacao_senha" placeholder="Confirme a sua senha">
+                    <img class="visibilidade" id="view_confirmacao" src="../../imagens/visibility_on.png" alt="visibilidade da senha off">
+                </div>
+                <p class="validador" id="validador_senhas"></p>
+            </label>
+            <a class="btn" id="btn_redefinir">Redefinir</a>
+        </section>
+    </main>
+    <script type="module" src="nova_senha.js"></script>
+</body>
+</html>

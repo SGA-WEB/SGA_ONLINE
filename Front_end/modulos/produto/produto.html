@@ -1,0 +1,46 @@
+<section class="modulo">
+    <h1 class="titulo1">Lista de Produtos</h1>
+    <div class="header">
+        <div class="container_select">
+            <p>Coluna:</p>
+            <select id="select_coluna" class="campo_select">
+                <option value="id_produto">Código</option>
+                <option value="produto">Produto</option>
+                <option value="quantidade">Quantidade</option>
+                <option value="preco_varejo">Preço Varejo</option>
+                <option value="preco_atacado">Preço Atacado</option>
+            </select>
+        </div>
+        <div class="container_campo_pesquisa_btn">
+            <div class="campo_pesquisa" id="campo_pesquisa_produto">
+                <input id="input_pesquisa_tabela" type="text" placeholder="Pesquisar por Código" class="input_pesquisa">
+                <button class="btn_limpar_pesquisa hide center" id="btn_limpar_pesquisa_produto">
+                    <img id="icone_fechar" src="../imagens/icone_fechar.svg" alt="icone_fechar">
+                </button>
+                <button class="btn_pesquisar center" id="btn_pesquisar_produto">
+                    <img id="icone_pesquisa" src="../imagens/icone_pesquisa.png" alt="icone_pesquisa">
+                </button>
+            </div>
+        </div>        
+    </div>
+    <button class="btn_add" id="btn_adicionar">
+        <img src="../imagens/btn_add.svg" alt="Icone Adicionar">
+        <span>Adicionar Produto</span>
+    </button>
+    <div class="container_tabela">
+        <table class="tabela" id="tabela_produtos">
+            <thead>
+                <tr>
+                    <th id="tabela_codigo">Código</th>
+                    <th id="tabela_produto">Produto</th>
+                    <th id="tabela_quantidade">Qtde.</th>
+                    <th id="tabela_preco_varejo">Preço Varejo</th>
+                    <th id="tabela_preco_atacado">Preço Atacado</th>
+                </tr>
+            </thead>
+            <tbody class="tbody">
+                
+            </tbody>
+        </table>
+    </div>
+</section>

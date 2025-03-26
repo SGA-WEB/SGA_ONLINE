@@ -1,0 +1,46 @@
+<section class="modulo" id="section_contatos">  
+    <header class="header">
+        <h1 class="titulo1">Contatos</h1>
+        <div class="container_select">
+            <p>Selecione a coluna que deseja pesquisar:</p>
+            <select id="select_coluna" class="campo_select">
+                <option value="id_contato">Código</option>
+                <option value="razao_social">Razão Social</option>
+                <option value="nome_fantasia">Nome Fantasia</option>
+                <option value="fone1">Fone 1</option>
+                <option value="categoria">Categoria</option>
+            </select>
+        </div>
+        <div class="container_campo_pesquisa_btn">
+            <div class="campo_pesquisa" id="campo_pesquisa_contato">
+                <input id="input_pesquisa_tabela" type="text" placeholder="Pesquisar por Código" class="input_pesquisa">
+                <button class="btn_limpar_pesquisa hide center" id="btn_limpar_pesquisa_contato">
+                    <img id="icone_fechar" src="../imagens/icone_fechar.svg" alt="icone_fechar">
+                </button>
+                <button class="btn_pesquisar center" id="btn_pesquisar_contato">
+                    <img id="icone_pesquisa" src="../imagens/icone_pesquisa.png" alt="icone_pesquisa">
+                </button>
+            </div>
+        </div>
+    </header>
+    <button class="btn_add btn" id="btn_criar_contato">
+        <img src="../imagens/person_add.svg" alt="Icone Adicionar Contato">
+        <span>Adicionar Contato</span>
+    </button>
+    <div class="container_tabela">
+        <table class="tabela" id="tabela_contatos">
+            <thead>
+                <tr>
+                    <th id="tabela_codigo">Código</th>
+                    <th id="tabela_razao">Razão Social</th>
+                    <th id="tabela_nome">Nome Fantasia</th>
+                    <th id="tabela_fone">Fone 1</th>
+                    <th id="tabela_categoria">Categoria</th>
+                </tr>
+            </thead>
+            <tbody class="tbody">
+                
+            </tbody>
+        </table>
+    </div>
+</section>

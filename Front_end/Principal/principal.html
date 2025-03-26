@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGA ONLINE</title>
+    <!-- Estilos: -->
+    <link rel="stylesheet" href="../estilos/principal.css">
+    <link rel="stylesheet" href="../estilos/tabela.css">
+    
+    <!-- Modulos -->
+    <!-- Configuração do usuário -->
+    <link rel="stylesheet" href="../modulos/configuracao_usuario/configuracao_usuario.css">
+    
+    <!-- Modulo Contato -->
+    <link rel="stylesheet" href="../modulos/contato/lista_contatos/contato.css">
+    
+    <link rel="stylesheet" href="../modulos/contato/cadastro_contato/cadastro_contato.css">
+    <link rel="stylesheet" href="../modulos/contato/cadastro_contato/endereco_contato/endereco_contato.css">
+
+    <!-- Modulo produto -->
+    <link rel="stylesheet" href="../modulos/produto/produto.css">
+
+    <!-- Modulo Centro de Estoque -->
+    <link rel="stylesheet" href="../modulos/centro_de_estoque/centro_de_estoque.css">
+
+    <link rel="stylesheet" href="../modulos/configuracoes/cadastro.css">
+    
+    <!-- Favicon: -->
+    <link rel="shortcut icon" href="../imagens/icone_sga.ico" type="image/x-icon">
+
+    <!-- Bibliotecas -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+</head>
+<body>
+    <header class="header_principal">
+        <div id="container_logo_busca">
+            <img class="logo_sga" id="logo_sga_principal" src="../imagens/logo_sga.png" alt="Logo do sga online">
+        </div>
+        <div id="campo_usuario">
+            <div id="usuario">
+                <div id="logo_usuario_header" class="logo_usuario">NU</div>
+                <div id="nome-empresa_usuario">
+                    <span id="nome_usuario">Nome do Usuário</span>
+                    <span id="empresa_usuario">INTEGRA ENGENHARIA</span>
+                </div>
+                <img id="usuario_seta" src="../imagens/seta_baixo.png" alt="seta para baixo">
+            </div>
+            <div id="menu_usuario" style="display: none;">
+                <a id="btn_configuracao_usuario" class="btn_menu_usuario">Configurações do usuário</a>
+                <a href="../SGA_online-login/index.html"  class="btn_menu_usuario">Sair do sistema</a>
+            </div>
+        </div>
+    </header>
+    <main class="main_principal">
+        <nav id="menu_lateral">
+            <div id="container_btn_fechar">
+                <button id="btn_fechar_menu">
+                    <img id="icone_aba" class="aba_fechar" src="../imagens/icone_fechar_aba.png" alt="icone_fechar_aba">
+                </button>
+            </div>
+            <button class="btn btn_menu modulo_selecionado" id="btn_dashboard">
+                <img class="img_icone_menu" src="../imagens/icone_dashboard.svg" alt="icone_dashboard">
+                <span class="span_modulo">Dashboard</span>
+                <div class="hide_text">Dashboard</div>
+            </button>
+            <div class="item_menu">
+                <button class="btn_menu" id="btn_estoque">
+                    <div>
+                        <img class="img_icone_menu" src="../imagens/icone_estoque.png" alt="icone_estoque">
+                        <span class="span_modulo">Estoque</span>
+                    </div>
+                    <img class="seta_cima_baixo"  src="../imagens/seta_baixo.png" alt="seta_baixo">
+                    <div class="hide_text">Estoque</div>
+                </button>
+                <div class="dropdown" id="dd_estoque" style="display: none;">
+                    <a href="#" class="item_dropdown" id="btn_centro_de_estoque">Centro de estoque</a>
+                    <a href="#" class="item_dropdown" id="btn_produto">Produto</a>
+                    <a href="#" class="item_dropdown disable" id="btn_movimentacao_de_estoque">Movimentação de estoque</a>
+                    <a href="#" class="item_dropdown disable" id="btn_cadastro_auxiliares">Cadastro auxiliares</a>
+                </div>
+            </div>
+            <div class="item_menu">
+                <button class="btn_menu disable" id="btn_vendas">
+                    <div>
+                        <img class="img_icone_menu" src="../imagens/icone_vendas.png" alt="icone_vendas">
+                        <span class="span_modulo">Vendas</span>
+                    </div>
+                    <img class="seta_cima_baixo"  src="../imagens/seta_baixo.png" alt="seta_baixo">
+                    <div class="hide_text">Vendas</div>
+                </button>
+            </div>
+            <div class="item_menu">
+                <button class="btn_menu disable" id="btn_relatorios">
+                    <div>
+                        <img class="img_icone_menu" src="../imagens/icone_relatorios.png" alt="icone_relatorios">
+                        <span class="span_modulo">Relatórios</span>
+                    </div>
+                    <img class="seta_cima_baixo"  src="../imagens/seta_baixo.png" alt="seta_baixo">
+                    <div class="hide_text">Relatórios</div>
+                </button>
+            </div>
+            <div class="item_menu">
+                <button class="btn_menu disable" id="btn_financeiro">
+                    <div>
+                        <img class="img_icone_menu" src="../imagens/icone_financeiro.png" alt="icone_financeiro">
+                        <span class="span_modulo">Financeiro</span>
+                    </div>
+                    <img class="seta_cima_baixo"  src="../imagens/seta_baixo.png" alt="seta_baixo">
+                    <div class="hide_text">Financeiro</div>
+                </button>
+            </div>
+            <div class="item_menu">
+                <button class="btn_menu disable" id="btn_administracao">
+                    <div>
+                        <img class="img_icone_menu" src="../imagens/icone_administracao.png" alt="icone_administracao">
+                        <span class="span_modulo" id="modulo_administracao">Administração</span>
+                    </div>
+                    <img class="seta_cima_baixo"  src="../imagens/seta_baixo.png" alt="seta_baixo">
+                    <div class="hide_text">Administração</div>
+                </button>
+            </div>
+            <button class="btn btn_menu disable" id="btn_veiculo">
+                <img class="img_icone_menu" src="../imagens/icone_veiculo.png" alt="icone_veiculo">
+                <span class="span_modulo">Veículo</span>
+                <div class="hide_text">Veículo</div>
+            </button>
+            <button class="btn btn_menu" id="btn_contato">
+                <img class="img_icone_menu" src="../imagens/icone_contato.png" alt="icone_contato">
+                <span class="span_modulo">Contato</span>
+                <div class="hide_text">Contato</div>
+            </button>
+            <button class="btn btn_menu" id="btn_configuracoes">
+                <img class="img_icone_menu" src="../imagens/icone_configuracoes.png" alt="icone_configuracoes">
+                <span class="span_modulo"><a>Configurações</a></span>
+                <div  class="hide_text">Configurações</div>
+            </button>
+        </nav>
+        <section class="principal">
+            
+        </section>
+    </main>
+    <script type="module" src="../modulos/dashboard/dashboard.js"></script>
+    <script type="module" src="../modulos/contato/lista_contatos/contato.js"></script>
+    <script type="module" src="../scripts/javaScript.js"></script>
+    <script type="module" src="../modulos/contato/cadastro_contato/cadastro_contato.js"></script>
+    <script type="module" src="../modulos/configuracao_usuario/configuracao_usuario.js"></script>
+    <script type="module" src="../modulos/produto/produto.js"></script>
+    <script type="module" src="../modulos/centro_de_estoque/centro_de_estoque.js"></script>
+    <script type="module" src="../modulos/configuracoes/configuracoes.js"></script>
+</body>
+</html>

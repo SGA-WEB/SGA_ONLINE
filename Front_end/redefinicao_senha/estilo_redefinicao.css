@@ -1,0 +1,158 @@
+:root {
+    --cinza1: #F6F6F6;
+    --cinza2: #E8E8E8;
+    --cinza3: #aaaaaa;
+    --azul: #3964A8;
+    --azul2: #213a63;
+    --azul1: #9CBBED;
+    --azul-1: #E9F0FF;
+    --principal: #ffffff;
+    --secundaria: #000000;
+}
+* {
+    box-sizing: border-box;
+    padding: 0px;
+    margin: 0px;
+}
+input:-webkit-autofill { /* Corrige o autofill */
+    background-color: var(--cinza2) !important; /* ou a cor desejada */
+    box-shadow: 0 0 0px 1000px var(--cinza2) inset !important; /* Corrige o background */
+    color: inherit; /* Mantém a cor do texto original */
+    border: inherit; /* Mantém a borda original */
+}
+html {
+    font-size: 0.625rem;
+}
+
+a {
+    color: var(--secundaria);
+    text-decoration: none;
+}
+body {
+    background-color: var(--cinza2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    font: normal 1.6rem arial;
+}
+
+.logo_sga {
+    margin-bottom: 4rem;
+    width: 10rem;
+    max-width: 120px;
+    margin-top: 1rem;
+}
+
+.principal {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    margin: auto;
+}
+
+.janela_redefinicao {
+    background-color: var(--principal);
+    max-width: 45rem;
+    padding: 3rem;
+    border-radius: 10px;
+    box-shadow: 2px 2px 11px rgba(0, 0, 0, 0.12);
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+
+.formulario {
+    text-align: center;
+}
+
+.titulo_redefinicao {
+    font: bold 2.2rem arial;
+    margin-bottom: 6rem;
+    text-align: center;
+}
+
+.campo p {
+    margin-bottom: 1rem;
+}
+.campo_input {
+    width: 100%;
+    background-color: var(--cinza2);
+    height: 5rem;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid var(--cinza3);
+    font-size: 1em;
+    margin-bottom: 4rem;
+}
+.campo input::placeholder {
+    color: var(--cinza3);
+}
+
+.btn {
+    width: 50%;
+    min-width: 140px;
+    height: 5rem;
+    border: none;
+    background-color: var(--azul);
+    color: #fff;
+    border-radius: 5px;
+    font-size: 1.1em;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    text-align: center;
+    align-content: center;
+}
+
+.validador {
+    color: rgb(139, 41, 41);
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.paragrafo a{
+    color: var(--azul2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.seta_voltar {
+    width: 1.3rem;
+    transform: rotate(90deg);
+    margin-right: 0.2rem;
+}
+
+.visibilidade {
+    width: 2.2rem;
+    margin-right: 1.2rem;
+    cursor: pointer;
+}
+
+/* Com o tamanho da fonte medio(padrão): 400px */
+@media (max-width: 25rem) { 
+    body {
+        font-size: 1.4rem;
+    }
+    .janela_redefinicao {
+        padding: 2rem;
+    }
+}
+
+@media (max-height: 400px) {
+    .logo_sga {
+        display: none;
+    }
+    
+    .janela_redefinicao {
+        margin-top: 10px;
+    }
+}
+@media (max-height: 500px) { 
+    .logo_sga {
+        margin-bottom: 1rem;
+    }
+ }

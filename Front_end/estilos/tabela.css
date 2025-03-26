@@ -1,0 +1,64 @@
+.tabela {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+.tabela th, td{
+    padding: 7px 15px;
+    border-bottom: 1px solid #ddd;
+}
+
+.tabela td:first-child, th:first-child{
+    text-align: left;
+}
+
+.tabela tr:hover {
+    background-color: var(--cinza1);
+}
+
+.tabela {
+    border: 1px solid var(--cinza2);
+    font-size: 1rem;
+    z-index: 6;
+    overflow: hidden;
+}
+
+.tabela  td, .tabela th {
+    border-right: 1px solid var(--cinza2);
+    text-align: start;
+}
+
+.tabela th {
+    background-color: var(--azul-1);
+    font-weight: bold;
+}
+
+.tabela tr {
+    position: relative; /* Permite que os elementos filhos usem position: absolute */
+}
+/* CRUD: */
+
+.acoes_tabela {
+    display: flex;
+    position: absolute;
+    right: 0; /* Posiciona os botões à direita */
+    top: 0; /* Alinha ao topo da célula */
+    width: auto; /* Ajusta a largura automaticamente */
+    height: 100%;
+    text-align: right; /* Alinha os botões à direita */
+    white-space: nowrap; /* Impede que os botões quebrem de linha */
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+    transform: translateX(100%); /* Move o elemento para fora da tela (direita) */
+    transition: transform 0.2s ease-in-out; /* Animação suave */
+    padding: .2rem .6rem 0 0;
+}
+
+.table_tr td:not(.acoes_tabela):last-of-type {
+    padding-right: 6.25rem; /* Ajusta o padding da última célula para acomodar os botões (100px em rem) */
+}
+
+.table_tr:hover .acoes_tabela {
+    transform: translateX(0); /* Traz o elemento de volta para a posição original */
+}

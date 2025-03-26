@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificação de código</title>
+    <link rel="stylesheet" href="../estilo_redefinicao.css">
+    <link rel="stylesheet" href="estilo_validacao.css">
+    <link rel="shortcut icon" href="../../imagens/icone_sga.ico" type="image/x-icon">
+</head>
+<body>
+    <main class="principal">
+        <img class="logo_sga" src="../../imagens/logo_sga.png" alt="">
+        <section class="janela_redefinicao">
+            <img class="ico_check" src="../../imagens/check.svg" alt="Icone check">
+            <h1 class="titulo_redefinicao">Enviamos um código de 6 digitos para seu e-mail</h1>
+            <label class="campo" for="codigo">
+                <p>Insira o código de 6 digitos que você recebeu por e-mail no campo abaixo: </p>
+                <input type="number" name="codigo" id="codigo" class="campo_input" min="0" max="9" maxlength="6" placeholder="______" >
+            </label>
+            <p class="validador" id="feed_codigo"></p>
+            <p class="alerta">(O e-mail pode demorar alguns minutos para chegar)</p>
+            <p class="paragrafo">Não recebeu o e-mail? <a target="_self" rel="prev" id="btn_reenviar_email" >Reenviar email.</a></p>
+        </section>
+    </main>
+    <script src="verificacao.js"></script>
+</body>
+</html>
