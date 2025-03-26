@@ -2,63 +2,63 @@ import { carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
 import { dataAtual } from "../../../scripts/funcionalidades.js";
 import { esperarCarregarConteudo } from "../../../scripts/funcionalidades.js";
 
-export default function visualizar_contato () {
-    esperarCarregarConteudo(visualizarContatoMain)
+export default function visualizar_contato (dados) {
+    esperarCarregarConteudo(cadastroContatoMain)
 
-    function visualizarContatoMain () {
+    let cont = 0
+    function cadastroContatoMain() {
         // Mudar de tela ao clicar no menu superior da tela de contato:
         let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
-        links_nav[0].classList.add("link_nav_selecionado") // Adiciona a classe ao primeiro link assim que o modulo for carregado
-        links_nav.forEach(link=>{
-            link.addEventListener("click",(e)=>{ // Adiciona o evento de clicar em todos os links 
-               estilo_nav(e.target)
-            })
-        })
+        if (cont == 0) 
+            links_nav[0].classList.add("link_nav_selecionado") // Adiciona a classe ao primeiro link assim que o modulo for carregado
+
+        document.querySelectorAll('.link_nav:not(.link_nav_selecionado)').forEach(link => { // Seleciona todos os links que não possuem a classe link_nav_selecionado
+            link.addEventListener("click", (e) => { 
+                estilo_nav(e.target);
+            });
+        });
     
         // Mudar o input de data de cadastro para o dia atual:
-        dataAtual()
-    
+        setTimeout(() => {
+            dataAtual()
+            btnsProximoEVoltar()
+            inserirDadosDoBanco()
+        }, 300);
+        
         fecharMenu(document.querySelector(".modulo").offsetWidth, 584)
         window.addEventListener('resize', (e) => { 
             if(document.querySelector(".modulo") != null){
                 fecharMenu(document.querySelector(".modulo").offsetWidth, 421)
             } 
         })
-    
-        btnsProximoEVoltar()
+        
+        cont++
     }
 
-    function navLink (link) {
-        switch (link) {
-            case "link_contato":
-                carregarConteudo("contato/visualizar_contato/criar_contato/criar_contato.html", document.querySelector(".principal"),true ,visualizar_contato);
-            break;
-            case "link_endereco":
-                carregarConteudo("contato/visualizar_contato/endereco_contato/endereco_contato.html", document.querySelector(".modulo"),true ,visualizar_contato);
-            break;
-        }
-    }
-    
     function estilo_nav (e) {
         let link = e
         if (e == "voltar_contatos") {
-            ("contato/contato.html", document.querySelector(".principal"))
-        } else {
-            if (typeof(e) == "string") {
-                link = document.getElementById(e)
-            }
-            link.classList.add("link_nav_selecionado") // Adiciona a classe ao link clicado
+            carregarConteudo("contato/contato.html", document.querySelector(".principal"))
+            return
         }
-    
-        let links_selecionado = document.querySelectorAll(".link_nav_selecionado") // Seleciona todos os links selecionados
+        let links_selecionado = document.querySelectorAll(".link_nav") // Seleciona todos os links selecionados
         links_selecionado.forEach(e=>{
-            if (e.id != link.id){ // Se o link selecionado for diferente do link clicado
-                e.classList.remove("link_nav_selecionado") // Retira a classe
-            } else { // Se o link selecionado for o link clicado
-                e.classList.add("link_nav_selecionado") // Adiciona a classe
-            }
+            e.classList.remove("link_nav_selecionado") // Retira a classe
         })
+        
+        e.classList.add("link_nav_selecionado") // Adiciona a classe ao link clicado
         navLink(link.id)
+    }
+    
+    function navLink (link) {
+        switch (link) {
+            case "link_contato":
+                carregarConteudo("contato/visualizar_contato/criar_contato/visualizar_contato.html", document.querySelector(".modulo"), cadastroContatoMain);
+            break;
+            case "link_endereco":
+                carregarConteudo("contato/visualizar_contato/endereco_contato/visualizar_endereco_contato.html", document.querySelector(".modulo"), cadastroContatoMain);
+            break;
+        }
     }
 
     function btnsProximoEVoltar() {
@@ -66,8 +66,23 @@ export default function visualizar_contato () {
         btn_nav.forEach(e=>{
             e.addEventListener("click", (e)=>{
                 let btn = e.target.closest(".btn_nav").id.slice(4) // Pega o id do botão que foi clicado e retira o "btn_"
-                estilo_nav(btn)
+                
+                let link_nav = document.getElementById(btn)
+                if (link_nav == null) {
+                    link_nav = "voltar_contatos"
+                }
+                estilo_nav(link_nav)
             })
         })
+    }
+
+    function inserirDadosDoBanco () {
+        if (document.querySelector(".h2_titulo").textContent == "Visualizar contato"){ // Verifica se a tela é de visualização
+            document.querySelector(".codigo_id").textContent = dados.id_contato
+            document.querySelector("#nome_razao_social").value = dados.razao_social
+            document.querySelector("#nome_fantasia").value = dados.nome_fantasia
+            document.getElementById(dados.categoria.toLowerCase()).checked = true
+            document.querySelector("#fone1").value = dados.fone1
+        }
     }
 } 

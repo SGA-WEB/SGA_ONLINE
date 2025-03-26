@@ -22,5 +22,11 @@ export default function editar_produto (dados) {
         btnVoltar.addEventListener('click', () => {
             carregarConteudo("produto/produto.html", document.querySelector('.principal'))
         })
+
+        let btnSalvar = document.querySelector('.btn_salvar')  
+        btnSalvar.addEventListener("click", () => {
+            alert("Alterações no produto salvas com sucesso")
+            carregarConteudo("produto/produto.html", document.querySelector('.principal'))
+        })
     }
 }

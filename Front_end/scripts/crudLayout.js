@@ -3,6 +3,7 @@ import visualizar_produto from "../modulos/produto/visualizar_produto/visualizar
 import editar_produto from "../modulos/produto/editar_produto/editar_produto.js";
 
 import visualizar_contato from "../modulos/contato/visualizar_contato/visualizar_contato.js"
+import editar_contato from "../modulos/contato/editar_contato/editar_contato.js";
 
 export default function crudLayout (obj, tr) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
@@ -48,6 +49,7 @@ export default function crudLayout (obj, tr) {
             visualizar_produto: visualizar_produto,
             editar_produto: editar_produto,
             visualizar_contato: visualizar_contato,
+            editar_contato: editar_contato
         }
 
         switch (nomeTabelaAtual) { // Carrega a página de visualização de acordo com a tabela atual
@@ -68,12 +70,18 @@ export default function crudLayout (obj, tr) {
             break;
             case "contato":
                 carregarConteudo(
-                    `contato/${acao}_contato/criar_contato/criar_contato.html`,
-                    document.querySelector('.principal'),
-                    false,
-                    funcoes[`${acao}_contato`](obj)
-                );
-            break;
+                    `contato/${acao}_contato/nav_contato.html`,
+                    document.querySelector('.principal')
+                )
+                setTimeout(() => {
+                    carregarConteudo(
+                        `contato/${acao}_contato/criar_contato/${acao}_contato.html`,
+                        document.querySelector('.modulo'),
+                        funcoes[`${acao}_contato`](obj),
+                        true
+                    );
+                }, 400);
+                break;
             default:
                 console.warn(`Nenhuma ação definida para ${nomeTabelaAtual}`);
             break;

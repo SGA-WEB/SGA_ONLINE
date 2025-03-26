@@ -80,6 +80,9 @@
     #tabela_contatos {
         font-size: 0.9rem;
     }
+    .table_tr td:not(.acoes_tabela):last-of-type {
+        padding-right: 6.25rem !important;
+    }
     #tabela_contatos td, #tabela_contatos th {
         padding: 0.3rem 0.3rem;
     }

@@ -28,7 +28,7 @@ export default function contato() {
     // Botão criar contato:
     let btn_criar_contato = document.querySelector("#btn_criar_contato")
     btn_criar_contato.addEventListener("click",()=>{
-        carregarConteudo("contato/cadastro_contato/nav_contato.html",document.querySelector(".principal"))
+        carregarConteudo("contato/cadastro_contato/nav_contato.html",document.querySelector(".principal")) // carrega o menu de navegação superior do cadastro de contato
         setTimeout(() => { // Espera a tela de cadastro ser carregada
             carregarConteudo(
                 "contato/cadastro_contato/criar_contato/criar_contato.html",
