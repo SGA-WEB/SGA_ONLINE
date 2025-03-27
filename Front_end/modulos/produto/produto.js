@@ -38,6 +38,7 @@ export default function produto () {
      }, 100);
     })
     mudarPesquisa(document.querySelector(".input_pesquisa"))
+    
     select2("9em")
 
     buscarDados("sga.produto") // Busca os dados da tabela, exibe na tela e permite pesquisar

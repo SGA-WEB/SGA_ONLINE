@@ -1,5 +1,6 @@
 import { carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
 import { dataAtual, esperarCarregarConteudo } from "../../../scripts/funcionalidades.js";
+import select2 from "../../../scripts/select.js";
 
 export default function editar_contato (dados) {
     esperarCarregarConteudo(cadastroContatoMain)
@@ -22,6 +23,7 @@ export default function editar_contato (dados) {
             dataAtual()
             btnsProximoEVoltar()
             inserirDadosDoBanco()
+            select2("100%")
         }, 300);
         
         fecharMenu(document.querySelector(".modulo").offsetWidth, 584)

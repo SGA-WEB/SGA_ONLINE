@@ -1,6 +1,8 @@
 import { carregarConteudo } from "./javaScript.js";
+
 import visualizar_produto from "../modulos/produto/visualizar_produto/visualizar_produto.js";
 import editar_produto from "../modulos/produto/editar_produto/editar_produto.js";
+import excluir_produto from "../modulos/produto/excluir_produto.js";
 
 import visualizar_contato from "../modulos/contato/visualizar_contato/visualizar_contato.js"
 import editar_contato from "../modulos/contato/editar_contato/editar_contato.js";
@@ -44,12 +46,25 @@ export default function crudLayout (obj, tr) {
     acoes.appendChild(btn_editar) // Adiciona o botão de editar nas ações
     acoes.appendChild(btn_excluir) // Adiciona o botão de excluir nas ações
 
+    btn_visualizar.addEventListener('click',() => {
+        executarAcao('visualizar')
+    })
+
+    btn_editar.addEventListener('click',() => {
+       executarAcao('editar')
+    })
+
+    btn_excluir.addEventListener('click',() => {
+        executarAcao('excluir')
+    })
+
     function executarAcao(acao) {
         // Carrega na tela a página da ação de acordo com a tabela atual
 
         let funcoes = { // Funções de acordo com a ação
             visualizar_produto: visualizar_produto,
             editar_produto: editar_produto,
+            excluir_produto: excluir_produto,
             visualizar_contato: visualizar_contato,
             editar_contato: editar_contato
         }
@@ -65,6 +80,7 @@ export default function crudLayout (obj, tr) {
             case "produto":
                 if (acao == 'excluir') {
                     popup('abrir',0,btn_excluir)
+                    funcoes[`${acao}_produto`](obj)
                 } else {
                     carregarConteudo(
                         `produto/${acao}_produto/${acao}_produto.html`,
@@ -93,18 +109,6 @@ export default function crudLayout (obj, tr) {
             break;
         }
     }
-
-    btn_visualizar.addEventListener('click',() => {
-        executarAcao('visualizar')
-    })
-
-    btn_editar.addEventListener('click',() => {
-       executarAcao('editar')
-    })
-
-    btn_excluir.addEventListener('click',() => {
-        executarAcao('excluir')
-    })
 
     tr.appendChild(acoes) // Adiciona as ações na linha
 }

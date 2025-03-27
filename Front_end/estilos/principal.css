@@ -13,6 +13,8 @@
     --secundaria: #000000;
     --amarelo: #EDD39D;
     --amarelo1: #7c6a49;
+    --alerta1: #FFA9A9;
+    --alerta2: #dd7e7e;
 }
 * {
     box-sizing: border-box;

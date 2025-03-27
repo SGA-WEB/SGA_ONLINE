@@ -1,5 +1,6 @@
 import { carregarConteudo } from '../../../scripts/javaScript.js'
 import { esperarCarregarConteudo } from '../../../scripts/funcionalidades.js'
+import select2 from '../../../scripts/select.js'
 
 export default function editar_produto (dados) {
     esperarCarregarConteudo(moduloCarregado)
@@ -17,6 +18,8 @@ export default function editar_produto (dados) {
         valor_atacado.value = dados.preco_atacado
         nome_produto.value = dados.produto
         quantidade_em_estoque.value = dados.quantidade
+
+        select2("10rem")
 
         let btnVoltar = document.querySelector('.btn_voltar')
         btnVoltar.addEventListener('click', () => {

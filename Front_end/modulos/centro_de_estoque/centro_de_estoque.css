@@ -12,6 +12,10 @@
     text-align: left;
 }
 
+#btn_adicionar_centro_de_estoque {
+    width: 14rem;
+}
+
 @media screen and (max-width: 650px) {
     #tabela_centro_estoque {
         min-width: 350px;

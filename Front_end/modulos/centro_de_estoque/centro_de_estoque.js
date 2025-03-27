@@ -8,7 +8,7 @@ export default function centro_de_estoque() {
     select2("120px");
     buscarDados('sga.centro_estoque'); // Busca os dados da tabela, exibe na tela e permite pesquisar
 
-    let btnAdicionar = document.querySelector("#btn_adicionar");
+    let btnAdicionar = document.querySelector("#btn_adicionar_centro_de_estoque");
     btnAdicionar.addEventListener("click",() => {
         carregarConteudo("centro_de_estoque/cadastro_centro_de_estoque/cadastro_centro_de_estoque.html",  document.querySelector(".principal")) // Carrega o módulo de cadastro de produto
    

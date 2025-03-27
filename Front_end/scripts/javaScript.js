@@ -76,7 +76,6 @@ function carregarConteudo(url, elemento, funcao, adicionar) {
       elemento.innerHTML = html;
     }
     requestAnimationFrame(() => { // Aguarda o carregamento completo do conteúdo HTML antes de executar as funções do JavaScript
-      select2()
       
       if (funcao) {
         funcao()
