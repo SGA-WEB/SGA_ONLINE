@@ -31,7 +31,7 @@
     overflow: auto;
 } 
 
-.select2-selection {
+.header .select2-selection {
     border: none !important;
     background-color: var(--azul-1) !important;
 }

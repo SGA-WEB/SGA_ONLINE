@@ -1,11 +1,15 @@
 import { carregarConteudo } from "./javaScript.js";
 
+import visualizar_centro_de_estoque from "../modulos/centro_de_estoque/visualizar_centro_de_estoque/visualizar_centro_de_estoque.js";
+import editar_centro_de_estoque from "../modulos/centro_de_estoque/editar_centro_de_estoque/editar_centro_de_estoque.js";
+
 import visualizar_produto from "../modulos/produto/visualizar_produto/visualizar_produto.js";
 import editar_produto from "../modulos/produto/editar_produto/editar_produto.js";
 import excluir_produto from "../modulos/produto/excluir_produto.js";
 
 import visualizar_contato from "../modulos/contato/visualizar_contato/visualizar_contato.js"
 import editar_contato from "../modulos/contato/editar_contato/editar_contato.js";
+import excluir_contato from "../modulos/contato/excluir_contato.js";
 
 import popup from "./popup.js"
 
@@ -62,25 +66,28 @@ export default function crudLayout (obj, tr) {
         // Carrega na tela a página da ação de acordo com a tabela atual
 
         let funcoes = { // Funções de acordo com a ação
+            visualizar_centro_de_estoque: visualizar_centro_de_estoque,
+            editar_centro_de_estoque: editar_centro_de_estoque,
             visualizar_produto: visualizar_produto,
             editar_produto: editar_produto,
             excluir_produto: excluir_produto,
             visualizar_contato: visualizar_contato,
-            editar_contato: editar_contato
+            editar_contato: editar_contato,
+            excluir_contato: excluir_contato
         }
 
         switch (nomeTabelaAtual) { // Carrega a página de visualização de acordo com a tabela atual
             case "centro de estoque":
                 carregarConteudo(
-                    `centro_estoque/${acao}_centro_estoque/${acao}_centro_estoque.html`,
+                    `centro_de_estoque/${acao}_centro_de_estoque/${acao}_centro_de_estoque.html`,
                     document.querySelector('.principal'),
-                    false,
+                    funcoes[`${acao}_centro_de_estoque`](obj), // Chama a função de acordo com a ação
                 );
             break;
             case "produto":
                 if (acao == 'excluir') {
                     popup('abrir',0,btn_excluir)
-                    funcoes[`${acao}_produto`](obj)
+                    funcoes[`excluir_produto`](obj)
                 } else {
                     carregarConteudo(
                         `produto/${acao}_produto/${acao}_produto.html`,
@@ -91,18 +98,23 @@ export default function crudLayout (obj, tr) {
                 }
             break;
             case "contato":
-                carregarConteudo(
-                    `contato/${acao}_contato/nav_contato.html`,
-                    document.querySelector('.principal')
-                )
-                setTimeout(() => {
+                if (acao == 'excluir') {
+                    popup('abrir',0,btn_excluir)
+                    funcoes[`excluir_contato`](obj)
+                } else {
                     carregarConteudo(
-                        `contato/${acao}_contato/criar_contato/${acao}_contato.html`,
-                        document.querySelector('.modulo'),
-                        funcoes[`${acao}_contato`](obj),
-                        true
-                    );
-                }, 400);
+                        `contato/${acao}_contato/nav_contato.html`,
+                        document.querySelector('.principal')
+                    )
+                    setTimeout(() => {
+                        carregarConteudo(
+                            `contato/${acao}_contato/criar_contato/${acao}_contato.html`,
+                            document.querySelector('.modulo'),
+                            funcoes[`${acao}_contato`](obj),
+                            true
+                        );
+                    }, 400);
+                }
             break;
             default:
                 console.warn(`Nenhuma ação definida para ${nomeTabelaAtual}`);

@@ -170,7 +170,7 @@
 
 .btn_fechar_popup {
     position: absolute;
-    top: .3rem;
+    top: .4rem;
     right: .3rem;
     cursor: pointer;
     padding: .2rem;
@@ -204,6 +204,8 @@
     height: 2.5rem; /* 40px */
     justify-content: center;
     align-items: center;
+    border-radius: 5px 5px 0 0;
+    margin-bottom: 1rem;
 }
 
 .popup_alerta header img {
@@ -215,7 +217,7 @@
 }
 
 .popup_alerta main p {
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 }
 
 .popup_alerta .btns_container {
@@ -223,6 +225,11 @@
     justify-content: space-between;
     padding: 0 1rem;
 }
+
+.popup_alerta .btns_container .btn {
+    min-width: 5rem;
+}
+
 /* Estilo telas de formulário: */
 
 .p_codigo_id { 

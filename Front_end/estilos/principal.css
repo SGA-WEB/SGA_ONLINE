@@ -457,7 +457,10 @@ body {
 #modulo_dashboard {
     box-shadow: none;
 }
-
+.select2-selection {
+    border: none !important;
+    background-color: var(--azul-1) !important;
+}
 .item_dashboard {
     max-width: 800px;
     min-width: 400px;
