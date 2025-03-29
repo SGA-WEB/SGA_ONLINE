@@ -24,6 +24,12 @@ export default function editar_contato (dados) {
             btnsProximoEVoltar()
             inserirDadosDoBanco()
             select2("100%")
+            document.querySelector(".btn_salvar").addEventListener("click",() => {
+                carregarConteudo("contato/contato.html", document.querySelector(".principal"))
+            })
+            document.querySelector(".btn_cancelar").addEventListener("click",() => {
+                carregarConteudo("contato/contato.html", document.querySelector(".principal"))
+            })
         }, 300);
         
         fecharMenu(document.querySelector(".modulo").offsetWidth, 584)
@@ -32,7 +38,7 @@ export default function editar_contato (dados) {
                 fecharMenu(document.querySelector(".modulo").offsetWidth, 421)
             } 
         })
-        
+
         cont++
     }
 

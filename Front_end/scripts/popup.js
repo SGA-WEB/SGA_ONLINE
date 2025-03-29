@@ -16,27 +16,37 @@ export default function popup (status, idx = 0, btn) {
     let container_popup = document.querySelectorAll(".container_popup")[idx]
     let btn_fechar_popup = document.querySelectorAll(".btn_fechar_popup")[idx]
     
-    // função que fecha o popup quando o usuário clicar fora dele
-    let fechar_popup = (e) => {
+    let fecharPopupQuandoClicarForaDele = (e) => {
         let popup = document.querySelectorAll(".popup")[idx]
         if (container_popup.style.display == "flex"){
             if (!popup.contains(e.target) && (!btn.contains(e.target))) { // Verifica se o clique foi fora do popup e não foi feito no botão de mudar foto
                 container_popup.style.display = "none"
-                window.removeEventListener("click", fechar_popup); // Remove o evento de clique fora do popup
+                window.removeEventListener("click", fecharPopupQuandoClicarForaDele); // Remove o evento de clique fora do popup
             }
         }
     }
 
+    function fecharPopup(btn) {
+        container_popup.style.display = "none"
+        btn.removeEventListener("click",btn) // Remove o evento de clique no botão do popup
+        window.removeEventListener("click", fecharPopupQuandoClicarForaDele); // Remove o evento de clique fora do popup
+    }
+
     if (status == "abrir"){
         container_popup.style.display = "flex"
-        window.addEventListener("click", fechar_popup) // Adiciona o evento de clique fora do popup
+        window.addEventListener("click", fecharPopupQuandoClicarForaDele) // Adiciona o evento de clique fora do popup
     } else {
         container_popup.style.display = "none"
     }
 
     btn_fechar_popup.addEventListener("click", () => {
-        container_popup.style.display = "none"
-        btn_fechar_popup.removeEventListener("click",btn_fechar_popup) // Remove o evento de clique no botão do popup
-        window.removeEventListener("click", fechar_popup); // Remove o evento de clique fora do popup
+        fecharPopup(btn_fechar_popup)
+    })
+
+    // Se for o popup de alerta que tiver o botão de cancelar:
+
+    let btn_popup_excluir_cancelar = document.querySelector("#btn_popup_excluir_cancelar")
+    btn_popup_excluir_cancelar.addEventListener("click", () => {
+       fecharPopup(btn_popup_excluir_cancelar)
     })
 }

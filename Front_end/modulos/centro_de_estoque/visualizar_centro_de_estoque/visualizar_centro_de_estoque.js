@@ -2,6 +2,8 @@ import { dataAtual, esperarCarregarConteudo } from "../../../scripts/funcionalid
 import { carregarConteudo } from "../../../scripts/javaScript.js";
 import select2 from "../../../scripts/select.js"
 
+import editar_centro_de_estoque from "../editar_centro_de_estoque/editar_centro_de_estoque.js"
+
 export default function visualizar_centro_de_estoque(dado) {
     esperarCarregarConteudo(moduloCarregado)
 
@@ -17,6 +19,10 @@ export default function visualizar_centro_de_estoque(dado) {
         document.querySelector("#btn_voltar_produtos").addEventListener("click", () => {
             // Botão que volta para a tela de centro de estoque
             carregarConteudo("centro_de_estoque/centro_de_estoque.html", document.querySelector(".principal"))
+        })
+
+        document.querySelector(".btn_editar").addEventListener("click", () => {
+            carregarConteudo("centro_de_estoque/editar_centro_de_estoque/editar_centro_de_estoque.html", document.querySelector(".principal"), editar_centro_de_estoque(dado, "visualizar_centro_de_estoque"))
         })
     }
 }

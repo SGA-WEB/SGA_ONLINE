@@ -5,6 +5,36 @@
     transition: .2s;
 }
 
+.space_between {
+    display: flex;
+    padding: .5rem;
+    justify-content: space-between;
+}
+
+.start {
+    display: flex;
+    padding: .5rem;
+    justify-content: start;
+}
+
+.align_center {
+    display: flex;
+    align-items: center;
+}
+
+.menu_btns .btn_nav {
+    margin: 0;
+}
+
+.menu_btns .container_btns {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn img {
+    width: 1rem;
+}
+
 .hide {
     display: none !important;
 }
@@ -25,18 +55,24 @@
 
 /* Botões */
 
+
 .btn {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: .3rem;
     width: fit-content;
     background-color: var(--azul1);
     color: var(--secundaria);
     height: 1.875rem; /* 30px */	
     padding: 0 .7rem;
     border-radius: 5px;
-    transition: .2s;
+    transition: .1s;
 }
+
 .btn:hover {
     background-color: var(--azul1-2);
-    transition: .2s;
+    transition: .1s;
 }
 
 .btn.btn_menu {
@@ -46,11 +82,11 @@
 .btn2 {
     background-color: var(--azul-1);
     color: var(--azul);
-    transition: .2s;
+    transition: .1s;
 }
 .btn2:hover {
     background-color: var(--azul1);
-    transition: .2s;
+    transition: .1s;
 }
 
 .btn3 {
@@ -58,11 +94,11 @@
     color: var(--amarelo1);
     font-weight: bold;
     border-color: var(--amarelo1);
-    transition: .2s;
+    transition: .1s;
 }
 .btn3:hover {
     background-color: var(--azul-1);
-    transition: .2s;
+    transition: .1s;
 }
 
 .btn4 {

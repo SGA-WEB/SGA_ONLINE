@@ -2,6 +2,7 @@ import { carregarConteudo } from "./javaScript.js";
 
 import visualizar_centro_de_estoque from "../modulos/centro_de_estoque/visualizar_centro_de_estoque/visualizar_centro_de_estoque.js";
 import editar_centro_de_estoque from "../modulos/centro_de_estoque/editar_centro_de_estoque/editar_centro_de_estoque.js";
+import excluir_centro_de_estoque from "../modulos/centro_de_estoque/excluir_centro_de_estoque.js";
 
 import visualizar_produto from "../modulos/produto/visualizar_produto/visualizar_produto.js";
 import editar_produto from "../modulos/produto/editar_produto/editar_produto.js";
@@ -68,6 +69,7 @@ export default function crudLayout (obj, tr) {
         let funcoes = { // Funções de acordo com a ação
             visualizar_centro_de_estoque: visualizar_centro_de_estoque,
             editar_centro_de_estoque: editar_centro_de_estoque,
+            excluir_centro_de_estoque: excluir_centro_de_estoque,
             visualizar_produto: visualizar_produto,
             editar_produto: editar_produto,
             excluir_produto: excluir_produto,
@@ -76,13 +78,18 @@ export default function crudLayout (obj, tr) {
             excluir_contato: excluir_contato
         }
 
-        switch (nomeTabelaAtual) { // Carrega a página de visualização de acordo com a tabela atual
+        switch (nomeTabelaAtual) { // Carrega a página do CRUD de acordo com a tabela atual
             case "centro de estoque":
-                carregarConteudo(
-                    `centro_de_estoque/${acao}_centro_de_estoque/${acao}_centro_de_estoque.html`,
-                    document.querySelector('.principal'),
-                    funcoes[`${acao}_centro_de_estoque`](obj), // Chama a função de acordo com a ação
-                );
+                if (acao == 'excluir') {
+                    popup('abrir',0,btn_excluir)
+                    funcoes[`excluir_centro_de_estoque`](obj)
+                } else {
+                    carregarConteudo(
+                        `centro_de_estoque/${acao}_centro_de_estoque/${acao}_centro_de_estoque.html`,
+                        document.querySelector('.principal'),
+                        funcoes[`${acao}_centro_de_estoque`](obj), // Chama a função de acordo com a ação
+                    );
+                }
             break;
             case "produto":
                 if (acao == 'excluir') {

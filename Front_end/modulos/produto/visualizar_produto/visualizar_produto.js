@@ -6,7 +6,6 @@ export default function visualizar_produto (dados) {
     esperarCarregarConteudo(moduloCarregado)
     
     function moduloCarregado() {
-        console.log(dados)
         select2("10rem")
         let codigo_produto = document.querySelector('.codigo_id')
         let valor_varejo = document.querySelector('#valor_varejo')

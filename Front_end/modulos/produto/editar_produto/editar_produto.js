@@ -31,5 +31,9 @@ export default function editar_produto (dados) {
             alert("Alterações no produto salvas com sucesso")
             carregarConteudo("produto/produto.html", document.querySelector('.principal'))
         })
+
+        document.querySelector(".btn_cancelar").addEventListener("click",() => {
+            carregarConteudo("produto/produto.html", document.querySelector('.principal'))
+        })
     }
 }
