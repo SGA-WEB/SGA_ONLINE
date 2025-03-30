@@ -2,7 +2,7 @@ import buscarDados from "../../scripts/buscarDados.js";
 import { visibilidadeSenha } from "../../scripts/funcionalidades.js";
 import { carregarConteudo, mudarLogo } from "../../scripts/javaScript.js";
 import popup from "../../scripts/popup.js";
-import salvar from "./salvar.js";
+import salvarUsuario from "./salvarUsuarios.js";
 
 export default function configuracao_usuario( data ) {
     function fechar_menu_editar() {
@@ -160,5 +160,5 @@ export default function configuracao_usuario( data ) {
             mudarLogo()
     })
 
-    buscarDados("sga.usuario", false, salvar)
+    buscarDados("sga.usuario", false, salvarUsuario)
 }    
