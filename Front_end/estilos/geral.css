@@ -22,6 +22,19 @@
     align-items: center;
 }
 
+.container_space_between {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.menu_btns {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
 .menu_btns .btn_nav {
     margin: 0;
 }
@@ -29,6 +42,7 @@
 .menu_btns .container_btns {
     display: flex;
     gap: 1rem;
+    justify-content: end;
 }
 
 .btn img {
@@ -58,7 +72,7 @@
 
 .btn {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     gap: .3rem;
     width: fit-content;

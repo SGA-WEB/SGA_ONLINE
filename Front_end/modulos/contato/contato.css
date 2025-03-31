@@ -14,6 +14,11 @@
     margin-bottom: 2rem;
 }
 
+#menu_contato .container_btns {
+    width: 100%;
+    justify-content: end;
+}
+
 .titulo {
     width: 100%;
 }

@@ -1,12 +1,24 @@
 import { carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
 import { dataAtual, esperarCarregarConteudo } from "../../../scripts/funcionalidades.js";
 import select2 from "../../../scripts/select.js";
+import contato from "../contato.js";
+import visualizar_contato from "../visualizar_contato/visualizar_contato.js";
 
-export default function editar_contato (dados) {
+export default function editar_contato (dado, telaAnteriorVisualizar) {
+    let caminho = "contato/contato.html"
+    let funcao = contato
+    console.log(telaAnteriorVisualizar)
+
+    if (telaAnteriorVisualizar) {
+        caminho = "contato/visualizar_contato/criar_contato/visualizar_contato.html"
+        funcao = visualizar_contato
+    }
+
     esperarCarregarConteudo(cadastroContatoMain)
 
     let cont = 0
     function cadastroContatoMain() {
+
         // Mudar de tela ao clicar no menu superior da tela de contato:
         let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
         if (cont == 0) 
@@ -18,17 +30,16 @@ export default function editar_contato (dados) {
             });
         });
     
-        // Mudar o input de data de cadastro para o dia atual:
         setTimeout(() => {
             dataAtual()
             btnsProximoEVoltar()
-            inserirDadosDoBanco()
+            inserirDadoDoBanco()
             select2("100%")
             document.querySelector(".btn_salvar").addEventListener("click",() => {
                 carregarConteudo("contato/contato.html", document.querySelector(".principal"))
             })
             document.querySelector(".btn_cancelar").addEventListener("click",() => {
-                carregarConteudo("contato/contato.html", document.querySelector(".principal"))
+                carregarConteudo(caminho, document.querySelector(".principal"), funcao(dado))
             })
         }, 300);
         
@@ -45,7 +56,23 @@ export default function editar_contato (dados) {
     function estilo_nav (e) {
         let link = e
         if (e == "voltar_contatos") {
-            carregarConteudo("contato/contato.html", document.querySelector(".principal"))
+            if (telaAnteriorVisualizar) {
+                carregarConteudo(
+                    `contato/visualizar_contato/nav_contato.html`,
+                    document.querySelector('.principal'),
+                    visualizar_contato(dado, true)
+                )
+                setTimeout(() => {
+                    console.log(document.querySelector(".modulo"))
+                    carregarConteudo(
+                        `contato/visualizar_contato/criar_contato/visualizar_contato.html`,
+                        document.querySelector('.modulo'),
+                        visualizar_contato(dado, true),
+                        true
+                    );
+                }, 400);
+            }
+            carregarConteudo(caminho, document.querySelector(".principal"),funcao(dado))
             return
         }
         let links_selecionado = document.querySelectorAll(".link_nav") // Seleciona todos os links selecionados
@@ -83,13 +110,13 @@ export default function editar_contato (dados) {
         })
     }
 
-    function inserirDadosDoBanco () {
+    function inserirDadoDoBanco () {
         if (document.querySelector(".h2_titulo").textContent == "Editar contato"){ // Verifica se a tela é de edição de contato
-            document.querySelector(".codigo_id").textContent = dados.id_contato
-            document.querySelector("#nome_razao_social").value = dados.razao_social
-            document.querySelector("#nome_fantasia").value = dados.nome_fantasia
-            document.getElementById(dados.categoria.toLowerCase()).checked = true
-            document.querySelector("#fone1").value = dados.fone1
+            document.querySelector(".codigo_id").textContent = dado.id_contato
+            document.querySelector("#nome_razao_social").value = dado.razao_social
+            document.querySelector("#nome_fantasia").value = dado.nome_fantasia
+            document.getElementById(dado.categoria.toLowerCase()).checked = true
+            document.querySelector("#fone1").value = dado.fone1
         }
     }
 }

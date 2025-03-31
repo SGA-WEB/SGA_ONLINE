@@ -2,12 +2,15 @@ import { carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
 import { dataAtual } from "../../../scripts/funcionalidades.js";
 import { esperarCarregarConteudo } from "../../../scripts/funcionalidades.js";
 import select2 from "../../../scripts/select.js";
+import editar_contato from "../editar_contato/editar_contato.js";
+import excluir_contato from "../excluir_contato.js";
 
-export default function visualizar_contato (dados) {
+export default function visualizar_contato (dado) {
     esperarCarregarConteudo(cadastroContatoMain)
 
     let cont = 0
     function cadastroContatoMain() {
+        cont++
         // Mudar de tela ao clicar no menu superior da tela de contato:
         let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
         if (cont == 0) 
@@ -23,8 +26,29 @@ export default function visualizar_contato (dados) {
         setTimeout(() => {
             dataAtual()
             btnsProximoEVoltar()
-            inserirDadosDoBanco()
+            inserirDadoDoBanco()
             select2("100%")
+            
+            document.querySelector(".btn_editar").addEventListener("click", () => {
+                carregarConteudo(
+                    `contato/editar_contato/nav_contato.html`,
+                    document.querySelector('.principal')
+                )
+                setTimeout(() => {
+                    carregarConteudo(
+                        `contato/editar_contato/criar_contato/editar_contato.html`,
+                        document.querySelector('.modulo'),
+                        editar_contato(dado, true),
+                        true
+                    );
+                }, 400);
+            })
+    
+            let btn_excluir = document.querySelector(".btn_excluir")
+            btn_excluir.addEventListener("click",() => {
+                popup("abrir", 0, btn_excluir)
+                excluir_contato(dado)
+            })
         }, 300);
         
         fecharMenu(document.querySelector(".modulo").offsetWidth, 584)
@@ -33,8 +57,6 @@ export default function visualizar_contato (dados) {
                 fecharMenu(document.querySelector(".modulo").offsetWidth, 421)
             } 
         })
-        
-        cont++
     }
 
     function estilo_nav (e) {
@@ -78,13 +100,13 @@ export default function visualizar_contato (dados) {
         })
     }
 
-    function inserirDadosDoBanco () {
+    function inserirDadoDoBanco () {
         if (document.querySelector(".h2_titulo").textContent == "Visualizar contato"){ // Verifica se a tela é de visualização
-            document.querySelector(".codigo_id").textContent = dados.id_contato
-            document.querySelector("#nome_razao_social").value = dados.razao_social
-            document.querySelector("#nome_fantasia").value = dados.nome_fantasia
-            document.getElementById(dados.categoria.toLowerCase()).checked = true
-            document.querySelector("#fone1").value = dados.fone1
+            document.querySelector(".codigo_id").textContent = dado.id_contato
+            document.querySelector("#nome_razao_social").value = dado.razao_social
+            document.querySelector("#nome_fantasia").value = dado.nome_fantasia
+            document.getElementById(dado.categoria.toLowerCase()).checked = true
+            document.querySelector("#fone1").value = dado.fone1
         }
     }
 } 

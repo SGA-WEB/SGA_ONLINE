@@ -1,8 +1,20 @@
 <section class="modulo" id="modulo_cadastro_produto">
-    <button class="btn_nav" id="btn_voltar_produtos">
-        <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
-        <p class="btn_voltar">Voltar</p>
-    </button>
+    <menu class="menu_btns space_between align_center">
+        <button class="btn_nav" id="btn_voltar_produtos">
+            <img src="..//..//../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
+            <p class="btn_voltar">Voltar</p>
+        </button>
+        <div class="container_btns space_between">
+            <button class="btn_editar btn btn2">
+                <img src="..//..//../imagens/icone_editar.svg" alt="icone_editar" >
+                <p>Editar</p>
+            </button>
+            <button class="btn_excluir btn btn5">
+                <img src="..//..//../imagens/icone_excluir.svg" alt="icone_editar" >
+                <p>Excluir</p>
+            </button>
+        </div>
+    </menu>
     <div class="modulo_header header_cadastro">
         <h2 class="h2_titulo">Visualizar Produto</h2>
         <div class="container_codigo_data">
@@ -45,5 +57,26 @@
             <label for="descricao">Descrição:</label>
             <textarea name="descricao" id="descricao" class="textarea" rows="4"></textarea>
         </div>   
+    </div>
+</section>
+<!-- POP-UP ALERTA -->
+<section class="container_popup " id="container_popup_excluir_produto">
+    <div class="popup popup_alerta" id="popup_excluir_produto">
+        <header>
+            <img src="..//..//imagens/icone_alerta.svg" alt="icone_alerta">
+            <h1>Comfirme a exclusão</h1>
+            <button class="btn_fechar_popup" id="btn_fechar_popup_excluir_produto">
+                <img src="../imagens/icone_fechar.svg" alt="botão fechar popup" id="btn_fechar_popup_excluir_produto" class="icone_fechar">
+            </button>
+        </header>
+        <main>
+            <p>
+                Você tem certeza que deseja excluir o produto: <span class="codigo_popup_excluir"></span> - <span class="item_popup_excluir"></span>
+            </p>
+            <div class="btns_container">
+                <button class="btn" id="btn_popup_excluir_cancelar">Cancelar</button>
+                <button class="btn btn5" id="btn_popup_excluir_excluir">Excluir</button>
+            </div>
+        </main>
     </div>
 </section>

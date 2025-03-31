@@ -87,7 +87,8 @@ export default function crudLayout (obj, tr) {
                     carregarConteudo(
                         `centro_de_estoque/${acao}_centro_de_estoque/${acao}_centro_de_estoque.html`,
                         document.querySelector('.principal'),
-                        funcoes[`${acao}_centro_de_estoque`](obj), // Chama a função de acordo com a ação
+                        funcoes[`${acao}_centro_de_estoque`], // Chama a função de acordo com a ação
+                        obj
                     );
                 }
             break;

@@ -57,7 +57,7 @@ logo_sga_principal.addEventListener("click",()=>{
 }) // Clicar na logo volta para o dashboard
 
 // Função de carregar conteúdo html dos módulos
-function carregarConteudo(url, elemento, funcao, adicionar) {
+function carregarConteudo(url, elemento, funcao, parametro, adicionar) {
   elemento.innerHTML = "<p>Carregando...</p>"; // Limpa o conteúdo atual antes de carregar o novo
 
   url = "../modulos/" + url;
@@ -76,24 +76,24 @@ function carregarConteudo(url, elemento, funcao, adicionar) {
       elemento.innerHTML = html;
     }
     requestAnimationFrame(() => { // Aguarda o carregamento completo do conteúdo HTML antes de executar as funções do JavaScript
-      
       if (funcao) {
-        funcao()
+        console.log(funcao, parametro)
+        funcao(parametro)
       }
 
       if (url === "../modulos/dashboard/dashboard.html") {
         dashBorad();
       }
-      if (url === "../modulos/contato/contato.html") {
+      if (url === "../modulos/contato/contato.html" && !funcao) { // !funcao: para a função não ser chamada mais de uma fez
         contato();
       }
       if (url === "../modulos/configuracao_usuario/configuracao_usuario.html") {
         configuracao_usuario();
       }
-      if (url === "../modulos/produto/produto.html") { 
+      if (url === "../modulos/produto/produto.html" && !funcao) { 
         produto()
       }
-      if (url === "../modulos/centro_de_estoque/centro_de_estoque.html") {
+      if (url === "../modulos/centro_de_estoque/centro_de_estoque.html" && !funcao) {
         centro_de_estoque()
       }
       if (url === "../modulos/configuracoes/configuracoes.html") {
