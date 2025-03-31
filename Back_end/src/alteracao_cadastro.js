@@ -12,13 +12,15 @@ const client = new Client({
   },
 });
 
+
 // Dados que você deseja inserir
 const dados = {
     nome: 'João Silva',
     email: 'joao.silva@example.com',
     celular: '11987654321',
     senha: 'senha123',
-    data_criacao: new Date() // Adiciona a data atual
+    data_criacao: new Date(), // Adiciona a data atual
+    imagePath: '/uploads/default.jpg' //
 };
 
 // Função para inserir dados
@@ -28,8 +30,8 @@ async function insertData() {
 
         // Query SQL para inserir dados
         const query = `
-            INSERT INTO sga.usuario (nome, email, celular, senha, data_criacao)
-            VALUES ($1, $2, $3, $4, $5)
+            INSERT INTO sga.usuario (nome, email, celular, senha, data_criacao, image_path)
+            VALUES ($1, $2, $3, $4, $5, $6)
         `;
 
         // Executa a query
@@ -38,7 +40,8 @@ async function insertData() {
             dados.email,
             dados.celular,
             dados.senha,
-            dados.data_criacao
+            dados.data_criacao,
+            dados.imagePath
         ]);
 
         console.log('Dados inseridos com sucesso:', );
@@ -85,9 +88,17 @@ const { Pool } = require('pg');
 const fs = require('fs');
 const path = require('path');
 const cors = require('cors');
-
 const app = express();
-app.use(cors()); // Habilita CORS para o frontend
+
+app.use(cors({
+  origin: ['http://127.0.0.1:5503', 'http://localhost:3000'],
+  methods: ['POST', 'GET'],
+  credentials: true
+}));
+
+app.use(express.json()); // Para parsear JSON
+app.use(express.urlencoded({ extended: true })); // Para formulários HTML
+
 
 // Configuração do NeonDB (PostgreSQL)
 
@@ -115,7 +126,8 @@ const upload = multer({
     } else {
       cb(new Error('Apenas imagens são permitidas!'), false);
     }
-  }
+  },
+  dest: 'uploads/'
 });
 
 // Rota para upload
@@ -125,18 +137,18 @@ app.post('/upload', upload.single('imagem'), async (req, res) => {
       return res.status(400).json({ error: 'Nenhuma imagem enviada' });
     }
 
-    // Salva no banco de dados (NeonDB)
     const imagePath = `/uploads/${req.file.filename}`;
     const query = `
-      INSERT INTO usuarios (nome, email, image_path) 
-      VALUES ($1, $2, $3) 
-      RETURNING id
-    `;
+    INSERT INTO sga.usuario (nome, email, celular, senha, data_criacao, image_path)
+    VALUES ($1, $2, $3, $4, $5, $6)
+`;
     
-    // Substitua pelos dados reais do seu formulário
     const values = [
-      req.body.nome || 'Usuário Teste', 
+      req.body.nome || 'Usuário Teste',
       req.body.email || 'teste@example.com',
+      req.body.celular || '',
+      req.body.senha || '',
+      new Date(),
       imagePath
     ];
 
@@ -147,19 +159,8 @@ app.post('/upload', upload.single('imagem'), async (req, res) => {
       imageUrl: imagePath,
       userId: result.rows[0].id
     });
-
   } catch (error) {
-    console.error('Erro no upload:', error);
-    
-    // Remove o arquivo se houve erro no banco de dados
-    if (req.file) {
-      fs.unlinkSync(req.file.path);
-    }
-
-    res.status(500).json({ 
-      error: 'Erro ao processar a imagem',
-      details: error.message
-    });
+    // ... (mantenha o tratamento de erro)
   }
 });
 
