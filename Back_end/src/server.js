@@ -82,3 +82,23 @@ app.post('/api/login', async (req, res) => {
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+// Rota para ATUALIZAR usuário (PUT)
+app.put('/usuarios/:id_usuario', async (req, res) => {
+    const { id } = req.params;
+    const { nome, email, celular, senha } = req.body;
+
+    try {
+        const query = `
+            UPDATE sga.usuario 
+            SET nome = $1, email = $2, celular = $3, senha = $4
+            WHERE id_usuario = $5
+        `;
+        const values = [nome, email, celular, senha, id];
+
+        await pool.query(query, values); // Usa pool.query diretamente!
+        res.status(200).json({ message: 'Usuário atualizado com sucesso!' });
+    } catch (err) {
+        console.error('Erro ao atualizar usuário:', err);
+        res.status(500).json({ error: 'Erro ao atualizar usuário' });
+    }
+});
