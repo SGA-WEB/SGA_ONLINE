@@ -1,8 +1,9 @@
 // Função que minimiza o menu lateral:
-import { btnMenuLateral, carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
-import buscarDados from "../../../scripts/buscarDados.js"
-import { mudarPesquisa } from "../../../scripts/funcionalidades.js"
-import select2 from "../../../scripts/select.js"
+import { btnMenuLateral, carregarConteudo, fecharMenu } from "../../scripts/javaScript.js"
+import buscarDados from "../../scripts/buscarDados.js"
+import { esperarCarregarConteudo, mudarPesquisa } from "../../scripts/funcionalidades.js"
+import select2 from "../../scripts/select.js"
+import cadastro_contato from "./cadastro_contato/cadastro_contato.js"
 
 export default function contato() {
     /*
@@ -27,8 +28,15 @@ export default function contato() {
     // Botão criar contato:
     let btn_criar_contato = document.querySelector("#btn_criar_contato")
     btn_criar_contato.addEventListener("click",()=>{
-        carregarConteudo("contato/cadastro_contato/criar_contato/criar_contato.html",document.querySelector(".principal"))
+        carregarConteudo("contato/cadastro_contato/nav_contato.html",document.querySelector(".principal")) // carrega o menu de navegação superior do cadastro de contato
+        setTimeout(() => { // Espera a tela de cadastro ser carregada
+            carregarConteudo(
+                "contato/cadastro_contato/criar_contato/criar_contato.html",
+                document.querySelector(".modulo"), 
+                cadastro_contato, 
+                true
+            )
+        }, 400);
     })
-
     buscarDados("sga.contato") // Busca os dados da tabela, exibe na tela e permite pesquisar
 }

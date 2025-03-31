@@ -1,7 +1,7 @@
 import { carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
 import { dataAtual, esperarCarregarConteudo } from "../../../scripts/funcionalidades.js";
 
-export default function cadastro_contato () {
+export default function editar_contato (dados) {
     esperarCarregarConteudo(cadastroContatoMain)
 
     let cont = 0
@@ -18,16 +18,19 @@ export default function cadastro_contato () {
         });
     
         // Mudar o input de data de cadastro para o dia atual:
-        dataAtual()
-    
+        setTimeout(() => {
+            dataAtual()
+            btnsProximoEVoltar()
+            inserirDadosDoBanco()
+        }, 300);
+        
         fecharMenu(document.querySelector(".modulo").offsetWidth, 584)
         window.addEventListener('resize', (e) => { 
             if(document.querySelector(".modulo") != null){
                 fecharMenu(document.querySelector(".modulo").offsetWidth, 421)
             } 
         })
-    
-        btnsProximoEVoltar()
+        
         cont++
     }
 
@@ -49,10 +52,10 @@ export default function cadastro_contato () {
     function navLink (link) {
         switch (link) {
             case "link_contato":
-                carregarConteudo("contato/cadastro_contato/criar_contato/criar_contato.html", document.querySelector(".modulo"), cadastroContatoMain);
+                carregarConteudo("contato/editar_contato/criar_contato/editar_contato.html", document.querySelector(".modulo"), cadastroContatoMain);
             break;
             case "link_endereco":
-                carregarConteudo("contato/cadastro_contato/endereco_contato/endereco_contato.html", document.querySelector(".modulo"), cadastroContatoMain);
+                carregarConteudo("contato/editar_contato/endereco_contato/editar_endereco_contato.html", document.querySelector(".modulo"), cadastroContatoMain);
             break;
         }
     }
@@ -70,5 +73,15 @@ export default function cadastro_contato () {
                 estilo_nav(link_nav)
             })
         })
+    }
+
+    function inserirDadosDoBanco () {
+        if (document.querySelector(".h2_titulo").textContent == "Editar contato"){ // Verifica se a tela é de edição de contato
+            document.querySelector(".codigo_id").textContent = dados.id_contato
+            document.querySelector("#nome_razao_social").value = dados.razao_social
+            document.querySelector("#nome_fantasia").value = dados.nome_fantasia
+            document.getElementById(dados.categoria.toLowerCase()).checked = true
+            document.querySelector("#fone1").value = dados.fone1
+        }
     }
 }

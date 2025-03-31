@@ -1,0 +1,139 @@
+<div class="btns_nav">
+    <button class="btn_nav" id="btn_voltar_contatos">
+        <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
+        <p class="btn_voltar">Voltar</p>
+    </button>
+    <button class="btn_nav" id="btn_link_endereco">
+        <p class="btn_proximo">Proximo</a>
+        <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_direita">
+    </button>
+</div>
+<div class="modulo_header header_cadastro">
+    <h2 class="h2_titulo">Visualizar contato</h2>
+    <div class="container_codigo_data">
+        <p class="p_codigo_id">Codigo: <span class="codigo_id">16</span></p>
+        <div class="div_data_cadastro">
+            <p class="p_data_cadastro">Data de cadastro:</p>
+            <p class="data_cadastro"></p>
+        </div>
+    </div>
+</div>
+<div class="modulo_main">
+    <div class="container_small_width" id="container_radios"> 
+        <div class="campo_contato radio_contato">
+            <p>Tipo Pessoa:</p>
+            <div class="container_radios small_width">
+                <div class="container_radio">
+                    <input disabled type="radio" name="tipo_contato" id="contato_juridico">
+                    <label for="contato_juridico">Jurídica</label>
+                </div>
+                <div class="container_radio">
+                    <input disabled type="radio" name="tipo_contato" id="contato_fisico">
+                    <label for="contato_fisico">Física</label>
+                </div>
+            </div>
+        </div>
+        <div class="campo_contato radio_contato">
+            <p>Situação:</p>
+            <div class="container_radios small_width">
+                <div class="container_radio">
+                    <input disabled type="radio" name="situacao" id="ativo">
+                    <label for="ativo">Ativo</label>
+                </div>
+                <div class="container_radio">
+                    <input disabled type="radio" name="situacao" id="inativo">
+                    <label for="inativo">Inativo</label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="campo_contato normal_width">
+        <label for="nome_razao_social">Nome (Razão Social):</label>
+        <input disabled type="text" name="nome_razao_social" id="nome_razao_social" class="campo_input">
+    </div>
+
+    <div class="campo_contato normal_width">
+        <label for="nome_fantasia">Nome Fantasia:</label>
+        <input disabled type="text" name="nome_fantasia" id="nome_fantasia" class="campo_input">
+    </div>
+
+    <div class="campo_contato normal_width">
+        <p>Classificação do contato:</p>
+        <div class="container_checkbox">
+            <div class="campo_checkbox">
+                <input disabled type="checkbox" name="classificacao" id="cliente">
+                <label for="cliente">Cliente</label>
+            </div>
+            <div class="campo_checkbox">
+                <input disabled type="checkbox" name="classificacao" id="fornecedor">
+                <label for="fornecedor">Fornecedor</label>
+            </div>
+            <div class="campo_checkbox">
+                <input disabled type="checkbox" name="classificacao" id="funcionario">
+                <label for="funcionario">Funcionário</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="container_small_width">
+        <div class="campo_contato small_width">
+            <label for="fone1">Fone 1:</label>
+            <input disabled type="tel" name="fone1" id="fone1" class="campo_input">
+        </div>
+        <div class="campo_contato small_width">
+            <label for="fone2">Fone 2:</label>
+            <input disabled type="tel" name="fone2" id="fone2" class="campo_input">
+        </div>
+    </div>
+
+    <div class="campo_contato normal_width">
+        <label for="insc_municipal">Insc. Municipal:</label>
+        <input disabled type="text" name="insc_municipal" id="insc_municipal" class="campo_input">
+    </div>
+
+    <div class="campo_contato normal_width">
+        <label for="insc_estadual">Insc. Estadual:</label>
+        <input disabled type="text" name="insc_estadual" id="insc_estadual" class="campo_input">
+    </div>
+    
+    <div class="campo_contato container_small_width">
+        <div class="small_width">
+            <label for="cnpj">CNPJ:</label>
+            <input disabled type="number" name="cnpj" id="cnpj" class="campo_input">
+        </div>
+        <div class="small_width">
+            <label for="cpf">CPF:</label>
+            <input disabled type="number" name="cpf" id="cpf" class="campo_input">
+        </div>
+    </div>
+
+    <div class="campo_contato normal_width">
+        <label for="email_padrao">E-mail Padrão:</label>
+        <input disabled type="email" name="email_padrao" id="email_padrao" class="campo_input">
+    </div>
+    
+    <div class="container_small_width">
+        <div class="campo_contato small_width select_conainer">
+            <p>Perfil Tributário:</p>
+            <select disabled id="perfil_tributario" class="campo_select">
+                <option value="padrão">Padrão</option>
+                <option value="tipo1">Tipo 1</option>
+                <option value="tipo2">Tipo 2</option>
+            </select>
+        </div>
+        <div class="campo_contato small_width select_conainer">
+            <p>Tipo consumidor:</p>
+            <select disabled id="tipo_consumidor" class="campo_select">
+                <option value="padrão">Padrão</option>
+                <option value="tipo1">Tipo 1</option>
+                <option value="tipo2">Tipo 2</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="campo_contato normal_width">
+        <label for="observacao">Observação:</label>
+        <textarea name="observacao" id="observacao" class="textarea" rows="4"></textarea>
+    </div>
+</div>

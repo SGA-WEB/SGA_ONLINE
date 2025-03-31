@@ -52,7 +52,7 @@
     justify-content: space-between;
     margin: 0 0 .5rem auto;
     gap: 0.5rem;
-    width: 10rem;
+    width: 14rem;
     min-width: 10rem;
     background-color: var(--azul-1);
     padding: .25rem .7rem;
@@ -79,6 +79,9 @@
     }
     #tabela_contatos {
         font-size: 0.9rem;
+    }
+    .table_tr td:not(.acoes_tabela):last-of-type {
+        padding-right: 6.25rem !important;
     }
     #tabela_contatos td, #tabela_contatos th {
         padding: 0.3rem 0.3rem;

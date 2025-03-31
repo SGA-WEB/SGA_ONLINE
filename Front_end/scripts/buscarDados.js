@@ -35,6 +35,7 @@ export default function buscarDados (query, tabela = true, funcao) {
             console.error('Erro ao buscar dados:', err);
         }
     }
+    
     // Carrega os dados ao abrir a página
     fetchDados();
 }
