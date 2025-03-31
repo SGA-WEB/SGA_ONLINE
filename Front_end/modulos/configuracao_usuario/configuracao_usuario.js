@@ -140,7 +140,6 @@ export default function configuracao_usuario( data ) {
     let btn_salvar = document.querySelector(".btn_salvar")
     btn_salvar.addEventListener('click', () => {
         alert("Configurações salvas com sucesso!")
-        carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"))
     })
 
     // Pop Up ver foto:
