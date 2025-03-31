@@ -57,53 +57,44 @@ logo_sga_principal.addEventListener("click",()=>{
 }) // Clicar na logo volta para o dashboard
 
 // Função de carregar conteúdo html dos módulos
-function carregarConteudo(url, elemento, funcao, parametro, adicionar) {
+async function carregarConteudo(url, elemento, funcao, parametro, adicionar) {
   elemento.innerHTML = "<p>Carregando...</p>"; // Limpa o conteúdo atual antes de carregar o novo
 
   url = "../modulos/" + url;
 
   // Carrega o conteúdo do arquivo HTML usando fetch
-  fetch(url)
-  .then(response => {
-    if (!response.ok) throw new Error('Erro ao carregar o conteúdo.');
-    return response.text();
-  })
-  .then(html => {
-    elemento.innerHTML = ""; // Limpa o conteúdo atual antes de adicionar o novo
-    if (adicionar) {
-      elemento.innerHTML += html;
-    } else {
-      elemento.innerHTML = html;
+  const response = await fetch(url)
+  const html = await response.text()
+ 
+  elemento.innerHTML = ""; // Limpa o conteúdo atual antes de adicionar o novo
+  if (adicionar) {
+    elemento.innerHTML += html;
+  } else {
+    elemento.innerHTML = html;
+  }
+  requestAnimationFrame(() => { // Aguarda o carregamento completo do conteúdo HTML antes de executar as funções do JavaScript
+    if (funcao) {
+      funcao(parametro)
     }
-    requestAnimationFrame(() => { // Aguarda o carregamento completo do conteúdo HTML antes de executar as funções do JavaScript
-      if (funcao) {
-        console.log(funcao, parametro)
-        funcao(parametro)
-      }
 
-      if (url === "../modulos/dashboard/dashboard.html") {
-        dashBorad();
-      }
-      if (url === "../modulos/contato/contato.html" && !funcao) { // !funcao: para a função não ser chamada mais de uma fez
-        contato();
-      }
-      if (url === "../modulos/configuracao_usuario/configuracao_usuario.html") {
-        configuracao_usuario();
-      }
-      if (url === "../modulos/produto/produto.html" && !funcao) { 
-        produto()
-      }
-      if (url === "../modulos/centro_de_estoque/centro_de_estoque.html" && !funcao) {
-        centro_de_estoque()
-      }
-      if (url === "../modulos/configuracoes/configuracoes.html") {
-        configuracoes()
-      }
-    });
-  })
-  .catch(error => {
-    elemento.innerHTML = "<p>Erro ao carregar o conteúdo.</p>";
-    console.error(error);
+    if (url === "../modulos/dashboard/dashboard.html") {
+      dashBorad();
+    }
+    if (url === "../modulos/contato/contato.html" && !funcao) { // !funcao: para a função não ser chamada mais de uma fez
+      contato();
+    }
+    if (url === "../modulos/configuracao_usuario/configuracao_usuario.html") {
+      configuracao_usuario();
+    }
+    if (url === "../modulos/produto/produto.html" && !funcao) { 
+      produto()
+    }
+    if (url === "../modulos/centro_de_estoque/centro_de_estoque.html" && !funcao) {
+      centro_de_estoque()
+    }
+    if (url === "../modulos/configuracoes/configuracoes.html") {
+      configuracoes()
+    }
   });
 }
 

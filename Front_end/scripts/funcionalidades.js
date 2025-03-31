@@ -91,22 +91,21 @@ function visibilidadeMenulateral(elementoWidth, minWidth) {
   }
 }
 
-function esperarCarregarConteudo(funcao) {
-  let observer = new MutationObserver((mutationsList, observer) => {
-    for (let mutation of mutationsList) {
-        if (mutation.type === 'childList') {
-            const data_cadastro = document.querySelector('.data_cadastro');
-            const modulo = document.querySelector('.modulo');
-            if (data_cadastro || modulo) {
-              observer.disconnect(); // Desconecta imediatamente
-              funcao(); // Chama a função apenas uma vez
-              break; // Sai do loop para evitar chamadas adicionais
-            }
-        }
+function esperarCarregarConteudo(funcao, seletorElementoAesperar, containerPai = document.body) {
+  const observer = new MutationObserver((mutations) => {
+    // Verifica se o elemento específico já existe
+    if (document.querySelector(seletorElementoAesperar)) {
+      funcao();
+      observer.disconnect(); // Para de observar após encontrar
+    } else{
+      console.log("Erro esperar ")
     }
   });
 
-  observer.observe(document.body, { childList: true, subtree: true });
+  observer.observe(containerPai, {
+    childList: true,
+    subtree: true
+  });
 }
 
 

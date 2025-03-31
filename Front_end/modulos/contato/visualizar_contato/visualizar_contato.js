@@ -6,10 +6,12 @@ import editar_contato from "../editar_contato/editar_contato.js";
 import excluir_contato from "../excluir_contato.js";
 
 export default function visualizar_contato (dado) {
-    esperarCarregarConteudo(cadastroContatoMain)
-
+    esperarCarregarConteudo(cadastroContatoMain,'.modulo',document.querySelector('.principal'))
+    
     let cont = 0
     function cadastroContatoMain() {
+        
+        console.log(dado)
         cont++
         // Mudar de tela ao clicar no menu superior da tela de contato:
         let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior

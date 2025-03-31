@@ -13,6 +13,7 @@ import editar_contato from "../modulos/contato/editar_contato/editar_contato.js"
 import excluir_contato from "../modulos/contato/excluir_contato.js";
 
 import popup from "./popup.js"
+import { esperarCarregarConteudo } from "./funcionalidades.js";
 
 export default function crudLayout (obj, tr) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
@@ -113,15 +114,22 @@ export default function crudLayout (obj, tr) {
                     carregarConteudo(
                         `contato/${acao}_contato/nav_contato.html`,
                         document.querySelector('.principal')
-                    )
-                    setTimeout(() => {
-                        carregarConteudo(
+                      );
+                      
+                      // Observa o .principal (onde o .modulo será inserido)
+                      esperarCarregarConteudo(
+                        () => {
+                          carregarConteudo(
                             `contato/${acao}_contato/criar_contato/${acao}_contato.html`,
                             document.querySelector('.modulo'),
-                            funcoes[`${acao}_contato`](obj),
+                            funcoes[`${acao}_contato`],
+                            obj,
                             true
-                        );
-                    }, 400);
+                          );
+                        },
+                        '.modulo',
+                        document.querySelector('.principal') // Container onde .modulo será inserido
+                      );             
                 }
             break;
             default:
