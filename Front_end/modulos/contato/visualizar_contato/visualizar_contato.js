@@ -1,12 +1,10 @@
 import { carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
 import { dataAtual } from "../../../scripts/funcionalidades.js";
-import { esperarCarregarConteudo } from "../../../scripts/funcionalidades.js";
 import select2 from "../../../scripts/select.js";
 import editar_contato from "../editar_contato/editar_contato.js";
 import excluir_contato from "../excluir_contato.js";
 
 export default function visualizar_contato (dado) {
-    esperarCarregarConteudo(cadastroContatoMain,'.modulo',document.querySelector('.principal'))
     
     let cont = 0
     function cadastroContatoMain() {

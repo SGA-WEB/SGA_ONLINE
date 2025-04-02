@@ -1,5 +1,5 @@
 import { carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
-import { dataAtual, esperarCarregarConteudo } from "../../../scripts/funcionalidades.js";
+import { dataAtual } from "../../../scripts/funcionalidades.js";
 import select2 from "../../../scripts/select.js";
 import contato from "../contato.js";
 import visualizar_contato from "../visualizar_contato/visualizar_contato.js";
@@ -13,8 +13,6 @@ export default function editar_contato (dado, telaAnteriorVisualizar) {
         caminho = "contato/visualizar_contato/criar_contato/visualizar_contato.html"
         funcao = visualizar_contato
     }
-
-    esperarCarregarConteudo(cadastroContatoMain)
 
     let cont = 0
     function cadastroContatoMain() {

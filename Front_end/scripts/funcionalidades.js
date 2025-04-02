@@ -91,20 +91,50 @@ function visibilidadeMenulateral(elementoWidth, minWidth) {
   }
 }
 
-function esperarCarregarConteudo(funcao, seletorElementoAesperar, containerPai = document.body) {
-  const observer = new MutationObserver((mutations) => {
-    // Verifica se o elemento específico já existe
-    if (document.querySelector(seletorElementoAesperar)) {
-      funcao();
-      observer.disconnect(); // Para de observar após encontrar
-    } else{
-      console.log("Erro esperar ")
-    }
-  });
+// Função para aguardar a renderização completa de um elemto
+function aguardarRenderizacao(elemento) {
+  return new Promise((resolve) => {
+    // Verifica se há scripts ou imagens pendentes
+    const scripts = elemento.querySelectorAll("script");
+    const imagens = elemento.querySelectorAll("img");
 
-  observer.observe(containerPai, {
-    childList: true,
-    subtree: true
+    let carregamentosPendentes = 0;
+
+    // Verifica scripts externos (se houver)
+    scripts.forEach((script) => {
+      if (script.src && !script.loaded) {
+        carregamentosPendentes++;
+        script.onload = () => {
+          carregamentosPendentes--;
+          verificarConclusao();
+        };
+      }
+    });
+
+    // Verifica imagens (se houver)
+    imagens.forEach((img) => {
+      if (!img.complete) {
+        carregamentosPendentes++;
+        img.onload = img.onerror = () => {
+          carregamentosPendentes--;
+          verificarConclusao();
+        };
+      }
+    });
+
+    // Se não houver recursos pendentes, resolve imediatamente
+    if (carregamentosPendentes === 0) {
+      resolve();
+      return;
+    }
+
+    // Função para verificar se tudo foi carregado
+    function verificarConclusao() {
+      if (carregamentosPendentes === 0) {
+        // Última verificação após um frame de renderização
+        requestAnimationFrame(() => resolve());
+      }
+    }
   });
 }
 
@@ -114,5 +144,5 @@ export {
   dataAtual,
   mudarPesquisa,
   visibilidadeMenulateral,
-  esperarCarregarConteudo
+  aguardarRenderizacao
 }

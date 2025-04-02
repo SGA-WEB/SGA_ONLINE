@@ -13,7 +13,6 @@ import editar_contato from "../modulos/contato/editar_contato/editar_contato.js"
 import excluir_contato from "../modulos/contato/excluir_contato.js";
 
 import popup from "./popup.js"
-import { esperarCarregarConteudo } from "./funcionalidades.js";
 
 export default function crudLayout (obj, tr) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
@@ -88,6 +87,7 @@ export default function crudLayout (obj, tr) {
                     carregarConteudo(
                         `centro_de_estoque/${acao}_centro_de_estoque/${acao}_centro_de_estoque.html`,
                         document.querySelector('.principal'),
+                        false,
                         funcoes[`${acao}_centro_de_estoque`], // Chama a função de acordo com a ação
                         obj
                     );
@@ -102,7 +102,8 @@ export default function crudLayout (obj, tr) {
                         `produto/${acao}_produto/${acao}_produto.html`,
                         document.querySelector('.principal'),
                         false,
-                        funcoes[`${acao}_produto`](obj) // Chama a função de acordo com a ação
+                        funcoes[`${acao}_produto`], // Chama a função de acordo com a ação
+                        obj
                     );
                 }
             break;
@@ -114,22 +115,14 @@ export default function crudLayout (obj, tr) {
                     carregarConteudo(
                         `contato/${acao}_contato/nav_contato.html`,
                         document.querySelector('.principal')
-                      );
-                      
-                      // Observa o .principal (onde o .modulo será inserido)
-                      esperarCarregarConteudo(
-                        () => {
-                          carregarConteudo(
-                            `contato/${acao}_contato/criar_contato/${acao}_contato.html`,
-                            document.querySelector('.modulo'),
-                            funcoes[`${acao}_contato`],
-                            obj,
-                            true
-                          );
-                        },
-                        '.modulo',
-                        document.querySelector('.principal') // Container onde .modulo será inserido
-                      );             
+                    );
+                    carregarConteudo(
+                        `contato/${acao}_contato/criar_contato/${acao}_contato.html`,
+                        document.querySelector('.modulo'),
+                        true,
+                        funcoes[`${acao}_contato`],
+                        obj,
+                    );
                 }
             break;
             default:

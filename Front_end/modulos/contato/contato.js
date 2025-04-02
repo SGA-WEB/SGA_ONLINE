@@ -1,7 +1,7 @@
 // Função que minimiza o menu lateral:
 import { btnMenuLateral, carregarConteudo, fecharMenu } from "../../scripts/javaScript.js"
 import buscarDados from "../../scripts/buscarDados.js"
-import { esperarCarregarConteudo, mudarPesquisa } from "../../scripts/funcionalidades.js"
+import { mudarPesquisa } from "../../scripts/funcionalidades.js"
 import select2 from "../../scripts/select.js"
 import cadastro_contato from "./cadastro_contato/cadastro_contato.js"
 

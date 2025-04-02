@@ -1,9 +1,7 @@
 import { carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
-import { dataAtual, esperarCarregarConteudo } from "../../../scripts/funcionalidades.js";
+import { dataAtual } from "../../../scripts/funcionalidades.js";
 
 export default function cadastro_contato () {
-    esperarCarregarConteudo(cadastroContatoMain)
-
     let cont = 0
     function cadastroContatoMain() {
         // Mudar de tela ao clicar no menu superior da tela de contato:

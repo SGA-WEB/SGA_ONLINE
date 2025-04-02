@@ -19,6 +19,7 @@ import select2 from "./select.js";
 import produto from "../modulos/produto/produto.js";
 import centro_de_estoque from "../modulos/centro_de_estoque/centro_de_estoque.js";
 import configuracoes from "../modulos/configuracoes/configuracoes.js";
+import { aguardarRenderizacao } from "./funcionalidades.js";
 
 function mudarLogo(){ // Muda a logo do usuário de acordo com o nome dele
   let div_logo_usuario = document.querySelectorAll(".logo_usuario");
@@ -57,26 +58,29 @@ logo_sga_principal.addEventListener("click",()=>{
 }) // Clicar na logo volta para o dashboard
 
 // Função de carregar conteúdo html dos módulos
-async function carregarConteudo(url, elemento, funcao, parametro, adicionar) {
-  elemento.innerHTML = "<p>Carregando...</p>"; // Limpa o conteúdo atual antes de carregar o novo
 
+async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) {
+  elemento.innerHTML = "<p>Carregando...</p>"; // Feedback visual
+  
   url = "../modulos/" + url;
 
-  // Carrega o conteúdo do arquivo HTML usando fetch
-  const response = await fetch(url)
-  const html = await response.text()
- 
-  elemento.innerHTML = ""; // Limpa o conteúdo atual antes de adicionar o novo
-  if (adicionar) {
-    elemento.innerHTML += html;
-  } else {
-    elemento.innerHTML = html;
-  }
-  requestAnimationFrame(() => { // Aguarda o carregamento completo do conteúdo HTML antes de executar as funções do JavaScript
-    if (funcao) {
-      funcao(parametro)
+  try {
+    const response = await fetch(url);
+    const html = await response.text();
+
+    elemento.innerHTML = ""; // Limpa o conteúdo atual
+    if (adicionar) {
+      elemento.innerHTML += html;
+    } else {
+      elemento.innerHTML = html;
     }
 
+    // Aguarda o HTML ser totalmente renderizado antes de chamar a função
+    await aguardarRenderizacao(elemento);
+
+    if (funcao) {
+      funcao(...parametro);
+    }
     if (url === "../modulos/dashboard/dashboard.html") {
       dashBorad();
     }
@@ -95,7 +99,10 @@ async function carregarConteudo(url, elemento, funcao, parametro, adicionar) {
     if (url === "../modulos/configuracoes/configuracoes.html") {
       configuracoes()
     }
-  });
+  } catch (error) {
+    console.error("Erro ao carregar o conteúdo:", error);
+    elemento.innerHTML = "<p>Erro ao carregar o conteúdo.</p>";
+  }
 }
 
 // Função que fecha o menu lateral se a tela tiver menos de um determinado width de largura
