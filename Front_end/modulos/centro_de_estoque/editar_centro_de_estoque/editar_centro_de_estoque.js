@@ -23,14 +23,14 @@ export default function editar_centro_de_estoque(dado, telaAnteriorVisualizar) {
     document.querySelector("#descricao").value = dado.descricao_centro_estoque
 
     document.querySelector("#btn_voltar_produtos").addEventListener("click", () => {
-        carregarConteudo(caminho, document.querySelector(".principal"), funcao, false, dado)
+        carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, dado)
     })
 
     document.querySelector(".btn_salvar").addEventListener("click", () => { 
-        carregarConteudo("centro_de_estoque/centro_de_estoque.html", document.querySelector(".principal"), centro_de_estoque, false, dado)
+        carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, dado)
     })
 
     document.querySelector(".btn_cancelar").addEventListener("click", () => {
-        carregarConteudo(caminho, document.querySelector(".principal"),false, funcao, dado)
+        carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, dado)
     })
 }

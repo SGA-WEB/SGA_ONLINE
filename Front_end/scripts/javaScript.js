@@ -43,11 +43,11 @@ btns_modulos.forEach(e =>{
   })
 })
 
-carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal")) // Carrega por padrão assim que a página for carregada o dashboard
+carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"), false, dashBorad) // Carrega por padrão assim que a página for carregada o dashboard
 
 let logo_sga_principal = document.querySelector("#logo_sga_principal")
 logo_sga_principal.addEventListener("click",()=>{
-  carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"))
+  carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"), false, dashBorad)
   displayMenu("", true)
   document.querySelector(".item_hiden")?.remove() // se o .item_hiden existir ele é removido
   document.querySelector(".modulo_selecionado")?.classList.remove("modulo_selecionado") // Se tiver um módulo selecionado é retirada sua a classe
@@ -81,7 +81,7 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
     if (funcao) {
       funcao(...parametro);
     }
-    if (url === "../modulos/dashboard/dashboard.html") {
+    if (url === "../modulos/dashboard/dashboard.html" && !funcao) {
       dashBorad();
     }
     if (url === "../modulos/contato/contato.html" && !funcao) { // !funcao: para a função não ser chamada mais de uma fez

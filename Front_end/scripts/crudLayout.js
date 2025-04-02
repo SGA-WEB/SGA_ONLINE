@@ -63,7 +63,7 @@ export default function crudLayout (obj, tr) {
         executarAcao('excluir')
     })
 
-    function executarAcao(acao) {
+    async function executarAcao(acao) {
         // Carrega na tela a página da ação de acordo com a tabela atual
 
         let funcoes = { // Funções de acordo com a ação
@@ -112,7 +112,7 @@ export default function crudLayout (obj, tr) {
                     popup('abrir',0,btn_excluir)
                     funcoes[`excluir_contato`](obj)
                 } else {
-                    carregarConteudo(
+                   await carregarConteudo(
                         `contato/${acao}_contato/nav_contato.html`,
                         document.querySelector('.principal')
                     );

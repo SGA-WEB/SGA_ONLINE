@@ -30,7 +30,7 @@ export default function visualizar_produto (dado) {
     })
 
     document.querySelector(".btn_editar").addEventListener("click", () => {
-        carregarConteudo("produto/editar_produto/editar_produto.html", document.querySelector(".principal"),editar_produto, false, dado, true)
+        carregarConteudo("produto/editar_produto/editar_produto.html", document.querySelector(".principal"), false, editar_produto, dado, true)
     })
 
     let btn_excluir = document.querySelector(".btn_excluir")

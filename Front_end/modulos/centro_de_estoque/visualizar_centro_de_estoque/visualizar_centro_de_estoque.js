@@ -21,7 +21,7 @@ export default function visualizar_centro_de_estoque(dado) {
     })
 
     document.querySelector(".btn_editar").addEventListener("click", () => {
-        carregarConteudo("centro_de_estoque/editar_centro_de_estoque/editar_centro_de_estoque.html", document.querySelector(".principal"), false, editar_centro_de_estoque, dado)
+        carregarConteudo("centro_de_estoque/editar_centro_de_estoque/editar_centro_de_estoque.html", document.querySelector(".principal"), false, editar_centro_de_estoque, dado, true)
     })
 
     let btn_excluir = document.querySelector(".btn_excluir")

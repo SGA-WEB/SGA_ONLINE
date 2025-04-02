@@ -5,7 +5,6 @@ import visualizar_produto from '../visualizar_produto/visualizar_produto.js'
 import { dataAtual } from '../../../scripts/funcionalidades.js'
 
 export default function editar_produto (dado, telaAnteriorVisualizar) {
-    
     let caminho = "produto/produto.html"
     let funcao = produto
     
@@ -33,16 +32,16 @@ export default function editar_produto (dado, telaAnteriorVisualizar) {
 
     let btnVoltar = document.querySelector('.btn_voltar')
     btnVoltar.addEventListener('click', () => {
-        carregarConteudo(caminho, document.querySelector('.principal'), funcao, false)
+        carregarConteudo(caminho, document.querySelector('.principal'), false, funcao, dado)
     })
 
     let btnSalvar = document.querySelector('.btn_salvar')  
     btnSalvar.addEventListener("click", () => {
         alert("Alterações no produto salvas com sucesso")
-        carregarConteudo(caminho, document.querySelector('.principal'), funcao(dado))
+        carregarConteudo(caminho, document.querySelector('.principal'), false, funcao, dado)
     })
 
     document.querySelector(".btn_cancelar").addEventListener("click",() => {
-        carregarConteudo(caminho, document.querySelector('.principal'), funcao(dado))
+        carregarConteudo(caminho, document.querySelector('.principal'), false, funcao, dado)
     })
 }

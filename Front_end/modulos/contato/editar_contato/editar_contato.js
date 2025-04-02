@@ -7,90 +7,79 @@ import visualizar_contato from "../visualizar_contato/visualizar_contato.js";
 export default function editar_contato (dado, telaAnteriorVisualizar) {
     let caminho = "contato/contato.html"
     let funcao = contato
-    console.log(telaAnteriorVisualizar)
+    let elementoPai = document.querySelector(".principal")
 
     if (telaAnteriorVisualizar) {
         caminho = "contato/visualizar_contato/criar_contato/visualizar_contato.html"
         funcao = visualizar_contato
+        elementoPai = document.querySelector(".modulo")
     }
 
-    let cont = 0
-    function cadastroContatoMain() {
+    let cont = 0        
 
-        // Mudar de tela ao clicar no menu superior da tela de contato:
-        let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
-        if (cont == 0) 
-            links_nav[0].classList.add("link_nav_selecionado") // Adiciona a classe ao primeiro link assim que o modulo for carregado
+    // Mudar de tela ao clicar no menu superior da tela de contato:
+    let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
+    if (cont == 0) {
+        links_nav[0].classList.add("link_nav_selecionado") // Adiciona a classe ao primeiro link assim que o modulo for carregado
+    }
 
-        document.querySelectorAll('.link_nav:not(.link_nav_selecionado)').forEach(link => { // Seleciona todos os links que não possuem a classe link_nav_selecionado
-            link.addEventListener("click", (e) => { 
-                estilo_nav(e.target);
-            });
+    document.querySelectorAll('.link_nav').forEach(link => { // Seleciona todos os links
+        link.addEventListener("click", (e) => { 
+            estilo_nav(e.target);
         });
-    
-        setTimeout(() => {
-            dataAtual()
-            btnsProximoEVoltar()
-            inserirDadoDoBanco()
-            select2("100%")
-            document.querySelector(".btn_salvar").addEventListener("click",() => {
-                carregarConteudo("contato/contato.html", document.querySelector(".principal"))
-            })
-            document.querySelector(".btn_cancelar").addEventListener("click",() => {
-                carregarConteudo(caminho, document.querySelector(".principal"), funcao(dado))
-            })
-        }, 300);
-        
-        fecharMenu(document.querySelector(".modulo").offsetWidth, 584)
-        window.addEventListener('resize', (e) => { 
-            if(document.querySelector(".modulo") != null){
-                fecharMenu(document.querySelector(".modulo").offsetWidth, 421)
-            } 
-        })
+    });
 
-        cont++
+    dataAtual()
+    btnsProximoEVoltar()
+    inserirDadoDoBanco()
+    addListenerBtns()
+    select2("100%")
+    
+    fecharMenu(document.querySelector(".modulo").offsetWidth, 584)
+    window.addEventListener('resize', (e) => { 
+        if(document.querySelector(".modulo") != null){
+            fecharMenu(document.querySelector(".modulo").offsetWidth, 421)
+        } 
+    })
+
+    function addListenerBtns () {
+        document.querySelector(".btn_cancelar").addEventListener("click", () => {
+            carregarConteudo(caminho, elementoPai, false, funcao, dado)
+        })
     }
+
 
     function estilo_nav (e) {
         let link = e
         if (e == "voltar_contatos") {
-            if (telaAnteriorVisualizar) {
-                carregarConteudo(
-                    `contato/visualizar_contato/nav_contato.html`,
-                    document.querySelector('.principal'),
-                    visualizar_contato(dado, true)
-                )
-                setTimeout(() => {
-                    console.log(document.querySelector(".modulo"))
-                    carregarConteudo(
-                        `contato/visualizar_contato/criar_contato/visualizar_contato.html`,
-                        document.querySelector('.modulo'),
-                        visualizar_contato(dado, true),
-                        true
-                    );
-                }, 400);
-            }
-            carregarConteudo(caminho, document.querySelector(".principal"),funcao(dado))
+            carregarConteudo(caminho, elementoPai, false, funcao, dado)
             return
         }
-        let links_selecionado = document.querySelectorAll(".link_nav") // Seleciona todos os links selecionados
-        links_selecionado.forEach(e=>{
-            e.classList.remove("link_nav_selecionado") // Retira a classe
+        let links_nav= document.querySelectorAll(".link_nav") // Seleciona todos os links do nav
+        links_nav.forEach(e=>{
+            e.classList.remove("link_nav_selecionado") // desmarca todos
         })
         
         e.classList.add("link_nav_selecionado") // Adiciona a classe ao link clicado
-        navLink(link.id)
+        mudarDeAba(link.id)
     }
     
-    function navLink (link) {
+    function mudarDeAba (link) {
         switch (link) {
             case "link_contato":
-                carregarConteudo("contato/editar_contato/criar_contato/editar_contato.html", document.querySelector(".modulo"), cadastroContatoMain);
+                carregarConteudo("contato/editar_contato/criar_contato/editar_contato.html", document.querySelector(".modulo"), false, chamarFuncoes); // E passada a função chamarFuncoes para que os botões sejam ativados e os dados sejam inseridos novamente
             break;
             case "link_endereco":
-                carregarConteudo("contato/editar_contato/endereco_contato/editar_endereco_contato.html", document.querySelector(".modulo"), cadastroContatoMain);
+                carregarConteudo("contato/editar_contato/endereco_contato/editar_endereco_contato.html", document.querySelector(".modulo"), false, chamarFuncoes);
             break;
         }
+    }
+
+    function chamarFuncoes () {
+        btnsProximoEVoltar()
+        inserirDadoDoBanco()
+        addListenerBtns()
+        select2("100%")
     }
 
     function btnsProximoEVoltar() {
@@ -98,7 +87,6 @@ export default function editar_contato (dado, telaAnteriorVisualizar) {
         btn_nav.forEach(e=>{
             e.addEventListener("click", (e)=>{
                 let btn = e.target.closest(".btn_nav").id.slice(4) // Pega o id do botão que foi clicado e retira o "btn_"
-                
                 let link_nav = document.getElementById(btn)
                 if (link_nav == null) {
                     link_nav = "voltar_contatos"
@@ -113,7 +101,7 @@ export default function editar_contato (dado, telaAnteriorVisualizar) {
             document.querySelector(".codigo_id").textContent = dado.id_contato
             document.querySelector("#nome_razao_social").value = dado.razao_social
             document.querySelector("#nome_fantasia").value = dado.nome_fantasia
-            document.getElementById(dado.categoria.toLowerCase()).checked = true
+            document.getElementById(dado.categoria.toLowerCase().replace("á","a")).checked = true
             document.querySelector("#fone1").value = dado.fone1
         }
     }
