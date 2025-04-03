@@ -3,7 +3,7 @@
 
 import crudLayout from "./crudLayout.js" // Importa a função que cria os botões de editar, visualizar e excluir (CRUD)
 
-function carregarDadosNaTabela (data) {
+function carregarDadosNaTabela (data, limiteDados = undefined) {
     // Data: Array de objetos que contém os dados que serão exibidos na tabela (JSON)
 
     let tabela = document.querySelector(".tbody") // Tabela onde os dados serão exibidos
@@ -18,6 +18,9 @@ function carregarDadosNaTabela (data) {
         data.sort((a, b) => a[firstDataKey] - b[firstDataKey]) // Ordena os dados pelo id
 
         data.map(objDado => { // Para cada objeto no array de dados
+            let objDadoCompleto = objDado
+            objDado = Object.entries(objDado).slice(0, limiteDados)
+            objDado = Object.fromEntries(objDado)
             let tr = document.createElement('tr') // Cria uma linha
             tr.setAttribute('class','table_tr')
     
@@ -42,7 +45,7 @@ function carregarDadosNaTabela (data) {
             }
 
             // CRUD:
-            crudLayout(objDado, tr) // Adiciona os botões de editar, visualizar e excluir na linha
+            crudLayout(objDadoCompleto, tr) // Adiciona os botões de editar, visualizar e excluir na linha
 
             tabela.appendChild(tr) // Adiciona a linha na tabela
         })

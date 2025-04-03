@@ -53,6 +53,14 @@ function dataAtual() {
   }
 }
 
+function formatarData(data) {
+  
+  let data_cadastro =  data.split("T")[0] // Retira o horário
+  const [ano, mes, dia] = data_cadastro.split('-'); // Separa o ano, mes e dia
+  data_cadastro = `${dia}-${mes}-${ano}`; // Formata a data
+  return data_cadastro
+}
+
 // Função que muda o placeholder do input de pesquisa de acordo com a opção do select
 function mudarPesquisa(input_pesquisa) {
   input_pesquisa.placeholder = "Pesquisar por " + $('.campo_select')
@@ -142,6 +150,7 @@ function aguardarRenderizacao(elemento) {
 export {
   visibilidadeSenha,
   dataAtual,
+  formatarData,
   mudarPesquisa,
   visibilidadeMenulateral,
   aguardarRenderizacao

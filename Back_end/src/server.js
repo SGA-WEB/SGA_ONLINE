@@ -11,7 +11,7 @@ app.use(cors()); // Habilita o CORS
 // Configuração do PostgreSQL
 const pool = new Pool({
     user: 'neondb_owner',
-    // host: 'ep-small-bar-a8bydmrx-pooler.eastus2.azure.neon.tech',
+    /* host: 'ep-small-bar-a8bydmrx-pooler.eastus2.azure.neon.tech', */
     host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
     database: 'neondb',
     password: 'npg_Y3ZNL6fxehGI',
@@ -79,6 +79,33 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+// Endpoint para atualizar um usuário (PUT)
+app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {
+    const { id_centro_estoque } = req.params;
+    const { nome, localizacao, padrao, descricao } = req.body;
+    try {
+        const query = `
+            UPDATE sga.centro_estoque 
+            SET nome_centro_estoque = $1, localizacao_centro_estoque = $2, padrao_centro_estoque = $3, descricao_centro_estoque = $4
+            WHERE id_centro_estoque = $5
+            RETURNING *;
+        `;
+        const values = [nome, localizacao, padrao, descricao, id_centro_estoque];
+        const result = await pool.query(query, values);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Usuário não encontrado' });
+        }
+
+        res.status(200).json({
+            message: 'Usuário atualizado com sucesso!',
+            usuario: result.rows[0]
+        });
+    } catch (err) {
+        console.error('Erro ao atualizar usuário:', err);
+        res.status(500).json({ error: 'Erro interno no servidor' });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);

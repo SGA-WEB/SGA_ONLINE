@@ -1,12 +1,13 @@
 import { carregarDadosNaTabela, pesquisar } from './carregarDadosNaTabela.js';
 
-export default function buscarDados(query) {
+export default function buscarDados(query, limiteDados) {
     /*
         Autor: matheushnunes
         Data: 23/02/2025
         
         Parâmetros:
         query: String que contém o nome da tabela que será buscada no servidor
+        limiteDados: number que contém o limite de dados que serão exibidos na tabela
 
         Função:
         Buscar os dados no servidor e exibir na página;
@@ -21,7 +22,7 @@ export default function buscarDados(query) {
             const result = await response.json(); // Converte a resposta para JSON
             if (result) {
                 // Exibe os dados na página
-                carregarDadosNaTabela(result);
+                carregarDadosNaTabela(result, limiteDados);
                 pesquisar(result);
             } else {
                 // Exibe a mensagem de erro
