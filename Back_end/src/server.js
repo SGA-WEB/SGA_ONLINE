@@ -11,7 +11,8 @@ app.use(cors()); // Habilita o CORS
 // Configuração do PostgreSQL
 const pool = new Pool({
     user: 'neondb_owner',
-    host: 'ep-small-bar-a8bydmrx-pooler.eastus2.azure.neon.tech',
+    // host: 'ep-small-bar-a8bydmrx-pooler.eastus2.azure.neon.tech',
+    host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
     database: 'neondb',
     password: 'npg_Y3ZNL6fxehGI',
     port: 5432,
