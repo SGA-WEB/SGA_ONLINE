@@ -1,7 +1,7 @@
 import { mudarPesquisa } from "../../scripts/funcionalidades.js";
 import buscarDados from "../../scripts/buscarDados.js";
 import select2 from "../../scripts/select.js";
-import { carregarConteudo } from "../../scripts/javaScript.js";
+import { carregarConteudo, fecharMenu } from "../../scripts/javaScript.js";
 import { dataAtual } from "../../scripts/funcionalidades.js";
 export default function centro_de_estoque() {
     mudarPesquisa(document.querySelector(".input_pesquisa"));
@@ -28,5 +28,9 @@ export default function centro_de_estoque() {
                 clearInterval(intervalo)
             }
         }, 100);
+    })
+
+    window.addEventListener("resize", () => {
+        fecharMenu(document.querySelector(".tabela").offsetWidth, 510)
     })
 }

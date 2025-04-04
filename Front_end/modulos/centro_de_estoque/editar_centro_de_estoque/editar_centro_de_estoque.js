@@ -3,6 +3,7 @@ import { carregarConteudo } from "../../../scripts/javaScript.js";
 import select2 from "../../../scripts/select.js"
 import visualizar_centro_de_estoque from "../visualizar_centro_de_estoque/visualizar_centro_de_estoque.js";
 import centro_de_estoque from "../centro_de_estoque.js";
+import { popup, popup_aviso, popup_carregando } from "../../../scripts/popup.js";
 
 export default function editar_centro_de_estoque(dado, telaAnteriorVisualizar) {
     let caminho = "centro_de_estoque/centro_de_estoque.html"
@@ -40,7 +41,8 @@ export default function editar_centro_de_estoque(dado, telaAnteriorVisualizar) {
         const localizacao = document.querySelector("#localizacao").value 
         const padrao = document.querySelector("#padrao_centro_de_estoque").value
         const descricao = document.querySelector("#descricao").value
-        console.log(id_centro_estoque)
+        
+        popup_carregando()
         try {
             const response = await fetch(`http://localhost:3000/centro_estoque/${id_centro_estoque}`, {
                 method: 'PUT',
@@ -53,8 +55,6 @@ export default function editar_centro_de_estoque(dado, telaAnteriorVisualizar) {
             const data = await response.json();
 
             if (response.ok) {
-                alert('Dados atualizados com sucesso!');
-                console.log('Usuário atualizado:', data);
                 const novoDado = { 
                     // objeto para atualizar a tela de visualizar comforme os novos dados
                     id_centro_estoque: id_centro_estoque,
@@ -64,7 +64,9 @@ export default function editar_centro_de_estoque(dado, telaAnteriorVisualizar) {
                     descricao_centro_estoque: descricao, 
                     data_cadastro: dado.data_cadastro
                 }
+                popup_carregando(true)
                 carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, novoDado)
+                popup_aviso("Centro de estoque alterado com sucesso!")
             } else {
                 alert(`Erro: ${data.error}`);
             }

@@ -1,4 +1,4 @@
-export default function popup (status, idx = 0, btn) {
+function popup (status, idx = 0, btn) {
     /*
         Autor: matheushnunes;
 
@@ -16,6 +16,8 @@ export default function popup (status, idx = 0, btn) {
     let container_popup = document.querySelectorAll(".container_popup")[idx]
     let btn_fechar_popup = document.querySelectorAll(".btn_fechar_popup")[idx]
     
+    console.log(container_popup)
+    console.log(btn_fechar_popup)
     let fecharPopupQuandoClicarForaDele = (e) => {
         let popup = document.querySelectorAll(".popup")[idx]
         if (container_popup.style.display == "flex"){
@@ -50,3 +52,45 @@ export default function popup (status, idx = 0, btn) {
        fecharPopup(btn_popup_excluir_cancelar)
     })
 }
+
+function popup_aviso(mensagem = "Ação realizada com sucesso!") {
+    const popup = document.getElementById('popup_aviso');
+    const p_mensagem = document.querySelector('.mensagem_aviso');
+    const btn_fechar_popup = document.querySelector('.btn_fechar_popup');
+
+    // Remove a classe hide_popup para mostrar o popup
+    popup.classList.remove('hide_popup');
+    p_mensagem.textContent = mensagem;
+    
+    // Reinicia a animação da barra de progresso
+    const progressBar = document.querySelector('.progress-bar');
+    progressBar.style.animation = 'none';
+    void progressBar.offsetWidth; // Trigger reflow
+    progressBar.style.animation = 'progress 3s linear forwards';
+
+    btn_fechar_popup.addEventListener('click', function() {
+        popup.classList.add('hide_popup');
+    });
+
+    // Esconde o popup após 3 segundos (tempo da animação da barra)
+    setTimeout(function() {
+        popup.classList.add('hide_popup');
+    }, 3000);
+}
+
+function popup_carregando(fecharPopup = false,mensagem = "Salvando alterações...") {
+    const popup = document.getElementById('popup_carregando');
+    const p_mensagem = popup.querySelector('.mensagem_aviso');
+    
+    p_mensagem.textContent = mensagem;
+    popup.classList.remove('hide_popup');
+
+    if (fecharPopup) {
+        popup.classList.add('hide_popup');
+    }
+
+    
+    return popup;
+}
+
+export { popup, popup_aviso, popup_carregando }

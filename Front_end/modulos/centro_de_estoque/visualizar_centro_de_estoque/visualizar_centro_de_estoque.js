@@ -1,6 +1,6 @@
 import { dataAtual, aguardarRenderizacao, formatarData } from "../../../scripts/funcionalidades.js";
 import { carregarConteudo } from "../../../scripts/javaScript.js";
-import popup from "../../../scripts/popup.js";
+import { popup } from "../../../scripts/popup.js";
 import select2 from "../../../scripts/select.js"
 
 import editar_centro_de_estoque from "../editar_centro_de_estoque/editar_centro_de_estoque.js"

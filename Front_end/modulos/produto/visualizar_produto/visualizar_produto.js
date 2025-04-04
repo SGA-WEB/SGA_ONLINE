@@ -2,7 +2,7 @@ import { carregarConteudo } from "../../../scripts/javaScript.js"
 import select2 from "../../../scripts/select.js"
 import editar_produto from "../editar_produto/editar_produto.js"
 import excluir_produto from "../excluir_produto.js"
-import popup from "../../../scripts/popup.js"
+import { popup } from "../../../scripts/popup.js"
 import { dataAtual } from "../../../scripts/funcionalidades.js"
 
 export default function visualizar_produto (dado) {

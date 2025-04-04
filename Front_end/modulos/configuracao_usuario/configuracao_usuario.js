@@ -1,6 +1,6 @@
 import { visibilidadeSenha } from "../../scripts/funcionalidades.js";
 import { carregarConteudo, mudarLogo } from "../../scripts/javaScript.js";
-import popup from "../../scripts/popup.js";
+import { popup } from "../../scripts/popup.js";
 
 export default function configuracao_usuario() {
     function fechar_menu_editar() {

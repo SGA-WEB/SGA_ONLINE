@@ -12,7 +12,7 @@ import visualizar_contato from "../modulos/contato/visualizar_contato/visualizar
 import editar_contato from "../modulos/contato/editar_contato/editar_contato.js";
 import excluir_contato from "../modulos/contato/excluir_contato.js";
 
-import popup from "./popup.js"
+import { popup } from "./popup.js"
 
 export default function crudLayout (obj, tr) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
