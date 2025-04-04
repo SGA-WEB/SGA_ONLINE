@@ -54,7 +54,6 @@ function dataAtual() {
 }
 
 function formatarData(data) {
-  
   let data_cadastro =  data.split("T")[0] // Retira o horário
   const [ano, mes, dia] = data_cadastro.split('-'); // Separa o ano, mes e dia
   data_cadastro = `${dia}-${mes}-${ano}`; // Formata a data

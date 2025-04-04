@@ -17,7 +17,6 @@ export default function editar_centro_de_estoque(dado, telaAnteriorVisualizar) {
 
     select2("100%")
     dataAtual()
-    console.log(dado)
     document.querySelector(".codigo_id").textContent = dado.id_centro_estoque
     document.querySelector("#nome_centro_de_estoque").value = dado.nome_centro_estoque
     document.querySelector("#localizacao").value = dado.localizacao_centro_estoque
@@ -56,6 +55,16 @@ export default function editar_centro_de_estoque(dado, telaAnteriorVisualizar) {
             if (response.ok) {
                 alert('Dados atualizados com sucesso!');
                 console.log('Usuário atualizado:', data);
+                const novoDado = { 
+                    // objeto para atualizar a tela de visualizar comforme os novos dados
+                    id_centro_estoque: id_centro_estoque,
+                    nome_centro_estoque: nome,
+                    localizacao_centro_estoque: localizacao,
+                    padrao_centro_estoque: padrao,
+                    descricao_centro_estoque: descricao, 
+                    data_cadastro: dado.data_cadastro
+                }
+                carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, novoDado)
             } else {
                 alert(`Erro: ${data.error}`);
             }
