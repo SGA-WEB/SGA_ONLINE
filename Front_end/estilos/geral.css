@@ -375,6 +375,17 @@
     }
 }
 
+
+/* Pop Up Erro: */
+.popup_erro {
+    background-color: var(--alerta1);
+}
+
+.popup_erro .progress-bar {
+    background-color: var(--alerta2);
+    animation: progress 5s linear forwards;
+}
+
 /* Estilo telas de formulário: */
 
 .p_codigo_id { 

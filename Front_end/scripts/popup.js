@@ -12,12 +12,9 @@ function popup (status, idx = 0, btn) {
         - Fecha o popup quando o usuário clicar fora dele;
     */
 
-
     let container_popup = document.querySelectorAll(".container_popup")[idx]
     let btn_fechar_popup = document.querySelectorAll(".btn_fechar_popup")[idx]
     
-    console.log(container_popup)
-    console.log(btn_fechar_popup)
     let fecharPopupQuandoClicarForaDele = (e) => {
         let popup = document.querySelectorAll(".popup")[idx]
         if (container_popup.style.display == "flex"){
@@ -26,6 +23,7 @@ function popup (status, idx = 0, btn) {
                 window.removeEventListener("click", fecharPopupQuandoClicarForaDele); // Remove o evento de clique fora do popup
             }
         }
+        window.removeEventListener("click", fecharPopupQuandoClicarForaDele); // Remove o evento de clique fora do popup
     }
 
     function fecharPopup(btn) {
@@ -56,7 +54,7 @@ function popup (status, idx = 0, btn) {
 function popup_aviso(mensagem = "Ação realizada com sucesso!") {
     const popup = document.getElementById('popup_aviso');
     const p_mensagem = document.querySelector('.mensagem_aviso');
-    const btn_fechar_popup = document.querySelector('.btn_fechar_popup');
+    const btn_fechar_popup = document.querySelector('#btn_fechar_popup_aviso');
 
     // Remove a classe hide_popup para mostrar o popup
     popup.classList.remove('hide_popup');
@@ -89,8 +87,27 @@ function popup_carregando(fecharPopup = false,mensagem = "Salvando alterações.
         popup.classList.add('hide_popup');
     }
 
-    
     return popup;
 }
 
-export { popup, popup_aviso, popup_carregando }
+function popup_erro(mensagem = "Erro ao realizar a ação!") {
+    const popup = document.getElementById('popup_erro');
+    const p_mensagem = popup.querySelector('.mensagem_erro');
+    
+    // Remove a classe hide_popup para mostrar o popup
+    popup.classList.remove('hide_popup');
+    p_mensagem.textContent = mensagem;
+    
+    // Reinicia a animação da barra de progresso
+    const progressBar = document.querySelector('#progress-bar-erro');
+    progressBar.style.animation = 'none';
+    void progressBar.offsetWidth; // Trigger reflow
+    progressBar.style.animation = 'progress 5s linear forwards';
+
+    // Esconde o popup após 5 segundos (tempo da animação da barra)
+    setTimeout(function() {
+        popup.classList.add('hide_popup');
+    }, 5000);
+}
+
+export { popup, popup_aviso, popup_carregando, popup_erro };

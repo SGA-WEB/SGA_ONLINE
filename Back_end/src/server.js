@@ -21,17 +21,6 @@ const pool = new Pool({
     },
 });
 
-app.get('/api/dados', async (req, res) => {
-    try {
-        const { tabela } = req.query; // Recebe o nome da tabela da query string
-        const { rows } = await pool.query(`SELECT * FROM ${tabela}`); // Faz a consulta
-        res.json(rows);  // Retorna os dados em formato JSON
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Erro no servidor');
-    }
-});
-
 app.use(express.json()); // Permite que o servidor processe JSON no corpo da requisição
 app.use(express.urlencoded({ extended: true })); // Permite processar dados de formulário
 
@@ -79,14 +68,56 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-// Endpoint para atualizar um usuário (PUT)
+app.get('/api/dados', async (req, res) => {
+    try {
+        const { tabela } = req.query; // Recebe o nome da tabela da query string
+        const { rows } = await pool.query(`SELECT * FROM ${tabela}`); // Faz a consulta
+        res.json(rows);  // Retorna os dados em formato JSON
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Erro no servidor');
+    }
+});
+
+app.get('/api/centro_estoque', async (req, res) => {
+    try {
+        const { rows } = await pool.query('SELECT * FROM sga.centro_estoque WHERE inativo = FALSE');
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao buscar centro_estoque' });
+    }
+});
+
+app.get('/api/produto', async (req, res) => {
+    try {
+        const { rows } = await pool.query('SELECT * FROM sga.produto WHERE inativo = FALSE');
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao buscar produtos' });
+    }
+});
+
+app.get('/api/contato', async (req, res) => {
+    try {
+        const { rows } = await pool.query('SELECT * FROM sga.contato WHERE deletado = FALSE');
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao buscar contatos' });
+    }
+});
+
+// Endpoint para atualizar um centro de estoque (PUT)
 app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {
     const { id_centro_estoque } = req.params;
     const { nome, localizacao, padrao, descricao } = req.body;
     try {
         const query = `
             UPDATE sga.centro_estoque 
-            SET nome_centro_estoque = $1, localizacao_centro_estoque = $2, padrao_centro_estoque = $3, descricao_centro_estoque = $4
+            SET 
+                nome_centro_estoque = $1, 
+                localizacao_centro_estoque = $2, 
+                padrao_centro_estoque = $3, 
+                descricao_centro_estoque = $4
             WHERE id_centro_estoque = $5
             RETURNING *;
         `;
@@ -104,6 +135,52 @@ app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {
     } catch (err) {
         console.error('Erro ao atualizar usuário:', err);
         res.status(500).json({ error: 'Erro interno no servidor' });
+    }
+});
+
+app.put('/produto/:id_produto', async (req, res) => {
+    const { id_produto } = req.params;
+    const { produto, quantidade, preco_varejo, preco_atacado} = req.body;
+    try {
+        const query = `
+            UPDATE sga.produto 
+            SET 
+                produto = $1, 
+                quantidade = $2, 
+                preco_varejo = $3, 
+                preco_atacado = $4
+            WHERE id_produto = $5
+            RETURNING *;
+        `;
+        const values = [produto, quantidade, preco_varejo, preco_atacado, id_produto];
+        const result = await pool.query(query, values);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Produto não encontrado' });
+        }
+
+        res.status(200).json({
+            message: 'Produto atualizado com sucesso!',
+            produto: result.rows[0]
+        });
+    } catch (err) {
+        console.error('Erro ao atualizar produto:', err);
+        res.status(500).json({ error: 'Erro interno no servidor' });
+    }
+});
+
+// Endpoint para inativar um usuário (DELETE)
+app.delete('/centro_estoque/:id_centro_estoque', async (req, res) => {
+    const { id_centro_estoque } = req.params;
+    try {
+        await pool.query(`
+            UPDATE sga.centro_estoque 
+            SET inativo = TRUE 
+            WHERE id_centro_estoque = $1
+        `, [id_centro_estoque]);
+        res.status(200).json({ message: 'Centro de estoque excluído com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir' });
     }
 });
 

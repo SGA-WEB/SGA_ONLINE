@@ -41,7 +41,7 @@ export default function produto () {
     
     select2("9em")
 
-    buscarDados("sga.produto") // Busca os dados da tabela, exibe na tela e permite pesquisar
+    buscarDados("produto", 5) // Busca os dados da tabela, exibe na tela e permite pesquisar
 
     fecharMenu(document.querySelector(".tabela").offsetWidth,480)
     window.addEventListener('resize', (e) => {

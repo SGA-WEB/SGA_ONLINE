@@ -148,7 +148,7 @@
             
         </section>
         <div class="popup_aviso hide_popup" id="popup_aviso">
-            <button class="btn_fechar_popup" id="btn_fechar_popup_excluir_contato">
+            <button class="btn_fechar_popup" id="btn_fechar_popup_aviso">
                 <img src="../imagens/icone_fechar.svg" alt="botão fechar popup" class="icone_fechar">
             </button>
             <main>
@@ -156,7 +156,19 @@
                 <p class="mensagem_aviso">Alteração salva com sucesso!</p>
             </main>
             <div class="progress-container">
-                <div class="progress-bar"></div>
+                <div class="progress-bar" id="progress-bar-aviso"></div>
+            </div>
+        </div>
+        <div class="popup_erro popup_aviso hide_popup" id="popup_erro">
+            <button class="btn_fechar_popup" id="btn_fechar_popup_erro">
+                <img src="../imagens/icone_fechar.svg" alt="botão fechar popup" class="icone_fechar">
+            </button>
+            <main>
+                <img src="../imagens/icone_fechar.svg" alt="icone_check">
+                <p class="mensagem_erro">Erro ao salvar alteração</p>
+            </main>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar-erro"></div>
             </div>
         </div>
         <div class="popup_aviso popup_carregando hide_popup" id="popup_carregando">
