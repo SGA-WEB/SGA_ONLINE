@@ -32,5 +32,5 @@ export default function contato() {
             cadastro_contato, 
         )
     })
-    buscarDados("sga.contato") // Busca os dados da tabela, exibe na tela e permite pesquisar
+    buscarDados("contato", 5) // Busca os dados da tabela, exibe na tela e permite pesquisar
 }

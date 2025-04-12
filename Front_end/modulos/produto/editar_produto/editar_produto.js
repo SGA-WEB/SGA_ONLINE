@@ -29,7 +29,7 @@ export default function editar_produto (dado, telaAnteriorVisualizar) {
     valor_atacado.value = dado.preco_atacado
     nome_produto.value = dado.produto
     quantidade_em_estoque.value = dado.quantidade
-
+    
 
     let btnVoltar = document.querySelector('.btn_voltar')
     btnVoltar.addEventListener('click', () => {
@@ -52,7 +52,6 @@ export default function editar_produto (dado, telaAnteriorVisualizar) {
         const preco_varejo = document.querySelector("#valor_varejo").value;
         const preco_atacado = document.querySelector("#valor_atacado").value;
         
-        console.log(produto, quantidade, preco_varejo, preco_atacado)
         popup_carregando();
         try {
             const response = await fetch(`http://localhost:3000/produto/${id_produto}`, {

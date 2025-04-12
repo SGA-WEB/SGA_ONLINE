@@ -99,7 +99,7 @@ app.get('/api/produto', async (req, res) => {
 
 app.get('/api/contato', async (req, res) => {
     try {
-        const { rows } = await pool.query('SELECT * FROM sga.contato WHERE deletado = FALSE');
+        const { rows } = await pool.query('SELECT * FROM sga.contato WHERE inativo = FALSE');
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: 'Erro ao buscar contatos' });
@@ -169,7 +169,7 @@ app.put('/produto/:id_produto', async (req, res) => {
     }
 });
 
-// Endpoint para inativar um usuário (DELETE)
+// Endpoint para inativar tabalas (DELETE)
 app.delete('/centro_estoque/:id_centro_estoque', async (req, res) => {
     const { id_centro_estoque } = req.params;
     try {
@@ -178,6 +178,34 @@ app.delete('/centro_estoque/:id_centro_estoque', async (req, res) => {
             SET inativo = TRUE 
             WHERE id_centro_estoque = $1
         `, [id_centro_estoque]);
+        res.status(200).json({ message: 'Centro de estoque excluído com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
+
+app.delete('/produto/:id_produto', async (req, res) => {
+    const { id_produto } = req.params;
+    try {
+        await pool.query(`
+            UPDATE sga.produto 
+            SET inativo = TRUE 
+            WHERE id_produto = $1
+        `, [id_produto]);
+        res.status(200).json({ message: 'Produto excluído com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
+
+app.delete('/contato/:id_contato', async (req, res) => {
+    const { id_contato } = req.params;
+    try {
+        await pool.query(`
+            UPDATE sga.contato 
+            SET inativo = TRUE 
+            WHERE id_contato = $1
+        `, [id_contato]);
         res.status(200).json({ message: 'Centro de estoque excluído com sucesso!' });
     } catch (err) {
         res.status(500).json({ error: 'Erro ao excluir' });
