@@ -145,6 +145,16 @@ function aguardarRenderizacao(elemento) {
   });
 }
 
+function alterarOptionsSelect(select, dados_centros, id_centro_estoque) {
+  // Alterar o select de acordo com os dados da tabela
+  for (let i = 0; i < dados_centros.length; i++) {
+      let option = document.createElement("option")
+      option.value = dados_centros[i].id_centro_estoque  
+      option.text = dados_centros[i].nome_centro_estoque
+      select.appendChild(option)
+  }
+  select.value = id_centro_estoque
+}
 
 export {
   visibilidadeSenha,
@@ -152,5 +162,6 @@ export {
   formatarData,
   mudarPesquisa,
   visibilidadeMenulateral,
-  aguardarRenderizacao
+  aguardarRenderizacao,
+  alterarOptionsSelect
 }

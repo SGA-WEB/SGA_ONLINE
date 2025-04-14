@@ -2,7 +2,7 @@ import { carregarConteudo } from '../../../scripts/javaScript.js'
 import select2 from '../../../scripts/select.js'
 import produto from '../produto.js'
 import visualizar_produto from '../visualizar_produto/visualizar_produto.js'
-import { dataAtual } from '../../../scripts/funcionalidades.js'
+import { dataAtual, alterarOptionsSelect } from '../../../scripts/funcionalidades.js'
 import { popup_carregando, popup_aviso, popup_erro } from '../../../scripts/popup.js'
 import buscarDados from '../../../scripts/buscarDados.js'
 
@@ -12,7 +12,13 @@ export default function editar_produto (dado, telaAnteriorVisualizar) {
 
     select2("10rem")
     dataAtual()
-    buscarDados("centro_estoque", -1, false).then((result) => {alterarSelect(result)})
+    buscarDados("centro_estoque", -1, false).then((result) => {
+        alterarOptionsSelect(
+            document.querySelector("#selecionar_centro_de_estoque"), 
+            result, 
+            dado.fk_id_centro_estoque
+        )
+    })
 
     if (telaAnteriorVisualizar) {
         caminho = "produto/visualizar_produto/visualizar_produto.html"
@@ -49,23 +55,15 @@ export default function editar_produto (dado, telaAnteriorVisualizar) {
         salvarEdicaoProduto(dado.id_produto)  
     })
 
-    function alterarSelect(result) {
-        let select = document.querySelector("#selecionar_centro_de_estoque")
-        for (let i = 0; i < result.length; i++) {
-            let option = document.createElement("option")
-            option.value = result[i].id_centro_estoque
-            option.text = result[i].nome_centro_estoque
-            select.appendChild(option)
-        }
-    }
-
     async function salvarEdicaoProduto(id_produto) {
         const produto = document.querySelector("#nome_produto").value;
         const quantidade = document.querySelector("#quantidade_em_estoque").value;
         const preco_varejo = document.querySelector("#valor_varejo").value;
         const preco_atacado = document.querySelector("#valor_atacado").value;
         const descricao = document.querySelector("#descricao").value;
-        
+        const id_centro_estoque = document.querySelector("#selecionar_centro_de_estoque").value
+        const data_cadastro = dado.data_cadastro
+
         popup_carregando();
         try {
             const response = await fetch(`http://localhost:3000/produto/${id_produto}`, {
@@ -73,18 +71,21 @@ export default function editar_produto (dado, telaAnteriorVisualizar) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ produto, quantidade, preco_varejo, preco_atacado, descricao })
+                body: JSON.stringify({ produto, quantidade, preco_varejo, preco_atacado, descricao, id_centro_estoque })
             });
     
             const data = await response.json();
     
             if (response.ok) {
-                const novoDado = { 
+                const novoDado = { // objeto para atualizar a tela de visualizar comforme os novos dados
                     id_produto: id_produto,
                     produto: produto,
                     quantidade: quantidade,
                     preco_varejo: preco_varejo,
                     preco_atacado: preco_atacado,
+                    descricao: descricao,
+                    fk_id_centro_estoque: id_centro_estoque,
+                    data_cadastro: data_cadastro
                 };
                 popup_carregando(true);
                 carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, novoDado);

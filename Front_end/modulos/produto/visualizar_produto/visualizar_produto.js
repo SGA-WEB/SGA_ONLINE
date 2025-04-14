@@ -3,11 +3,19 @@ import select2 from "../../../scripts/select.js"
 import editar_produto from "../editar_produto/editar_produto.js"
 import excluir_produto from "../excluir_produto.js"
 import { popup } from "../../../scripts/popup.js"
-import { formatarData } from "../../../scripts/funcionalidades.js"
+import { formatarData, alterarOptionsSelect } from "../../../scripts/funcionalidades.js"
+import buscarDados from "../../../scripts/buscarDados.js"
 
 export default function visualizar_produto (dado) {
-    console.log(dado)
     select2("10rem")
+    buscarDados("centro_estoque", -1, false).then((result) => {
+        alterarOptionsSelect(
+            document.querySelector("#selecionar_centro_de_estoque"), 
+            result, 
+            dado.fk_id_centro_estoque
+        )
+    })
+    
     let codigo_produto = document.querySelector('.codigo_id')
     let valor_varejo = document.querySelector('#valor_varejo')
     let valor_atacado = document.querySelector('#valor_atacado')
