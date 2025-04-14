@@ -4,13 +4,15 @@ import produto from '../produto.js'
 import visualizar_produto from '../visualizar_produto/visualizar_produto.js'
 import { dataAtual } from '../../../scripts/funcionalidades.js'
 import { popup_carregando, popup_aviso, popup_erro } from '../../../scripts/popup.js'
+import buscarDados from '../../../scripts/buscarDados.js'
 
 export default function editar_produto (dado, telaAnteriorVisualizar) {
     let caminho = "produto/produto.html"
     let funcao = produto
-    
+
     select2("10rem")
     dataAtual()
+    buscarDados("centro_estoque", -1, false).then((result) => {alterarSelect(result)})
 
     if (telaAnteriorVisualizar) {
         caminho = "produto/visualizar_produto/visualizar_produto.html"
@@ -22,13 +24,14 @@ export default function editar_produto (dado, telaAnteriorVisualizar) {
     let valor_atacado = document.querySelector('#valor_atacado')
     let nome_produto = document.querySelector('#nome_produto')
     let quantidade_em_estoque = document.querySelector('#quantidade_em_estoque')
-    let centro_de_estoque = document.querySelector('#centro_de_estoque')
+    let descricao = document.querySelector('#descricao')
 
     codigo_produto.textContent = dado.id_produto
     valor_varejo.value = dado.preco_varejo
     valor_atacado.value = dado.preco_atacado
     nome_produto.value = dado.produto
     quantidade_em_estoque.value = dado.quantidade
+    descricao.value = dado.descricao
     
 
     let btnVoltar = document.querySelector('.btn_voltar')
@@ -46,11 +49,22 @@ export default function editar_produto (dado, telaAnteriorVisualizar) {
         salvarEdicaoProduto(dado.id_produto)  
     })
 
+    function alterarSelect(result) {
+        let select = document.querySelector("#selecionar_centro_de_estoque")
+        for (let i = 0; i < result.length; i++) {
+            let option = document.createElement("option")
+            option.value = result[i].id_centro_estoque
+            option.text = result[i].nome_centro_estoque
+            select.appendChild(option)
+        }
+    }
+
     async function salvarEdicaoProduto(id_produto) {
         const produto = document.querySelector("#nome_produto").value;
         const quantidade = document.querySelector("#quantidade_em_estoque").value;
         const preco_varejo = document.querySelector("#valor_varejo").value;
         const preco_atacado = document.querySelector("#valor_atacado").value;
+        const descricao = document.querySelector("#descricao").value;
         
         popup_carregando();
         try {
@@ -59,7 +73,7 @@ export default function editar_produto (dado, telaAnteriorVisualizar) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ produto, quantidade, preco_varejo, preco_atacado })
+                body: JSON.stringify({ produto, quantidade, preco_varejo, preco_atacado, descricao })
             });
     
             const data = await response.json();

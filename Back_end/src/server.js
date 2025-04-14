@@ -90,9 +90,23 @@ app.get('/api/centro_estoque', async (req, res) => {
 
 app.get('/api/produto', async (req, res) => {
     try {
-        const { rows } = await pool.query('SELECT * FROM sga.produto WHERE inativo = FALSE');
+        const { rows } = await pool.query(`
+            SELECT 
+            p.id_produto, 
+            p.produto, 
+            p.quantidade, 
+            p.preco_varejo, 
+            p.preco_atacado, 
+            p.descricao,
+            p.data_cadastro,
+            ce.nome_centro_estoque AS nome_centro_estoque 
+            FROM sga.produto p
+            LEFT JOIN sga.centro_estoque ce ON p.id_centro_estoque = ce.id_centro_estoque
+            WHERE p.inativo = FALSE
+        `);
         res.json(rows);
     } catch (err) {
+        console.error('Erro ao buscar produtos:', err);
         res.status(500).json({ error: 'Erro ao buscar produtos' });
     }
 });
@@ -140,7 +154,7 @@ app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {
 
 app.put('/produto/:id_produto', async (req, res) => {
     const { id_produto } = req.params;
-    const { produto, quantidade, preco_varejo, preco_atacado} = req.body;
+    const { produto, quantidade, preco_varejo, preco_atacado, descricao} = req.body;
     try {
         const query = `
             UPDATE sga.produto 
@@ -148,11 +162,12 @@ app.put('/produto/:id_produto', async (req, res) => {
                 produto = $1, 
                 quantidade = $2, 
                 preco_varejo = $3, 
-                preco_atacado = $4
-            WHERE id_produto = $5
+                preco_atacado = $4,
+                descricao = $5
+            WHERE id_produto = $6
             RETURNING *;
         `;
-        const values = [produto, quantidade, preco_varejo, preco_atacado, id_produto];
+        const values = [produto, quantidade, preco_varejo, preco_atacado, descricao, id_produto];
         const result = await pool.query(query, values);
 
         if (result.rows.length === 0) {
@@ -168,6 +183,37 @@ app.put('/produto/:id_produto', async (req, res) => {
         res.status(500).json({ error: 'Erro interno no servidor' });
     }
 });
+
+// app.put('/produto/:id_produto', async (req, res) => {
+//     const { id_produto } = req.params;
+//     const { produto, quantidade, preco_varejo, preco_atacado} = req.body;
+//     try {
+//         const query = `
+//             UPDATE sga.produto 
+//             SET 
+//                 produto = $1, 
+//                 quantidade = $2, 
+//                 preco_varejo = $3, 
+//                 preco_atacado = $4
+//             WHERE id_produto = $5
+//             RETURNING *;
+//         `;
+//         const values = [produto, quantidade, preco_varejo, preco_atacado, id_produto];
+//         const result = await pool.query(query, values);
+
+//         if (result.rows.length === 0) {
+//             return res.status(404).json({ error: 'Produto não encontrado' });
+//         }
+
+//         res.status(200).json({
+//             message: 'Produto atualizado com sucesso!',
+//             produto: result.rows[0]
+//         });
+//     } catch (err) {
+//         console.error('Erro ao atualizar produto:', err);
+//         res.status(500).json({ error: 'Erro interno no servidor' });
+//     }
+// });
 
 // Endpoint para inativar tabalas (DELETE)
 app.delete('/centro_estoque/:id_centro_estoque', async (req, res) => {

@@ -6,6 +6,7 @@ import { popup } from "../../../scripts/popup.js"
 import { formatarData } from "../../../scripts/funcionalidades.js"
 
 export default function visualizar_produto (dado) {
+    console.log(dado)
     select2("10rem")
     let codigo_produto = document.querySelector('.codigo_id')
     let valor_varejo = document.querySelector('#valor_varejo')
@@ -13,13 +14,15 @@ export default function visualizar_produto (dado) {
     let nome_produto = document.querySelector('#nome_produto')
     let quantidade_em_estoque = document.querySelector('#quantidade_em_estoque')
     let data_cadastro = document.querySelector('.data_cadastro')
+    let descricao = document.querySelector('#descricao')
 
+    data_cadastro.textContent = formatarData(dado.data_cadastro)
     codigo_produto.textContent = dado.id_produto
     valor_varejo.value = dado.preco_varejo
     valor_atacado.value = dado.preco_atacado
     nome_produto.value = dado.produto
     quantidade_em_estoque.value = dado.quantidade
-    data_cadastro.textContent = formatarData(dado.data_cadastro)
+    descricao.value = dado.descricao
 
     let btnVoltar = document.querySelector('.btn_voltar')
     btnVoltar.addEventListener('click', () => {

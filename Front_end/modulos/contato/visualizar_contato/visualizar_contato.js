@@ -3,6 +3,7 @@ import { dataAtual } from "../../../scripts/funcionalidades.js";
 import select2 from "../../../scripts/select.js";
 import editar_contato from "../editar_contato/editar_contato.js";
 import excluir_contato from "../excluir_contato.js";
+import { popup } from "../../../scripts/popup.js";
 
 export default function visualizar_contato (dado) {
     let cont = 0        
@@ -43,7 +44,7 @@ export default function visualizar_contato (dado) {
         let btn_excluir = document.querySelector(".btn_excluir")
         btn_excluir.addEventListener("click",() => {
             popup("abrir", 0, btn_excluir)
-            excluir_contato(dado)
+            excluir_contato(dado, carregarConteudo, "contato/contato.html", document.querySelector(".principal"))
         })
     }
 

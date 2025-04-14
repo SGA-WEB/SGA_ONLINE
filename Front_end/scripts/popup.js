@@ -14,7 +14,6 @@ function popup (status, idx = 0, btn) {
 
     let container_popup = document.querySelectorAll(".container_popup")[idx]
     let btn_fechar_popup = document.querySelectorAll(".btn_fechar_popup")[idx]
-    
     let fecharPopupQuandoClicarForaDele = (e) => {
         let popup = document.querySelectorAll(".popup")[idx]
         if (container_popup.style.display == "flex"){

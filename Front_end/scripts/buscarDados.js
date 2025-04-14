@@ -1,6 +1,6 @@
 import { carregarDadosNaTabela, pesquisar } from './carregarDadosNaTabela.js';
 
-export default function buscarDados(query, limiteDados) {
+export default async function buscarDados(query, limiteDados, tabela = true) {
     /*
         Autor: matheushnunes
         Data: 23/02/2025
@@ -15,24 +15,22 @@ export default function buscarDados(query, limiteDados) {
         A pesquisa é feita com base no campo selecionado no select e no valor digitado no input de pesquisa;
     */
 
-    async function fetchDados() {
-        // Busca os dados no servidor
-        try {
-            const response = await fetch(`http://localhost:3000/api/${query}`); // Faz a requisição para o servidor
-            const result = await response.json(); // Converte a resposta para JSON
-            if (result) {
-                // Exibe os dados na página
+    try {
+        const response = await fetch(`http://localhost:3000/api/${query}`); // Faz a requisição para o servidor
+        const result = await response.json(); // Converte a resposta para JSON
+        if (result) {
+            // Exibe os dados na página
+            if (tabela) {
                 carregarDadosNaTabela(result, limiteDados);
                 pesquisar(result);
             } else {
-                // Exibe a mensagem de erro
-                console.error('Erro no servidor:', result.message);
+                return result
             }
-        } catch (err) {
-            console.error('Erro ao buscar dados:', err);
+        } else {
+            // Exibe a mensagem de erro
+            console.error('Erro no servidor:', result.message);
         }
+    } catch (err) {
+        console.error('Erro ao buscar dados:', err);
     }
-    
-    // Carrega os dados ao abrir a página
-    fetchDados();
 }
