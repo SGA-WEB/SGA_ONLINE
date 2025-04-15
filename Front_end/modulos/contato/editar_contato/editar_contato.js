@@ -1,5 +1,5 @@
 import { carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
-import { dataAtual } from "../../../scripts/funcionalidades.js";
+import { formatarData } from "../../../scripts/funcionalidades.js";
 import select2 from "../../../scripts/select.js";
 import contato from "../contato.js";
 import visualizar_contato from "../visualizar_contato/visualizar_contato.js";
@@ -29,7 +29,6 @@ export default function editar_contato (dado, telaAnteriorVisualizar) {
         });
     });
 
-    dataAtual()
     btnsProximoEVoltar()
     inserirDadoDoBanco()
     addListenerBtns()
@@ -103,6 +102,7 @@ export default function editar_contato (dado, telaAnteriorVisualizar) {
             document.querySelector("#nome_fantasia").value = dado.nome_fantasia
             document.getElementById(dado.categoria.toLowerCase().replace("á","a")).checked = true
             document.querySelector("#fone1").value = dado.fone1
+            document.querySelector(".data_cadastro").textContent = formatarData(dado.data_cadastro)
         }
     }
 }

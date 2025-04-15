@@ -63,7 +63,7 @@ function carregarDadosNaTabela (data, limiteDados = undefined) {
     }
 }
 
-function pesquisar(data) {
+function pesquisar(data, limiteDados = undefined) {
     // Função que pesquisa e manda os dados filtrados para a função carregarDadosNaTabela
 
     const btn_pesquisar = document.querySelector('.btn_pesquisar') // Botão de pesquisar
@@ -158,7 +158,7 @@ function pesquisar(data) {
         if (value_input_pesquisa == "") { // Se o input estiver vazio
             newData = data // Exibe todos os dados
         }
-        carregarDadosNaTabela(newData) // Manda os novos dados filtrados para a função carregarDadosNaTabela
+        carregarDadosNaTabela(newData, limiteDados) // Manda os novos dados filtrados para a função carregarDadosNaTabela
     }  
 }
 

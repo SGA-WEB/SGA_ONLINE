@@ -1,5 +1,5 @@
 import { carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
-import { dataAtual } from "../../../scripts/funcionalidades.js";
+import { formatarData } from "../../../scripts/funcionalidades.js";
 import select2 from "../../../scripts/select.js";
 import editar_contato from "../editar_contato/editar_contato.js";
 import excluir_contato from "../excluir_contato.js";
@@ -19,7 +19,6 @@ export default function visualizar_contato (dado) {
         });
     });
 
-    dataAtual()
     select2("100%")
     btnsProximoEVoltar()
     inserirDadoDoBanco()
@@ -104,12 +103,42 @@ export default function visualizar_contato (dado) {
     }
 
     function inserirDadoDoBanco () {
+        //         categoria
+        // : 
+        // cnpj
+        // : 
+        // cpf
+        // : 
+        // data_cadastro
+        // : 
+        // email_padrao
+        // : 
+        // fone1
+        // fone2
+        // id_contato
+        // inativo
+        // insc_estadual
+        // insc_municipal
+        // nome_fantasia
+        // observacao
+        // perfil_tributario
+        // razao_social
+        // tipo_consumidor
         if (document.querySelector(".h2_titulo").textContent == "Visualizar contato"){ // Verifica se a tela é de visualização
+            if (dado.tipo_contato === "Jurídica") {
+                document.querySelector("#contato_juridica").checked = true
+            } else if (dado.tipo_contato === "Físico") {
+                document.querySelector("#contato_fisico").checked = true
+            }
+
+
             document.querySelector(".codigo_id").textContent = dado.id_contato
             document.querySelector("#nome_razao_social").value = dado.razao_social
             document.querySelector("#nome_fantasia").value = dado.nome_fantasia
             document.getElementById(dado.categoria.toLowerCase().replace("á","a")).checked = true //Caso seja funcionário o acento é retirado para pegar id correto 
             document.querySelector("#fone1").value = dado.fone1
+            document.querySelector(".data_cadastro").textContent = formatarData(dado.data_cadastro)
+            document.getElementsByName("tipo_contato").value = dado.tipo_contato
         }
     }
     cont++

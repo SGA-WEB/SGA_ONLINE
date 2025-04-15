@@ -22,7 +22,7 @@ export default async function buscarDados(query, limiteDados, tabela = true) {
             // Exibe os dados na página
             if (tabela) {
                 carregarDadosNaTabela(result, limiteDados);
-                pesquisar(result);
+                pesquisar(result, limiteDados);
             } else {
                 return result
             }

@@ -20,7 +20,7 @@ export default function excluir_centro_de_estoque(dado, callbackFunction, ...par
             const data = await response.json();
             popup_carregando(true)
             if (response.ok) {
-                popup_aviso(`Centro de estoque ${dado.descricao_centro_estoque} excluído com sucesso!`)
+                popup_aviso(`Centro de estoque ${dado.nome_centro_estoque} excluído com sucesso!`)
                 if (callbackFunction) {
                     callbackFunction(...param) // Chama a função de callback, se existir
                 }
