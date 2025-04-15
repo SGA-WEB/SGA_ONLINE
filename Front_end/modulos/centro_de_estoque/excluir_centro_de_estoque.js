@@ -5,7 +5,7 @@ export default function excluir_centro_de_estoque(dado, callbackFunction, ...par
     let item_popup_excluir = document.querySelector(".item_popup_excluir")
 
     codigo_popup_excluir.innerHTML = dado.id_centro_estoque
-    item_popup_excluir.innerHTML = dado.descricao_centro_estoque
+    item_popup_excluir.innerHTML = dado.nome_centro_estoque
 
     let btn_popup_excluir_excluir = document.querySelector("#btn_popup_excluir_excluir")
     let btn_popup_excluir_cancelar = document.querySelector("#btn_popup_excluir_cancelar")
@@ -30,7 +30,7 @@ export default function excluir_centro_de_estoque(dado, callbackFunction, ...par
             }
         } catch (err) {
             popup_carregando(true)
-            popup_erro(`Erro ao excluir centro de estoque: ${dado.descricao_centro_estoque}`)
+            popup_erro(`Erro ao excluir centro de estoque: ${dado.nome_centro_estoque}`)
         }
     })
 }

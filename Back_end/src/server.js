@@ -68,20 +68,16 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
-app.get('/api/dados', async (req, res) => {
-    try {
-        const { tabela } = req.query; // Recebe o nome da tabela da query string
-        const { rows } = await pool.query(`SELECT * FROM ${tabela}`); // Faz a consulta
-        res.json(rows);  // Retorna os dados em formato JSON
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Erro no servidor');
-    }
-});
-
 app.get('/api/centro_estoque', async (req, res) => {
     try {
-        const { rows } = await pool.query('SELECT * FROM sga.centro_estoque WHERE inativo = FALSE');
+        const { rows } = await pool.query(`SELECT 
+            id_centro_estoque,
+            nome_centro_estoque,
+            localizacao_centro_estoque,
+            padrao_centro_estoque,
+            data_cadastro,
+            descricao_centro_estoque
+            FROM sga.centro_estoque WHERE inativo = FALSE`);
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: 'Erro ao buscar centro_estoque' });

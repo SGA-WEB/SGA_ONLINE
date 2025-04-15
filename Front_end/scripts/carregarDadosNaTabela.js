@@ -19,12 +19,15 @@ function carregarDadosNaTabela (data, limiteDados = undefined) {
 
         data.map(objDado => { // Para cada objeto no array de dados
             let objDadoCompleto = objDado
-            objDado = Object.entries(objDado).slice(0, limiteDados)
-            objDado = Object.fromEntries(objDado)
+            objDado = Object.entries(objDado).slice(0, limiteDados) // Pega os campos até o limite de dados
+            objDado = Object.fromEntries(objDado) // Converte o array em um objeto
             let tr = document.createElement('tr') // Cria uma linha
             tr.setAttribute('class','table_tr')
     
             for (let e in objDado) { // Para cada campo no objeto
+                if (e === "data_cadastro") {
+                    continue
+                }
                 let td = document.createElement('td')
                 td.setAttribute('class','dado_tabela')
                 td.setAttribute('id', e + "_" + objDado[e]) // nome do campo + valor do campo
@@ -40,7 +43,6 @@ function carregarDadosNaTabela (data, limiteDados = undefined) {
                     td.textContent = objDado[e]
                 }
 
-                
                 tr.appendChild(td) // Adiciona a célula na linha
             }
 
