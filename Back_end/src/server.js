@@ -117,6 +117,25 @@ app.get('/api/contato', async (req, res) => {
     }
 });
 
+// Rota GET para buscar UM endereço específico por ID (usando params)
+app.get('/api/endereco/:id_endereco', async (req, res) => {
+    const { id_endereco } = req.params;
+    try {
+        const { rows } = await pool.query(
+            `SELECT * FROM sga.endereco WHERE id_endereco = $1`, 
+            [id_endereco]
+        );
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Endereço não encontrado' });
+        }
+        res.json(rows[0]); // Retorna apenas o primeiro resultado (deveria ser único)
+    } catch (err) {
+        console.error('Erro ao buscar endereço:', err);
+        res.status(500).json({ error: 'Erro ao buscar endereço' });
+    }
+});
+
+
 // Endpoint para atualizar um centro de estoque (PUT)
 app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {
     const { id_centro_estoque } = req.params;

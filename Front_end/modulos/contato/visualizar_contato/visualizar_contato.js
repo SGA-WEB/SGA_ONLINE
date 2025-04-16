@@ -4,6 +4,7 @@ import select2 from "../../../scripts/select.js";
 import editar_contato from "../editar_contato/editar_contato.js";
 import excluir_contato from "../excluir_contato.js";
 import { popup } from "../../../scripts/popup.js";
+import buscarDados from "../../../scripts/buscarDados.js";
 
 export default function visualizar_contato (dado) {
     let cont = 0        
@@ -102,30 +103,8 @@ export default function visualizar_contato (dado) {
         })
     }
 
-    function inserirDadoDoBanco () {
-        //         categoria
-        // : 
-        // cnpj
-        // : 
-        // cpf
-        // : 
-        // data_cadastro
-        // : 
-        // email_padrao
-        // : 
-        // fone1
-        // fone2
-        // id_contato
-        // inativo
-        // insc_estadual
-        // insc_municipal
-        // nome_fantasia
-        // observacao
-        // perfil_tributario
-        // razao_social
-        // tipo_consumidor
+    async function inserirDadoDoBanco () {
         if (document.querySelector(".h2_titulo").textContent == "Visualizar contato"){ // Verifica se a tela é de visualização
-            console.log(dado)
             if (dado.tipo_pessoa === "Jurídica") {
                 document.querySelector("#contato_juridico").checked = true
             } else if (dado.tipo_pessoa === "Física") {
@@ -161,6 +140,18 @@ export default function visualizar_contato (dado) {
             document.querySelector("#cnpj").value = dado.cnpj
             document.querySelector("#cpf").value = dado.cpf
             document.querySelector("#email_padrao").value = dado.email_padrao
+            document.querySelector("#observacao").value = dado.observacao
+        } 
+        else if (document.querySelector(".h2_titulo").textContent.includes("Endereço")) {
+            const response = await fetch(`http://localhost:3000/api/endereco/${dado.fk_id_endereco}`);
+            const endereco = await response.json();
+            document.querySelector("#caixa_postal_principal").value = endereco.cep
+            document.querySelector("#pais_principal").value = endereco.pais
+            document.querySelector("#estado_principal").value = endereco.estado
+            document.querySelector("#municipio_principal").value = endereco.municipio
+            document.querySelector("#endereco_principal").value = endereco.endereco
+            document.querySelector("#referencia_principal").value = endereco.ponto_referencia
+            document.querySelector("#setor_principal").value = endereco.setor
         }
     }
     cont++
