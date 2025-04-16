@@ -1,4 +1,3 @@
-@ -1,184 +0,0 @@
 import { visibilidadeSenha } from "../../scripts/funcionalidades.js";
 import { carregarConteudo, mudarLogo } from "../../scripts/javaScript.js";
 import popup from "../../scripts/popup.js";
@@ -183,3 +182,4 @@ export default function configuracao_usuario() {
             mudarLogo()
     })
 }    
+   
