@@ -394,3 +394,8 @@
     border-radius: 5px;
     height: fit-content;
 }
+
+input[type="radio"]:checked,
+input[type="checkbox"]:checked {
+    background-color: red !important;
+}

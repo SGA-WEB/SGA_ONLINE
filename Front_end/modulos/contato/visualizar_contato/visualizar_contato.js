@@ -125,20 +125,42 @@ export default function visualizar_contato (dado) {
         // razao_social
         // tipo_consumidor
         if (document.querySelector(".h2_titulo").textContent == "Visualizar contato"){ // Verifica se a tela é de visualização
-            if (dado.tipo_contato === "Jurídica") {
-                document.querySelector("#contato_juridica").checked = true
-            } else if (dado.tipo_contato === "Físico") {
+            console.log(dado)
+            if (dado.tipo_pessoa === "Jurídica") {
+                document.querySelector("#contato_juridico").checked = true
+            } else if (dado.tipo_pessoa === "Física") {
                 document.querySelector("#contato_fisico").checked = true
             }
 
+            if (dado.situacao === "Ativo") {
+                document.querySelector("#ativo").checked = true
+            } else if (dado.situacao === "Inativo") {
+                document.querySelector("#inativo").checked = true
+            }
+
+            if (dado.tipo_poessoa === "Cliente") {
+                document.querySelector("#cliente").checked = true
+            }
+            if (dado.tipo_poessoa === "Fornecedor") {
+                document.querySelector("#fornecedor").checked = true
+            }
+            if (dado.tipo_poessoa === "Funcionário") {
+                document.querySelector("#funcionario").checked = true
+            }
 
             document.querySelector(".codigo_id").textContent = dado.id_contato
+            document.querySelector(".data_cadastro").textContent = formatarData(dado.data_cadastro)
             document.querySelector("#nome_razao_social").value = dado.razao_social
             document.querySelector("#nome_fantasia").value = dado.nome_fantasia
             document.getElementById(dado.categoria.toLowerCase().replace("á","a")).checked = true //Caso seja funcionário o acento é retirado para pegar id correto 
             document.querySelector("#fone1").value = dado.fone1
-            document.querySelector(".data_cadastro").textContent = formatarData(dado.data_cadastro)
+            document.querySelector("#fone2").value = dado.fone2
             document.getElementsByName("tipo_contato").value = dado.tipo_contato
+            document.querySelector("#insc_municipal").value = dado.insc_municipal
+            document.querySelector("#insc_estadual").value = dado.insc_estadual
+            document.querySelector("#cnpj").value = dado.cnpj
+            document.querySelector("#cpf").value = dado.cpf
+            document.querySelector("#email_padrao").value = dado.email_padrao
         }
     }
     cont++
