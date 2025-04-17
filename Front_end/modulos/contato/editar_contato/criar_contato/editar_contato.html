@@ -28,11 +28,11 @@
             <p>Tipo Pessoa:</p>
             <div class="container_radios small_width">
                 <div class="container_radio">
-                    <input type="radio" name="tipo_contato" id="contato_juridico">
+                    <input type="radio" name="tipo_pessoa" id="contato_juridico" value="Jurídica">
                     <label for="contato_juridico">Jurídica</label>
                 </div>
                 <div class="container_radio">
-                    <input type="radio" name="tipo_contato" id="contato_fisico">
+                    <input type="radio" name="tipo_pessoa" id="contato_fisico" value="Física">
                     <label for="contato_fisico">Física</label>
                 </div>
             </div>
@@ -41,11 +41,11 @@
             <p>Situação:</p>
             <div class="container_radios small_width">
                 <div class="container_radio">
-                    <input type="radio" name="situacao" id="ativo">
+                    <input type="radio" name="situacao" id="ativo" value="Ativo">
                     <label for="ativo">Ativo</label>
                 </div>
                 <div class="container_radio">
-                    <input type="radio" name="situacao" id="inativo">
+                    <input type="radio" name="situacao" id="inativo" value="Inativo">
                     <label for="inativo">Inativo</label>
                 </div>
             </div>
@@ -66,15 +66,15 @@
         <p>Classificação do contato:</p>
         <div class="container_checkbox">
             <div class="campo_checkbox">
-                <input type="checkbox" name="classificacao" id="cliente">
+                <input type="checkbox" name="categoria" id="cliente" value="Cliente">
                 <label for="cliente">Cliente</label>
             </div>
             <div class="campo_checkbox">
-                <input type="checkbox" name="classificacao" id="fornecedor">
+                <input type="checkbox" name="categoria" id="fornecedor" value="Fornecedor">
                 <label for="fornecedor">Fornecedor</label>
             </div>
             <div class="campo_checkbox">
-                <input type="checkbox" name="classificacao" id="funcionario">
+                <input type="checkbox" name="categoria" id="funcionario" value="Funcionário">
                 <label for="funcionario">Funcionário</label>
             </div>
         </div>
@@ -121,17 +121,17 @@
         <div class="campo_contato small_width select_conainer">
             <p>Perfil Tributário:</p>
             <select id="perfil_tributario" class="campo_select">
-                <option value="padrão">Padrão</option>
-                <option value="tipo1">Tipo 1</option>
-                <option value="tipo2">Tipo 2</option>
+                <option value="Consumidor Final">Consumidor final</option>
+                <option value="Lucro Presumido">Lucro Presumido</option>
+                <option value="Simples Nacional">Simples Nacional</option>
+                <option value="Lucro Real">Lucro Real</option>
             </select>
         </div>
         <div class="campo_contato small_width select_conainer">
             <p>Tipo consumidor:</p>
             <select id="tipo_consumidor" class="campo_select">
-                <option value="padrão">Padrão</option>
-                <option value="tipo1">Tipo 1</option>
-                <option value="tipo2">Tipo 2</option>
+                <option value="Consumidor final">Consumidor final</option>
+                <option value="Contribuinte">Contribuinte</option>
             </select>
         </div>
     </div>

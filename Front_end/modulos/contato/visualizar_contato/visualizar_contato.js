@@ -140,6 +140,8 @@ export default function visualizar_contato (dado) {
             document.querySelector("#cnpj").value = dado.cnpj
             document.querySelector("#cpf").value = dado.cpf
             document.querySelector("#email_padrao").value = dado.email_padrao
+            document.querySelector("#perfil_tributario").value = dado.perfil_tributario
+            document.querySelector("#tipo_consumidor").value = dado.tipo_consumidor
             document.querySelector("#observacao").value = dado.observacao
         } 
         else if (document.querySelector(".h2_titulo").textContent.includes("Endereço")) {

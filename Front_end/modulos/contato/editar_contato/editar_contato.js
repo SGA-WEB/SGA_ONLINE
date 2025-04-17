@@ -4,10 +4,14 @@ import select2 from "../../../scripts/select.js";
 import contato from "../contato.js";
 import visualizar_contato from "../visualizar_contato/visualizar_contato.js";
 
-export default function editar_contato (dado, telaAnteriorVisualizar) {
+export default async function editar_contato (dado, telaAnteriorVisualizar) {
+    console.log(dado)
     let caminho = "contato/contato.html"
     let funcao = contato
     let elementoPai = document.querySelector(".principal")
+
+    const response = await fetch(`http://localhost:3000/api/endereco/${dado.fk_id_endereco}`);
+    const endereco = await response.json();
 
     if (telaAnteriorVisualizar) {
         caminho = "contato/visualizar_contato/criar_contato/visualizar_contato.html"
@@ -17,7 +21,6 @@ export default function editar_contato (dado, telaAnteriorVisualizar) {
 
     let cont = 0        
 
-    // Mudar de tela ao clicar no menu superior da tela de contato:
     let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
     if (cont == 0) {
         links_nav[0].classList.add("link_nav_selecionado") // Adiciona a classe ao primeiro link assim que o modulo for carregado
@@ -28,9 +31,12 @@ export default function editar_contato (dado, telaAnteriorVisualizar) {
             estilo_nav(e.target);
         });
     });
-
+    localStorage.clear()
+    if (localStorage.length == 0) {
+        salvarDadosDoBancoNoLocalStorage()
+    }
     btnsProximoEVoltar()
-    inserirDadoDoBanco()
+    inserirDadoDoLocalStorageNaTela()
     addListenerBtns()
     select2("100%")
     
@@ -44,13 +50,15 @@ export default function editar_contato (dado, telaAnteriorVisualizar) {
     function addListenerBtns () {
         document.querySelector(".btn_cancelar").addEventListener("click", () => {
             carregarConteudo(caminho, elementoPai, false, funcao, dado)
+            localStorage.clear()
         })
+        document.querySelector(".btn_salvar").addEventListener("click", salvarNovosDadosDaTelaNoLocalStorage)
     }
-
 
     function estilo_nav (e) {
         let link = e
         if (e == "voltar_contatos") {
+            localStorage.clear()
             carregarConteudo(caminho, elementoPai, false, funcao, dado)
             return
         }
@@ -64,6 +72,7 @@ export default function editar_contato (dado, telaAnteriorVisualizar) {
     }
     
     function mudarDeAba (link) {
+        salvarNovosDadosDaTelaNoLocalStorage()
         switch (link) {
             case "link_contato":
                 carregarConteudo("contato/editar_contato/criar_contato/editar_contato.html", document.querySelector(".modulo"), false, chamarFuncoes); // E passada a função chamarFuncoes para que os botões sejam ativados e os dados sejam inseridos novamente
@@ -76,7 +85,7 @@ export default function editar_contato (dado, telaAnteriorVisualizar) {
 
     function chamarFuncoes () {
         btnsProximoEVoltar()
-        inserirDadoDoBanco()
+        inserirDadoDoLocalStorageNaTela()
         addListenerBtns()
         select2("100%")
     }
@@ -95,55 +104,126 @@ export default function editar_contato (dado, telaAnteriorVisualizar) {
         })
     }
 
-    async function inserirDadoDoBanco () {
+    function salvarDadosDoBancoNoLocalStorage() {
+        // Quando a página carregar os dados do banco vão para a localStorage
+        for (const key in dado) {
+            // Armazena os dados gerais do contato
+            if (dado.hasOwnProperty(key)) {
+                localStorage.setItem(key, dado[key]);
+            }
+            if(typeof(dado[key]) === "object") {
+                let categorias = []
+                for(let c in dado[key]) {
+                    categorias.push(dado[key][c].nome)
+                }
+                localStorage.setItem("categorias", categorias)
+            }
+        }
+        for (const key in endereco) {
+            // Armazena o endereço do contato
+            if (endereco.hasOwnProperty(key)) {
+                localStorage.setItem(key, endereco[key])
+            }
+        }
+    }
+
+    function inserirDadoDoLocalStorageNaTela () { // GET
         if (document.querySelector(".h2_titulo").textContent == "Editar contato"){ // Verifica se a tela é de visualização
-            if (dado.tipo_pessoa === "Jurídica") {
+            if (localStorage.getItem("tipo_pessoa") === "Jurídica") {
                 document.querySelector("#contato_juridico").checked = true
-            } else if (dado.tipo_pessoa === "Física") {
+            } else if (localStorage.getItem("tipo_pessoa") === "Física") {
                 document.querySelector("#contato_fisico").checked = true
             }
 
-            if (dado.situacao === "Ativo") {
+            if (localStorage.getItem("situacao") === "Ativo") {
                 document.querySelector("#ativo").checked = true
-            } else if (dado.situacao === "Inativo") {
+            } else if (localStorage.getItem("situacao") === "Inativo") {
                 document.querySelector("#inativo").checked = true
             }
 
-            if (dado.tipo_poessoa === "Cliente") {
-                document.querySelector("#cliente").checked = true
-            }
-            if (dado.tipo_poessoa === "Fornecedor") {
-                document.querySelector("#fornecedor").checked = true
-            }
-            if (dado.tipo_poessoa === "Funcionário") {
-                document.querySelector("#funcionario").checked = true
+            // O array no localStorage vira um string tipo: "Cliente,Funcionário"
+            let categorias = localStorage.getItem("categorias").split(",") // transoforma a string em um array
+            for (let i = 0; i < categorias.length; i++) {
+                if (categorias[i] === "Cliente") {
+                    document.querySelector("#cliente").checked = true
+                }
+                if (categorias[i] === "Fornecedor") {
+                    document.querySelector("#fornecedor").checked = true
+                }
+                if (categorias[i] === "Funcionário") {
+                    document.querySelector("#funcionario").checked = true
+                }
             }
 
-            document.querySelector(".codigo_id").textContent = dado.id_contato
-            document.querySelector(".data_cadastro").textContent = formatarData(dado.data_cadastro)
-            document.querySelector("#nome_razao_social").value = dado.razao_social
-            document.querySelector("#nome_fantasia").value = dado.nome_fantasia
-            document.getElementById(dado.categoria.toLowerCase().replace("á","a")).checked = true //Caso seja funcionário o acento é retirado para pegar id correto 
-            document.querySelector("#fone1").value = dado.fone1
-            document.querySelector("#fone2").value = dado.fone2
-            document.getElementsByName("tipo_contato").value = dado.tipo_contato
-            document.querySelector("#insc_municipal").value = dado.insc_municipal
-            document.querySelector("#insc_estadual").value = dado.insc_estadual
-            document.querySelector("#cnpj").value = dado.cnpj
-            document.querySelector("#cpf").value = dado.cpf
-            document.querySelector("#email_padrao").value = dado.email_padrao
-            document.querySelector("#observacao").value = dado.observacao
+            document.querySelector(".codigo_id").textContent = localStorage.getItem("id_contato")
+            document.querySelector(".data_cadastro").textContent = formatarData(localStorage.getItem("data_cadastro"))
+            document.querySelector("#nome_razao_social").value = localStorage.getItem("razao_social")
+            document.querySelector("#nome_fantasia").value = localStorage.getItem("nome_fantasia")
+            document.querySelector("#fone1").value = localStorage.getItem("fone1")
+            document.querySelector("#fone2").value = localStorage.getItem("fone2")
+            document.getElementsByName("tipo_pessoa").value = localStorage.getItem("tipo_pessoa")
+            document.querySelector("#insc_municipal").value = localStorage.getItem("insc_municipal")
+            document.querySelector("#insc_estadual").value = localStorage.getItem("insc_estadual")
+            document.querySelector("#cnpj").value = localStorage.getItem("cnpj")
+            document.querySelector("#cpf").value = localStorage.getItem("cpf")
+            document.querySelector("#email_padrao").value = localStorage.getItem("email_padrao")
+            document.querySelector("#perfil_tributario").value = localStorage.getItem("perfil_tributario")
+            document.querySelector("#tipo_consumidor").value = localStorage.getItem("tipo_consumidor")
+            document.querySelector("#observacao").value = localStorage.getItem("observacao")
         } 
-        else if (document.querySelector(".h2_titulo").textContent.includes("Endereço")) {
-            const response = await fetch(`http://localhost:3000/api/endereco/${dado.fk_id_endereco}`);
-            const endereco = await response.json();
-            document.querySelector("#caixa_postal_principal").value = endereco.cep
-            document.querySelector("#pais_principal").value = endereco.pais
-            document.querySelector("#estado_principal").value = endereco.estado
-            document.querySelector("#municipio_principal").value = endereco.municipio
-            document.querySelector("#endereco_principal").value = endereco.endereco
-            document.querySelector("#referencia_principal").value = endereco.ponto_referencia
-            document.querySelector("#setor_principal").value = endereco.setor
+        else if (document.querySelector(".h2_titulo").textContent.includes("Endereço")) { 
+            document.querySelector("#caixa_postal_principal").value = localStorage.getItem("cep")
+            document.querySelector("#pais_principal").value = localStorage.getItem("pais")
+            document.querySelector("#estado_principal").value = localStorage.getItem("estado")
+            document.querySelector("#municipio_principal").value = localStorage.getItem("municipio")
+            document.querySelector("#endereco_principal").value = localStorage.getItem("endereco")
+            document.querySelector("#referencia_principal").value = localStorage.getItem("ponto_referencia")
+            document.querySelector("#setor_principal").value = localStorage.getItem("setor")
         }
     }
+
+    function salvarNovosDadosDaTelaNoLocalStorage() { // SET
+        if (document.querySelector(".h2_titulo").textContent == "Editar contato"){ // Verifica se a tela é de visualização
+            let elementCategorias = document.getElementsByName("categoria")
+           
+            let arrCategorias = []
+            for (let categoria in elementCategorias) {
+                if(elementCategorias[categoria].checked) {
+                    arrCategorias.push(elementCategorias[categoria].value)
+                }
+            }
+
+            localStorage.setItem("categorias", arrCategorias)
+            localStorage.setItem("data_cadastro", dado.data_cadastro)
+            localStorage.setItem("id_contato", dado.id_contato)
+            localStorage.setItem("tipo_pessoa", document.querySelector('input[name="tipo_pessoa"]:checked').value)
+            localStorage.setItem("situacao", document.querySelector('input[name="situacao"]:checked').value)
+            localStorage.setItem("razao_social", document.querySelector("#nome_razao_social").value)
+            localStorage.setItem("nome_fantasia", document.querySelector("#nome_fantasia").value)
+            localStorage.setItem("fone1", document.querySelector("#fone1").value)
+            localStorage.setItem("fone2", document.querySelector("#fone2").value)
+            localStorage.setItem("insc_municipal", document.querySelector("#insc_municipal").value)
+            localStorage.setItem("insc_estadual", document.querySelector("#insc_estadual").value)
+            localStorage.setItem("cnpj", document.querySelector("#cnpj").value)
+            localStorage.setItem("cpf", document.querySelector("#cpf").value)
+            localStorage.setItem("email_padrao", document.querySelector("#email_padrao").value)
+            localStorage.setItem("perfil_tributario", document.querySelector("#perfil_tributario").value)
+            localStorage.setItem("tipo_consumidor", document.querySelector("#tipo_consumidor").value)
+            localStorage.setItem("observacao", document.querySelector("#observacao").value)
+        } else if (document.querySelector(".h2_titulo").textContent.includes("Endereço")) {
+            localStorage.setItem("cep", document.querySelector("#caixa_postal_principal").value)
+            localStorage.setItem("pais", document.querySelector("#pais_principal").value)
+            localStorage.setItem("estado", document.querySelector("#estado_principal").value)
+            localStorage.setItem("municipio", document.querySelector("#municipio_principal").value)
+            localStorage.setItem("endereco", document.querySelector("#endereco_principal").value)
+            localStorage.setItem("ponto_referencia", document.querySelector("#referencia_principal").value)
+            localStorage.setItem("setor", document.querySelector("#setor_principal").value)
+        }
+    }
+
+    window.addEventListener("beforeunload", function(event) {
+        console.log(event)
+        localStorage.clear()
+    });
+    
 }
