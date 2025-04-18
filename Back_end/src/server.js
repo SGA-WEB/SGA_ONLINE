@@ -251,12 +251,11 @@ app.put('/api/contato/:id_contato', async (req, res) => {
         observacao,
         tipo_pessoa,
         situacao,
-        fk_id_endereco
     } = req.body;
 
     try {
         // Validação básica dos campos obrigatórios
-        if (!razao_social || !nome_fantasia || !fone1 || !categoria || !tipo_pessoa) {
+        if (!razao_social || !fone1 || !tipo_pessoa) {
             return res.status(400).json({ error: 'Campos obrigatórios faltando' });
         }
 
@@ -273,21 +272,19 @@ app.put('/api/contato/:id_contato', async (req, res) => {
                 razao_social = $1,
                 nome_fantasia = $2,
                 fone1 = $3,
-                categoria = $4,
-                inativo = $5,
-                fone2 = $6,
-                insc_municipal = $7,
-                insc_estadual = $8,
-                cnpj = $9,
-                cpf = $10,
-                email_padrao = $11,
-                perfil_tributario = $12,
-                tipo_consumidor = $13,
-                observacao = $14,
-                tipo_pessoa = $15,
-                situacao = $16,
-                fk_id_endereco = $17,
-            WHERE id_contato = $18
+                inativo = $4,
+                fone2 = $5,
+                insc_municipal = $6,
+                insc_estadual = $7,
+                cnpj = $8,
+                cpf = $9,
+                email_padrao = $10,
+                perfil_tributario = $11,
+                tipo_consumidor = $12,
+                observacao = $13,
+                tipo_pessoa = $14,
+                situacao = $15
+            WHERE id_contato = $16
             RETURNING *
         `;
 
@@ -295,7 +292,6 @@ app.put('/api/contato/:id_contato', async (req, res) => {
             razao_social,
             nome_fantasia,
             fone1,
-            categoria,
             inativo || false,
             fone2 || null,
             insc_municipal || null,
@@ -308,7 +304,6 @@ app.put('/api/contato/:id_contato', async (req, res) => {
             observacao || null,
             tipo_pessoa,
             situacao || 'Ativo',
-            fk_id_endereco || null,
             id_contato
         ];
 
@@ -331,6 +326,68 @@ app.put('/api/contato/:id_contato', async (req, res) => {
         }
         
         res.status(500).json({ error: 'Erro ao atualizar contato' });
+    }
+});
+
+// Endpoint para atualizar categorias de um contato (PUT)
+app.put('/api/contato/:id_contato/categorias', async (req, res) => {
+    const { id_contato } = req.params;
+    const { categorias } = req.body; // Array de IDs de categorias
+
+    try {
+        // Validar entrada
+        if (!Array.isArray(categorias)) {
+            return res.status(400).json({ error: 'O campo "categorias" deve ser um array' });
+        }
+
+        // Verificar se o contato existe
+        const contatoExiste = await pool.query(
+            'SELECT 1 FROM sga.contato WHERE id_contato = $1', 
+            [id_contato]
+        );
+        
+        if (contatoExiste.rowCount === 0) {
+            return res.status(404).json({ error: 'Contato não encontrado' });
+        }
+
+        // Iniciar transação
+        await pool.query('BEGIN');
+
+        // Remover todas as categorias atuais do contato
+        await pool.query(
+            'DELETE FROM sga.contato_categoria WHERE id_contato = $1',
+            [id_contato]
+        );
+
+        // Inserir as novas categorias
+        if (categorias.length > 0) {
+            const values = categorias.map((id_categoria, index) => 
+                `($${index * 2 + 1}, $${index * 2 + 2})`
+            ).join(', ');
+
+            const query = `
+                INSERT INTO sga.contato_categoria (id_contato, id_categoria)
+                VALUES ${values}
+            `;
+
+            const flatValues = categorias.flatMap(id_categoria => [id_contato, id_categoria]);
+            await pool.query(query, flatValues);
+
+            res.status(200).json({ message: 'Categorias atualizadas com sucesso!' });
+        }
+
+        // Commit da transação
+        await pool.query('COMMIT');
+    } catch (err) {
+        // Rollback em caso de erro
+        await pool.query('ROLLBACK');
+        console.error('Erro ao atualizar categorias do contato:', err);
+        
+        if (err.code === '23503') { // Foreign key violation
+            res.status(400).json({ error: 'Uma ou mais categorias não existem' });
+        } else {
+            res.status(500).json({ error: 'Erro ao atualizar categorias do contato' });
+        }
     }
 });
 

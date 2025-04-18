@@ -3,9 +3,9 @@ import { formatarData } from "../../../scripts/funcionalidades.js";
 import select2 from "../../../scripts/select.js";
 import contato from "../contato.js";
 import visualizar_contato from "../visualizar_contato/visualizar_contato.js";
+import { popup_aviso, popup_carregando, popup_erro } from "../../../scripts/popup.js";
 
 export default async function editar_contato (dado, telaAnteriorVisualizar) {
-    console.log(dado)
     let caminho = "contato/contato.html"
     let funcao = contato
     let elementoPai = document.querySelector(".principal")
@@ -52,7 +52,7 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
             carregarConteudo(caminho, elementoPai, false, funcao, dado)
             localStorage.clear()
         })
-        document.querySelector(".btn_salvar").addEventListener("click", salvarNovosDadosDaTelaNoLocalStorage)
+        document.querySelector(".btn_salvar").addEventListener("click", salvarDadosDoLocalStorageNoBanco)
     }
 
     function estilo_nav (e) {
@@ -221,8 +221,103 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
         }
     }
 
+    async function salvarDadosDoLocalStorageNoBanco() {
+        salvarNovosDadosDaTelaNoLocalStorage()
+        let objDados = {};
+        for (let d in dado) {
+            objDados[d] = localStorage.getItem(d);
+        }
+
+        let id_contato = objDados.id_contato;
+        let categoriasSelecionadas = localStorage.getItem("categorias").split(",")
+        delete objDados.id_contato;
+        delete objDados.data_cadastro;
+        delete objDados.fk_id_endereco;
+        delete objDados.categorias;
+
+        // Corrige valores nulos e converte inativo para booleano
+        for (let key in objDados) {
+            const valor = objDados[key];
+            if (valor === "undefined" || valor === "null" || valor === null) {
+                delete objDados[key];
+            } else if (key === "inativo") {
+                objDados[key] = valor === "true";
+            }
+        }
+
+        // Validação básica
+        if (!objDados.razao_social || !objDados.fone1 || !objDados.tipo_pessoa) {
+            popup_erro("Campos obrigatórios faltando.");
+            return;
+        }
+
+        try {
+            popup_carregando()
+            const response = await fetch(`http://localhost:3000/api/contato/${id_contato}`, {
+                method: 'PUT',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(objDados)
+            });
+
+            const resultado = await response.json();
+
+            if (!response.ok) {
+                popup_erro(`Erro: ${resultado.error}`);
+                return;
+            }
+
+        } catch (error) {
+            console.error('Erro:', error);
+            popup_erro('Erro ao atualizar contato.');
+        }
+
+
+        // Atualizar as categorias do contato:
+        categoriasSelecionadas = categoriasSelecionadas.map((categoria) => {
+            // A API espera receber somente o ID da categoria
+            // Então, convertemos o nome da categoria para o ID correspondente no banco de dados
+            if (categoria === "Cliente") {
+                return 1
+            } else if (categoria === "Fornecedor") {
+                return 2
+            } else if (categoria === "Funcionário") {
+                return 3
+            } else {
+                return 0
+            }
+        })
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/contato/${id_contato}/categorias`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    categorias: categoriasSelecionadas
+                })
+            });
+            if (!response.ok) {
+                popup_erro('Erro ao salvar categorias.');
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Erro ao salvar categorias');
+            } else {
+                console.log("Categorias atualizadas com sucesso!");
+            }
+            
+            const result = await response.json();
+            popup_carregando(true)
+            popup_aviso("Contato atualizado com sucesso!")
+            
+        } catch (error) {
+            popup_erro('Erro ao salvar contato.');
+            console.error('Erro ao salvar:', error);
+        }
+    }
+
     window.addEventListener("beforeunload", function(event) {
-        console.log(event)
         localStorage.clear()
     });
     
