@@ -6,16 +6,16 @@ import { popup } from "../../../scripts/popup.js"
 import { formatarData, alterarOptionsSelect } from "../../../scripts/funcionalidades.js"
 import buscarDados from "../../../scripts/buscarDados.js"
 
-export default function visualizar_produto (dado) {
+export default async function visualizar_produto (dado) {
     select2("10rem")
-    buscarDados("centro_estoque", -1, false).then((result) => {
-        alterarOptionsSelect(
-            document.querySelector("#selecionar_centro_de_estoque"), 
-            result, 
-            dado.fk_id_centro_estoque
-        )
-    })
-    
+
+    let centros_de_estoque = await buscarDados("centro_estoque")
+    alterarOptionsSelect(
+        document.querySelector("#selecionar_centro_de_estoque"), 
+        centros_de_estoque, 
+        dado.fk_id_centro_estoque
+    )
+
     let codigo_produto = document.querySelector('.codigo_id')
     let valor_varejo = document.querySelector('#valor_varejo')
     let valor_atacado = document.querySelector('#valor_atacado')

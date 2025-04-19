@@ -4,8 +4,9 @@ import buscarDados from "../../scripts/buscarDados.js"
 import { mudarPesquisa } from "../../scripts/funcionalidades.js"
 import select2 from "../../scripts/select.js"
 import cadastro_contato from "./cadastro_contato/cadastro_contato.js"
+import { carregarDadosNaTabela } from "../../scripts/carregarDadosNaTabela.js"
 
-export default function contato() {
+export default async function contato() {
     let input_pesquisa = document.querySelector(".input_pesquisa")
     // Fecha o menu lateral se a tela tiver menos de 480px de largura no resize
     fecharMenu(document.querySelector(".tabela").offsetWidth,480)
@@ -32,5 +33,6 @@ export default function contato() {
             cadastro_contato, 
         )
     })
-    buscarDados("contato", 5) // Busca os dados da tabela, exibe na tela e permite pesquisar
+    const dadosContato = await buscarDados("contato"); // Busca os dados da tabela
+    carregarDadosNaTabela(dadosContato, ["id_contato", "razao_social", "nome_fantasia", "fone1", "tipo_pessoa"]) // Exibe na tela e permite pesquisar
 }

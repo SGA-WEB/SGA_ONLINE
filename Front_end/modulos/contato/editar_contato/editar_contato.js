@@ -221,7 +221,7 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
         }
     }
 
-    async function salvarDadosDoLocalStorageNoBanco() {
+    async function salvarDadosDoLocalStorageNoBanco() { // PUT
         salvarNovosDadosDaTelaNoLocalStorage()
         let objDados = {};
         for (let d in dado) {
@@ -246,11 +246,40 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
         }
 
         // Validação básica
-        if (!objDados.razao_social || !objDados.fone1 || !objDados.tipo_pessoa) {
+        if (!objDados.razao_social || !objDados.fone1 || categoriasSelecionadas[0] == "") {
+            // Se algum campo obrigatório estiver vazio, adiciona a classe de erro e foca no campo
+            let nome_razao_social = document.querySelector("#nome_razao_social")
+            let fone1 = document.querySelector("#fone1")
+            
+            if (categoriasSelecionadas[0] == "") {
+                let container_checkbox = document.querySelector(".container_checkbox")
+                container_checkbox.classList.add("border_red")
+                container_checkbox.addEventListener("click", () => {
+                    container_checkbox.classList.remove("border_red")
+                })
+            }
+
+            if (!objDados.fone1) {
+                fone1.focus()
+                fone1.classList.add("border_red")
+                fone1.addEventListener("input", () => {
+                    fone1.classList.remove("border_red")
+                })
+            }
+            
+            if (!objDados.razao_social) {
+                nome_razao_social.focus()
+                nome_razao_social.classList.add("border_red")
+                nome_razao_social.addEventListener("input", () => {
+                    nome_razao_social.classList.remove("border_red")
+                })
+            }
+
             popup_erro("Campos obrigatórios faltando.");
             return;
         }
 
+        // Inserir os dados no banco de dados:
         try {
             popup_carregando()
             const response = await fetch(`http://localhost:3000/api/contato/${id_contato}`, {
@@ -273,8 +302,8 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
             popup_erro('Erro ao atualizar contato.');
         }
 
-
         // Atualizar as categorias do contato:
+
         categoriasSelecionadas = categoriasSelecionadas.map((categoria) => {
             // A API espera receber somente o ID da categoria
             // Então, convertemos o nome da categoria para o ID correspondente no banco de dados
@@ -308,16 +337,51 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
             }
             
             const result = await response.json();
-            popup_carregando(true)
-            popup_aviso("Contato atualizado com sucesso!")
-            
         } catch (error) {
             popup_erro('Erro ao salvar contato.');
             console.error('Erro ao salvar:', error);
         }
+
+        // Atualizar o endereço do contato:
+        const idEndereco = dado.fk_id_endereco; // ID do endereço a ser atualizado
+
+        const dadosEndereco = {
+            cep: localStorage.getItem("cep"),
+            endereco: localStorage.getItem("endereco"),
+            municipio: localStorage.getItem("municipio"),
+            estado: localStorage.getItem("estado"),
+            pais: localStorage.getItem("pais"),
+            ponto_referencia: localStorage.getItem("ponto_referencia"),
+            setor: localStorage.getItem("setor")
+        };
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/endereco/${idEndereco}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dadosEndereco)
+            });
+            const data = await response.json();
+    
+            if (!response.ok) {
+                popup_erro('Erro ao atualizar endereço.');
+            }
+
+            popup_carregando(true)
+            popup_aviso("Contato atualizado com sucesso!")
+            carregarConteudo(caminho, elementoPai, false, funcao, dado)
+            localStorage.clear()
+            return data.endereco;
+        } catch (error) {
+            console.error('Erro:', error);
+            throw error;
+        }
     }
 
     window.addEventListener("beforeunload", function(event) {
+        // Limpa o storage ao recarregar a página
         localStorage.clear()
     });
     

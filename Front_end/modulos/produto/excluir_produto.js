@@ -1,5 +1,6 @@
 import { popup, popup_aviso, popup_carregando, popup_erro } from "../../scripts/popup.js"
 import buscarDados from "../../scripts/buscarDados.js"
+import { carregarDadosNaTabela } from "../../scripts/carregarDadosNaTabela.js"
 
 export default function excluir_produto(dado, callbackFunction, ...param) {
     let codigo_popup_excluir = document.querySelector(".codigo_popup_excluir")
@@ -21,7 +22,8 @@ export default function excluir_produto(dado, callbackFunction, ...param) {
                 if (callbackFunction) {
                     callbackFunction(...param) // Chama a função de callback, se existir
                 }
-                buscarDados('produto', 5) // Atualiza a tabela de produto
+                let dados = await buscarDados("produto")
+                carregarDadosNaTabela(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"])
             } else {
                 popup_erro(`Erro ao excluir prodtuoi 1: ${data.error}`)
             }

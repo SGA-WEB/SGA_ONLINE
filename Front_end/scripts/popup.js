@@ -92,6 +92,7 @@ function popup_carregando(fecharPopup = false,mensagem = "Salvando alterações.
 function popup_erro(mensagem = "Erro ao realizar a ação!") {
     const popup = document.getElementById('popup_erro');
     const p_mensagem = popup.querySelector('.mensagem_erro');
+    const btn_fechar_popup = document.querySelector('#btn_fechar_popup_erro');
     
     // Remove a classe hide_popup para mostrar o popup
     popup.classList.remove('hide_popup');
@@ -104,9 +105,15 @@ function popup_erro(mensagem = "Erro ao realizar a ação!") {
     progressBar.style.animation = 'progress 5s linear forwards';
 
     // Esconde o popup após 5 segundos (tempo da animação da barra)
-    setTimeout(function() {
+    let timetout = setTimeout(function() {
         popup.classList.add('hide_popup');
+        clearTimeout(timetout); // Limpa o timeout para evitar múltiplas chamadas
     }, 5000);
+
+    btn_fechar_popup.addEventListener('click', function() {
+        popup.classList.add('hide_popup');
+        clearTimeout(timetout);
+    });
 }
 
 export { popup, popup_aviso, popup_carregando, popup_erro };

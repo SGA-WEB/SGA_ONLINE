@@ -1,6 +1,6 @@
 import { carregarDadosNaTabela, pesquisar } from './carregarDadosNaTabela.js';
 
-export default async function buscarDados(query, limiteDados, tabela = true) {
+export default async function buscarDados(query) {
     /*
         Autor: matheushnunes
         Data: 23/02/2025
@@ -19,13 +19,7 @@ export default async function buscarDados(query, limiteDados, tabela = true) {
         const response = await fetch(`http://localhost:3000/api/${query}`); // Faz a requisição para o servidor
         const result = await response.json(); // Converte a resposta para JSON
         if (result) {
-            // Exibe os dados na página
-            if (tabela) {
-                carregarDadosNaTabela(result, limiteDados);
-                pesquisar(result, limiteDados);
-            } else {
-                return result
-            }
+            return result
         } else {
             // Exibe a mensagem de erro
             console.error('Erro no servidor:', result.message);

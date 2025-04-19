@@ -1,5 +1,6 @@
 import { popup, popup_carregando, popup_aviso, popup_erro } from "../../scripts/popup.js"
 import buscarDados from "../../scripts/buscarDados.js"
+import { carregarDadosNaTabela } from "../../scripts/carregarDadosNaTabela.js"
 
 export default function excluir_contato(dado, callbackFunction, ...param) {
     let codigo_popup_excluir = document.querySelector(".codigo_popup_excluir")
@@ -21,9 +22,10 @@ export default function excluir_contato(dado, callbackFunction, ...param) {
                 if (callbackFunction) {
                     callbackFunction(...param) // Chama a função de callback, se existir
                 }
-                buscarDados('contato', 5) // Atualiza a tabela de contato
+                let dados = await buscarDados('contato') // Atualiza a tabela de contato
+                carregarDadosNaTabela(dados, ["id_contato", "razao_social", "nome_fantasia", "fone1", "tipo_pessoa"]) // Exibe na tela e permite pesquisar
             } else {
-                popup_erro(`Erro ao excluir prodtuoi 1: ${data.error}`)
+                popup_erro(`Erro ao excluir produto 1: ${data.error}`)
             }
         } catch (err) {
             console.log(err)

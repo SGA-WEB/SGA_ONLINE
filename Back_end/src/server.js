@@ -391,6 +391,75 @@ app.put('/api/contato/:id_contato/categorias', async (req, res) => {
     }
 });
 
+app.put('/api/endereco/:id_endereco', async (req, res) => {
+    const { id_endereco } = req.params;
+    const {
+        cep,
+        municipio,
+        estado,
+        pais,
+        ponto_referencia,
+        setor,
+        endereco
+    } = req.body;
+
+    try {
+        // Query de atualização
+        const query = `
+            UPDATE sga.endereco SET
+                cep = $1,
+                endereco = $2,
+                municipio = $3,
+                estado = $4,
+                pais = $5,
+                ponto_referencia = $6,
+                setor = $7
+            WHERE id_endereco = $8
+            RETURNING *
+        `;
+
+        const values = [
+            cep,
+            endereco || null,
+            municipio,
+            estado,
+            pais || 'Brasil',
+            ponto_referencia || null,
+            setor || null,
+            id_endereco
+        ];
+
+        const { rows } = await pool.query(query, values);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Endereço não encontrado' 
+            });
+        }
+
+        res.json({
+            success: true,
+            endereco: rows[0]
+        });
+
+    } catch (err) {
+        console.error('Erro ao atualizar endereço:', err);
+        
+        if (err.code === '23505') { // Violação de constraint única
+            res.status(409).json({ 
+                success: false,
+                error: 'Violação de regra única no banco de dados' 
+            });
+        } else {
+            res.status(500).json({ 
+                success: false,
+                error: 'Erro ao atualizar endereço' 
+            });
+        }
+    }
+});
+
 // Endpoint para inativar tabalas (DELETE)
 app.delete('/centro_estoque/:id_centro_estoque', async (req, res) => {
     const { id_centro_estoque } = req.params;

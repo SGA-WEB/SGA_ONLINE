@@ -53,7 +53,7 @@
     </div>
 
     <div class="campo_contato normal_width">
-        <label for="nome_razao_social">Nome (Razão Social):</label>
+        <label for="nome_razao_social">Nome (Razão Social):<span class="campo_obrigatorio">*</span></label>
         <input type="text" name="nome_razao_social" id="nome_razao_social" class="campo_input">
     </div>
 
@@ -63,18 +63,18 @@
     </div>
 
     <div class="campo_contato normal_width">
-        <p>Classificação do contato:</p>
+        <p>Classificação do contato:<span class="campo_obrigatorio">*</span></p>
         <div class="container_checkbox">
             <div class="campo_checkbox">
-                <input type="checkbox" name="categoria" id="cliente" value="Cliente">
+                <input type="checkbox" name="categoria" class="categoria_contato" id="cliente" value="Cliente">
                 <label for="cliente">Cliente</label>
             </div>
             <div class="campo_checkbox">
-                <input type="checkbox" name="categoria" id="fornecedor" value="Fornecedor">
+                <input type="checkbox" name="categoria" class="categoria_contato" id="fornecedor" value="Fornecedor">
                 <label for="fornecedor">Fornecedor</label>
             </div>
             <div class="campo_checkbox">
-                <input type="checkbox" name="categoria" id="funcionario" value="Funcionário">
+                <input type="checkbox" name="categoria" class="categoria_contato" id="funcionario" value="Funcionário">
                 <label for="funcionario">Funcionário</label>
             </div>
         </div>
@@ -82,7 +82,7 @@
 
     <div class="container_small_width">
         <div class="campo_contato small_width">
-            <label for="fone1">Fone 1:</label>
+            <label for="fone1">Fone 1:<span class="campo_obrigatorio">*</span></label>
             <input type="tel" name="fone1" id="fone1" class="campo_input">
         </div>
         <div class="campo_contato small_width">

@@ -131,7 +131,6 @@ export default function visualizar_contato (dado) {
             document.querySelector(".data_cadastro").textContent = formatarData(dado.data_cadastro)
             document.querySelector("#nome_razao_social").value = dado.razao_social
             document.querySelector("#nome_fantasia").value = dado.nome_fantasia
-            document.getElementById(dado.categoria.toLowerCase().replace("á","a")).checked = true //Caso seja funcionário o acento é retirado para pegar id correto 
             document.querySelector("#fone1").value = dado.fone1
             document.querySelector("#fone2").value = dado.fone2
             document.getElementsByName("tipo_contato").value = dado.tipo_contato

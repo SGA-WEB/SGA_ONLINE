@@ -6,19 +6,19 @@ import { dataAtual, alterarOptionsSelect } from '../../../scripts/funcionalidade
 import { popup_carregando, popup_aviso, popup_erro } from '../../../scripts/popup.js'
 import buscarDados from '../../../scripts/buscarDados.js'
 
-export default function editar_produto (dado, telaAnteriorVisualizar) {
+export default async function editar_produto (dado, telaAnteriorVisualizar) {
     let caminho = "produto/produto.html"
     let funcao = produto
 
     select2("10rem")
     dataAtual()
-    buscarDados("centro_estoque", -1, false).then((result) => {
-        alterarOptionsSelect(
-            document.querySelector("#selecionar_centro_de_estoque"), 
-            result, 
-            dado.fk_id_centro_estoque
-        )
-    })
+
+    let centros_de_estoque = await buscarDados("centro_estoque")
+    alterarOptionsSelect(
+        document.querySelector("#selecionar_centro_de_estoque"), 
+        centros_de_estoque, 
+        dado.fk_id_centro_estoque
+    )
 
     if (telaAnteriorVisualizar) {
         caminho = "produto/visualizar_produto/visualizar_produto.html"
