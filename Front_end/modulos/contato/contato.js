@@ -4,7 +4,7 @@ import buscarDados from "../../scripts/buscarDados.js"
 import { mudarPesquisa } from "../../scripts/funcionalidades.js"
 import select2 from "../../scripts/select.js"
 import cadastro_contato from "./cadastro_contato/cadastro_contato.js"
-import { carregarDadosNaTabela } from "../../scripts/carregarDadosNaTabela.js"
+import { carregarDadosNaTabela, pesquisar } from "../../scripts/carregarDadosNaTabela.js"
 
 export default async function contato() {
     let input_pesquisa = document.querySelector(".input_pesquisa")
@@ -35,4 +35,5 @@ export default async function contato() {
     })
     const dadosContato = await buscarDados("contato"); // Busca os dados da tabela
     carregarDadosNaTabela(dadosContato, ["id_contato", "razao_social", "nome_fantasia", "fone1", "tipo_pessoa"]) // Exibe na tela e permite pesquisar
+    pesquisar(dadosContato, ["id_contato", "razao_social", "nome_fantasia", "fone1", "tipo_pessoa"]) // Permite pesquisar na tabela
 }

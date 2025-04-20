@@ -129,28 +129,28 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
 
     function inserirDadoDoLocalStorageNaTela () { // GET
         if (document.querySelector(".h2_titulo").textContent == "Editar contato"){ // Verifica se a tela é de visualização
-            if (localStorage.getItem("tipo_pessoa") === "Jurídica") {
+            if (localStorage.getItem("tipo_pessoa") === "JURÍDICA") {
                 document.querySelector("#contato_juridico").checked = true
-            } else if (localStorage.getItem("tipo_pessoa") === "Física") {
+            } else if (localStorage.getItem("tipo_pessoa") === "FÍSICA") {
                 document.querySelector("#contato_fisico").checked = true
             }
 
-            if (localStorage.getItem("situacao") === "Ativo") {
+            if (localStorage.getItem("situacao") === "ATIVO") {
                 document.querySelector("#ativo").checked = true
-            } else if (localStorage.getItem("situacao") === "Inativo") {
+            } else if (localStorage.getItem("situacao") === "INATIVO") {
                 document.querySelector("#inativo").checked = true
             }
 
             // O array no localStorage vira um string tipo: "Cliente,Funcionário"
             let categorias = localStorage.getItem("categorias").split(",") // transoforma a string em um array
             for (let i = 0; i < categorias.length; i++) {
-                if (categorias[i] === "Cliente") {
+                if (categorias[i] === "CLIENTE") {
                     document.querySelector("#cliente").checked = true
                 }
-                if (categorias[i] === "Fornecedor") {
+                if (categorias[i] === "FORNECEDOR") {
                     document.querySelector("#fornecedor").checked = true
                 }
-                if (categorias[i] === "Funcionário") {
+                if (categorias[i] === "FUNCIONÁRIO") {
                     document.querySelector("#funcionario").checked = true
                 }
             }

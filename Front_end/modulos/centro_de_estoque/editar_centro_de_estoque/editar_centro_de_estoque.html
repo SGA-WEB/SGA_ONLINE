@@ -17,7 +17,7 @@
         <div class="container_small_width" id="container_radios"> 
             <div class="campo_contato normal_width">
                 <label for="nome_centro_de_estoque">Nome do Centro de Estoque:</label>
-                <input type="text" name="nome_centro_de_estoque" id="nome_centro_de_estoque" class="campo_input">
+                <input type="text" name="nome_centro_de_estoque" id="nome_centro_de_estoque" class="campo_input" pattern="[A-Z\s]*" title="Aceite apenas letras maiúsculas">
             </div>
             <div class="campo_contato small_width">
                 <label for="localizacao">Localização:</label>
@@ -26,8 +26,8 @@
             <div class="campo_contato small_width select_conainer">
                 <label for="padrao_centro_de_estoque">Padrão:</label>
                 <select id="padrao_centro_de_estoque" class="campo_select">
-                    <option value="true">Sim</option>
-                    <option value="false">Não</option>
+                    <option value="true">SIM</option>
+                    <option value="false">NÃO</option>
                 </select>
             </div>
             <div class="campo_contato normal_width">

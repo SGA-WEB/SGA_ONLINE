@@ -99,6 +99,15 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
     if (url === "../modulos/configuracoes/configuracoes.html") {
       configuracoes()
     }
+
+    
+    let inputs = document.querySelectorAll("input:not([type='email']), textarea") // Seleciona todos os inputs e textareas que não são do tipo email
+    inputs.forEach(e=>{
+      e.addEventListener("input", (input) => {
+        input.target.value = input.target.value.toUpperCase()
+      })
+    })
+
   } catch (error) {
     console.error("Erro ao carregar o conteúdo:", error);
     elemento.innerHTML = "<p>Erro ao carregar o conteúdo.</p>";

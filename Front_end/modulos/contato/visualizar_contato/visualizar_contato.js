@@ -105,26 +105,26 @@ export default function visualizar_contato (dado) {
 
     async function inserirDadoDoBanco () {
         if (document.querySelector(".h2_titulo").textContent == "Visualizar contato"){ // Verifica se a tela é de visualização
-            if (dado.tipo_pessoa === "Jurídica") {
+            if (dado.tipo_pessoa === "JURÍDICA") {
                 document.querySelector("#contato_juridico").checked = true
-            } else if (dado.tipo_pessoa === "Física") {
+            } else if (dado.tipo_pessoa === "FÍSICA") {
                 document.querySelector("#contato_fisico").checked = true
             }
 
-            if (dado.situacao === "Ativo") {
+            if (dado.situacao === "ATIVO") {
                 document.querySelector("#ativo").checked = true
-            } else if (dado.situacao === "Inativo") {
+            } else if (dado.situacao === "INATIVO") {
                 document.querySelector("#inativo").checked = true
             }
 
             dado.categorias.forEach(e => {
-                if (e.nome === "Cliente") {
+                if (e.nome === "CLIENTE") {
                     document.querySelector("#cliente").checked = true
                 }
-                if (e.nome === "Fornecedor") {
+                if (e.nome === "FORNECEDOR") {
                     document.querySelector("#fornecedor").checked = true
                 }
-                if (e.nome === "Funcionário") {
+                if (e.nome === "FUNCIONÁRIO") {
                     document.querySelector("#funcionario").checked = true
                 }
             })
