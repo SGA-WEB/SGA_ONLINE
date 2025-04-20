@@ -332,8 +332,6 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
                 popup_erro('Erro ao salvar categorias.');
                 const errorData = await response.json();
                 throw new Error(errorData.error || 'Erro ao salvar categorias');
-            } else {
-                console.log("Categorias atualizadas com sucesso!");
             }
             
             const result = await response.json();

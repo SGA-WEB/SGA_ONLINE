@@ -117,15 +117,17 @@ export default function visualizar_contato (dado) {
                 document.querySelector("#inativo").checked = true
             }
 
-            if (dado.tipo_poessoa === "Cliente") {
-                document.querySelector("#cliente").checked = true
-            }
-            if (dado.tipo_poessoa === "Fornecedor") {
-                document.querySelector("#fornecedor").checked = true
-            }
-            if (dado.tipo_poessoa === "Funcionário") {
-                document.querySelector("#funcionario").checked = true
-            }
+            dado.categorias.forEach(e => {
+                if (e.nome === "Cliente") {
+                    document.querySelector("#cliente").checked = true
+                }
+                if (e.nome === "Fornecedor") {
+                    document.querySelector("#fornecedor").checked = true
+                }
+                if (e.nome === "Funcionário") {
+                    document.querySelector("#funcionario").checked = true
+                }
+            })
 
             document.querySelector(".codigo_id").textContent = dado.id_contato
             document.querySelector(".data_cadastro").textContent = formatarData(dado.data_cadastro)

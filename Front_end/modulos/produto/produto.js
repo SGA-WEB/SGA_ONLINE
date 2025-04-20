@@ -2,7 +2,7 @@ import { carregarConteudo, fecharMenu } from "../../scripts/javaScript.js"
 import { dataAtual, mudarPesquisa, visibilidadeMenulateral } from "../../scripts/funcionalidades.js"
 import buscarDados from "../../scripts/buscarDados.js"
 import select2 from "../../scripts/select.js"
-import {carregarDadosNaTabela} from "../../scripts/carregarDadosNaTabela.js"
+import {carregarDadosNaTabela, pesquisar} from "../../scripts/carregarDadosNaTabela.js"
 
 export default async function produto () {
     /*
@@ -43,7 +43,8 @@ export default async function produto () {
     select2("9em")
 
     let dados = await buscarDados("produto")
-    carregarDadosNaTabela(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"]) // Exibe na tela e permite pesquisar
+    carregarDadosNaTabela(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"])
+    pesquisar(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"])
 
     fecharMenu(document.querySelector(".tabela").offsetWidth,480)
     window.addEventListener('resize', (e) => {
@@ -53,7 +54,5 @@ export default async function produto () {
             visibilidadeMenulateral(document.querySelector(".tabela").offsetWidth, 750)
         } 
     })  
-
-    
 }
 
