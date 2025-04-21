@@ -1,0 +1,260 @@
+.graficos h2 {
+    font-size: 1.3em;
+    font-weight: 600;
+    text-align: center;
+}
+
+#div_quantidade_total_produtos {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    max-width: 18rem;
+    min-width: 14rem;
+    text-align: center;
+}
+
+#div_quantidade_total_produtos h2 {
+    font-size: 1.3em;
+}
+
+.quantidade_produtos {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--azul);
+}
+
+#div_valor_total_estoque {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 18rem;
+    min-width: fit-content;
+    text-align: center;
+}
+
+.valores_estoque {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.valor_total {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--verde_dinheiro);
+}
+
+#div_produtos_em_falta {
+    max-width: 10rem;
+    padding: 1rem 0 0 0;
+}
+
+#div_produtos_em_falta h2 {
+    font-size: 1.3em;
+}
+
+#div_distribuicao_produtos_estoque {
+    max-width: 20rem;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#div_distribuicao_produtos_estoque h2 {
+    margin-bottom: 1.3rem;
+}
+
+#grafico_distribuicao_produtos_estoque {
+    max-width: 13rem;
+    min-width: 10rem;
+    max-height: 13rem;
+    min-height: 10rem;
+    aspect-ratio: 1/1;
+    margin: 0 auto 1rem auto;
+}
+
+.card_info_porcetagem {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 1rem;
+    border-radius: 5px;
+    box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.192);
+    background-color: var(--principal);
+    margin-bottom: 1rem;
+    border-left: 6px solid var(--azul);
+}
+
+#modulo_dashboard {
+    box-shadow: none;
+}
+.select2-selection {
+    border: none !important;
+    background-color: var(--azul-1) !important;
+}
+.item_dashboard {
+    max-width: 800px;
+    min-width: 400px;
+    flex: 1 1 400px;
+    height: min-content;
+    background-color: var(--principal);
+    padding: 0.8rem;
+    margin: 0 0 1rem 1rem;
+    border-radius: 5px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.144);
+}
+.header_grafico {
+    display: flex;
+    flex-flow: column;
+    gap: 10px;
+    justify-content: space-between;
+    padding: 0 10px;
+    margin-bottom: 10px;
+}
+.header_grafico h2 {
+    text-align: center;
+    font: 600 1em arial;
+    margin-bottom: 10px;
+}
+.filtro_grafico {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    gap: 15px;
+}
+.filtro {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    font-size: 0.9em;
+}
+.filtro span {
+    white-space: nowrap;
+}
+.input_date {
+    background-color: var(--azul-1);
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    max-width: 127px;
+} 
+.config_grafico {
+    font-size: 0.9em;
+}
+.config_grafico select {
+    background-color: var(--azul-1); /* Cor de fundo do select */
+    color: var(--secundaria); /* Cor do texto */
+    border-radius: 5px; /* Arredondar bordas */
+    border: none;
+}
+.config_grafico select:focus {
+    outline: none; /* Remove o contorno padrão quando focado */
+    border: none;
+}
+
+.config_grafico option {
+    background-color: var(--azul-1); /* Cor de fundo das opções */
+    color: var(--secundaria);
+}
+.config_grafico select option:hover {
+    cursor: pointer;
+    background-color: var(--azul1);
+}
+
+/* Tabela dashboard: */
+#div_produtos_mais_vendidos {
+    padding: 0;
+    max-width: 500px;
+}
+#div_produtos_mais_vendidos .header_grafico {
+    padding: .8em;
+}
+#tabela_dashboard td, #tabela_dashboard th {
+    border-right: none;
+}
+
+#tabela_dashboard td:last-child, #tabela_dashboard th:last-child{
+    text-align: right !important;
+}
+
+.td_nenhum_dado {
+    margin: 1rem 0rem 1rem 1rem;
+    white-space: nowrap;
+}
+
+@media (min-width: 1325px) {
+    .item_dashboard {
+        min-width: 495px;
+    }
+}
+@media (min-width: 1295px) {
+    .mini .item_dashboard {
+        min-width: 500px;
+    }
+}
+@media (max-width: 480px) {
+    #modulo_dashboard {
+        margin: 0 !important;
+    }
+    .graficos { 
+        margin-right: 0;
+    }
+    /* Configurações do campo_select */
+    /* BEM CSS: */
+    /* Estilos no escopo da config_grafico */
+    .config_grafico {
+        .select2-container--default .select2-selection--single {
+            height: 1.375rem !important;
+            line-height: 1.375rem  !important;
+            padding: 0 !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 1.375rem !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 1.375rem !important;
+        }
+    }
+
+    /* Estilos globais para dropdown gerado pelo Select2 */
+    .select2-container--default .select2-results__option--selected {
+        font-size: 0.8rem !important;
+    }
+
+    .select2-container--default .select2-results__option {
+        font-size: 0.8rem !important;
+        padding: 4px 10px !important;
+    }
+
+    .select2-container--default .select2-results__option--highlighted {
+        background-color: var(--azul1) !important;
+        color: var(--secundaria) !important;
+    }
+
+    .item_dashboard {
+        margin: 0 0.7rem 0.7rem 0.7rem;
+        padding: 0.5rem;
+        min-width: 200px;
+        flex: 1 1 200px;
+    }
+    canvas {
+        font-size: 0.8rem;
+    }
+    .main_principal {
+        margin-top: 65px;
+    }
+    .filtro_grafico {
+        gap: 7px;
+    }
+    .input_date {
+        font-size: 0.75rem;
+        width: 6rem;
+        padding: 3px;
+    }
+}

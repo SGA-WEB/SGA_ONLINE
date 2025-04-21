@@ -18,7 +18,7 @@ export default function dashBorad () {
   let cinza1 = "#F6F6F6";
   let cinza2 = "#E8E8E8";
   let azul = "#3964A8";
-  let azul1 = "#9CBBED50";
+  let azul1 = "#9CBBED";
   let azul_1 = "#E9F0FF";
   let vermelho = 'rgba(255, 0, 0, 0.15)';
 
@@ -30,6 +30,64 @@ export default function dashBorad () {
     dado_diferenca.push(e - dado_saida[i])
   }) 
   
+  function criarGraficoDistribuicaoProdutosEstoque() {
+    const c_gfc_distribuicao_produtos_estoque= document.getElementById('grafico_distribuicao_produtos_estoque').getContext('2d');
+    const gfc_distribuicao_produtos_estoque= new Chart(c_gfc_distribuicao_produtos_estoque, {
+      type: 'doughnut', // Gráfico de linha (que pode ser usado para gráficos de área)
+      data: {
+        datasets: [{
+          label: 'My First Dataset',
+          data: [1235, 884, 420],
+          backgroundColor: [
+            azul,
+            azul1,
+            azul_1
+          ],
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        cutout: '70%',  // Controla o tamanho do buraco central
+        plugins: {
+            legend: {
+                position: 'bottom'
+            },
+            tooltip: {
+                enabled: true
+            }
+        },
+        // Configuração para o texto central
+        animation: {
+          onComplete: function(animation) {
+            const ctx = this.ctx;
+            const width = this.width;
+            const height = this.height;
+            
+            // Configurações para o texto superior
+            ctx.font = 'bold 1.1rem Arial';
+            ctx.fillStyle = '#333';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Texto superior "Qtde. Total"
+            const textTop = 'Qtde. Total';
+            const textTopY = height / 2 - 15; // 15px acima do centro
+            ctx.fillText(textTop, width / 2, textTopY);
+            
+            // Configurações para o texto inferior (valor)
+            ctx.font = 'bold 1.4rem Arial';
+            
+            // Texto inferior "94"
+            const textBottom = '94';
+            const textBottomY = height / 2 + 15; // 15px abaixo do centro
+            ctx.fillText(textBottom, width / 2, textBottomY);
+        }
+        }
+      }
+    });  
+  }
+  criarGraficoDistribuicaoProdutosEstoque() // Cria o gráfico de distribuição de produtos em estoque quando a página é carregada
+
   // Gráfico Entrada de produtos:
   let gfc_entrada
   function criarGraficoEntrada(tipo, font) {
