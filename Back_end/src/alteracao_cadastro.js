@@ -1,87 +1,3 @@
-const { Client } = require('pg');
-
-// Configurações de conexão com o banco de dados
-const client = new Client({
-  user: 'neondb_owner',
-  host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech',
-  database: 'neondb',
-  password: 'npg_Y3ZNL6fxehGI',
-  port: 5432,
-  ssl: {
-      rejectUnauthorized: false, // Permite a conexão mesmo sem verificar o certificado
-  },
-});
-
-
-// Dados que você deseja inserir
-const dados = {
-    nome: 'João Silva',
-    email: 'joao.silva@example.com',
-    celular: '11987654321',
-    senha: 'senha123',
-    data_criacao: new Date(), // Adiciona a data atual
-    imagePath: '/uploads/default.jpg' //
-};
-
-// Função para inserir dados
-async function insertData() {
-    try {
-        await client.connect(); // Conecta ao banco de dados
-
-        // Query SQL para inserir dados
-        const query = `
-            INSERT INTO sga.usuario (nome, email, celular, senha, data_criacao, image_path)
-            VALUES ($1, $2, $3, $4, $5, $6)
-        `;
-
-        // Executa a query
-        const res = await client.query(query, [
-            dados.nome,
-            dados.email,
-            dados.celular,
-            dados.senha,
-            dados.data_criacao,
-            dados.imagePath
-        ]);
-
-        console.log('Dados inseridos com sucesso:', );
-    } catch (err) {
-        console.error('Erro ao inserir dados:', err);
-    } finally {
-        await client.end(); // Fecha a conexão com o banco de dados
-    }
-}
-
-async function getData() {
-  try {
-      await client.connect(); // Conecta ao banco de dados
-
-      // Query SQL para buscar dados
-      const query = 'SELECT * FROM sga.usuario';
-      const res = await client.query(query);
-
-      console.log('Dados encontrados:');
-      console.log(res.rows); // Exibe os dados no console
-  } catch (err) {
-      console.error('Erro ao buscar dados:', err);
-  } finally {
-      await client.end(); // Fecha a conexão com o banco de dados
-  }
-}
-
-// Escolha qual função executar
-const operation = process.argv[2]; // Recebe a operação como argumento na linha de comando
-
-if (operation === 'insert') {
-  insertData(); // Executa a função de inserção
-} else if (operation === 'get') {
-  getData(); // Executa a função de consulta
-} else {
-  console.log('Operação inválida. Use "insert" ou "get".');
-}
-
-//salvar imagem no back
-
 const express = require('express');
 const multer = require('multer');
 const { Pool } = require('pg');
@@ -90,25 +6,31 @@ const path = require('path');
 const cors = require('cors');
 const app = express();
 
+// Middleware de segurança e parsing
 app.use(cors({
-  origin: ['http://127.0.0.1:5503', 'http://localhost:3000'],
+  origin: ['http://127.0.0.1:5432', 'http://localhost:3000'],
   methods: ['POST', 'GET'],
   credentials: true
 }));
 
-app.use(express.json()); // Para parsear JSON
-app.use(express.urlencoded({ extended: true })); // Para formulários HTML
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
+// Pool de conexão com o banco
+const pool = new Pool({
+  user: 'neondb_owner',
+  host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech',
+  database: 'neondb',
+  password: 'npg_Y3ZNL6fxehGI',
+  port: 5432,
+  ssl: { rejectUnauthorized: false }
+});
 
-// Configuração do NeonDB (PostgreSQL)
-
-// Configuração do Multer para upload
+// Configuração do Multer para armazenamento de imagens
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(__dirname, 'uploads');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
+    if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
@@ -119,30 +41,28 @@ const storage = multer.diskStorage({
 
 const upload = multer({ 
   storage: storage,
-  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
+  limits: { fileSize: 2 * 1024 * 1024 }, // Limite de 2MB
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
     } else {
       cb(new Error('Apenas imagens são permitidas!'), false);
     }
-  },
-  dest: 'uploads/'
+  }
 });
 
-// Rota para upload
+// Rota para upload de imagem
 app.post('/upload', upload.single('imagem'), async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ error: 'Nenhuma imagem enviada' });
-    }
+    if (!req.file) return res.status(400).json({ error: 'Nenhuma imagem enviada' });
 
     const imagePath = `/uploads/${req.file.filename}`;
     const query = `
-    INSERT INTO sga.usuario (nome, email, celular, senha, data_criacao, image_path)
-    VALUES ($1, $2, $3, $4, $5, $6)
-`;
-    
+      INSERT INTO sga.usuario (nome, email, celular, senha, data_criacao, grupo, image_path)
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING id
+    `;
+
     const values = [
       req.body.nome || 'Usuário Teste',
       req.body.email || 'teste@example.com',
@@ -153,25 +73,28 @@ app.post('/upload', upload.single('imagem'), async (req, res) => {
     ];
 
     const result = await pool.query(query, values);
-    
+
+    // Retorna a resposta com a URL da imagem e o ID do usuário
     res.json({ 
       success: true,
       imageUrl: imagePath,
       userId: result.rows[0].id
     });
   } catch (error) {
-    // ... (mantenha o tratamento de erro)
+    console.error("Erro no upload:", error);
+    res.status(500).json({ error: 'Erro interno no servidor' });
   }
 });
 
-// Servir arquivos estáticos (para acessar as imagens)
+// Servir imagens estáticas
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Rota de teste
+// Teste de servidor
 app.get('/', (req, res) => {
   res.send('Servidor de upload funcionando!');
 });
 
+// Inicia o servidor na porta especificada ou 3000 por padrão
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
