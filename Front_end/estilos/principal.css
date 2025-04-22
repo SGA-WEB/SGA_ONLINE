@@ -5,6 +5,7 @@
     --cinza2-3: #dbdbdb;
     --cinza3: #BFBFBF;
     --cinza4: #686868;
+    --azul_escuro: #172742;
     --azul: #3964A8;
     --azul1: #9CBBED;
     --azul1-2: #bcd2f5;
@@ -16,7 +17,7 @@
     --alerta1: #FFA9A9;
     --alerta2: #dd7e7e;
     --sucesso1: #BFFFB2;
-    --verde_dinheiro: #00a700;
+    --verde_dinheiro: #008100;
 }
 * {
     box-sizing: border-box;

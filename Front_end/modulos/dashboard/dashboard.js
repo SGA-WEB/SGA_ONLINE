@@ -88,6 +88,64 @@ export default function dashBorad () {
   }
   criarGraficoDistribuicaoProdutosEstoque() // Cria o gráfico de distribuição de produtos em estoque quando a página é carregada
 
+  function criarGraficoContatos() {
+    const c_gfc_distribuicao_produtos_estoque= document.getElementById('grafico_contatos').getContext('2d');
+    const gfc_distribuicao_produtos_estoque= new Chart(c_gfc_distribuicao_produtos_estoque, {
+      type: 'doughnut', // Gráfico de linha (que pode ser usado para gráficos de área)
+      data: {
+        datasets: [{
+          label: 'My First Dataset',
+          data: [52, 37, 14],
+          backgroundColor: [
+            azul,
+            azul1,
+            azul_1
+          ],
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        cutout: '70%',  // Controla o tamanho do buraco central
+        plugins: {
+            legend: {
+                position: 'bottom'
+            },
+            tooltip: {
+                enabled: true
+            }
+        },
+        // Configuração para o texto central
+        animation: {
+          onComplete: function(animation) {
+            const ctx = this.ctx;
+            const width = this.width;
+            const height = this.height;
+            
+            // Configurações para o texto superior
+            ctx.font = 'bold 1.1rem Arial';
+            ctx.fillStyle = '#333';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Texto superior "Qtde. Total"
+            const textTop = 'Qtde. Total';
+            const textTopY = height / 2 - 15; // 15px acima do centro
+            ctx.fillText(textTop, width / 2, textTopY);
+            
+            // Configurações para o texto inferior (valor)
+            ctx.font = 'bold 1.4rem Arial';
+            
+            // Texto inferior "94"
+            const textBottom = '94';
+            const textBottomY = height / 2 + 15; // 15px abaixo do centro
+            ctx.fillText(textBottom, width / 2, textBottomY);
+        }
+        }
+      }
+    }); 
+  }
+  criarGraficoContatos()
+
   // Gráfico Entrada de produtos:
   let gfc_entrada
   function criarGraficoEntrada(tipo, font) {
@@ -103,7 +161,7 @@ export default function dashBorad () {
           label: 'Entradas', // Legenda
           data: dado_entrada, // Valores no eixo Y
           fill: true, // Preencher a área abaixo da linha
-          backgroundColor: azul1, // Cor de fundo (azul claro)
+          backgroundColor: azul_1, // Cor de fundo (azul claro)
           borderColor: azul, // Cor da linha
           tension: 0.1 // Suavizar a curva da linha
         }]
@@ -155,7 +213,7 @@ export default function dashBorad () {
           label: 'Saídas', // Legenda
           data: dado_saida, // Valores no eixo Y
           fill: true, // Preencher a área abaixo da linha
-          backgroundColor: azul1, // Cor de fundo (azul claro)
+          backgroundColor: azul_1, // Cor de fundo (azul claro)
           borderColor: azul, // Cor da linha
           tension: 0.1 // Suavizar a curva da linha
         }]
@@ -217,7 +275,7 @@ export default function dashBorad () {
           backgroundColor: function(context) {
             const value = context.dataset.data[context.dataIndex];
             // Se o valor é negativo, retorna vermelho, senão retorna azul
-            return value < 0 ? vermelho : azul1;
+            return value < 0 ? vermelho : azul_1;
           },
           borderColor: azul, // Cor da linha (azul)
           tension: 0.1 // Suaviza a curva da linha
@@ -256,27 +314,6 @@ export default function dashBorad () {
   }
   criarGraficoDiferenca('line')
 
-  // Responsividade do gráfico:
-  const pai = document.querySelector('.filtro_grafico');
-  const filho = document.querySelectorAll('.filtro');
-  
-  const observer = new ResizeObserver(entries => {
-    entries.forEach(entry => {
-      filho.forEach(e=>{
-          if (entry.contentRect.width > 445) {
-              e.style.justifyContent = 'center';
-              e.style.width = "min-content"
-          } else {
-              e.style.width = "100%"
-              e.style.justifyContent = 'space-between';
-          }
-      })
-      
-    });
-  });
-  
-  observer.observe(pai);  
-  
   // Alterar gráficos e fechar menu quando o body for menor que 480px:
   function atualizarGraficos(graficos, width) {
     graficos.forEach(grafico => { // Muda o tamanho da fonte dos gráficos

@@ -1,7 +1,22 @@
+#modulo_dashboard {
+    display: grid;
+    grid-template-areas:
+      "quantidade_total_produtos valor_total_estoque valor_total_estoque produtos_em_falta produtos_em_falta"
+      "distribuicao_produtos_estoque valor_total_estoque_por_centro_estoque valor_total_estoque_por_centro_estoque div_produtos_maior_quantidade div_produtos_maior_quantidade"
+      "distribuicao_produtos_estoque contatos contatos contatos contatos"
+      "entrada_de_produtos entrada_de_produtos saida_de_produtos saida_de_produtos saida_de_produtos"
+      "diferenca_entrada_saida diferenca_entrada_saida produtos_mais_vendidos produtos_mais_vendidos produtos_mais_vendidos";
+      
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    padding: 1rem;
+  }
+
 .graficos h2 {
     font-size: 1.3em;
     font-weight: 600;
     text-align: center;
+    color: var(--azul_escuro);;
 }
 
 #div_quantidade_total_produtos {
@@ -47,6 +62,7 @@
 }
 
 #div_produtos_em_falta {
+    grid-column: 1 / span 2;
     max-width: 10rem;
     padding: 1rem 0 0 0;
 }
@@ -56,7 +72,7 @@
 }
 
 #div_distribuicao_produtos_estoque {
-    max-width: 20rem;
+    max-width: 18rem;
     min-width: 0;
     display: flex;
     flex-direction: column;
@@ -79,13 +95,102 @@
 .card_info_porcetagem {
     display: flex;
     justify-content: space-between;
-    gap: 0.5rem;
+    gap: 0.9rem;
     padding: 1rem;
     border-radius: 5px;
     box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.192);
     background-color: var(--principal);
     margin-bottom: 1rem;
-    border-left: 6px solid var(--azul);
+    border-left: 10px solid var(--azul);
+}
+
+.container_porcentagem_estoque {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.7rem;
+}
+
+.porcemtagem_card {
+    font-size: 1.4rem;
+}
+
+.destaque_azul {
+    background-color: var(--azul);
+    color: white;
+    font-weight: bolder;
+    box-shadow: 0px 10px 17.6px hsla(234, 76%, 67%, 0.363);
+}
+
+.quantidade_card {
+    display: flex;
+    align-items: center;
+}
+
+#div_valor_total_estoque_por_centro_estoque {
+    grid-column: 2 / span 3;
+    max-width: 37rem;
+}
+
+#div_valor_total_estoque_por_centro_estoque h2 {
+    margin-bottom: 1.3rem;
+}
+
+.container_info_valor_estoque {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-bottom: 1rem;
+}
+
+.container_barra_valor_estoque {
+    margin-left: .5rem;
+    width: calc(100% - 8rem);
+}
+
+.valor_estoque {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--verde_dinheiro);
+    text-align: right;
+    margin-left: 1rem;
+}
+
+.barra_valor_estoque {
+    background-color: var(--azul);
+    height: .6rem;
+    width: 100%;
+    border-radius: 0 3px 3px 0 ;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.144);
+}
+
+#barra_valor_principal {
+    width: 100%;
+}
+
+#barra_valor_secundario {
+    width: 60%;
+}
+
+#barra_valor_reserva {
+    width: 40%;
+}
+
+/* Grafico dos contatos: */
+#div_contatos h2 {
+    margin-bottom: 1.4rem;
+}
+
+#grafico_contatos {
+    max-width: 14rem;
+    max-height: 14rem;
+}
+
+.container_grafico_card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
 }
 
 #modulo_dashboard {
@@ -116,7 +221,7 @@
 }
 .header_grafico h2 {
     text-align: center;
-    font: 600 1em arial;
+    font: 600 1.2em arial;
     margin-bottom: 10px;
 }
 .filtro_grafico {
