@@ -63,7 +63,7 @@
                     1253
                 </span>
             </div>
-            <div class="card_info_porcetagem">
+            <div class="card_info_porcetagem borda_azul1">
                 <div class="container_porcentagem_estoque">
                     <span class="porcemtagem_card">
                         40%
@@ -74,7 +74,7 @@
                     672
                 </span>
             </div>
-            <div class="card_info_porcetagem">
+            <div class="card_info_porcetagem borda_azul_1">
                 <div class="container_porcentagem_estoque">
                     <span class="porcemtagem_card">
                         20%
@@ -135,7 +135,7 @@
                         52
                     </span>
                 </div>
-                <div class="card_info_porcetagem">
+                <div class="card_info_porcetagem borda_azul1">
                     <div class="container_porcentagem_estoque">
                         <span class="porcemtagem_card">
                             40%
@@ -146,7 +146,7 @@
                         37
                     </span>
                 </div>
-                <div class="card_info_porcetagem">
+                <div class="card_info_porcetagem borda_azul_1">
                     <div class="container_porcentagem_estoque">
                         <span class="porcemtagem_card">
                             20%
@@ -159,104 +159,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="item_dashboard" id="div_produtos_maior_quantidade" style="grid-area: div_produtos_maior_quantidade">
-        <div class="header_grafico">
-            <h2>Produtos com maior quantidade</h2>
-        </div>
-        <div class="main_grafico">
-            <table class="tabela" id="tabela_dashboard">
-                <thead>
-                    <tr>
-                        <th>Produto</th>
-                        <th class="text_right">Quantidade</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Filtro de Oleo</td>
-                        <td>679</td>
-                    </tr>
-                    <tr>
-                        <td>Pastilha de freio</td>
-                        <td>545</td>
-                    </tr>
-                    <tr>
-                        <td>Vela de ignição</td>
-                        <td>521</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="item_dashboard" id="div_produtos_mais_vendidos" style="grid-area: entrada_de_produtos">
-        <div class="header_grafico">
-            <h2>Entrada de produtos</h2>
-            <div class="filtro_grafico">
-                <div class="filtro">
-                    <span>Data de inicio:</span>
-                    <input type="date" class="input_date" value="2020-01-01">
-                </div>
-                <div class="filtro">
-                    <span>Data do final:</span>
-                    <input type="date" class="input_date" value="2023-01-01" id="input_date_final">
-                </div>
-            </div>
-            <div class="config_grafico">
-                <span>Tipo de gráfico:</span>
-                <select name="tipo_grafico" id="tipo_grafico_entrada" class="campo_select tipo_grafico">
-                    <option value="line">Linha</option>
-                    <option value="bar">Coluna</option>
-                </select>
-            </div>
-        </div>
-        <canvas id="grafico_entrada_produtos"></canvas>
-    </div>
-    <div class="item_dashboard" id="div_saida_de_produtos" style="grid-area: saida_de_produtos">
-        <div class="header_grafico">
-            <h2>Saída de produtos</h2>
-            <div class="filtro_grafico">
-                <div class="filtro">
-                    <span>Data de inicio:</span>
-                    <input type="date" class="input_date" value="2020-01-01">
-                </div>
-                <div class="filtro">
-                    <span>Data do final:</span>
-                    <input type="date" class="input_date" value="2023-01-01">
-                </div>
-            </div>
-            <div class="config_grafico">
-                <span>Tipo de gráfico:</span>
-                <select name="tipo_grafico" id="tipo_grafico_saida" class="campo_select tipo_grafico">
-                    <option value="line">Linha</option>
-                    <option value="bar">Coluna</option>
-                </select>
-            </div>
-        </div>
-        <canvas id="grafico_saida_produtos"></canvas>
-    </div>
-    <div class="item_dashboard" id="div_diferenca_entrada_saida" style="grid-area: diferenca_entrada_saida">
-        <div class="header_grafico">
-            <h2>Diferença entre entrada e saída</h2>
-            <div class="filtro_grafico">
-                <div class="filtro">
-                    <span>Data de inicio:</span>
-                    <input type="date" class="input_date" value="2020-01-01">
-                </div>
-                <div class="filtro">
-                    <span>Data do final:</span>
-                    <input type="date" class="input_date" value="2023-01-01">
-                </div>
-            </div>
-            <div class="config_grafico">
-                <span>Tipo de gráfico:</span>
-                <select name="tipo_grafico" id="tipo_grafico_diferenca" class="campo_select tipo_grafico">
-                    <option value="line">Linha</option>
-                    <option value="bar">Coluna</option>
-                </select>
-            </div>
-        </div>
-        <canvas id="grafico_diferenca_produtos"></canvas>
     </div>
     <div class="item_dashboard" id="div_produtos_mais_vendidos" style="grid-area: produtos_mais_vendidos">
         <div class="header_grafico">
@@ -331,6 +233,106 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+    <div class="item_dashboard" id="div_produtos_maior_quantidade" style="grid-area: div_produtos_maior_quantidade">
+        <div class="header_grafico">
+            <h2>Produtos com maior quantidade</h2>
+        </div>
+        <div class="main_grafico">
+            <table class="tabela" id="tabela_dashboard">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th class="text_right">Quantidade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Filtro de Oleo</td>
+                        <td>679</td>
+                    </tr>
+                    <tr>
+                        <td>Pastilha de freio</td>
+                        <td>545</td>
+                    </tr>
+                    <tr>
+                        <td>Vela de ignição</td>
+                        <td>521</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="grid_filha_graficos" style="grid-area: grid_filha_graficos;">
+        <div class="item_dashboard" id="div_produtos_mais_vendidos" style="grid-area: entrada_de_produtos">
+            <div class="header_grafico">
+                <h2>Entrada de produtos</h2>
+                <div class="filtro_grafico">
+                    <div class="filtro">
+                        <span>Data de inicio:</span>
+                        <input type="date" class="input_date" value="2020-01-01">
+                    </div>
+                    <div class="filtro">
+                        <span>Data do final:</span>
+                        <input type="date" class="input_date" value="2023-01-01" id="input_date_final">
+                    </div>
+                </div>
+                <div class="config_grafico">
+                    <span>Tipo de gráfico:</span>
+                    <select name="tipo_grafico" id="tipo_grafico_entrada" class="campo_select tipo_grafico">
+                        <option value="line">Linha</option>
+                        <option value="bar">Coluna</option>
+                    </select>
+                </div>
+            </div>
+            <canvas id="grafico_entrada_produtos"></canvas>
+        </div>
+        <div class="item_dashboard" id="div_saida_de_produtos" style="grid-area: saida_de_produtos">
+            <div class="header_grafico">
+                <h2>Saída de produtos</h2>
+                <div class="filtro_grafico">
+                    <div class="filtro">
+                        <span>Data de inicio:</span>
+                        <input type="date" class="input_date" value="2020-01-01">
+                    </div>
+                    <div class="filtro">
+                        <span>Data do final:</span>
+                        <input type="date" class="input_date" value="2023-01-01">
+                    </div>
+                </div>
+                <div class="config_grafico">
+                    <span>Tipo de gráfico:</span>
+                    <select name="tipo_grafico" id="tipo_grafico_saida" class="campo_select tipo_grafico">
+                        <option value="line">Linha</option>
+                        <option value="bar">Coluna</option>
+                    </select>
+                </div>
+            </div>
+            <canvas id="grafico_saida_produtos"></canvas>
+        </div>
+        <div class="item_dashboard" id="div_diferenca_entrada_saida" style="grid-area: diferenca_entrada_saida">
+            <div class="header_grafico">
+                <h2>Diferença entre entrada e saída</h2>
+                <div class="filtro_grafico">
+                    <div class="filtro">
+                        <span>Data de inicio:</span>
+                        <input type="date" class="input_date" value="2020-01-01">
+                    </div>
+                    <div class="filtro">
+                        <span>Data do final:</span>
+                        <input type="date" class="input_date" value="2023-01-01">
+                    </div>
+                </div>
+                <div class="config_grafico">
+                    <span>Tipo de gráfico:</span>
+                    <select name="tipo_grafico" id="tipo_grafico_diferenca" class="campo_select tipo_grafico">
+                        <option value="line">Linha</option>
+                        <option value="bar">Coluna</option>
+                    </select>
+                </div>
+            </div>
+            <canvas id="grafico_diferenca_produtos"></canvas>
         </div>
     </div>
 </section>

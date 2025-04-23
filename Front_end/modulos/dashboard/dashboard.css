@@ -1,16 +1,23 @@
+.principal {
+    container-type: inline-size;
+}
 #modulo_dashboard {
     display: grid;
     grid-template-areas:
         "quantidade_total_produtos valor_total_estoque valor_total_estoque produtos_em_falta produtos_em_falta"
         "distribuicao_produtos_estoque valor_total_estoque_por_centro_estoque valor_total_estoque_por_centro_estoque produtos_em_falta produtos_em_falta "
         "distribuicao_produtos_estoque valor_total_estoque_por_centro_estoque valor_total_estoque_por_centro_estoque div_produtos_maior_quantidade div_produtos_maior_quantidade"
-        "distribuicao_produtos_estoque contatos contatos . ."
-        "entrada_de_produtos entrada_de_produtos saida_de_produtos saida_de_produtos saida_de_produtos"
-        "diferenca_entrada_saida diferenca_entrada_saida produtos_mais_vendidos produtos_mais_vendidos produtos_mais_vendidos";
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(6, auto);
+        "distribuicao_produtos_estoque contatos contatos produtos_mais_vendidos produtos_mais_vendidos"
+        "grid_filha_graficos grid_filha_graficos grid_filha_graficos produtos_mais_vendidos produtos_mais_vendidos . ."
+        "grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos"
+        "grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos";
+    grid-template-columns: minmax(245px, 344px) minmax(234px, 300px) minmax(296px, 300px) minmax(200px, 250px) minmax(200px, 250px) minmax(200px, 250px) minmax(200px, 250px);
+
+
+    grid-template-rows: repeat(7, auto);
     gap: 1rem;
     padding: 1rem;
+    margin-left: 1rem;
   }
 
 .graficos h2 {
@@ -25,6 +32,7 @@
     flex-direction: column;
     gap: 10px;
     width: 100%;
+    height: 100%;
     text-align: center;
 }
 
@@ -42,6 +50,7 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    height: 100%;
     width: 100%;
     min-width: fit-content;
     text-align: center;
@@ -49,7 +58,7 @@
 
 .valores_estoque {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     gap: 2rem;
 }
 
@@ -123,10 +132,19 @@
 
 #div_valor_total_estoque_por_centro_estoque {
     width: 100%;    
+    height: 100%;
 }
 
 #div_valor_total_estoque_por_centro_estoque h2 {
     margin-bottom: 1.3rem;
+}
+.container_info_valores_estoques {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 1rem;
+    width: 100%;
+    height: calc(100% - 2rem);
 }
 
 .container_info_valor_estoque {
@@ -172,6 +190,7 @@
 /* Grafico dos contatos: */
 #div_contatos {
    width: 100%;
+   height: 100%;
 }
 
 #div_contatos h2 {
@@ -186,13 +205,43 @@
 .container_grafico_card {
     display: flex;
     flex-direction: row;
+    justify-content: space-around;
     align-items: center;
     gap: 1.5rem;
 }
 
+.container_card_info_porcetagem {
+    width: 100%;
+}
+
+.borda_azul1 {
+    border-left: 10px solid var(--azul1);
+}
+
+.borda_azul_1 {
+    border-left: 10px solid var(--azul-1);
+}
 /* tabela produtos com maior quantidade */
 #div_produtos_maior_quantidade {
     width: 100%;
+    padding: 1rem 0 0 0;
+}
+
+.grid_filha_graficos {
+    display: grid;
+    grid-template-areas: 
+        "entrada_de_produtos saida_de_produtos"
+        "diferenca_entrada_saida .";
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(2, auto);
+    width: 100%;
+    gap: 1rem;
+}
+
+.grid_filha_graficos .item_dashboard {
+    width: 100%;   
+    max-width: none;
+    min-width: 0;
 }
 
 #modulo_dashboard {
@@ -203,10 +252,10 @@
     background-color: var(--azul-1) !important;
 }
 .item_dashboard {
-    max-width: 800px;
-    min-width: 400px;
+    /* max-width: 800px; */
+    /* min-width: 400px; */
     flex: 1 1 400px;
-    height: min-content;
+    /* height: min-content; */
     background-color: var(--principal);
     padding: 0.8rem;
     border-radius: 5px;
@@ -275,7 +324,6 @@
 /* Tabela dashboard: */
 #div_produtos_mais_vendidos {
     padding: 0;
-    max-width: 500px;
 }
 #div_produtos_mais_vendidos .header_grafico {
     padding: .8em;
@@ -293,6 +341,29 @@
     white-space: nowrap;
 }
 
+@container (min-width: 1750px) {
+    #modulo_dashboard {
+        background-color: red;
+        display: grid;
+        grid-template-areas:
+            "quantidade_total_produtos valor_total_estoque valor_total_estoque produtos_em_falta produtos_em_falta produtos_mais_vendidos produtos_mais_vendidos"
+            "distribuicao_produtos_estoque valor_total_estoque_por_centro_estoque valor_total_estoque_por_centro_estoque produtos_em_falta produtos_em_falta produtos_mais_vendidos produtos_mais_vendidos"
+            "distribuicao_produtos_estoque valor_total_estoque_por_centro_estoque valor_total_estoque_por_centro_estoque div_produtos_maior_quantidade div_produtos_maior_quantidade produtos_mais_vendidos produtos_mais_vendidos"
+            "distribuicao_produtos_estoque contatos contatos . . . ."
+            "grid_filha_graficos grid_filha_graficos grid_filha_graficos . . . ."
+            "grid_filha_graficos grid_filha_graficos grid_filha_graficos . . . ."
+            "grid_filha_graficos grid_filha_graficos grid_filha_graficos . . . .";
+        grid-template-columns: minmax(245px, 344px) minmax(234px, 300px) minmax(296px, 300px) minmax(200px, 250px) minmax(200px, 250px) minmax(200px, 250px) minmax(200px, 250px);
+    
+        grid-template-rows: repeat(7, auto);
+    }
+   .grid_filha_graficos {
+        grid-template-areas: 
+            "entrada_de_produtos saida_de_produtos diferenca_entrada_saida";
+        grid-template-columns: repeat(1, auto);
+   }
+}
+
 @media (min-width: 1325px) {
     .item_dashboard {
         /* min-width: 495px; */
@@ -300,7 +371,7 @@
 }
 @media (min-width: 1295px) {
     .mini .item_dashboard {
-        min-width: 500px;
+        /* min-width: 500px; */
     }
 }
 @media (max-width: 480px) {
