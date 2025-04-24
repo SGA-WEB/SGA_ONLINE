@@ -104,6 +104,12 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
         })
     }
 
+    // Assim que o a tela de editar é carregada e não tiver os dados no localStorage, os dados do banco vão para a localStorage (salvarDadosDoBancoNoLocalStorage())
+    // Depois os dados do localStorage vão para a tela (inserirDadoDoLocalStorageNaTela())
+    // Se o usuário clicar em trocar de aba dados que foram editados na tela vão para o localStorage (salvarNovosDadosDaTelaNoLocalStorage())
+    // Se o usuário clicar em salvar, os a função (salvarNovosDadosDaTelaNoLocalStorage()) é chamada novamente para salvar os novos dados digitados na tela e depois os dados do localStorage vão para o banco (salvarDadosDoLocalStorageNoBanco())
+    // Se o usuário clicar em cancelar, os dados do localStorage são apagados e a tela de contatos é carregada novamente (carregarConteudo(caminho, elementoPai, false, funcao, dado)) 
+
     function salvarDadosDoBancoNoLocalStorage() {
         // Quando a página carregar os dados do banco vão para a localStorage
         for (const key in dado) {
@@ -303,20 +309,19 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
         }
 
         // Atualizar as categorias do contato:
-
+        console.log(categoriasSelecionadas)
         categoriasSelecionadas = categoriasSelecionadas.map((categoria) => {
             // A API espera receber somente o ID da categoria
             // Então, convertemos o nome da categoria para o ID correspondente no banco de dados
-            if (categoria === "Cliente") {
+            if (categoria === "CLIENTE") {
                 return 1
-            } else if (categoria === "Fornecedor") {
+            } else if (categoria === "FORNECEDOR") {
                 return 2
-            } else if (categoria === "Funcionário") {
+            } else if (categoria === "FUNCIONÁRIO") {
                 return 3
-            } else {
-                return 0
             }
         })
+        console.log(categoriasSelecionadas)
 
         try {
             const response = await fetch(`http://localhost:3000/api/contato/${id_contato}/categorias`, {
