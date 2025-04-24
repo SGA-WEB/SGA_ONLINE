@@ -4,7 +4,6 @@ import select2 from "../../../scripts/select.js";
 import editar_contato from "../editar_contato/editar_contato.js";
 import excluir_contato from "../excluir_contato.js";
 import { popup } from "../../../scripts/popup.js";
-import buscarDados from "../../../scripts/buscarDados.js";
 
 export default function visualizar_contato (dado) {
     let cont = 0        
@@ -58,14 +57,14 @@ export default function visualizar_contato (dado) {
 
     function estilo_nav (e) {
         let link = e
-        if (e == "voltar_contatos") {
-            carregarConteudo("contato/contato.html", document.querySelector(".principal"))
-            return
-        }
         let links_nav= document.querySelectorAll(".link_nav") // Seleciona todos os links do nav
         links_nav.forEach(e=>{
             e.classList.remove("link_nav_selecionado") // desmarca todos
         })
+        if (e == "voltar_contatos") {
+            carregarConteudo("contato/contato.html", document.querySelector(".principal"))
+            return
+        }
         
         e.classList.add("link_nav_selecionado") // Adiciona a classe ao link clicado
         mudarDeAba(link.id)

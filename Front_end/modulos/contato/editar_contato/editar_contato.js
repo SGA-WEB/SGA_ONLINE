@@ -55,41 +55,6 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
         document.querySelector(".btn_salvar").addEventListener("click", salvarDadosDoLocalStorageNoBanco)
     }
 
-    function estilo_nav (e) {
-        let link = e
-        if (e == "voltar_contatos") {
-            localStorage.clear()
-            carregarConteudo(caminho, elementoPai, false, funcao, dado)
-            return
-        }
-        let links_nav= document.querySelectorAll(".link_nav") // Seleciona todos os links do nav
-        links_nav.forEach(e=>{
-            e.classList.remove("link_nav_selecionado") // desmarca todos
-        })
-        
-        e.classList.add("link_nav_selecionado") // Adiciona a classe ao link clicado
-        mudarDeAba(link.id)
-    }
-    
-    function mudarDeAba (link) {
-        salvarNovosDadosDaTelaNoLocalStorage()
-        switch (link) {
-            case "link_contato":
-                carregarConteudo("contato/editar_contato/criar_contato/editar_contato.html", document.querySelector(".modulo"), false, chamarFuncoes); // E passada a função chamarFuncoes para que os botões sejam ativados e os dados sejam inseridos novamente
-            break;
-            case "link_endereco":
-                carregarConteudo("contato/editar_contato/endereco_contato/editar_endereco_contato.html", document.querySelector(".modulo"), false, chamarFuncoes);
-            break;
-        }
-    }
-
-    function chamarFuncoes () {
-        btnsProximoEVoltar()
-        inserirDadoDoLocalStorageNaTela()
-        addListenerBtns()
-        select2("100%")
-    }
-
     function btnsProximoEVoltar() {
         let btn_nav = document.querySelectorAll(".btn_nav")
         btn_nav.forEach(e=>{
@@ -104,6 +69,43 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
         })
     }
 
+    function estilo_nav (e) {
+        let link = e
+        let links_nav= document.querySelectorAll(".link_nav") // Seleciona todos os links do nav
+        links_nav.forEach(e=>{
+            e.classList.remove("link_nav_selecionado") // desmarca todos
+        })
+        if (e == "voltar_contatos") {
+            localStorage.clear()
+            console.log(links_nav)
+            carregarConteudo(caminho, elementoPai, false, funcao, dado)
+            return
+        }
+        
+        e.classList.add("link_nav_selecionado") // Adiciona a classe ao link clicado
+        mudarDeAba(link.id)
+    }
+    
+    function mudarDeAba (link) {
+        salvarNovosDadosDaTelaNoLocalStorage()
+        switch (link) {
+            case "link_contato":
+               carregarConteudo("contato/editar_contato/criar_contato/editar_contato.html", document.querySelector(".modulo"), false, chamarFuncoes); // E passada a função chamarFuncoes para que os botões sejam ativados e os dados sejam inseridos novamente
+            break;
+            case "link_endereco":
+                carregarConteudo("contato/editar_contato/endereco_contato/editar_endereco_contato.html", document.querySelector(".modulo"), false, chamarFuncoes);
+            break;
+        }
+    }
+
+    function chamarFuncoes () {
+        btnsProximoEVoltar()
+        inserirDadoDoLocalStorageNaTela()
+        addListenerBtns()
+        select2("100%")
+    }
+
+    
     // Assim que o a tela de editar é carregada e não tiver os dados no localStorage, os dados do banco vão para a localStorage (salvarDadosDoBancoNoLocalStorage())
     // Depois os dados do localStorage vão para a tela (inserirDadoDoLocalStorageNaTela())
     // Se o usuário clicar em trocar de aba dados que foram editados na tela vão para o localStorage (salvarNovosDadosDaTelaNoLocalStorage())
@@ -229,17 +231,21 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
 
     async function salvarDadosDoLocalStorageNoBanco() { // PUT
         salvarNovosDadosDaTelaNoLocalStorage()
+
         let objDados = {};
         for (let d in dado) {
             objDados[d] = localStorage.getItem(d);
         }
 
+        let dadosCompletos = {...objDados}
         let id_contato = objDados.id_contato;
         let categoriasSelecionadas = localStorage.getItem("categorias").split(",")
         delete objDados.id_contato;
         delete objDados.data_cadastro;
         delete objDados.fk_id_endereco;
         delete objDados.categorias;
+
+        dadosCompletos.categorias = categoriasSelecionadas.map((e) => {return {nome: e}})
 
         // Corrige valores nulos e converte inativo para booleano
         for (let key in objDados) {
@@ -254,32 +260,38 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
         // Validação básica
         if (!objDados.razao_social || !objDados.fone1 || categoriasSelecionadas[0] == "") {
             // Se algum campo obrigatório estiver vazio, adiciona a classe de erro e foca no campo
-            let nome_razao_social = document.querySelector("#nome_razao_social")
-            let fone1 = document.querySelector("#fone1")
-            
-            if (categoriasSelecionadas[0] == "") {
-                let container_checkbox = document.querySelector(".container_checkbox")
-                container_checkbox.classList.add("border_red")
-                container_checkbox.addEventListener("click", () => {
-                    container_checkbox.classList.remove("border_red")
-                })
+            if (document.querySelector(".h2_titulo").textContent != "Editar contato") {
+                estilo_nav(document.querySelector("#link_contato"))
             }
 
-            if (!objDados.fone1) {
-                fone1.focus()
-                fone1.classList.add("border_red")
-                fone1.addEventListener("input", () => {
-                    fone1.classList.remove("border_red")
-                })
-            }
-            
-            if (!objDados.razao_social) {
-                nome_razao_social.focus()
-                nome_razao_social.classList.add("border_red")
-                nome_razao_social.addEventListener("input", () => {
-                    nome_razao_social.classList.remove("border_red")
-                })
-            }
+            if (document.querySelector(".h2_titulo").textContent == "Editar contato") {
+                let nome_razao_social = document.querySelector("#nome_razao_social")
+                let fone1 = document.querySelector("#fone1")
+                
+                if (categoriasSelecionadas[0] == "") {
+                    let container_checkbox = document.querySelector(".container_checkbox")
+                    container_checkbox.classList.add("border_red")
+                    container_checkbox.addEventListener("click", () => {
+                        container_checkbox.classList.remove("border_red")
+                    })
+                }
+    
+                if (!objDados.fone1) {
+                    fone1.focus()
+                    fone1.classList.add("border_red")
+                    fone1.addEventListener("input", () => {
+                        fone1.classList.remove("border_red")
+                    })
+                }
+                
+                if (!objDados.razao_social) {
+                    nome_razao_social.focus()
+                    nome_razao_social.classList.add("border_red")
+                    nome_razao_social.addEventListener("input", () => {
+                        nome_razao_social.classList.remove("border_red")
+                    })
+                }
+            } 
 
             popup_erro("Campos obrigatórios faltando.");
             return;
@@ -309,7 +321,6 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
         }
 
         // Atualizar as categorias do contato:
-        console.log(categoriasSelecionadas)
         categoriasSelecionadas = categoriasSelecionadas.map((categoria) => {
             // A API espera receber somente o ID da categoria
             // Então, convertemos o nome da categoria para o ID correspondente no banco de dados
@@ -321,7 +332,6 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
                 return 3
             }
         })
-        console.log(categoriasSelecionadas)
 
         try {
             const response = await fetch(`http://localhost:3000/api/contato/${id_contato}/categorias`, {
@@ -372,9 +382,13 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
                 popup_erro('Erro ao atualizar endereço.');
             }
 
+            let links_nav= document.querySelectorAll(".link_nav") // Seleciona todos os links do nav
+            links_nav.forEach(e=>{
+                e.classList.remove("link_nav_selecionado") // desmarca todos
+            })
             popup_carregando(true)
             popup_aviso("Contato atualizado com sucesso!")
-            carregarConteudo(caminho, elementoPai, false, funcao, dado)
+            carregarConteudo(caminho, elementoPai, false, funcao, dadosCompletos)
             localStorage.clear()
             return data.endereco;
         } catch (error) {
