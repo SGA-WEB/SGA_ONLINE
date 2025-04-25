@@ -1,12 +1,17 @@
 require('dotenv').config(); // Carrega as variáveis de ambiente
 const express = require('express');
+const session = require('express-session');
 const { Pool } = require('pg');
 const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors()); // Habilita o CORS
+app.use(cors({
+  origin: 'http://127.0.0.1:5503', // ou 'http://localhost:5503'
+  credentials: true
+}));
+
 
 // Configuração do PostgreSQL
 const pool = new Pool({
@@ -22,6 +27,41 @@ const pool = new Pool({
 });
 
 app.use(express.json()); // Permite que o servidor processe JSON no corpo da requisição
+
+app.use(session({
+    secret: 'seuSuperSegredoUltraSeguro', // depois guarde em .env
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 30, // 30 minutos
+      sameSite: 'lax', // ou 'none' se for https
+      secure: false    // true só se for https
+    }
+  }));
+
+
+//TESTE DE ROTA  
+app.get('/', (req, res) => {
+    res.send('API SGA rodando!');
+});
+
+app.get('/', (req, res) => res.send('API rodando!'));
+  
+// Rota para retornar o usuário logado
+app.get('/api/usuario', (req, res) => {
+    if (req.session.user) {
+      res.json({
+        logado: true,
+        usuario: req.session.user
+      });
+    } else {
+      res.json({
+        logado: false
+      });
+    }
+  });
+  
+
 app.use(express.urlencoded({ extended: true })); // Permite processar dados de formulário
 
 const path = require('path');
@@ -45,21 +85,25 @@ app.post('/api/login', async (req, res) => {
     try {
         const { email, senha } = req.body;
 
-        // Verifica se o e-mail existe no banco
         const userResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1', [email]);
 
         if (userResult.rows.length === 0) {
             return res.status(404).json({ error: 'E-mail não encontrado' });
         }
 
-        // Verifica se a senha está correta
         const senhaResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1 AND senha = $2', [email, senha]);
 
         if (senhaResult.rows.length === 0) {
             return res.status(401).json({ error: 'Senha incorreta' });
         }
 
-        // Se passou pelas verificações, login foi bem-sucedido
+        // Criar sessão
+        req.session.user = {
+            id: userResult.rows[0].id_usuario,
+            nome: userResult.rows[0].nome,
+            email: userResult.rows[0].email
+        };
+
         res.json({ message: 'Login bem-sucedido' });
 
     } catch (error) {
@@ -67,6 +111,17 @@ app.post('/api/login', async (req, res) => {
         res.status(500).json({ error: 'Erro interno no servidor' });
     }
 });
+
+//TESTE DE ROTA
+app.get('/api/testar-sessao', (req, res) => {
+    if (req.session.user) {
+      res.json({ logado: true, usuario: req.session.user });
+    } else {
+      res.json({ logado: false });
+    }
+  });
+  
+
 
 app.get('/api/centro_estoque', async (req, res) => {
     try {
