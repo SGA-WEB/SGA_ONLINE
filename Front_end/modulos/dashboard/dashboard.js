@@ -1,7 +1,8 @@
 // DashBoard:
+import buscarDados from "../../scripts/buscarDados.js";
 import { click_btn_menu, btnMenuLateral } from "../../scripts/javaScript.js";
 let local_click_btn_menu = click_btn_menu
-export default function dashBorad () {
+export default async function dashBorad () {
   /*
     Autor: matheushnunes;
 
@@ -22,14 +23,80 @@ export default function dashBorad () {
   let azul_1 = "#E9F0FF";
   let vermelho = 'rgba(255, 0, 0, 0.15)';
 
+  let dadosProduto = await buscarDados('produto').then((e)=>{ // Pega os dados do servidor
+    return e
+  })
+  let dadosCentroEstoque = await buscarDados('centro_estoque').then((e)=>{ // Pega os dados do servidor
+    return e
+  })
+
   // Dados dos gráficos:
+  console.log(dadosProduto)
+  console.log(dadosCentroEstoque)
+  let precoAtacado = 0
+  let precoVarejo = 0
+  let qtdeTotal = 0
   let dado_entrada = [4,12,15,8]
   let dado_saida = [2,16,4,9]
   let dado_diferenca = []
-  dado_entrada.forEach((e,i) => { // Entrada - Saída
-    dado_diferenca.push(e - dado_saida[i])
-  }) 
+  let produtos_centro_estoque = [] // Array com todos os centros de estoque e seus respectivos produtos
   
+  dadosProduto.forEach(e=>{ // Pega a quantidade total de produtos
+    qtdeTotal += e.quantidade
+    precoAtacado += Number(e.preco_atacado)
+    precoVarejo += Number(e.preco_varejo)
+  })
+
+  dadosCentroEstoque.forEach(e => {
+    // Cria um objeto para cada centro de estoque e adiciona os seus respectivos produtos
+    let centro_estoque = {
+      id_centro_estoque: e.id_centro_estoque,
+      nome_centro_estoque: e.nome_centro_estoque,
+    }
+    let produtos = [] // Cria um array vazio para os produtos do centro de estoque
+    dadosProduto.forEach(e => { // Pega os dados do servidor
+      if (e.fk_id_centro_estoque == centro_estoque.id_centro_estoque) { // Se o id do centro de estoque for igual ao id do produto
+       produtos.push(e) // Adiciona o produto ao array de produtos
+      }
+    })
+    centro_estoque.produtos = produtos // Adiciona o array de produtos ao objeto centro_estoque
+    let porcentagem = produtos.length / qtdeTotal * 10000// Calcula a porcentagem de produtos do centro de estoque
+    produtos_centro_estoque.push(centro_estoque)
+
+    let card = document.createElement("div") // Cria o card
+    card.classList.add("card_info_porcetagem") // Adiciona a classe card
+
+    let container_porcentagem_estoque = document.createElement("div") // Cria o container da porcentagem
+    container_porcentagem_estoque.classList.add("container_porcentagem_estoque") // Adiciona a classe container_porcentagem_estoque
+
+    let porcentagem_estoque = document.createElement("span") // Cria a porcentagem
+    porcentagem_estoque.classList.add("porcentagem_estoque") // Adiciona a classe porcentagem_estoque
+    porcentagem_estoque.textContent = porcentagem.toFixed(1) + "%" // Adiciona a porcentagem ao card
+
+    let quantidade_card = document.createElement("span") // Cria a quantidade do card
+    quantidade_card.classList.add("quantidade_card") // Adiciona a classe quantidade_card
+    
+    let pEstoque = document.createElement("p") // Cria o p da porcentagem
+    pEstoque.textContent = e.nome_centro_estoque // Adiciona o nome do centro de estoque
+
+    card.appendChild(container_porcentagem_estoque) // Adiciona o container ao card
+    container_porcentagem_estoque.appendChild(porcentagem_estoque)
+    container_porcentagem_estoque.appendChild(pEstoque) // Adiciona a quantidade ao container
+    card.appendChild(quantidade_card) // Adiciona a quantidade ao card
+
+    document.querySelector(".container_card_info_porcetagem").appendChild(card)
+  })
+
+  console.log(produtos_centro_estoque) // Mostra os produtos do centro de estoque no console
+
+  
+  // Inserir dados nos gráficos:
+
+  document.querySelector(".quantidade_produtos").textContent = qtdeTotal // Insere a quantidade de produtos no dashboard
+  document.querySelector("#valor_total_atacado").textContent = `R$ ${precoAtacado.toFixed(2).replace('.',',')}` // Insere o valor total de atacado no dashboard
+  document.querySelector("#valor_total_varejo").textContent = `R$ ${precoVarejo.toFixed(2).replace('.',',')}` // Insere o valor total de varejo no dashboard 
+  
+  // Gráfico de distribuição de produtos em estoque:
   function criarGraficoDistribuicaoProdutosEstoque() {
     const c_gfc_distribuicao_produtos_estoque= document.getElementById('grafico_distribuicao_produtos_estoque').getContext('2d');
     const gfc_distribuicao_produtos_estoque= new Chart(c_gfc_distribuicao_produtos_estoque, {
@@ -78,7 +145,7 @@ export default function dashBorad () {
             ctx.font = 'bold 1.4rem Arial';
             
             // Texto inferior "94"
-            const textBottom = '94';
+            const textBottom = qtdeTotal; // Quantidade total de produtos
             const textBottomY = height / 2 + 15; // 15px abaixo do centro
             ctx.fillText(textBottom, width / 2, textBottomY);
           }
@@ -382,4 +449,5 @@ export default function dashBorad () {
         break;
     }
   })
+ 
 }
