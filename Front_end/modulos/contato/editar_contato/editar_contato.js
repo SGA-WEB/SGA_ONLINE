@@ -69,7 +69,7 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
         })
     }
 
-    function estilo_nav (e) {
+    async function estilo_nav (e) {
         let link = e
         let links_nav= document.querySelectorAll(".link_nav") // Seleciona todos os links do nav
         links_nav.forEach(e=>{
@@ -77,20 +77,19 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
         })
         if (e == "voltar_contatos") {
             localStorage.clear()
-            console.log(links_nav)
             carregarConteudo(caminho, elementoPai, false, funcao, dado)
             return
         }
         
         e.classList.add("link_nav_selecionado") // Adiciona a classe ao link clicado
-        mudarDeAba(link.id)
+        await mudarDeAba(link.id)
     }
     
-    function mudarDeAba (link) {
+    async function mudarDeAba (link) {
         salvarNovosDadosDaTelaNoLocalStorage()
         switch (link) {
             case "link_contato":
-               carregarConteudo("contato/editar_contato/criar_contato/editar_contato.html", document.querySelector(".modulo"), false, chamarFuncoes); // E passada a função chamarFuncoes para que os botões sejam ativados e os dados sejam inseridos novamente
+                await carregarConteudo("contato/editar_contato/criar_contato/editar_contato.html", document.querySelector(".modulo"), false, chamarFuncoes); // E passada a função chamarFuncoes para que os botões sejam ativados e os dados sejam inseridos novamente
             break;
             case "link_endereco":
                 carregarConteudo("contato/editar_contato/endereco_contato/editar_endereco_contato.html", document.querySelector(".modulo"), false, chamarFuncoes);
@@ -261,10 +260,7 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
         if (!objDados.razao_social || !objDados.fone1 || categoriasSelecionadas[0] == "") {
             // Se algum campo obrigatório estiver vazio, adiciona a classe de erro e foca no campo
             if (document.querySelector(".h2_titulo").textContent != "Editar contato") {
-                estilo_nav(document.querySelector("#link_contato"))
-            }
-
-            if (document.querySelector(".h2_titulo").textContent == "Editar contato") {
+                await estilo_nav(document.querySelector("#link_contato"))
                 let nome_razao_social = document.querySelector("#nome_razao_social")
                 let fone1 = document.querySelector("#fone1")
                 
@@ -291,7 +287,7 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
                         nome_razao_social.classList.remove("border_red")
                     })
                 }
-            } 
+            }
 
             popup_erro("Campos obrigatórios faltando.");
             return;
