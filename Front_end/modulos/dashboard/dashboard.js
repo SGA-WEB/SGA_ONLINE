@@ -9,7 +9,7 @@ export default function dashBorad () {
     Os gráficos são criados com a biblioteca Chart.js;
 
     Funcionalidades e funções:
-    - Criar graficos de entrada, saída e diferença;
+    - Criar graficos de distribuição de produtos no estoque, contatos, entrada, saída e diferença;
     - atualizarGraficos(): Atualiza os gráficos de acordo com o tamanho da tela;
     - fecharMenu(): Fecha o menu lateral quando a tela for menor que 480px;
     - Select2(): Estiliza os selects do HTML e altera o tipo do gráfico de acordo com o valor selecionado;
@@ -64,7 +64,7 @@ export default function dashBorad () {
             const height = this.height;
             
             // Configurações para o texto superior
-            ctx.font = 'bold 1.1rem Arial';
+            ctx.font = 'bold 1rem Arial';
             ctx.fillStyle = '#333';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -81,7 +81,7 @@ export default function dashBorad () {
             const textBottom = '94';
             const textBottomY = height / 2 + 15; // 15px abaixo do centro
             ctx.fillText(textBottom, width / 2, textBottomY);
-        }
+          }
         }
       }
     });  
@@ -122,7 +122,7 @@ export default function dashBorad () {
             const height = this.height;
             
             // Configurações para o texto superior
-            ctx.font = 'bold 1.1rem Arial';
+            ctx.font = 'bold 1rem Arial';
             ctx.fillStyle = '#333';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
@@ -139,7 +139,7 @@ export default function dashBorad () {
             const textBottom = '94';
             const textBottomY = height / 2 + 15; // 15px abaixo do centro
             ctx.fillText(textBottom, width / 2, textBottomY);
-        }
+          }
         }
       }
     }); 

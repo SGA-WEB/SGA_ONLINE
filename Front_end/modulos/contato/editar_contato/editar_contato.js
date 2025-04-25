@@ -261,32 +261,32 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
             // Se algum campo obrigatório estiver vazio, adiciona a classe de erro e foca no campo
             if (document.querySelector(".h2_titulo").textContent != "Editar contato") {
                 await estilo_nav(document.querySelector("#link_contato"))
-                let nome_razao_social = document.querySelector("#nome_razao_social")
-                let fone1 = document.querySelector("#fone1")
-                
-                if (categoriasSelecionadas[0] == "") {
-                    let container_checkbox = document.querySelector(".container_checkbox")
-                    container_checkbox.classList.add("border_red")
-                    container_checkbox.addEventListener("click", () => {
-                        container_checkbox.classList.remove("border_red")
-                    })
-                }
-    
-                if (!objDados.fone1) {
-                    fone1.focus()
-                    fone1.classList.add("border_red")
-                    fone1.addEventListener("input", () => {
-                        fone1.classList.remove("border_red")
-                    })
-                }
-                
-                if (!objDados.razao_social) {
-                    nome_razao_social.focus()
-                    nome_razao_social.classList.add("border_red")
-                    nome_razao_social.addEventListener("input", () => {
-                        nome_razao_social.classList.remove("border_red")
-                    })
-                }
+            }
+            let nome_razao_social = document.querySelector("#nome_razao_social")
+            let fone1 = document.querySelector("#fone1")
+            
+            if (categoriasSelecionadas[0] == "") {
+                let container_checkbox = document.querySelector(".container_checkbox")
+                container_checkbox.classList.add("border_red")
+                container_checkbox.addEventListener("click", () => {
+                    container_checkbox.classList.remove("border_red")
+                })
+            }
+
+            if (!objDados.fone1) {
+                fone1.focus()
+                fone1.classList.add("border_red")
+                fone1.addEventListener("input", () => {
+                    fone1.classList.remove("border_red")
+                })
+            }
+            
+            if (!objDados.razao_social) {
+                nome_razao_social.focus()
+                nome_razao_social.classList.add("border_red")
+                nome_razao_social.addEventListener("input", () => {
+                    nome_razao_social.classList.remove("border_red")
+                })
             }
 
             popup_erro("Campos obrigatórios faltando.");
