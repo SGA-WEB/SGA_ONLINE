@@ -54,13 +54,16 @@ export default async function dashBorad () {
       nome_centro_estoque: e.nome_centro_estoque,
     }
     let produtos = [] // Cria um array vazio para os produtos do centro de estoque
+    let qtdeProduto = 0
     dadosProduto.forEach(e => { // Pega os dados do servidor
       if (e.fk_id_centro_estoque == centro_estoque.id_centro_estoque) { // Se o id do centro de estoque for igual ao id do produto
-       produtos.push(e) // Adiciona o produto ao array de produtos
+        qtdeProduto += e.quantidade
+        produtos.push(e) // Adiciona o produto ao array de produtos
       }
     })
+    centro_estoque.qtdeProduto = qtdeProduto
     centro_estoque.produtos = produtos // Adiciona o array de produtos ao objeto centro_estoque
-    let porcentagem = produtos.length / qtdeTotal * 10000// Calcula a porcentagem de produtos do centro de estoque
+    let porcentagem = qtdeProduto * 100 / qtdeTotal
     produtos_centro_estoque.push(centro_estoque)
 
     let card = document.createElement("div") // Cria o card
@@ -75,6 +78,7 @@ export default async function dashBorad () {
 
     let quantidade_card = document.createElement("span") // Cria a quantidade do card
     quantidade_card.classList.add("quantidade_card") // Adiciona a classe quantidade_card
+    quantidade_card.textContent = centro_estoque.qtdeProduto
     
     let pEstoque = document.createElement("p") // Cria o p da porcentagem
     pEstoque.textContent = e.nome_centro_estoque // Adiciona o nome do centro de estoque
@@ -87,6 +91,9 @@ export default async function dashBorad () {
     document.querySelector(".container_card_info_porcetagem").appendChild(card)
   })
 
+  document.querySelectorAll(".card_info_porcetagem").forEach(e => {
+    console.log(e)
+  })
   console.log(produtos_centro_estoque) // Mostra os produtos do centro de estoque no console
 
   
