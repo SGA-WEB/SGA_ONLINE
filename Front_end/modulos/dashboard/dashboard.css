@@ -12,7 +12,7 @@
         "grid_filha_graficos grid_filha_graficos grid_filha_graficos . ."
         "grid_filha_graficos grid_filha_graficos grid_filha_graficos . .";
 
-    grid-template-columns: minmax(245px, 344px) minmax(234px, 300px) minmax(296px, 300px) minmax(150px, 250px) minmax(150px, 250px);
+    grid-template-columns: minmax(265px, 344px) minmax(234px, 300px) minmax(296px, 300px) minmax(150px, 250px) minmax(150px, 250px);
 
     grid-template-rows: repeat(7, auto);
     gap: 1rem;
@@ -89,7 +89,7 @@
     min-width: 220px;
     min-height: 220px;
     aspect-ratio: 1 / 1 !important;
-    margin: 0 auto 1rem auto;
+    margin: 0 auto 1.5rem auto;
 }
 
 .card_info_porcetagem {
@@ -101,17 +101,23 @@
     box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.192);
     background-color: var(--principal);
     margin-bottom: 1rem;
-    border-left: 10px solid var(--azul);
+}
+
+.card_info_porcetagem:first-child {
+    background-color: var(--azul);
+    color: white;
+    font-weight: bolder;
+    box-shadow: 0px 10px 17.6px hsla(234, 76%, 67%, 0.363);
 }
 
 .container_porcentagem_estoque {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 0.7rem;
 }
 
 .porcentagem_estoque {
+    min-width: 76px;
     font-size: 1.4rem;
 }
 
@@ -128,7 +134,7 @@
 }
 
 #div_valor_total_estoque_por_centro_estoque {
-    width: 100%;    
+    width: 100%;
     height: 100%;
 }
 
@@ -210,14 +216,6 @@
 .container_card_info_porcetagem {
     width: 100%;
 }
-
-.borda_azul1 {
-    border-left: 10px solid var(--azul1);
-}
-
-.borda_azul_1 {
-    border-left: 10px solid var(--azul-1);
-}
 /* tabela produtos com maior quantidade */
 #div_produtos_maior_quantidade {
     width: 100%;
@@ -226,7 +224,7 @@
 
 .grid_filha_graficos {
     display: grid;
-    grid-template-areas: 
+    grid-template-areas:
         "entrada_de_produtos saida_de_produtos"
         "diferenca_entrada_saida .";
     grid-template-columns: repeat(2, auto);
@@ -236,7 +234,7 @@
 }
 
 .grid_filha_graficos .item_dashboard {
-    width: 100%;   
+    width: 100%;
     max-width: none;
     min-width: 0;
 }
@@ -294,7 +292,7 @@
     padding: 5px;
     border-radius: 5px;
     max-width: 127px;
-} 
+}
 .config_grafico {
     font-size: 0.9em;
 }
@@ -351,11 +349,11 @@
             "grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos"
             "grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos";
         grid-template-columns: minmax(245px, 344px) minmax(234px, 300px) minmax(296px, 300px) minmax(200px, 250px) minmax(200px, 250px) minmax(200px, 250px) minmax(200px, 250px);
-    
+
         grid-template-rows: repeat(7, auto);
     }
    .grid_filha_graficos {
-        grid-template-areas: 
+        grid-template-areas:
             "entrada_de_produtos saida_de_produtos diferenca_entrada_saida";
         grid-template-columns: repeat(1, auto);
    }
@@ -406,7 +404,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 1.5em;   
+        font-size: 1.5em;
     }
 
     .valores_estoque {
@@ -422,7 +420,7 @@
     }
 
     .grid_filha_graficos {
-        grid-template-areas: 
+        grid-template-areas:
             "entrada_de_produtos"
             "saida_de_produtos"
             "diferenca_entrada_saida";
@@ -432,10 +430,10 @@
 
 @container (max-width: 520px) {
     #modulo_dashboard {
-        grid-template-areas: 
+        grid-template-areas:
             "quantidade_total_produtos"
             "valor_total_estoque"
-            "contatos"        
+            "contatos"
             "distribuicao_produtos_estoque"
             "valor_total_estoque_por_centro_estoque"
             "produtos_em_falta"
