@@ -80,11 +80,6 @@ app.post('/api/login', async (req, res) => {
 });
 
 
-
-app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
-});
-
 // Rota para cadastrar usuário (POST)
 app.post('/usuarios', async (req, res) => {
     const { nome, email, celular, senha } = req.body;
