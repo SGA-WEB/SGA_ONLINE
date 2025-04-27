@@ -78,7 +78,7 @@
     width: fit-content;
     background-color: var(--azul1);
     color: var(--secundaria);
-    height: 1.875rem; /* 30px */	
+    height: 1.875rem; /* 30px */
     padding: 0 .7rem;
     border-radius: 5px;
     transition: .1s;
@@ -186,7 +186,7 @@
     font-size: 1rem;
     background-color: transparent;
 }
-.campo_input_noborder:focus, 
+.campo_input_noborder:focus,
 .campo_input_noborder:active {
     outline: none;
     box-shadow: none;
@@ -286,7 +286,7 @@
     top: 100px;
     right: 0;
     background-color: var(--sucesso1);
-    border-radius: 5px 0 0 5px; 
+    border-radius: 5px 0 0 5px;
     box-shadow: -3px 3px 8px rgba(0, 0, 0, 0.1);
     padding: 0;
     transform: translateX(0);
@@ -351,7 +351,7 @@
 /* Pop Up carregando: */
 
 .popup_carregando {
-    background-color: var(--azul-1);
+    background-color: #e9f0ffe3;
 }
 
 /* Animação da engrenagem */
@@ -388,7 +388,7 @@
 
 /* Estilo telas de formulário: */
 
-.p_codigo_id { 
+.p_codigo_id {
     background-color: var(--azul-1);
     padding: 0.4rem .5rem;
     border-radius: 5px;

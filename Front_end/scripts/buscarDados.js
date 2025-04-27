@@ -7,12 +7,9 @@ export default async function buscarDados(query) {
         
         Parâmetros:
         query: String que contém o nome da tabela que será buscada no servidor
-        limiteDados: number que contém o limite de dados que serão exibidos na tabela
 
         Função:
         Buscar os dados no servidor e exibir na página;
-        Possui uma função de pesquisa que filtra os dados exibidos na tabela;
-        A pesquisa é feita com base no campo selecionado no select e no valor digitado no input de pesquisa;
     */
 
     try {

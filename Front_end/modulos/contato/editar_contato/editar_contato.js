@@ -55,27 +55,41 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
         document.querySelector(".btn_salvar").addEventListener("click", salvarDadosDoLocalStorageNoBanco)
     }
 
-    function estilo_nav (e) {
+    function btnsProximoEVoltar() {
+        let btn_nav = document.querySelectorAll(".btn_nav")
+        btn_nav.forEach(e=>{
+            e.addEventListener("click", (e)=>{
+                let btn = e.target.closest(".btn_nav").id.slice(4) // Pega o id do botão que foi clicado e retira o "btn_"
+                let link_nav = document.getElementById(btn)
+                if (link_nav == null) {
+                    link_nav = "voltar_contatos"
+                }
+                estilo_nav(link_nav)
+            })
+        })
+    }
+
+    async function estilo_nav (e) {
         let link = e
+        let links_nav= document.querySelectorAll(".link_nav") // Seleciona todos os links do nav
+        links_nav.forEach(e=>{
+            e.classList.remove("link_nav_selecionado") // desmarca todos
+        })
         if (e == "voltar_contatos") {
             localStorage.clear()
             carregarConteudo(caminho, elementoPai, false, funcao, dado)
             return
         }
-        let links_nav= document.querySelectorAll(".link_nav") // Seleciona todos os links do nav
-        links_nav.forEach(e=>{
-            e.classList.remove("link_nav_selecionado") // desmarca todos
-        })
         
         e.classList.add("link_nav_selecionado") // Adiciona a classe ao link clicado
-        mudarDeAba(link.id)
+        await mudarDeAba(link.id)
     }
     
-    function mudarDeAba (link) {
+    async function mudarDeAba (link) {
         salvarNovosDadosDaTelaNoLocalStorage()
         switch (link) {
             case "link_contato":
-                carregarConteudo("contato/editar_contato/criar_contato/editar_contato.html", document.querySelector(".modulo"), false, chamarFuncoes); // E passada a função chamarFuncoes para que os botões sejam ativados e os dados sejam inseridos novamente
+                await carregarConteudo("contato/editar_contato/criar_contato/editar_contato.html", document.querySelector(".modulo"), false, chamarFuncoes); // E passada a função chamarFuncoes para que os botões sejam ativados e os dados sejam inseridos novamente
             break;
             case "link_endereco":
                 carregarConteudo("contato/editar_contato/endereco_contato/editar_endereco_contato.html", document.querySelector(".modulo"), false, chamarFuncoes);
@@ -90,19 +104,12 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
         select2("100%")
     }
 
-    function btnsProximoEVoltar() {
-        let btn_nav = document.querySelectorAll(".btn_nav")
-        btn_nav.forEach(e=>{
-            e.addEventListener("click", (e)=>{
-                let btn = e.target.closest(".btn_nav").id.slice(4) // Pega o id do botão que foi clicado e retira o "btn_"
-                let link_nav = document.getElementById(btn)
-                if (link_nav == null) {
-                    link_nav = "voltar_contatos"
-                }
-                estilo_nav(link_nav)
-            })
-        })
-    }
+    
+    // Assim que o a tela de editar é carregada e não tiver os dados no localStorage, os dados do banco vão para a localStorage (salvarDadosDoBancoNoLocalStorage())
+    // Depois os dados do localStorage vão para a tela (inserirDadoDoLocalStorageNaTela())
+    // Se o usuário clicar em trocar de aba dados que foram editados na tela vão para o localStorage (salvarNovosDadosDaTelaNoLocalStorage())
+    // Se o usuário clicar em salvar, os a função (salvarNovosDadosDaTelaNoLocalStorage()) é chamada novamente para salvar os novos dados digitados na tela e depois os dados do localStorage vão para o banco (salvarDadosDoLocalStorageNoBanco())
+    // Se o usuário clicar em cancelar, os dados do localStorage são apagados e a tela de contatos é carregada novamente (carregarConteudo(caminho, elementoPai, false, funcao, dado)) 
 
     function salvarDadosDoBancoNoLocalStorage() {
         // Quando a página carregar os dados do banco vão para a localStorage
@@ -223,17 +230,21 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
 
     async function salvarDadosDoLocalStorageNoBanco() { // PUT
         salvarNovosDadosDaTelaNoLocalStorage()
+
         let objDados = {};
         for (let d in dado) {
             objDados[d] = localStorage.getItem(d);
         }
 
+        let dadosCompletos = {...objDados}
         let id_contato = objDados.id_contato;
         let categoriasSelecionadas = localStorage.getItem("categorias").split(",")
         delete objDados.id_contato;
         delete objDados.data_cadastro;
         delete objDados.fk_id_endereco;
         delete objDados.categorias;
+
+        dadosCompletos.categorias = categoriasSelecionadas.map((e) => {return {nome: e}})
 
         // Corrige valores nulos e converte inativo para booleano
         for (let key in objDados) {
@@ -248,6 +259,9 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
         // Validação básica
         if (!objDados.razao_social || !objDados.fone1 || categoriasSelecionadas[0] == "") {
             // Se algum campo obrigatório estiver vazio, adiciona a classe de erro e foca no campo
+            if (document.querySelector(".h2_titulo").textContent != "Editar contato") {
+                await estilo_nav(document.querySelector("#link_contato"))
+            }
             let nome_razao_social = document.querySelector("#nome_razao_social")
             let fone1 = document.querySelector("#fone1")
             
@@ -303,18 +317,15 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
         }
 
         // Atualizar as categorias do contato:
-
         categoriasSelecionadas = categoriasSelecionadas.map((categoria) => {
             // A API espera receber somente o ID da categoria
             // Então, convertemos o nome da categoria para o ID correspondente no banco de dados
-            if (categoria === "Cliente") {
+            if (categoria === "CLIENTE") {
                 return 1
-            } else if (categoria === "Fornecedor") {
+            } else if (categoria === "FORNECEDOR") {
                 return 2
-            } else if (categoria === "Funcionário") {
+            } else if (categoria === "FUNCIONÁRIO") {
                 return 3
-            } else {
-                return 0
             }
         })
 
@@ -367,9 +378,13 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
                 popup_erro('Erro ao atualizar endereço.');
             }
 
+            let links_nav= document.querySelectorAll(".link_nav") // Seleciona todos os links do nav
+            links_nav.forEach(e=>{
+                e.classList.remove("link_nav_selecionado") // desmarca todos
+            })
             popup_carregando(true)
             popup_aviso("Contato atualizado com sucesso!")
-            carregarConteudo(caminho, elementoPai, false, funcao, dado)
+            carregarConteudo(caminho, elementoPai, false, funcao, dadosCompletos)
             localStorage.clear()
             return data.endereco;
         } catch (error) {
