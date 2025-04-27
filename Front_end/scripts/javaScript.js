@@ -19,6 +19,7 @@ import select2 from "./select.js";
 import produto from "../modulos/produto/produto.js";
 import centro_de_estoque from "../modulos/centro_de_estoque/centro_de_estoque.js";
 import configuracoes from "../modulos/configuracoes/configuracoes.js";
+import { aguardarRenderizacao } from "./funcionalidades.js";
 
 function mudarLogo(){ // Muda a logo do usuário de acordo com o nome dele
   let div_logo_usuario = document.querySelectorAll(".logo_usuario");
@@ -42,11 +43,11 @@ btns_modulos.forEach(e =>{
   })
 })
 
-carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal")) // Carrega por padrão assim que a página for carregada o dashboard
+carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"), false, dashBorad) // Carrega por padrão assim que a página for carregada o dashboard
 
 let logo_sga_principal = document.querySelector("#logo_sga_principal")
 logo_sga_principal.addEventListener("click",()=>{
-  carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"))
+  carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"), false, dashBorad)
   displayMenu("", true)
   document.querySelector(".item_hiden")?.remove() // se o .item_hiden existir ele é removido
   document.querySelector(".modulo_selecionado")?.classList.remove("modulo_selecionado") // Se tiver um módulo selecionado é retirada sua a classe
@@ -57,55 +58,60 @@ logo_sga_principal.addEventListener("click",()=>{
 }) // Clicar na logo volta para o dashboard
 
 // Função de carregar conteúdo html dos módulos
-function carregarConteudo(url, elemento, funcao, adicionar) {
-  elemento.innerHTML = "<p>Carregando...</p>"; // Limpa o conteúdo atual antes de carregar o novo
 
+async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) {
+  elemento.innerHTML = "<p>Carregando...</p>"; // Feedback visual
+  
   url = "../modulos/" + url;
 
-  // Carrega o conteúdo do arquivo HTML usando fetch
-  fetch(url)
-  .then(response => {
-    if (!response.ok) throw new Error('Erro ao carregar o conteúdo.');
-    return response.text();
-  })
-  .then(html => {
-    elemento.innerHTML = ""; // Limpa o conteúdo atual antes de adicionar o novo
+  try {
+    const response = await fetch(url);
+    const html = await response.text();
+
+    elemento.innerHTML = ""; // Limpa o conteúdo atual
     if (adicionar) {
       elemento.innerHTML += html;
     } else {
       elemento.innerHTML = html;
     }
-    requestAnimationFrame(() => { // Aguarda o carregamento completo do conteúdo HTML antes de executar as funções do JavaScript
-      select2()
-      
-      if (funcao) {
-        funcao()
-      }
 
-      if (url === "../modulos/dashboard/dashboard.html") {
-        dashBorad();
-      }
-      if (url === "../modulos/contato/contato.html") {
-        contato();
-      }
-      if (url === "../modulos/configuracao_usuario/configuracao_usuario.html") {
-        configuracao_usuario();
-      }
-      if (url === "../modulos/produto/produto.html") { 
-        produto()
-      }
-      if (url === "../modulos/centro_de_estoque/centro_de_estoque.html") {
-        centro_de_estoque()
-      }
-      if (url === "../modulos/configuracoes/configuracoes.html") {
-        configuracoes()
-      }
-    });
-  })
-  .catch(error => {
+    // Aguarda o HTML ser totalmente renderizado antes de chamar a função
+    await aguardarRenderizacao(elemento);
+
+    if (funcao) {
+      funcao(...parametro);
+    }
+    if (url === "../modulos/dashboard/dashboard.html" && !funcao) {
+      dashBorad();
+    }
+    if (url === "../modulos/contato/contato.html" && !funcao) { // !funcao: para a função não ser chamada mais de uma fez
+      contato();
+    }
+    if (url === "../modulos/configuracao_usuario/configuracao_usuario.html") {
+      configuracao_usuario();
+    }
+    if (url === "../modulos/produto/produto.html" && !funcao) { 
+      produto()
+    }
+    if (url === "../modulos/centro_de_estoque/centro_de_estoque.html" && !funcao) {
+      centro_de_estoque()
+    }
+    if (url === "../modulos/configuracoes/configuracoes.html") {
+      configuracoes()
+    }
+
+    
+    let inputs = document.querySelectorAll("input:not([type='email']), textarea") // Seleciona todos os inputs e textareas que não são do tipo email
+    inputs.forEach(e=>{
+      e.addEventListener("input", (input) => {
+        input.target.value = input.target.value.toUpperCase()
+      })
+    })
+
+  } catch (error) {
+    console.error("Erro ao carregar o conteúdo:", error);
     elemento.innerHTML = "<p>Erro ao carregar o conteúdo.</p>";
-    console.error(error);
-  });
+  }
 }
 
 // Função que fecha o menu lateral se a tela tiver menos de um determinado width de largura
@@ -193,6 +199,7 @@ function btnMenuLateral(target){
 let btns_menu = document.querySelectorAll(".btn_menu") // Seleciona todos os botões dos modulos
 btns_menu.forEach((e)=>{
   e.addEventListener("click",(e)=>{
+    localStorage.clear() // limpa o storage sempre que um botão do modulo for clicado
     let modulo = e.currentTarget // Pega o modulo que foi clicado
     let btnMini = modulo.classList.contains("mini") // Verifica se o botão tem a classe "mini"
     let btn = (modulo.classList[0] == 'btn') // Verifica se a opção selecionada é um botão que não tem um menu dropdown

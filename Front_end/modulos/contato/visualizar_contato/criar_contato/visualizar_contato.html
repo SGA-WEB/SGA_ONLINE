@@ -1,13 +1,25 @@
-<div class="btns_nav">
-    <button class="btn_nav" id="btn_voltar_contatos">
-        <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
-        <p class="btn_voltar">Voltar</p>
-    </button>
-    <button class="btn_nav" id="btn_link_endereco">
-        <p class="btn_proximo">Proximo</a>
-        <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_direita">
-    </button>
-</div>
+<menu class="menu_btns  align_center" id="menu_contato">
+    <div class="container_btns_voltar_proximo container_space_between">
+        <button class="btn_nav" id="btn_voltar_contatos">
+            <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
+            <p class="btn_voltar">Voltar</p>
+        </button>
+        <button class="btn_nav" id="btn_link_endereco">
+            <p class="btn_proximo">Proximo</a>
+            <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_direita">
+        </button>
+    </div>
+    <div class="container_btns space_between">
+        <button class="btn_editar btn btn2">
+            <img src="..//..//../imagens/icone_editar.svg" alt="icone_editar" >
+            <p>Editar</p>
+        </button>
+        <button class="btn_excluir btn btn5">
+            <img src="..//..//../imagens/icone_excluir.svg" alt="icone_editar" >
+            <p>Excluir</p>
+        </button>
+    </div>
+</menu>
 <div class="modulo_header header_cadastro">
     <h2 class="h2_titulo">Visualizar contato</h2>
     <div class="container_codigo_data">
@@ -24,11 +36,11 @@
             <p>Tipo Pessoa:</p>
             <div class="container_radios small_width">
                 <div class="container_radio">
-                    <input disabled type="radio" name="tipo_contato" id="contato_juridico">
+                    <input disabled type="radio" name="tipo_pessoa" id="contato_juridico">
                     <label for="contato_juridico">Jurídica</label>
                 </div>
                 <div class="container_radio">
-                    <input disabled type="radio" name="tipo_contato" id="contato_fisico">
+                    <input disabled type="radio" name="tipo_pessoa" id="contato_fisico">
                     <label for="contato_fisico">Física</label>
                 </div>
             </div>
@@ -100,11 +112,11 @@
     <div class="campo_contato container_small_width">
         <div class="small_width">
             <label for="cnpj">CNPJ:</label>
-            <input disabled type="number" name="cnpj" id="cnpj" class="campo_input">
+            <input disabled type="text" name="cnpj" id="cnpj" class="campo_input" maxlength="18">
         </div>
         <div class="small_width">
             <label for="cpf">CPF:</label>
-            <input disabled type="number" name="cpf" id="cpf" class="campo_input">
+            <input disabled type="text" name="cpf" id="cpf" class="campo_input" maxlength="14">
         </div>
     </div>
 
@@ -117,23 +129,23 @@
         <div class="campo_contato small_width select_conainer">
             <p>Perfil Tributário:</p>
             <select disabled id="perfil_tributario" class="campo_select">
-                <option value="padrão">Padrão</option>
-                <option value="tipo1">Tipo 1</option>
-                <option value="tipo2">Tipo 2</option>
+                <option value="CONSUMIDOR FINAL">CONSUMIDOR FINAL</option>
+                <option value="LUCRO PRESUMIDO">LUCRO PRESUMIDO</option>
+                <option value="SIMPLES NACIONAL">SIMPLES NACIONAL</option>
+                <option value="LUCRO REAL">LUCRO REAL</option>
             </select>
         </div>
         <div class="campo_contato small_width select_conainer">
             <p>Tipo consumidor:</p>
             <select disabled id="tipo_consumidor" class="campo_select">
-                <option value="padrão">Padrão</option>
-                <option value="tipo1">Tipo 1</option>
-                <option value="tipo2">Tipo 2</option>
+                <option value="CONSUMIDOR FINAL">CONSUMIDOR FINAL</option>
+                <option value="CONTRIBUINTE">CONTRIBUINTE</option>
             </select>
         </div>
     </div>
 
     <div class="campo_contato normal_width">
         <label for="observacao">Observação:</label>
-        <textarea name="observacao" id="observacao" class="textarea" rows="4"></textarea>
+        <textarea disabled name="observacao" id="observacao" class="textarea" rows="4"></textarea>
     </div>
 </div>

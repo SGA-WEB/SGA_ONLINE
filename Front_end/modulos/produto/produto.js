@@ -2,8 +2,9 @@ import { carregarConteudo, fecharMenu } from "../../scripts/javaScript.js"
 import { dataAtual, mudarPesquisa, visibilidadeMenulateral } from "../../scripts/funcionalidades.js"
 import buscarDados from "../../scripts/buscarDados.js"
 import select2 from "../../scripts/select.js"
+import {carregarDadosNaTabela, pesquisar} from "../../scripts/carregarDadosNaTabela.js"
 
-export default function produto () {
+export default async function produto () {
     /*
         Autor: matheushnunes
         Data: 23/02/2025
@@ -38,9 +39,12 @@ export default function produto () {
      }, 100);
     })
     mudarPesquisa(document.querySelector(".input_pesquisa"))
+    
     select2("9em")
 
-    buscarDados("sga.produto") // Busca os dados da tabela, exibe na tela e permite pesquisar
+    let dados = await buscarDados("produto")
+    carregarDadosNaTabela(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"])
+    pesquisar(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"])
 
     fecharMenu(document.querySelector(".tabela").offsetWidth,480)
     window.addEventListener('resize', (e) => {
@@ -50,7 +54,5 @@ export default function produto () {
             visibilidadeMenulateral(document.querySelector(".tabela").offsetWidth, 750)
         } 
     })  
-
-    
 }
 

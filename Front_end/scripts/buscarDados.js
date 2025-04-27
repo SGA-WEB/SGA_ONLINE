@@ -1,6 +1,6 @@
-import {carregarDadosNaTabela, pesquisar} from './carregarDadosNaTabela.js';
-import configuracao_usuario from '../modulos/configuracao_usuario/configuracao_usuario.js';
-export default function buscarDados (query, tabela = true, funcao) {
+import { carregarDadosNaTabela, pesquisar } from './carregarDadosNaTabela.js';
+
+export default async function buscarDados(query) {
     /*
         Autor: matheushnunes
         Data: 23/02/2025
@@ -10,32 +10,18 @@ export default function buscarDados (query, tabela = true, funcao) {
 
         Função:
         Buscar os dados no servidor e exibir na página;
-        Possui uma função de pesquisa que filtra os dados exibidos na tabela;
-        A pesquisa é feita com base no campo selecionado no select e no valor digitado no input de pesquisa;
     */
 
-    async function fetchDados() {
-        // Busca os dados no servidor
-        try {
-            const response = await fetch('http://localhost:3000/api/dados?tabela=' + query);
-            const result = await response.json(); // Converte a resposta para JSON
-            if (result) {
-                // Exibe os dados na página
-                if (tabela){
-                    carregarDadosNaTabela(result)
-                    pesquisar(result)
-                } else {
-                    funcao(result)
-                }
-            } else {
-                // Exibe a mensagem de erro
-                console.error('Erro no servidor:', result.message);
-            }
-        } catch (err) {
-            console.error('Erro ao buscar dados:', err);
+    try {
+        const response = await fetch(`http://localhost:3000/api/${query}`); // Faz a requisição para o servidor
+        const result = await response.json(); // Converte a resposta para JSON
+        if (result) {
+            return result
+        } else {
+            // Exibe a mensagem de erro
+            console.error('Erro no servidor:', result.message);
         }
+    } catch (err) {
+        console.error('Erro ao buscar dados:', err);
     }
-    
-    // Carrega os dados ao abrir a página
-    fetchDados();
 }

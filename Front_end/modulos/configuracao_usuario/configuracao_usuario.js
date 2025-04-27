@@ -64,7 +64,7 @@ export default function configuracao_usuario( data ) {
     btn_upload.addEventListener('click', () => {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
-        fileInput.accept = 'image/*';
+        fileInput.accept = 'image*';
 
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -75,13 +75,37 @@ export default function configuracao_usuario( data ) {
                 reader.onload = function(event) {
                     // Exibir a imagem selecionada
                     alterar_img_perfil(event.target.result)
+                    salvarfotoservidor(file); // Enviar para o backend
                 };
                 reader.readAsDataURL(file);
+                
             }
         });
 
         fileInput.click();  // Simula o clique no input file
     });
+
+    // Envia a imagem para o servidor
+    const salvarfotoservidor = async (file) => {
+        const formData = new FormData();
+        formData.append('imagem', file);
+    
+        try {
+            const resposta = await fetch('http://localhost:3000/upload', {
+                method: 'POST',
+                body: formData
+            });
+            if (!resposta.ok) throw new Error("Erro no upload");
+            const dados = await resposta.json();
+            console.log("Imagem salva no servidor!", dados);
+        } catch (erro) {
+            console.error("Falha no upload", erro);
+            alert("Erro ao enviar a imagem. Tente novamente.");
+        }
+    };
+    
+    // Dentro do event listener 'change', após a validação:
+    
 
     // Adiciona funcionalidade de arraste
     btn_upload.addEventListener('dragover', (e) => {

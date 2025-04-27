@@ -1,60 +1,71 @@
 import { carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
-import { dataAtual, esperarCarregarConteudo } from "../../../scripts/funcionalidades.js";
+import { dataAtual } from "../../../scripts/funcionalidades.js";
+import select2 from "../../../scripts/select.js";
 
 export default function cadastro_contato () {
-    esperarCarregarConteudo(cadastroContatoMain)
+    let cont = 0        
 
-    let cont = 0
-    function cadastroContatoMain() {
-        // Mudar de tela ao clicar no menu superior da tela de contato:
-        let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
-        if (cont == 0) 
-            links_nav[0].classList.add("link_nav_selecionado") // Adiciona a classe ao primeiro link assim que o modulo for carregado
-
-        document.querySelectorAll('.link_nav:not(.link_nav_selecionado)').forEach(link => { // Seleciona todos os links que não possuem a classe link_nav_selecionado
-            link.addEventListener("click", (e) => { 
-                estilo_nav(e.target);
-            });
-        });
-    
-        // Mudar o input de data de cadastro para o dia atual:
-        dataAtual()
-    
-        fecharMenu(document.querySelector(".modulo").offsetWidth, 584)
-        window.addEventListener('resize', (e) => { 
-            if(document.querySelector(".modulo") != null){
-                fecharMenu(document.querySelector(".modulo").offsetWidth, 421)
-            } 
-        })
-    
-        btnsProximoEVoltar()
-        cont++
+    // Mudar de tela ao clicar no menu superior da tela de contato:
+    let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
+    if (cont == 0) {
+        links_nav[0].classList.add("link_nav_selecionado") // Adiciona a classe ao primeiro link assim que o modulo for carregado
     }
+
+    document.querySelectorAll('.link_nav').forEach(link => { // Seleciona todos os links
+        link.addEventListener("click", (e) => { 
+            estilo_nav(e.target);
+        });
+    });
+
+    dataAtual()
+    select2("100%")
+    btnsProximoEVoltar()
+    addListenerBtns()
+    
+    fecharMenu(document.querySelector(".modulo").offsetWidth, 584)
+    window.addEventListener('resize', (e) => { 
+        if(document.querySelector(".modulo") != null){
+            fecharMenu(document.querySelector(".modulo").offsetWidth, 421)
+        } 
+    })
+
+    function addListenerBtns () {
+        document.querySelector(".btn_cancelar").addEventListener("click", () => {
+            carregarConteudo('contato/contato.html', document.querySelector('.principal'), false)
+        })
+    }
+
 
     function estilo_nav (e) {
         let link = e
         if (e == "voltar_contatos") {
-            carregarConteudo("contato/contato.html", document.querySelector(".principal"))
+            carregarConteudo('contato/contato.html', document.querySelector('.principal'), false, funcao)
             return
         }
-        let links_selecionado = document.querySelectorAll(".link_nav") // Seleciona todos os links selecionados
-        links_selecionado.forEach(e=>{
-            e.classList.remove("link_nav_selecionado") // Retira a classe
+        let links_nav= document.querySelectorAll(".link_nav") // Seleciona todos os links do nav
+        links_nav.forEach(e=>{
+            e.classList.remove("link_nav_selecionado") // desmarca todos
         })
         
         e.classList.add("link_nav_selecionado") // Adiciona a classe ao link clicado
-        navLink(link.id)
+        mudarDeAba(link.id)
     }
     
-    function navLink (link) {
+    function mudarDeAba (link) {
         switch (link) {
             case "link_contato":
-                carregarConteudo("contato/cadastro_contato/criar_contato/criar_contato.html", document.querySelector(".modulo"), cadastroContatoMain);
+                carregarConteudo("contato/cadastro_contato/criar_contato/criar_contato.html", document.querySelector(".modulo"), false, chamarFuncoes); // E passada a função chamarFuncoes para que os botões sejam ativados e os dados sejam inseridos novamente
             break;
             case "link_endereco":
-                carregarConteudo("contato/cadastro_contato/endereco_contato/endereco_contato.html", document.querySelector(".modulo"), cadastroContatoMain);
+                carregarConteudo("contato/cadastro_contato/endereco_contato/endereco_contato.html", document.querySelector(".modulo"), false, chamarFuncoes);
             break;
         }
+    }
+
+    function chamarFuncoes () {
+        btnsProximoEVoltar()
+        addListenerBtns()
+        select2("100%")
     }
 
     function btnsProximoEVoltar() {
@@ -62,7 +73,6 @@ export default function cadastro_contato () {
         btn_nav.forEach(e=>{
             e.addEventListener("click", (e)=>{
                 let btn = e.target.closest(".btn_nav").id.slice(4) // Pega o id do botão que foi clicado e retira o "btn_"
-                
                 let link_nav = document.getElementById(btn)
                 if (link_nav == null) {
                     link_nav = "voltar_contatos"

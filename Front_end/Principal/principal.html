@@ -3,19 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src *; font-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline'">
     <title>SGA ONLINE</title>
     <!-- Estilos: -->
     <link rel="stylesheet" href="../estilos/principal.css">
     <link rel="stylesheet" href="../estilos/tabela.css">
     <link rel="stylesheet" href="../estilos/geral.css">
-    
+
     <!-- Modulos -->
+    <!-- Dashboard -->
+    <link rel="stylesheet" href="../modulos/dashboard/dashboard.css">
     <!-- Configuração do usuário -->
     <link rel="stylesheet" href="../modulos/configuracao_usuario/configuracao_usuario.css">
-    
+
     <!-- Modulo Contato -->
     <link rel="stylesheet" href="../modulos/contato/contato.css">
-    
+
     <link rel="stylesheet" href="../modulos/contato/cadastro_contato/cadastro_contato.css">
     <link rel="stylesheet" href="../modulos/contato/cadastro_contato/endereco_contato/endereco_contato.css">
 
@@ -26,7 +29,7 @@
     <link rel="stylesheet" href="../modulos/centro_de_estoque/centro_de_estoque.css">
 
     <link rel="stylesheet" href="../modulos/configuracoes/cadastro.css">
-    
+
     <!-- Favicon: -->
     <link rel="shortcut icon" href="../imagens/icone_sga.ico" type="image/x-icon">
 
@@ -84,7 +87,7 @@
                 <div class="dropdown" id="dd_estoque" style="display: none;">
                     <a href="#" class="item_dropdown" id="btn_centro_de_estoque">Centro de estoque</a>
                     <a href="#" class="item_dropdown" id="btn_produto">Produto</a>
-                    <a href="#" class="item_dropdown disable" id="btn_movimentacao_de_estoque">Movimentação de estoque</a>
+                    <a href="#" class="item_dropdown" id="btn_movimentacao_de_estoque">Movimentação de estoque</a>
                     <a href="#" class="item_dropdown disable" id="btn_cadastro_auxiliares">Cadastro auxiliares</a>
                 </div>
             </div>
@@ -145,8 +148,41 @@
             </button>
         </nav>
         <section class="principal">
-            
+
         </section>
+        <!-- Popups temporarios: -->
+        <div class="popup_aviso hide_popup" id="popup_aviso">
+            <button class="btn_fechar_popup" id="btn_fechar_popup_aviso">
+                <img src="../imagens/icone_fechar.svg" alt="botão fechar popup" class="icone_fechar">
+            </button>
+            <main>
+                <img src="..//../imagens/check.svg" alt="icone_check">
+                <p class="mensagem_aviso">Alteração salva com sucesso!</p>
+            </main>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar-aviso"></div>
+            </div>
+        </div>
+        <div class="popup_erro popup_aviso hide_popup" id="popup_erro">
+            <button class="btn_fechar_popup" id="btn_fechar_popup_erro">
+                <img src="../imagens/icone_fechar.svg" alt="botão fechar popup" class="icone_fechar">
+            </button>
+            <main>
+                <img src="../imagens/icone_fechar.svg" alt="icone_check">
+                <p class="mensagem_erro">Erro ao salvar alteração</p>
+            </main>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar-erro"></div>
+            </div>
+        </div>
+        <div class="popup_aviso popup_carregando hide_popup" id="popup_carregando">
+            <main>
+                <div class="gear-icon">
+                    <img src="../imagens/icone_carregando.svg" alt="engrenagem">
+                </div>
+                <p class="mensagem_aviso">Salvando alterações...</p>
+            </main>
+        </div>
     </main>
     <script type="module" src="../modulos/dashboard/dashboard.js"></script>
     <script type="module" src="../modulos/contato/contato.js"></script>
@@ -157,5 +193,7 @@
     <script type="module" src="../modulos/centro_de_estoque/centro_de_estoque.js"></script>
     <script type="module" src="../modulos/configuracoes/configuracoes.js"></script>
     <script type="module" src="../modulos/produto/visualizar_produto/visualizar_produto.js"></script>
+    <script type="module" src="../scripts/sessao.js"></script>
+    <script type="module" src="../scripts/usuarioHeader.js"></script>
 </body>
 </html>

@@ -1,18 +1,23 @@
 require('dotenv').config(); // Carrega as variáveis de ambiente
 const express = require('express');
+const session = require('express-session');
 const { Pool } = require('pg');
 const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors()); // Habilita o CORS
+app.use(cors({
+  origin: 'http://127.0.0.1:5503', // ou 'http://localhost:5503'
+  credentials: true
+}));
+
 
 // Configuração do PostgreSQL
 const pool = new Pool({
     user: 'neondb_owner',
-    // host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech',
-    host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech',
+    /* host: 'ep-small-bar-a8bydmrx-pooler.eastus2.azure.neon.tech', */
+    host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
     database: 'neondb',
     password: 'npg_Y3ZNL6fxehGI',
     port: 5432,
@@ -21,18 +26,42 @@ const pool = new Pool({
     },
 });
 
-app.get('/api/dados', async (req, res) => {
-    try {
-        const { tabela } = req.query; // Recebe o nome da tabela da query string
-        const { rows } = await pool.query(`SELECT * FROM ${tabela}`); // Faz a consulta
-        res.json(rows);  // Retorna os dados em formato JSON
-    } catch (err) {
-        console.error(err);
-        res.status(500).send('Erro no servidor');
+app.use(express.json()); // Permite que o servidor processe JSON no corpo da requisição
+
+app.use(session({
+    secret: 'seuSuperSegredoUltraSeguro', // depois guarde em .env
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 1000 * 60 * 30, // 30 minutos
+      sameSite: 'lax', // ou 'none' se for https
+      secure: false    // true só se for https
     }
+  }));
+
+
+//TESTE DE ROTA  
+app.get('/', (req, res) => {
+    res.send('API SGA rodando!');
 });
 
-app.use(express.json()); // Permite que o servidor processe JSON no corpo da requisição
+app.get('/', (req, res) => res.send('API rodando!'));
+  
+// Rota para retornar o usuário logado
+app.get('/api/usuario', (req, res) => {
+    if (req.session.user) {
+      res.json({
+        logado: true,
+        usuario: req.session.user
+      });
+    } else {
+      res.json({
+        logado: false
+      });
+    }
+  });
+  
+
 app.use(express.urlencoded({ extended: true })); // Permite processar dados de formulário
 
 const path = require('path');
@@ -56,21 +85,25 @@ app.post('/api/login', async (req, res) => {
     try {
         const { email, senha } = req.body;
 
-        // Verifica se o e-mail existe no banco
         const userResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1', [email]);
 
         if (userResult.rows.length === 0) {
             return res.status(404).json({ error: 'E-mail não encontrado' });
         }
 
-        // Verifica se a senha está correta
         const senhaResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1 AND senha = $2', [email, senha]);
 
         if (senhaResult.rows.length === 0) {
             return res.status(401).json({ error: 'Senha incorreta' });
         }
 
-        // Se passou pelas verificações, login foi bem-sucedido
+        // Criar sessão
+        req.session.user = {
+            id: userResult.rows[0].id_usuario,
+            nome: userResult.rows[0].nome,
+            email: userResult.rows[0].email
+        };
+
         res.json({ message: 'Login bem-sucedido' });
 
     } catch (error) {
@@ -79,6 +112,451 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+//TESTE DE ROTA
+app.get('/api/testar-sessao', (req, res) => {
+    if (req.session.user) {
+      res.json({ logado: true, usuario: req.session.user });
+    } else {
+      res.json({ logado: false });
+    }
+  });
+  
+
+
+app.get('/api/centro_estoque', async (req, res) => {
+    try {
+        const { rows } = await pool.query(`SELECT 
+            id_centro_estoque,
+            nome_centro_estoque,
+            localizacao_centro_estoque,
+            padrao_centro_estoque,
+            data_cadastro,
+            descricao_centro_estoque
+            FROM sga.centro_estoque WHERE inativo = FALSE`);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao buscar centro_estoque' });
+    }
+});
+
+app.get('/api/produto', async (req, res) => {
+    try {
+        const { rows } = await pool.query(`
+            SELECT 
+            p.id_produto, 
+            p.produto, 
+            p.quantidade, 
+            p.preco_varejo, 
+            p.preco_atacado, 
+            p.descricao,
+            p.data_cadastro,
+            ce.nome_centro_estoque,
+            ce.id_centro_estoque AS fk_id_centro_estoque
+            FROM sga.produto p
+            LEFT JOIN sga.centro_estoque ce ON p.id_centro_estoque = ce.id_centro_estoque
+            WHERE p.inativo = FALSE
+        `);
+        res.json(rows);
+    } catch (err) {
+        console.error('Erro ao buscar produtos:', err);
+        res.status(500).json({ error: 'Erro ao buscar produtos' });
+    }
+});
+
+app.get('/api/contato', async (req, res) => {
+    try {
+        // Primeiro buscamos os contatos ativos
+        const contatosQuery = await pool.query('SELECT * FROM sga.contato WHERE inativo = FALSE');
+        const contatos = contatosQuery.rows;
+
+        // Se não houver contatos, retornar array vazio
+        if (contatos.length === 0) {
+            return res.json([]);
+        }
+
+        // Buscamos todas as categorias dos contatos em uma única query
+        const idsContatos = contatos.map(c => c.id_contato);
+        const categoriasQuery = await pool.query(
+            `SELECT cc.id_contato, cat.* 
+             FROM sga.contato_categoria cc
+             JOIN sga.categoria_contato cat ON cc.id_categoria = cat.id_categoria
+             WHERE cc.id_contato = ANY($1)`,
+            [idsContatos]
+        );
+
+        // Mapeamos as categorias para cada contato
+        const contatosComCategorias = contatos.map(contato => {
+            const categorias = categoriasQuery.rows
+                .filter(row => row.id_contato === contato.id_contato)
+                .map(({ id_contato, ...categoria }) => categoria);
+            
+            return {
+                ...contato,
+                categorias
+            };
+        });
+
+        res.json(contatosComCategorias);
+    } catch (err) {
+        console.error('Erro ao buscar contatos:', err);
+        res.status(500).json({ error: 'Erro ao buscar contatos' });
+    }
+});
+
+// Rota GET para buscar UM endereço específico por ID (usando params)
+app.get('/api/endereco/:id_endereco', async (req, res) => {
+    const { id_endereco } = req.params;
+    try {
+        const { rows } = await pool.query(
+            `SELECT * FROM sga.endereco WHERE id_endereco = $1`, 
+            [id_endereco]
+        );
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Endereço não encontrado' });
+        }
+        res.json(rows[0]); // Retorna apenas o primeiro resultado (deveria ser único)
+    } catch (err) {
+        console.error('Erro ao buscar endereço:', err);
+        res.status(500).json({ error: 'Erro ao buscar endereço' });
+    }
+});
+
+
+// Endpoint para atualizar um centro de estoque (PUT)
+app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {
+    const { id_centro_estoque } = req.params;
+    const { nome, localizacao, padrao, descricao } = req.body;
+    try {
+        const query = `
+            UPDATE sga.centro_estoque 
+            SET 
+                nome_centro_estoque = $1, 
+                localizacao_centro_estoque = $2, 
+                padrao_centro_estoque = $3, 
+                descricao_centro_estoque = $4
+            WHERE id_centro_estoque = $5
+            RETURNING *;
+        `;
+        const values = [nome, localizacao, padrao, descricao, id_centro_estoque];
+        const result = await pool.query(query, values);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Usuário não encontrado' });
+        }
+
+        res.status(200).json({
+            message: 'Usuário atualizado com sucesso!',
+            usuario: result.rows[0]
+        });
+    } catch (err) {
+        console.error('Erro ao atualizar usuário:', err);
+        res.status(500).json({ error: 'Erro interno no servidor' });
+    }
+});
+
+app.put('/produto/:id_produto', async (req, res) => {
+    const { id_produto } = req.params;
+    const { produto, quantidade, preco_varejo, preco_atacado, descricao, id_centro_estoque} = req.body;
+    try {
+        const query = `
+            UPDATE sga.produto 
+            SET 
+                produto = $1, 
+                quantidade = $2, 
+                preco_varejo = $3, 
+                preco_atacado = $4,
+                descricao = $5,
+                id_centro_estoque = $6
+            WHERE id_produto = $7
+            RETURNING *;
+        `;
+        const values = [produto, quantidade, preco_varejo, preco_atacado, descricao, id_centro_estoque, id_produto];
+        const result = await pool.query(query, values);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Produto não encontrado' });
+        }
+
+        res.status(200).json({
+            message: 'Produto atualizado com sucesso!',
+            produto: result.rows[0]
+        });
+    } catch (err) {
+        console.error('Erro ao atualizar produto:', err);
+        res.status(500).json({ error: 'Erro interno no servidor' });
+    }
+});
+
+app.put('/api/contato/:id_contato', async (req, res) => {
+    const { id_contato } = req.params;
+    const {
+        razao_social,
+        nome_fantasia,
+        fone1,
+        categoria,
+        inativo,
+        fone2,
+        insc_municipal,
+        insc_estadual,
+        cnpj,
+        cpf,
+        email_padrao,
+        perfil_tributario,
+        tipo_consumidor,
+        observacao,
+        tipo_pessoa,
+        situacao,
+    } = req.body;
+
+    try {
+        // Validação básica dos campos obrigatórios
+        if (!razao_social || !fone1 || !tipo_pessoa) {
+            return res.status(400).json({ error: 'Campos obrigatórios faltando' });
+        }
+
+        // Validação de tipo de pessoa vs documento
+        if (tipo_pessoa === 'Jurídica' && !cnpj) {
+            return res.status(400).json({ error: 'CNPJ é obrigatório para pessoa jurídica' });
+        }
+        if (tipo_pessoa === 'Física' && !cpf) {
+            return res.status(400).json({ error: 'CPF é obrigatório para pessoa física' });
+        }
+
+        const query = `
+            UPDATE sga.contato SET
+                razao_social = $1,
+                nome_fantasia = $2,
+                fone1 = $3,
+                inativo = $4,
+                fone2 = $5,
+                insc_municipal = $6,
+                insc_estadual = $7,
+                cnpj = $8,
+                cpf = $9,
+                email_padrao = $10,
+                perfil_tributario = $11,
+                tipo_consumidor = $12,
+                observacao = $13,
+                tipo_pessoa = $14,
+                situacao = $15
+            WHERE id_contato = $16
+            RETURNING *
+        `;
+
+        const values = [
+            razao_social,
+            nome_fantasia,
+            fone1,
+            inativo || false,
+            fone2 || null,
+            insc_municipal || null,
+            insc_estadual || null,
+            cnpj || null,
+            cpf || null,
+            email_padrao,
+            perfil_tributario || null,
+            tipo_consumidor || null,
+            observacao || null,
+            tipo_pessoa,
+            situacao || 'Ativo',
+            id_contato
+        ];
+
+        const { rows } = await pool.query(query, values);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Contato não encontrado' });
+        }
+
+        res.json(rows[0]);
+    } catch (err) {
+        console.error('Erro ao atualizar contato:', err);
+        
+        // Tratamento de erros específicos do PostgreSQL
+        if (err.code === '23505') { // Violação de chave única
+            return res.status(409).json({ error: 'Documento (CNPJ/CPF) já cadastrado' });
+        }
+        if (err.code === '23503') { // Violação de chave estrangeira
+            return res.status(400).json({ error: 'Endereço não encontrado' });
+        }
+        
+        res.status(500).json({ error: 'Erro ao atualizar contato' });
+    }
+});
+
+// Endpoint para atualizar categorias de um contato (PUT)
+app.put('/api/contato/:id_contato/categorias', async (req, res) => {
+    const { id_contato } = req.params;
+    const { categorias } = req.body; // Array de IDs de categorias
+
+    try {
+        // Validar entrada
+        if (!Array.isArray(categorias)) {
+            return res.status(400).json({ error: 'O campo "categorias" deve ser um array' });
+        }
+
+        // Verificar se o contato existe
+        const contatoExiste = await pool.query(
+            'SELECT 1 FROM sga.contato WHERE id_contato = $1', 
+            [id_contato]
+        );
+        
+        if (contatoExiste.rowCount === 0) {
+            return res.status(404).json({ error: 'Contato não encontrado' });
+        }
+
+        // Iniciar transação
+        await pool.query('BEGIN');
+
+        // Remover todas as categorias atuais do contato
+        await pool.query(
+            'DELETE FROM sga.contato_categoria WHERE id_contato = $1',
+            [id_contato]
+        );
+
+        // Inserir as novas categorias
+        if (categorias.length > 0) {
+            const values = categorias.map((id_categoria, index) => 
+                `($${index * 2 + 1}, $${index * 2 + 2})`
+            ).join(', ');
+
+            const query = `
+                INSERT INTO sga.contato_categoria (id_contato, id_categoria)
+                VALUES ${values}
+            `;
+
+            const flatValues = categorias.flatMap(id_categoria => [id_contato, id_categoria]);
+            await pool.query(query, flatValues);
+
+            res.status(200).json({ message: 'Categorias atualizadas com sucesso!' });
+        }
+
+        // Commit da transação
+        await pool.query('COMMIT');
+    } catch (err) {
+        // Rollback em caso de erro
+        await pool.query('ROLLBACK');
+        console.error('Erro ao atualizar categorias do contato:', err);
+        
+        if (err.code === '23503') { // Foreign key violation
+            res.status(400).json({ error: 'Uma ou mais categorias não existem' });
+        } else {
+            res.status(500).json({ error: 'Erro ao atualizar categorias do contato' });
+        }
+    }
+});
+
+app.put('/api/endereco/:id_endereco', async (req, res) => {
+    const { id_endereco } = req.params;
+    const {
+        cep,
+        municipio,
+        estado,
+        pais,
+        ponto_referencia,
+        setor,
+        endereco
+    } = req.body;
+
+    try {
+        // Query de atualização
+        const query = `
+            UPDATE sga.endereco SET
+                cep = $1,
+                endereco = $2,
+                municipio = $3,
+                estado = $4,
+                pais = $5,
+                ponto_referencia = $6,
+                setor = $7
+            WHERE id_endereco = $8
+            RETURNING *
+        `;
+
+        const values = [
+            cep,
+            endereco || null,
+            municipio,
+            estado,
+            pais || 'Brasil',
+            ponto_referencia || null,
+            setor || null,
+            id_endereco
+        ];
+
+        const { rows } = await pool.query(query, values);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ 
+                success: false,
+                error: 'Endereço não encontrado' 
+            });
+        }
+
+        res.json({
+            success: true,
+            endereco: rows[0]
+        });
+
+    } catch (err) {
+        console.error('Erro ao atualizar endereço:', err);
+        
+        if (err.code === '23505') { // Violação de constraint única
+            res.status(409).json({ 
+                success: false,
+                error: 'Violação de regra única no banco de dados' 
+            });
+        } else {
+            res.status(500).json({ 
+                success: false,
+                error: 'Erro ao atualizar endereço' 
+            });
+        }
+    }
+});
+
+// Endpoint para inativar tabalas (DELETE)
+app.delete('/centro_estoque/:id_centro_estoque', async (req, res) => {
+    const { id_centro_estoque } = req.params;
+    try {
+        await pool.query(`
+            UPDATE sga.centro_estoque 
+            SET inativo = TRUE 
+            WHERE id_centro_estoque = $1
+        `, [id_centro_estoque]);
+        res.status(200).json({ message: 'Centro de estoque excluído com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
+
+app.delete('/produto/:id_produto', async (req, res) => {
+    const { id_produto } = req.params;
+    try {
+        await pool.query(`
+            UPDATE sga.produto 
+            SET inativo = TRUE 
+            WHERE id_produto = $1
+        `, [id_produto]);
+        res.status(200).json({ message: 'Produto excluído com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
+
+app.delete('/contato/:id_contato', async (req, res) => {
+    const { id_contato } = req.params;
+    try {
+        await pool.query(`
+            UPDATE sga.contato 
+            SET inativo = TRUE 
+            WHERE id_contato = $1
+        `, [id_contato]);
+        res.status(200).json({ message: 'Centro de estoque excluído com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
 
 // Rota para cadastrar usuário (POST)
 app.post('/usuarios', async (req, res) => {

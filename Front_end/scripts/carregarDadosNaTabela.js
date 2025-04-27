@@ -3,24 +3,37 @@
 
 import crudLayout from "./crudLayout.js" // Importa a função que cria os botões de editar, visualizar e excluir (CRUD)
 
-function carregarDadosNaTabela (data) {
+function carregarDadosNaTabela (dados, colunasExibir) {
     // Data: Array de objetos que contém os dados que serão exibidos na tabela (JSON)
     let tabela = document.querySelector(".tbody") // Tabela onde os dados serão exibidos
     let [...tr_tabela] = document.querySelectorAll(".table_tr")
     tr_tabela.map(e => e.remove(e)) // Remove todos os elementos da tabela
     let td_info = document.querySelector(".td_nenhum_dado") // Pega o parágrafo de informação de que não há dados (Se existir)
 
-    if (data.length !== 0 ) { // Se houver dados
+    if (dados.length !== 0 ) { // Se houver dados
         td_info ? td_info.remove() : null // Se houver o parágrafo de informação, ele é removido
 
-        const firstDataKey = Object.keys(data[0])[0]; // Pega a primeira chave do primeiro objeto do array de dados, que no caso é o id
-        data.sort((a, b) => a[firstDataKey] - b[firstDataKey]) // Ordena os dados pelo id
+        const firstDataKey = Object.keys(dados[0])[0]; // Pega a primeira chave do primeiro objeto do array de dados, que no caso é o id
+        dados.sort((a, b) => a[firstDataKey] - b[firstDataKey]) // Ordena os dados pelo id
 
-        data.map(objDado => { // Para cada objeto no array de dados
+        
+        dados.map(objDado => { // Para cada objeto no array de dados
+            let objDadoCompleto = objDado
+            objDado = Object.entries(objDado) // Pega os campos até o limite de dados
+            objDado = objDado.filter(e => {
+                for (let coluna of colunasExibir) {
+                    if (e[0] === coluna) {
+                        return e // Se o campo estiver no array de colunas a serem exibidas, retorna true
+                    }
+                }
+            })
+            objDado = Object.fromEntries(objDado) // Converte o array em um objeto
             let tr = document.createElement('tr') // Cria uma linha
             tr.setAttribute('class','table_tr')
-    
             for (let e in objDado) { // Para cada campo no objeto
+                if (e === "data_cadastro") {
+                    continue
+                }
                 let td = document.createElement('td')
                 td.setAttribute('class','dado_tabela')
                 td.setAttribute('id', e + "_" + objDado[e]) // nome do campo + valor do campo
@@ -36,12 +49,11 @@ function carregarDadosNaTabela (data) {
                     td.textContent = objDado[e]
                 }
 
-                
                 tr.appendChild(td) // Adiciona a célula na linha
             }
 
             // CRUD:
-            crudLayout(objDado, tr) // Adiciona os botões de editar, visualizar e excluir na linha
+            crudLayout(objDadoCompleto, tr) // Adiciona os botões de editar, visualizar e excluir na linha
 
             tabela.appendChild(tr) // Adiciona a linha na tabela
         })
@@ -57,7 +69,7 @@ function carregarDadosNaTabela (data) {
     }
 }
 
-function pesquisar(data) {
+function pesquisar(dados, colunasExibir) {
     // Função que pesquisa e manda os dados filtrados para a função carregarDadosNaTabela
 
     const btn_pesquisar = document.querySelector('.btn_pesquisar') // Botão de pesquisar
@@ -85,7 +97,7 @@ function pesquisar(data) {
             btn_limpar.classList.remove('hide') // Mostra o botão de fechar
         }
 
-        data = data.map(e => {
+        dados = dados.map(e => {
             // Converte os campos booleanos para "s" ou "n"
             if (typeof(e.padrao_centro_estoque) === 'boolean') {
                 e.padrao_centro_estoque = e.padrao_centro_estoque ? "s" : "n"
@@ -110,8 +122,7 @@ function pesquisar(data) {
             keys: [campo_select.value],
             threshold: threshold,
         }
-
-        const fuse = new Fuse(data, options) // Inicializa o fuse com os dados e as configurações
+        const fuse = new Fuse(dados, options) // Inicializa o fuse com os dados e as configurações
 
         let newData
 
@@ -125,21 +136,21 @@ function pesquisar(data) {
             // Se tiver algum caractere coringa "*" na pesquisa:
             if (value_input_pesquisa.startsWith('*') && value_input_pesquisa.endsWith('*')) {
                 // *a*: Contém "a" em qualquer lugar
-                newData = data.filter(item => {
+                newData = dados.filter(item => {
                     let itemUpperCase = item[campo_select.value].toUpperCase()
                     return itemUpperCase.includes(padrao)
                 });
                 
             } else if (value_input_pesquisa.startsWith('*')) {
                 // *a: Termina com "a"
-                newData = data.filter(item => {
+                newData = dados.filter(item => {
                     let itemUpperCase = item[campo_select.value].toUpperCase()
                     return itemUpperCase.endsWith(padrao)
                 });
 
             } else if (value_input_pesquisa.endsWith('*')) {
                 // a*: Começa com "a"
-                newData = data.filter(item => {
+                newData = dados.filter(item => {
                     let itemUpperCase = item[campo_select.value].toUpperCase()
                     return itemUpperCase.startsWith(padrao)
                 });
@@ -150,9 +161,9 @@ function pesquisar(data) {
         }
         
         if (value_input_pesquisa == "") { // Se o input estiver vazio
-            newData = data // Exibe todos os dados
+            newData = dados // Exibe todos os dados
         }
-        carregarDadosNaTabela(newData) // Manda os novos dados filtrados para a função carregarDadosNaTabela
+        carregarDadosNaTabela(newData, colunasExibir) // Manda os novos dados filtrados para a função carregarDadosNaTabela
     }  
 }
 

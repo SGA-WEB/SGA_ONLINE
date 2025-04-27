@@ -53,6 +53,13 @@ function dataAtual() {
   }
 }
 
+function formatarData(data) {
+  let data_cadastro =  data.split("T")[0] // Retira o horário
+  const [ano, mes, dia] = data_cadastro.split('-'); // Separa o ano, mes e dia
+  data_cadastro = `${dia}-${mes}-${ano}`; // Formata a data
+  return data_cadastro
+}
+
 // Função que muda o placeholder do input de pesquisa de acordo com a opção do select
 function mudarPesquisa(input_pesquisa) {
   input_pesquisa.placeholder = "Pesquisar por " + $('.campo_select')
@@ -91,29 +98,70 @@ function visibilidadeMenulateral(elementoWidth, minWidth) {
   }
 }
 
-function esperarCarregarConteudo(funcao) {
-  let observer = new MutationObserver((mutationsList, observer) => {
-    for (let mutation of mutationsList) {
-        if (mutation.type === 'childList') {
-            const data_cadastro = document.querySelector('.data_cadastro');
-            const modulo = document.querySelector('.modulo');
-            if (data_cadastro || modulo) {
-              observer.disconnect(); // Desconecta imediatamente
-              funcao(); // Chama a função apenas uma vez
-              break; // Sai do loop para evitar chamadas adicionais
-            }
-        }
+// Função para aguardar a renderização completa de um elemto
+function aguardarRenderizacao(elemento) {
+  return new Promise((resolve) => {
+    // Verifica se há scripts ou imagens pendentes
+    const scripts = elemento.querySelectorAll("script");
+    const imagens = elemento.querySelectorAll("img");
+
+    let carregamentosPendentes = 0;
+
+    // Verifica scripts externos (se houver)
+    scripts.forEach((script) => {
+      if (script.src && !script.loaded) {
+        carregamentosPendentes++;
+        script.onload = () => {
+          carregamentosPendentes--;
+          verificarConclusao();
+        };
+      }
+    });
+
+    // Verifica imagens (se houver)
+    imagens.forEach((img) => {
+      if (!img.complete) {
+        carregamentosPendentes++;
+        img.onload = img.onerror = () => {
+          carregamentosPendentes--;
+          verificarConclusao();
+        };
+      }
+    });
+
+    // Se não houver recursos pendentes, resolve imediatamente
+    if (carregamentosPendentes === 0) {
+      resolve();
+      return;
+    }
+
+    // Função para verificar se tudo foi carregado
+    function verificarConclusao() {
+      if (carregamentosPendentes === 0) {
+        // Última verificação após um frame de renderização
+        requestAnimationFrame(() => resolve());
+      }
     }
   });
-
-  observer.observe(document.body, { childList: true, subtree: true });
 }
 
+function alterarOptionsSelect(select, dados_centros, id_centro_estoque) {
+  // Alterar o select de acordo com os dados da tabela
+  for (let i = 0; i < dados_centros.length; i++) {
+    let option = document.createElement("option")
+    option.value = dados_centros[i].id_centro_estoque  
+    option.text = dados_centros[i].nome_centro_estoque
+    select.appendChild(option)
+  }
+  select.value = id_centro_estoque
+}
 
 export {
   visibilidadeSenha,
   dataAtual,
+  formatarData,
   mudarPesquisa,
   visibilidadeMenulateral,
-  esperarCarregarConteudo
+  aguardarRenderizacao,
+  alterarOptionsSelect
 }

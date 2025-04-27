@@ -1,16 +1,12 @@
 // Função que minimiza o menu lateral:
 import { btnMenuLateral, carregarConteudo, fecharMenu } from "../../scripts/javaScript.js"
 import buscarDados from "../../scripts/buscarDados.js"
-import { esperarCarregarConteudo, mudarPesquisa } from "../../scripts/funcionalidades.js"
+import { mudarPesquisa } from "../../scripts/funcionalidades.js"
 import select2 from "../../scripts/select.js"
 import cadastro_contato from "./cadastro_contato/cadastro_contato.js"
+import { carregarDadosNaTabela, pesquisar } from "../../scripts/carregarDadosNaTabela.js"
 
-export default function contato() {
-    /*
-        * Função que fecha o menu lateral se a tela tiver menos de 480px de largura
-        * e muda o nome da coluna de código na tabela
-    */
-   
+export default async function contato() {
     let input_pesquisa = document.querySelector(".input_pesquisa")
     // Fecha o menu lateral se a tela tiver menos de 480px de largura no resize
     fecharMenu(document.querySelector(".tabela").offsetWidth,480)
@@ -27,16 +23,17 @@ export default function contato() {
 
     // Botão criar contato:
     let btn_criar_contato = document.querySelector("#btn_criar_contato")
-    btn_criar_contato.addEventListener("click",()=>{
-        carregarConteudo("contato/cadastro_contato/nav_contato.html",document.querySelector(".principal")) // carrega o menu de navegação superior do cadastro de contato
-        setTimeout(() => { // Espera a tela de cadastro ser carregada
-            carregarConteudo(
-                "contato/cadastro_contato/criar_contato/criar_contato.html",
-                document.querySelector(".modulo"), 
-                cadastro_contato, 
-                true
-            )
-        }, 400);
+    btn_criar_contato.addEventListener("click", async ()=>{
+        await carregarConteudo("contato/cadastro_contato/nav_contato.html", document.querySelector(".principal")) // carrega o menu de navegação superior do cadastro de contato
+
+        carregarConteudo(
+            "contato/cadastro_contato/criar_contato/criar_contato.html",
+            document.querySelector(".modulo"),
+            false,
+            cadastro_contato, 
+        )
     })
-    buscarDados("sga.contato") // Busca os dados da tabela, exibe na tela e permite pesquisar
+    const dadosContato = await buscarDados("contato"); // Busca os dados da tabela
+    carregarDadosNaTabela(dadosContato, ["id_contato", "razao_social", "nome_fantasia", "fone1", "tipo_pessoa"]) // Exibe na tela e permite pesquisar
+    pesquisar(dadosContato, ["id_contato", "razao_social", "nome_fantasia", "fone1", "tipo_pessoa"]) // Permite pesquisar na tabela
 }

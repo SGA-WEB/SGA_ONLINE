@@ -14,6 +14,11 @@
     margin-bottom: 2rem;
 }
 
+#menu_contato .container_btns {
+    width: 100%;
+    justify-content: end;
+}
+
 .titulo {
     width: 100%;
 }
@@ -31,7 +36,7 @@
     overflow: auto;
 } 
 
-.select2-selection {
+.header .select2-selection {
     border: none !important;
     background-color: var(--azul-1) !important;
 }
@@ -52,7 +57,7 @@
     justify-content: space-between;
     margin: 0 0 .5rem auto;
     gap: 0.5rem;
-    width: 14rem;
+    width: 10rem;
     min-width: 10rem;
     background-color: var(--azul-1);
     padding: .25rem .7rem;
