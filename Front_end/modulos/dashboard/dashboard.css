@@ -71,6 +71,7 @@
 #div_produtos_em_falta {
     grid-column: 1 / span 2;
     width: 100%;
+    height: fit-content;
     padding: 1rem 0 0 0;
 }
 
@@ -92,7 +93,7 @@
     margin: 0 auto 1.5rem auto;
 }
 
-.card_info_porcetagem {
+.card_info_porcentagem {
     display: flex;
     justify-content: space-between;
     gap: 0.9rem;
@@ -103,11 +104,25 @@
     margin-bottom: 1rem;
 }
 
-.card_info_porcetagem:first-child {
+.card_info_porcentagem:first-child {
     background-color: var(--azul);
     color: white;
     font-weight: bolder;
     box-shadow: 0px 10px 17.6px hsla(234, 76%, 67%, 0.363);
+    border-left: 10px solid transparent;
+
+}
+
+.card_info_porcentagem_contato:nth-child(2) {
+    border-left: 10px solid var(--azul1);
+}
+
+.card_info_porcentagem_contato:nth-child(3) {
+    border-left: 10px solid var(--azul-1);
+}
+
+.card_info_porcentagem_contato .container_porcentagem_estoque {
+    gap: .5rem;
 }
 
 .container_porcentagem_estoque {
@@ -121,13 +136,6 @@
     font-size: 1.4rem;
 }
 
-.destaque_azul {
-    background-color: var(--azul);
-    color: white;
-    font-weight: bolder;
-    box-shadow: 0px 10px 17.6px hsla(234, 76%, 67%, 0.363);
-}
-
 .quantidade_card {
     display: flex;
     align-items: center;
@@ -135,7 +143,6 @@
 
 #div_valor_total_estoque_por_centro_estoque {
     width: 100%;
-    height: 100%;
 }
 
 #div_valor_total_estoque_por_centro_estoque h2 {
@@ -174,26 +181,17 @@
     background-color: var(--azul);
     height: .6rem;
     width: 100%;
-    border-radius: 0 3px 3px 0 ;
+    border-radius: 0 5px 5px 0;
     box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.144);
 }
-
-#barra_valor_principal {
-    width: 100%;
-}
-
-#barra_valor_secundario {
-    width: 60%;
-}
-
-#barra_valor_reserva {
-    width: 40%;
+.barra_estoque {
+    background-color: var(--azul-1);
+    border-radius: 0 5px 5px 0;
 }
 
 /* Grafico dos contatos: */
 #div_contatos {
    width: 100%;
-   height: 100%;
 }
 
 #div_contatos h2 {
@@ -213,13 +211,14 @@
     gap: 1.5rem;
 }
 
-.container_card_info_porcetagem {
+.container_card_info_porcentagem {
     width: 100%;
 }
 /* tabela produtos com maior quantidade */
 #div_produtos_maior_quantidade {
     width: 100%;
     padding: 1rem 0 0 0;
+    height: fit-content;
 }
 
 .grid_filha_graficos {
@@ -251,6 +250,7 @@
     /* min-width: 400px; */
     flex: 1 1 400px;
     /* height: min-content; */
+    height: fit-content;
     background-color: var(--principal);
     padding: 0.8rem;
     border-radius: 5px;
@@ -378,7 +378,7 @@
         grid-template-rows: repeat(8, auto);
     }
     .container_grafico_card {
-        gap: 0.5rem;
+        gap: 1rem;
     }
 }
 
@@ -462,16 +462,6 @@
 
 }
 
-@media (min-width: 1325px) {
-    .item_dashboard {
-        /* min-width: 495px; */
-    }
-}
-@media (min-width: 1295px) {
-    .mini .item_dashboard {
-        /* min-width: 500px; */
-    }
-}
 @media (max-width: 480px) {
     /* Configurações do campo_select */
     /* BEM CSS: */

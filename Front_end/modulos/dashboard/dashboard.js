@@ -2,6 +2,8 @@
 import buscarDados from "../../scripts/buscarDados.js";
 import { click_btn_menu, btnMenuLateral } from "../../scripts/javaScript.js";
 let local_click_btn_menu = click_btn_menu
+import { popup_carregando } from "../../scripts/popup.js";
+
 export default async function dashBorad() {
     /*
       Autor: matheushnunes;
@@ -23,31 +25,39 @@ export default async function dashBorad() {
     let azul_1 = "#E9F0FF";
     let vermelho = 'rgba(255, 0, 0, 0.15)';
 
+    popup_carregando(false,"Carregando informações...")
+
     let dadosProduto = await buscarDados('produto').then((e) => { // Pega os dados do servidor
         return e
     })
     let dadosCentroEstoque = await buscarDados('centro_estoque').then((e) => { // Pega os dados do servidor
         return e
     })
+    let dadosContatos = await buscarDados('contato').then((e) => { // Pega os dados do servidor
+        return e
+    })
 
     // Dados dos gráficos:
-    console.log(dadosProduto)
-    console.log(dadosCentroEstoque)
     let precoAtacado = 0
     let precoVarejo = 0
     let qtdeTotal = 0
     let dado_entrada = [4, 12, 15, 8]
     let dado_saida = [2, 16, 4, 9]
-    let dado_diferenca = []
+    let dado_diferenca = dado_entrada.map((valor, indice) => valor - dado_saida[indice]);
     let produtos_centro_estoque = [] // Array com todos os centros de estoque e seus respectivos produtos
+    let produtosEmFalta = []
+    let produtosComMaiorQuantidade = []
 
     dadosProduto.forEach(e => {
         qtdeTotal += e.quantidade // Pega a quantidade total de produtos
         precoAtacado += Number(e.preco_atacado) * e.quantidade// Pega o preço de atacado total
         precoVarejo += Number(e.preco_varejo) * e.quantidade // Pega o preço de varejo total
+        if (e.quantidade <= 30) {
+            produtosEmFalta.push(e)
+        }
     })
 
-      // Inserir dados nos gráficos:
+    // Inserir dados nos gráficos:
 
     document.querySelector(".quantidade_produtos").textContent = qtdeTotal // Insere a quantidade de produtos no dashboard
     document.querySelector("#valor_total_atacado").textContent = `R$ ${precoAtacado.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, '.').replace(/\.(?=[^.]*$)/g, ',')}` // Insere o valor total de atacado no dashboard
@@ -81,7 +91,7 @@ export default async function dashBorad() {
         let porcentagem = qtdeTotalProdutos * 100 / qtdeTotal
 
         let card = document.createElement("div") // Cria o card
-        card.classList.add("card_info_porcetagem")
+        card.classList.add("card_info_porcentagem")
         card.classList.add("card_contato")
 
         let container_porcentagem_estoque = document.createElement("div") // Cria o container da porcentagem
@@ -103,10 +113,12 @@ export default async function dashBorad() {
         container_porcentagem_estoque.appendChild(pEstoque) // Adiciona a quantidade ao container
         card.appendChild(quantidade_card) // Adiciona a quantidade ao card
 
-        document.querySelector(".container_card_info_porcetagem").appendChild(card)
+        document.querySelector(".container_card_info_porcentagem").appendChild(card)
 
-        
+
         // Cria o item do dashboard com as informações do centro de estoque:
+
+        let porcentagemValorEstoque = centro_estoque.valorTotalVarejo * 100 / precoVarejo // Pega a porcentagem do centro de estoque
 
         let container_info_valor_estoque = document.createElement("div") // Cria o container da porcentagem
         container_info_valor_estoque.classList.add("container_info_valor_estoque") // Adiciona a classe container_porcentagem_estoque
@@ -126,7 +138,7 @@ export default async function dashBorad() {
 
         let barra_valor_estoque = document.createElement("div") // Cria a porcentagem
         barra_valor_estoque.classList.add("barra_valor_estoque") // Adiciona a classe porcentagem_estoque
-        barra_valor_estoque.style.width = `${porcentagem}%` // Adiciona a porcentagem ao card
+        barra_valor_estoque.style.width = `${porcentagemValorEstoque}%` // Adiciona a porcentagem ao card
 
         container_info_valor_estoque.appendChild(pNomeEstoque) // Adiciona o container ao card
         container_info_valor_estoque.appendChild(container_barra_valor_estoque)
@@ -147,13 +159,21 @@ export default async function dashBorad() {
         return porcentagemB - porcentagemA
     })
 
+    let barasValores = document.querySelectorAll(".container_info_valor_estoque")
+    barasValores = Array.from(barasValores).sort((a, b) => {
+        let porcentagemA = parseFloat(a.querySelector(".valor_estoque").textContent.replace("R$ ", "").replace(/\./g, "").replace(",", "."))
+        let porcentagemB = parseFloat(b.querySelector(".valor_estoque").textContent.replace("R$ ", "").replace(/\./g, "").replace(",", "."))
+        return porcentagemB - porcentagemA
+    })
+
     let cor = 44 // brilho padrão do azul dos cards
-    cards.forEach(card => {
+    cards.forEach(card => { // insere os cards dos centros de estoque ordenados pela porcentagem de estoque
+        // E adicina a cor ao card
         let novaCor = `hsl(217, 49%, ${cor}%)` // Cria uma nova cor para o gráfico
         let aumentarBrilho = 44 / (dadosCentroEstoque.length - 1)
         cor = cor + aumentarBrilho
         card.style.borderLeft = `10px solid ${novaCor}` // Adiciona a cor ao card
-        document.querySelector(".container_card_info_porcetagem").appendChild(card)
+        document.querySelector("#container_card_info_porcentagem_distribuicao").appendChild(card)
 
         produtos_centro_estoque.forEach(e => {
             if (e.nome_centro_estoque == card.querySelector("p").textContent) { // Se o nome do centro de estoque for igual ao nome do card
@@ -162,10 +182,91 @@ export default async function dashBorad() {
         })
     })
 
-    console.log(produtos_centro_estoque) // Mostra os produtos do centro de estoque no console
+    // Insere na tela os cards de valores dos centros de estoque ordenados:
+    barasValores.forEach(barra => {
+        document.querySelector(".container_info_valores_estoques").appendChild(barra) // Adiciona o card ao container de valores
+    })
 
 
+    // Contatos:
+    let cliente = 0
+    let fornecedor = 0
+    let funcionario = 0
+    let totalContatos = 0
 
+    dadosContatos.forEach(e => {
+        e.categorias.forEach(c => {
+            totalContatos++
+            if(c.nome === "CLIENTE") {
+                cliente++;
+            }
+            if(c.nome === "FORNECEDOR") {
+                fornecedor++;
+            }
+            if(c.nome === "FUNCIONÁRIO") {
+                funcionario++;
+            }
+        })
+    })
+    let arrContatos = [cliente, fornecedor, funcionario] // Array com os contatos
+    document.querySelector("#quantidade_card_cliente").textContent = cliente // Insere a quantidade de clientes no dashboard
+    document.querySelector("#quantidade_card_funcionario").textContent = funcionario
+    document.querySelector("#quantidade_card_fornecedor").textContent = fornecedor
+
+    document.querySelector("#porcentagem_card_cliente").textContent = `${(cliente * 100 / totalContatos).toFixed(1)}%` // Insere a porcentagem de clientes no dashboard
+    document.querySelector("#porcentagem_card_funcionario").textContent = `${(funcionario * 100 / totalContatos).toFixed(1)}%` // Insere a porcentagem de funcionarios no dashboard
+    document.querySelector("#porcentagem_card_fornecedor").textContent = `${(fornecedor * 100 / totalContatos).toFixed(1)}%` // Insere a porcentagem de fornecedores no dashboard
+
+    let cardClientes = document.querySelectorAll(".card_info_porcentagem_contato")
+    cardClientes = Array.from(cardClientes).sort((a, b) => {
+        let porcentagemA = parseFloat(a.querySelector(".porcentagem_card").textContent.replace("%", ""))
+        let porcentagemB = parseFloat(b.querySelector(".porcentagem_card").textContent.replace("%", ""))
+        return porcentagemB - porcentagemA
+    })
+
+    cardClientes.forEach(e => {
+        document.querySelector("#container_card_info_porcentagem_contatos").appendChild(e)
+    })
+
+
+    // Tabela Produtos em falta no estoque:
+
+    let tbodyProdutosEmFalta = document.querySelector("#tbody_produtos_em_falta")
+    produtosEmFalta.forEach(produto => {
+        let tr = document.createElement("tr")
+
+        let tdNome = document.createElement("td")
+        tdNome.textContent = produto.produto
+
+        let tdQuantidade = document.createElement("td")
+        tdQuantidade.textContent = produto.quantidade
+
+        tr.appendChild(tdNome)
+        tr.appendChild(tdQuantidade)
+        tbodyProdutosEmFalta.appendChild(tr)
+    })
+
+
+    // Tabela Produtos com mainor quantidade no estoque:
+
+    const tbodyProdutosMaiorQuantidade = document.querySelector("#tbody_prdutos_maior_quantidade")
+    const produtosOrdenados = [...dadosProduto].sort((a, b) => b.quantidade - a.quantidade);
+    // 2. Selecionar apenas os 4 primeiros itens
+    const top4Produtos = produtosOrdenados.slice(0, 4);
+
+    top4Produtos.forEach(produto => {
+        let tr = document.createElement("tr")
+
+        let tdNome = document.createElement("td")
+        tdNome.textContent = produto.produto
+
+        let tdQuantidade = document.createElement("td")
+        tdQuantidade.textContent = produto.quantidade
+
+        tr.appendChild(tdNome)
+        tr.appendChild(tdQuantidade)
+        tbodyProdutosMaiorQuantidade.appendChild(tr)
+    })
 
     // Gráfico de distribuição de produtos em estoque:
     function criarGraficoDistribuicaoProdutosEstoque() {
@@ -222,56 +323,49 @@ export default async function dashBorad() {
     criarGraficoDistribuicaoProdutosEstoque() // Cria o gráfico de distribuição de produtos em estoque quando a página é carregada
 
     function criarGraficoContatos() {
-        const c_gfc_distribuicao_produtos_estoque = document.getElementById('grafico_contatos').getContext('2d');
-        const gfc_distribuicao_produtos_estoque = new Chart(c_gfc_distribuicao_produtos_estoque, {
-            type: 'doughnut', // Gráfico de linha (que pode ser usado para gráficos de área)
+        const ctx = document.getElementById('grafico_contatos').getContext('2d');
+        const grafico = new Chart(ctx, {
+            type: 'doughnut',
             data: {
+                labels: ['Clientes', 'Fornecedores', 'Funcionários'],
                 datasets: [{
-                    label: 'My First Dataset',
-                    data: [52, 37, 14],
-                    backgroundColor: [
-                        azul,
-                        azul1,
-                        azul_1
-                    ],
+                    data: arrContatos,
+                    backgroundColor: [azul_1, azul, azul1],
                     hoverOffset: 4
                 }]
             },
             options: {
-                cutout: '70%',  // Controla o tamanho do buraco central
+                cutout: '70%',
                 plugins: {
                     legend: {
-                        position: 'bottom'
+                        display: false // Remove a legenda abaixo do gráfico
                     },
                     tooltip: {
-                        enabled: true
+                        callbacks: {
+                            label: function(context) {
+                                // Personaliza o texto do tooltip
+                                const label = context.label || '';
+                                const value = context.formattedValue || '';
+                                return `${label}: ${value}`;
+                            }
+                        }
                     }
                 },
-                // Configuração para o texto central
                 animation: {
-                    onComplete: function (animation) {
+                    onComplete: function() {
                         const ctx = this.ctx;
-                        const width = this.width;
-                        const height = this.height;
+                        const centerX = this.width / 2;
+                        const centerY = this.height / 2;
 
-                        // Configurações para o texto superior
+                        // Texto superior
                         ctx.font = 'bold 1rem Arial';
                         ctx.fillStyle = '#333';
                         ctx.textAlign = 'center';
-                        ctx.textBaseline = 'middle';
+                        ctx.fillText('Qtde. Total', centerX, centerY - 15);
 
-                        // Texto superior "Qtde. Total"
-                        const textTop = 'Qtde. Total';
-                        const textTopY = height / 2 - 15; // 15px acima do centro
-                        ctx.fillText(textTop, width / 2, textTopY);
-
-                        // Configurações para o texto inferior (valor)
+                        // Texto inferior (total)
                         ctx.font = 'bold 1.4rem Arial';
-
-                        // Texto inferior "94"
-                        const textBottom = '94';
-                        const textBottomY = height / 2 + 15; // 15px abaixo do centro
-                        ctx.fillText(textBottom, width / 2, textBottomY);
+                        ctx.fillText(dadosContatos.length.toString(), centerX, centerY + 15);
                     }
                 }
             }
@@ -507,7 +601,7 @@ export default async function dashBorad() {
             case "tipo_grafico_entrada":
                 criarGraficoEntrada(tipo, fontSize)
                 break;
-            case "tipo_grafico_saida": P
+            case "tipo_grafico_saida":
                 criarGraficoSaida(tipo, fontSize)
                 break;
             case "tipo_grafico_diferenca":
@@ -516,4 +610,5 @@ export default async function dashBorad() {
         }
     })
 
+    popup_carregando(true)
 }
