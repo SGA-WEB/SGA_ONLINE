@@ -11,6 +11,7 @@ app.use(cors()); // Habilita o CORS
 // Configuração do PostgreSQL
 const pool = new Pool({
     user: 'neondb_owner',
+    // host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech',
     host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech',
     database: 'neondb',
     password: 'npg_Y3ZNL6fxehGI',
@@ -79,6 +80,40 @@ app.post('/api/login', async (req, res) => {
 });
 
 
+
+app.listen(port, () => {
+    console.log(`Servidor rodando na porta ${port}`);
+});
+
+// Rota para cadastrar usuário (POST)
+app.post('/usuarios', async (req, res) => {
+    const { nome, email, celular, senha } = req.body;
+    
+    try {
+        const query = `
+            INSERT INTO sga.usuario (nome, email, celular, senha, data_criacao)
+            VALUES ($1, $2, $3, $4, NOW())
+        `;
+        const result = await pool.query(query, [nome, email, celular, senha]);
+        res.status(201).json({ message: 'Usuário cadastrado com sucesso!', result });
+    } catch (err) {
+        console.error('Erro ao inserir usuário:', err);
+        res.status(500).json({ message: 'Erro ao cadastrar usuário', error: err });
+    }
+});
+
+// Rota para listar usuários (GET)
+app.get('/usuarios', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM sga.usuario');
+        res.status(200).json(result.rows);
+    } catch (error) {
+        console.error("Erro ao buscar usuários:", error);
+        res.status(500).json({ message: 'Erro ao buscar usuários', error: error.message });
+    }
+});
+
+
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
@@ -91,15 +126,15 @@ app.put('/usuarios/:id_usuario', async (req, res) => {
 
     try {
         const query = `
-            UPDATE sga.usuario 
+            UPDATE sga.usuario
             SET nome = $1, email = $2, celular = $3, senha = $4
             WHERE id_usuario = $5
-            RETURNING *;  
+            RETURNING *;
         `;
         const values = [nome, email, celular, senha, id_usuario];
 
         const result = await pool.query(query, values);
-        
+
         if (result.rowCount === 0) {
             return res.status(404).json({ error: 'Usuário não encontrado' });
         }
@@ -113,3 +148,4 @@ app.put('/usuarios/:id_usuario', async (req, res) => {
         res.status(500).json({ error: 'Erro ao atualizar usuário' });
     }
 });
+
