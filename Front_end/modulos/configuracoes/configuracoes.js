@@ -8,3 +8,4 @@ export default function configuracoes () {
         carregarConteudo("dashboard/dashboard.html",document.querySelector(".principal"))
     })
 }
+
