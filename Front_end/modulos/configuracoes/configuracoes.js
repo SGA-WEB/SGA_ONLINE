@@ -1,4 +1,5 @@
 import { carregarConteudo } from "../../scripts/javaScript.js"
+import { cadastroUsuario } from "./cadastroUsuario.js"
 
 export default function configuracoes () {
     let btn_voltar = document.querySelector("#btn_voltar_config")
@@ -7,5 +8,6 @@ export default function configuracoes () {
         document.querySelector("#btn_dashboard").classList.add("modulo_selecionado")
         carregarConteudo("dashboard/dashboard.html",document.querySelector(".principal"))
     })
+    cadastroUsuario()
 }
 
