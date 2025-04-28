@@ -103,7 +103,7 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
     }
 
 
-    let inputs = document.querySelectorAll("input:not([type='email']), textarea") // Seleciona todos os inputs e textareas que não são do tipo email
+    let inputs = document.querySelectorAll("input:not([type='email']),input:not([type='password']), textarea") // Seleciona todos os inputs e textareas que não são do tipo email
     inputs.forEach(e=>{
       e.addEventListener("input", (input) => {
         input.target.value = input.target.value.toUpperCase()
