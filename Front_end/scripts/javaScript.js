@@ -20,6 +20,7 @@ import produto from "../modulos/produto/produto.js";
 import centro_de_estoque from "../modulos/centro_de_estoque/centro_de_estoque.js";
 import configuracoes from "../modulos/configuracoes/configuracoes.js";
 import { aguardarRenderizacao } from "./funcionalidades.js";
+import { popup_carregando } from "./popup.js";
 
 function mudarLogo(){ // Muda a logo do usuário de acordo com o nome dele
   let div_logo_usuario = document.querySelectorAll(".logo_usuario");
@@ -61,9 +62,10 @@ logo_sga_principal.addEventListener("click",()=>{
 
 async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) {
   elemento.innerHTML = "<p>Carregando...</p>"; // Feedback visual
-  
+
   url = "../modulos/" + url;
 
+  popup_carregando(true)
   try {
     const response = await fetch(url);
     const html = await response.text();
@@ -90,7 +92,7 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
     if (url === "../modulos/configuracao_usuario/configuracao_usuario.html") {
       configuracao_usuario();
     }
-    if (url === "../modulos/produto/produto.html" && !funcao) { 
+    if (url === "../modulos/produto/produto.html" && !funcao) {
       produto()
     }
     if (url === "../modulos/centro_de_estoque/centro_de_estoque.html" && !funcao) {
@@ -100,7 +102,7 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
       configuracoes()
     }
 
-    
+
     let inputs = document.querySelectorAll("input:not([type='email']), textarea") // Seleciona todos os inputs e textareas que não são do tipo email
     inputs.forEach(e=>{
       e.addEventListener("input", (input) => {
@@ -119,7 +121,7 @@ function fecharMenu(width, minWidth) {
   if (width <= minWidth) {
       if (!document.querySelector("#menu_lateral").classList.contains("mini"))
         btnMenuLateral()
-  } 
+  }
 }
 
 fecharMenu(document.body.offsetWidth, 640); // Chama a função no load da página para fechar o menu lateral se a tela tiver menos de 640px
@@ -142,7 +144,7 @@ function displayMenu(id, remove_class){
         menu.style.display = "none"
       }
       menus.forEach(e=>{
-        if (e.id != menu.id || id == "btn") { 
+        if (e.id != menu.id || id == "btn") {
           e.previousElementSibling.classList.remove("modulo_selecionado") // Deixa todos os outros modulos que não foi o clicado sem a classe "modulo_selecionado"
         }
         if (e.style.display == "block" && e.id != menu.id) {
@@ -152,15 +154,15 @@ function displayMenu(id, remove_class){
     } else { // Se o módulo clicado for um botão
       let menus = document.querySelectorAll(".dropdown") // Pega todos os menus dropdown da página
       menus.forEach(e =>{
-        e.style.display = "none" // Some com todos os menus drop-down 
+        e.style.display = "none" // Some com todos os menus drop-down
         document.querySelector(".seta_cima_baixo").style.transform = "rotate(0deg)"
       })
     }
 }
 
-// Função que modifica a visibilidade e o estilo dos itens do menu lateral 
+// Função que modifica a visibilidade e o estilo dos itens do menu lateral
 function minimizarMenu(status){
-    let mini = document.querySelectorAll(".btn, .btn_menu, .item_menu, #container_btn_fechar, #container_logo_busca, #menu_lateral, .span_modulo, .seta_cima_baixo, .graficos, .principal") // Seleciona todos os elementos necessários 
+    let mini = document.querySelectorAll(".btn, .btn_menu, .item_menu, #container_btn_fechar, #container_logo_busca, #menu_lateral, .span_modulo, .seta_cima_baixo, .graficos, .principal") // Seleciona todos os elementos necessários
     mini.forEach(e => e.classList.toggle("mini")) // Adiciona ou retira a classe "mini" nos elementos
     if (status == "fechar"){
         document.querySelectorAll(".dropdown").forEach(e => e.style.display = "none") // Deixa invisível os itens do menu dropdown
@@ -170,7 +172,7 @@ function minimizarMenu(status){
 // Função que modifica o botão de abrir e fechar o menu lateral
 function btnMenuLateral(target){
     let icone_aba = document.querySelector("#icone_aba")
-    if (icone_aba.classList[0] == "aba_fechar") { // Se o menu estiver maximizado 
+    if (icone_aba.classList[0] == "aba_fechar") { // Se o menu estiver maximizado
         icone_aba.src = "../imagens/icone_abrir_aba.png"
         icone_aba.className = "aba_abrir"
         icone_aba.alt = "Icone_abrir_aba_menu"
@@ -181,14 +183,14 @@ function btnMenuLateral(target){
           modulo_pre_selecionado.classList.remove("modulo_pre-selecionado") // Remove a classe "modulo_selecionado"
           modulo_pre_selecionado.nextElementSibling.style.display = "none" // Fecha o menu dropdown
         }
-    } else { // Se o menu estiver minimizado 
+    } else { // Se o menu estiver minimizado
         icone_aba.src = "../imagens/icone_fechar_aba.png"
         icone_aba.className = "aba_fechar"
         icone_aba.alt = "Icone_fechar_aba_menu"
         minimizarMenu("abrir")
         document.querySelector(".item_hiden")?.remove() // se o .item_hiden existir ele é removido
         if(target == "btn_lateral") { // Se o botão apertado for o botão lateral:
-            // Se tiver um modulo selecionado e não for um botão é chamada a função para abrir as opções do modulo 
+            // Se tiver um modulo selecionado e não for um botão é chamada a função para abrir as opções do modulo
             let modulo_selecionado = document.querySelector(".modulo_selecionado")
             if(modulo_selecionado != null && modulo_selecionado.classList[0] == "btn_menu"){
               displayMenu(modulo_selecionado.nextElementSibling)
@@ -259,8 +261,8 @@ btns_menu.forEach((e)=>{
     document.querySelectorAll(".item_dropdown").forEach(e=>{ // Quando for selecionado um módulo é retirado a marcação de todos os itens do menu
       if(!btn_menu_selecionado)
         e.classList.remove("item_menu_selecionado")
-    }) 
-  }) 
+    })
+  })
 })
 
 let itemMenu = document.querySelectorAll(".item_dropdown")
@@ -274,14 +276,14 @@ itemMenu.forEach((e)=>{
 })
 
 
-// Configurações de estilo dos itens do menu dropdown: 
+// Configurações de estilo dos itens do menu dropdown:
 let itens_dropdown = document.querySelectorAll(".item_dropdown") // Pega todos os itens de todos os módulos
 itens_dropdown.forEach(e=>{
     e.addEventListener("click",e=>{ // Adiciona a função de clicar em todos
       document.querySelector(".modulo_pre-selecionado")?.classList.remove("modulo_pre-selecionado") // Se tiver um módulo pre-selecionado é retirada sua a classe
         itens_dropdown.forEach(i=>{
           if (i.id == e.currentTarget.id){
-            let modulo_selecionado = document.querySelector(".modulo_selecionado") // Pega o modulo que estáva selecionado antes do item ser clicado 
+            let modulo_selecionado = document.querySelector(".modulo_selecionado") // Pega o modulo que estáva selecionado antes do item ser clicado
             if (modulo_selecionado) { // Se tiver um módulo selecionado
               modulo_selecionado.classList.remove("modulo_selecionado") // Remove a classe "modulo_selecionado" de todos os módulos selecionados
             }
@@ -307,8 +309,8 @@ btn_fechar_menu.addEventListener('click',()=>{
 document.addEventListener("click",(e)=>{
   let menuLateral = document.querySelector("#menu_lateral")
   let widthBody = document.body.offsetWidth // Pega o tamanho do body
-  if (widthBody <= 640 && !menuLateral.classList.contains("mini") && !menuLateral.contains(e.target)) { // Clicar fora do menu com o body com menos de 640px fecha ele 
-    btnMenuLateral() 
+  if (widthBody <= 640 && !menuLateral.classList.contains("mini") && !menuLateral.contains(e.target)) { // Clicar fora do menu com o body com menos de 640px fecha ele
+    btnMenuLateral()
   }
 })
 
@@ -327,7 +329,7 @@ window.addEventListener("resize",()=>{
 let btnUsuario = document.querySelector("#usuario")
 let menu_usuario = document.querySelector("#menu_usuario")
 let usuario_seta = document.querySelector("#usuario_seta")
-btnUsuario.addEventListener("click",()=>{ 
+btnUsuario.addEventListener("click",()=>{
     if (menu_usuario.style.display == "none"){
         menu_usuario.style.display = "flex"
         usuario_seta.style.transform = "rotate(180deg)"

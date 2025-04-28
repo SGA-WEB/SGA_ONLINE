@@ -34,10 +34,12 @@
     width: 100%;
     height: 100%;
     text-align: center;
+    justify-content: center;
 }
 
 #div_quantidade_total_produtos h2 {
     font-size: 1.3em;
+    justify-self: flex-start;
 }
 
 .quantidade_produtos {
