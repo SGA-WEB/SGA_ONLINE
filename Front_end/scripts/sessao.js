@@ -1,15 +1,20 @@
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('/api/usuario', {
-        credentials: 'include' // importante para enviar cookies de sessão
-    })
-    .then(response => response.json())
-    .then(resposta => {
-        console.log('Resposta da API:', resposta);
+        const apiUrl = 'http://127.0.0.1:3000/api/usuario';
+        console.log(`Tentando acessar a API em: ${apiUrl}`);
+        
+        fetch(apiUrl, {
+            credentials: 'include' // importante para enviar cookies de sessão
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erro na requisição: ${response.status} ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(resposta => {
+            console.log('Resposta da API:', resposta);
             if (resposta.logado && resposta.usuario && typeof resposta.usuario.nome === 'string') {
-                // Atualiza o nome do usuário
                 document.getElementById('nome_usuario').textContent = resposta.usuario.nome;
-            
-                // (Opcional) Atualiza as iniciais do usuário no círculo
                 const iniciais = resposta.usuario.nome
                     .split(' ')
                     .map(p => p[0])
@@ -19,10 +24,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('logo_usuario_header').textContent = iniciais;
             } else {
                 console.warn('Usuário não está logado ou nome do usuário não está disponível.');
-            }        
-    })
-    .catch(error => {
-        console.error('Erro ao buscar usuário logado:', error);
-    });
-});
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao buscar usuário logado:', error);
+        });
+    })    
+
+
 

@@ -81,7 +81,7 @@ app.use((err, req, res, next) => {
 });
 
 //// 🔐 Rota para validar o login
-app.post('/api/login', async (req, res) => {
+app.post('http://127.0.0.1:3000/api/login', async (req, res) => {
     try {
         const { email, senha } = req.body;
 
