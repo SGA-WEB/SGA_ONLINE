@@ -1,7 +1,6 @@
 // DashBoard:
 import buscarDados from "../../scripts/buscarDados.js";
 import { click_btn_menu, btnMenuLateral } from "../../scripts/javaScript.js";
-let local_click_btn_menu = click_btn_menu
 import { popup_carregando } from "../../scripts/popup.js";
 
 export default async function dashBorad() {
@@ -564,27 +563,27 @@ export default async function dashBorad() {
     }
 
     let fontSize = 16
-    function fecharMenu() {
-        let widthGrafico = document.querySelector(".graficos").offsetWidth
-        if (widthGrafico <= 480) {
-            let nav = document.querySelector("#menu_lateral")
-            fontSize = 12
-            if (!nav.classList.contains("mini") && !local_click_btn_menu)
-                btnMenuLateral()
-        } else {
-            local_click_btn_menu = false
-            fontSize = 16
-        }
-        atualizarGraficos([gfc_entrada, gfc_saida, gfc_diferenca], widthGrafico); // Adicione todos os gráficos aqui
-    }
-    fecharMenu()
+    // function fecharMenu() {
+    //     let widthGrafico = document.querySelector(".graficos").offsetWidth
+    //     if (widthGrafico <= 480) {
+    //         let nav = document.querySelector("#menu_lateral")
+    //         fontSize = 12
+    //         if (!nav.classList.contains("mini") && !local_click_btn_menu)
+    //             btnMenuLateral()
+    //     } else {
+    //         local_click_btn_menu = false
+    //         fontSize = 16
+    //     }
+    //     atualizarGraficos([gfc_entrada, gfc_saida, gfc_diferenca], widthGrafico); // Adicione todos os gráficos aqui
+    // }
+    // fecharMenu()
 
 
-    window.addEventListener('resize', (e) => {
-        if (document.querySelector(".graficos") !== null) { // So vai chamar a função se estiver na tela de dashboard
-            fecharMenu()
-        }
-    })
+    // window.addEventListener('resize', (e) => {
+    //     if (document.querySelector(".graficos") !== null) { // So vai chamar a função se estiver na tela de dashboard
+    //         fecharMenu()
+    //     }
+    // })
 
     // Alterar tipo do gráfico:
 
