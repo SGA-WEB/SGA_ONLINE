@@ -23,7 +23,7 @@ export default function configuracao_usuario() {
             fechar_menu_editar()
         }
     })
-    
+
     let btn_mudar_foto = document.querySelector("#btn_mudar_foto")
     btn_mudar_foto.addEventListener('click', () => {
         popup('abrir', 0, btn_mudar_foto)
@@ -44,7 +44,7 @@ export default function configuracao_usuario() {
     // o javaSript pega o tamanho do arquivo em bytes
 
     function alterar_img_perfil(img) {
-        let div_logo_usuario = document.querySelectorAll(".logo_usuario")        
+        let div_logo_usuario = document.querySelectorAll(".logo_usuario")
         div_logo_usuario.forEach(e => {
             e.innerHTML = ""
             e.style.backgroundColor = "#fff"
@@ -72,38 +72,33 @@ export default function configuracao_usuario() {
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     // Exibir a imagem selecionada
-                    alterar_img_perfil(event.target.result)
-                    salvarfotoservidor(file); // Enviar para o backend
+                    // alterar_img_perfil(event.target.result)
+                    salvarImagemNoBanco(file); // Enviar para o backend
                 };
                 reader.readAsDataURL(file);
-                
+
             }
         });
 
         fileInput.click();  // Simula o clique no input file
     });
 
-    // Envia a imagem para o servidor
-    const salvarfotoservidor = async (file) => {
+    async function salvarImagemNoBanco(file) {
         const formData = new FormData();
-        formData.append('imagem', file);
-    
+        formData.append('avatar', file);
+        formData.append('userId', '123'); // Substitua pelo ID real do usuário
+
         try {
-            const resposta = await fetch('http://localhost:3000/upload', {
-                method: 'POST',
-                body: formData
-            });
-            if (!resposta.ok) throw new Error("Erro no upload");
-            const dados = await resposta.json();
-            console.log("Imagem salva no servidor!", dados);
-        } catch (erro) {
-            console.error("Falha no upload", erro);
-            alert("Erro ao enviar a imagem. Tente novamente.");
+          const response = await fetch('http://localhost:3000/upload-avatar', {
+            method: 'POST',
+            body: formData,
+          });
+          const data = await response.json();
+          document.querySelector('.icone_editar_foto').src = data.url; // Atualiza a imagem na página
+        } catch (err) {
+          console.error('Erro:', err);
         }
-    };
-    
-    // Dentro do event listener 'change', após a validação:
-    
+    }
 
     // Adiciona funcionalidade de arraste
     btn_upload.addEventListener('dragover', (e) => {
@@ -181,4 +176,4 @@ export default function configuracao_usuario() {
         if(confirmar)
             mudarLogo()
     })
-}    
+}
