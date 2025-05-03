@@ -4,9 +4,13 @@ import pkg from 'pg';
 import cors from 'cors';
 import multer from 'multer';
 import sharp from 'sharp';
-import { supabase } from './supabase.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = 'https://ertkiirzzswpxkgcxret.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVydGtpaXJ6enN3cHhrZ2N4cmV0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjEyMzMwNCwiZXhwIjoyMDYxNjk5MzA0fQ.sldy2ROLnO14WI-Iam1iqjCyfHA2wfWFNWcbwcI1snE';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -580,31 +584,68 @@ app.delete('/contato/:id_contato', async (req, res) => {
 // Rota para upload da imagem
 app.post('/upload-avatar', upload.single('avatar'), async (req, res) => {
     try {
-      const userId = req.body.userId; // Ou pegue do token de autenticação
-      const optimizedImage = await sharp(req.file.buffer)
-        .resize(300, 300)
-        .webp({ quality: 80 })
-        .toBuffer();
+        // 2. Validar arquivo e userId
+        if (!req.file) return res.status(400).json({ error: 'Nenhuma imagem enviada' });
+        const userId = req.body.userId;
+        if (!userId) return res.status(400).json({ error: 'ID do usuário não fornecido' });
 
-      const filePath = `${userId}.webp`;
-      const { error } = await supabase.storage
-        .from('fotos-usuarios')
-        .upload(filePath, optimizedImage, { contentType: 'image/webp' });
+        // 4. Processar imagem
+        const optimizedImage = await sharp(req.file.buffer)
+            .resize(300, 300)
+            .webp({ quality: 80 })
+            .toBuffer();
 
-      if (error) throw error;
+        supabase.storage.from('fotos-usuarios').remove(`${userId}.webp`);
+        // 5. Fazer upload
+        const filePath = `${userId}.webp`;
+        const { error } = await supabase.storage
+            .from('fotos-usuarios')
+            .upload(filePath, optimizedImage, {
+                contentType: 'image/webp',
+                upsert: true
+            });
+
+        if (error) throw error;
+
+        // 6. Retornar URL
+        const { data: { publicUrl } } = supabase.storage
+            .from('fotos-usuarios')
+            .getPublicUrl(filePath);
+
+        res.json({ success: true, url: publicUrl });
+
+    } catch (err) {
+        console.error('Erro:', err);
+        res.status(500).json({
+            error: 'Erro no upload',
+            details: err.message,
+            supabaseError: err.statusCode === 403 ? 'Acesso não autorizado - verifique as políticas RLS' : null
+        });
+    }
+});
+
+// Rota para buscar imagem por ID
+app.get('/api/imagem/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
 
       const { data: { publicUrl } } = supabase.storage
         .from('fotos-usuarios')
-        .getPublicUrl(filePath);
+        .getPublicUrl(`${id}.webp`);
 
-      // Salva a URL no banco de dados (Neon)
-      // await salvarUrlNoNeon(userId, publicUrl);
+      // 3. Retorna a URL ou redireciona
+      res.json({
+        success: true,
+        imageUrl: publicUrl,
+        // Ou para servir diretamente o arquivo:
+        // imageData: await fetch(publicUrl).then(res => res.blob())
+      });
 
-      res.json({ url: publicUrl });
-    } catch (err) {
-      res.status(500).json({ error: 'Falha no upload' });
+    } catch (error) {
+      console.error('Erro:', error);
+      res.status(500).json({ error: 'Erro ao buscar imagem' });
     }
-});
+  });
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
