@@ -26,6 +26,7 @@ function popup (status, idx = 0, btn) {
     }
 
     function fecharPopup(btn) {
+        console.log(btn)
         container_popup.style.display = "none"
         btn.removeEventListener("click",btn) // Remove o evento de clique no botão do popup
         window.removeEventListener("click", fecharPopupQuandoClicarForaDele); // Remove o evento de clique fora do popup

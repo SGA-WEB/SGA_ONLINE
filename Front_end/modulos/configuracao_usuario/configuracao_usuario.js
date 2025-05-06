@@ -1,6 +1,6 @@
 import { visibilidadeSenha, alterarImgPerfil } from "../../scripts/funcionalidades.js";
 import { carregarConteudo, mudarLogoParaPadrao } from "../../scripts/javaScript.js";
-import { popup, popup_carregando } from "../../scripts/popup.js";
+import { popup, popup_aviso, popup_carregando, popup_erro } from "../../scripts/popup.js";
 
 export default async function configuracao_usuario() {
     const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
@@ -58,7 +58,7 @@ export default async function configuracao_usuario() {
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file.size > tamanho_maximo) {
-                alert("O tamanho da imagem selecionada excede o limite de 2MB.");
+                popup_erro("O tamanho da imagem selecionada excede o limite de 2MB.");
             } else {
                 const reader = new FileReader();
                 reader.onload = function(event) {
@@ -180,7 +180,7 @@ export default async function configuracao_usuario() {
     // Botão de remover foto:
     let btn_remover_foto = document.querySelector("#btn_remover_foto")
     btn_remover_foto.addEventListener('click', () => {
-        let confirmar = window.confirm("Tem certeza que deseja remover a foto de perfil?")
+        let confirmar = popup_aviso("Tem certeza que deseja remover a foto de perfil?")
         fechar_menu_editar()
         if(confirmar)
             mudarLogoParaPadrao()

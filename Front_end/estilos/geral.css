@@ -241,6 +241,7 @@
 /* PopUp alerta */
 .popup_alerta {
     padding: 0;
+    z-index: 4;
 }
 
 .popup_alerta main {
@@ -282,6 +283,7 @@
 
 /* Pop Up aviso: */
 .popup_aviso {
+    z-index: 4;
     position: fixed;
     top: 100px;
     right: 0;
@@ -380,6 +382,7 @@
 /* Pop Up Erro: */
 .popup_erro {
     background-color: var(--alerta1);
+    z-index: 4;
 }
 
 .popup_erro .progress-bar {

@@ -65,6 +65,7 @@ logo_sga_principal.addEventListener("click",()=>{
 // Função de carregar conteúdo html dos módulos
 
 async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) {
+    console.log(url, elemento)
   elemento.innerHTML = "<p>Carregando...</p>"; // Feedback visual
 
   url = "../modulos/" + url;

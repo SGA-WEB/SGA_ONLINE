@@ -27,6 +27,7 @@ export default function excluir_centro_de_estoque(dado, callbackFunction, ...par
                     callbackFunction(...param) // Chama a função de callback, se existir
                 }
                 let dados = await buscarDados('centro_estoque'); // Busca os dados da tabela, exibe na tela e permite pesquisar
+                console.log(dados)
                 carregarDadosNaTabela(dados, ["id_centro_estoque", "nome_centro_estoque", "localizacao_centro_estoque", "padrao_centro_estoque"]) // Exibe na tela e permite pesquisar
             }
         } catch (err) {
@@ -34,5 +35,9 @@ export default function excluir_centro_de_estoque(dado, callbackFunction, ...par
             console.log('Erro ao excluir centro de estoque:', err)
             popup_erro(`Erro ao excluir centro de estoque: ${dado.nome_centro_estoque}`)
         }
+    })
+
+    btn_popup_excluir_cancelar.addEventListener('click',() => {
+        popup("fechar", 0, btn_popup_excluir_excluir)
     })
 }
