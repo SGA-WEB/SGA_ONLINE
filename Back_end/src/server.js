@@ -645,7 +645,44 @@ app.get('/api/imagem/:id', async (req, res) => {
       console.error('Erro:', error);
       res.status(500).json({ error: 'Erro ao buscar imagem' });
     }
-  });
+});
+
+app.delete('/api/remove-foto/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const fileName = `${userId}.webp`; // Padrão de nomeação
+
+      // 1. Verifica se o arquivo existe
+      const { data: fileList } = await supabase.storage
+        .from('fotos-usuarios')
+        .list('', {
+          search: fileName
+        });
+
+      if (!fileList || fileList.length === 0) {
+        return res.status(404).json({ error: 'Foto não encontrada' });
+      }
+
+      // 2. Remove o arquivo
+      const { error } = await supabase.storage
+        .from('fotos-usuarios')
+        .remove([fileName]);
+
+      if (error) throw error;
+
+      res.json({
+        success: true,
+        message: 'Foto removida com sucesso'
+      });
+
+    } catch (error) {
+      console.error('Erro ao remover foto:', error);
+      res.status(500).json({
+        error: 'Erro ao remover foto',
+        details: error.message
+      });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);

@@ -182,7 +182,29 @@ export default async function configuracao_usuario() {
     btn_remover_foto.addEventListener('click', async () => {
         let confirmar = await popup_confirmar("Tem certeza que deseja remover a foto de perfil?")
         fechar_menu_editar()
-        if(confirmar)
+
+        if(confirmar) {
             mudarLogoParaPadrao()
+            try {
+                const response = await fetch(`http://localhost:3000/api/remove-foto/${userId}`, {
+                  method: 'DELETE',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  }
+                });
+
+                const result = await response.json();
+                console.log(result)
+                if (result.success) {
+                    popup_aviso("Foto removida com sucesso!");
+                } else {
+                    popup_erro(result.error);
+                }
+              } catch (error) {
+                popup_erro(result.error);
+                console.error('Falha na requisição:', error);
+              }
+        }
+
     })
 }

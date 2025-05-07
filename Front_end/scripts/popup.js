@@ -56,15 +56,14 @@ function popup_confirmar(mensagem = "Tem certeza que deseja realizar essa ação
     return new Promise((resolve, reject) => {
         btn_popup_cancelar.addEventListener("click", () => {
             container_popup.classList.add("hide_popup");
-            reject();
+            resolve(false);
         });
 
         btn_popup_confirmar.addEventListener("click", () => {
             container_popup.classList.add("hide_popup");
-            resolve();
+            resolve(true);
         });
     });
-
 }
 
 function popup_aviso(mensagem = "Ação realizada com sucesso!") {
