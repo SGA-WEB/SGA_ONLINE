@@ -45,9 +45,11 @@ function popup (status, idx = 0, btn) {
     // Se for o popup de alerta que tiver o botão de cancelar:
 
     let btn_popup_excluir_cancelar = document.querySelector("#btn_popup_excluir_cancelar")
-    btn_popup_excluir_cancelar.addEventListener("click", () => {
-       fecharPopup(btn_popup_excluir_cancelar)
-    })
+    if (btn_popup_excluir_cancelar){
+        btn_popup_excluir_cancelar.addEventListener("click", () => {
+           fecharPopup(btn_popup_excluir_cancelar)
+        })
+    }
 }
 
 function popup_aviso(mensagem = "Ação realizada com sucesso!") {
@@ -58,7 +60,7 @@ function popup_aviso(mensagem = "Ação realizada com sucesso!") {
     // Remove a classe hide_popup para mostrar o popup
     popup.classList.remove('hide_popup');
     p_mensagem.textContent = mensagem;
-    
+
     // Reinicia a animação da barra de progresso
     const progressBar = document.querySelector('.progress-bar');
     progressBar.style.animation = 'none';
@@ -78,7 +80,7 @@ function popup_aviso(mensagem = "Ação realizada com sucesso!") {
 function popup_carregando(fecharPopup = false,mensagem = "Salvando alterações...") {
     const popup = document.getElementById('popup_carregando');
     const p_mensagem = popup.querySelector('.mensagem_aviso');
-    
+
     p_mensagem.textContent = mensagem;
     popup.classList.remove('hide_popup');
 
@@ -93,11 +95,11 @@ function popup_erro(mensagem = "Erro ao realizar a ação!") {
     const popup = document.getElementById('popup_erro');
     const p_mensagem = popup.querySelector('.mensagem_erro');
     const btn_fechar_popup = document.querySelector('#btn_fechar_popup_erro');
-    
+
     // Remove a classe hide_popup para mostrar o popup
     popup.classList.remove('hide_popup');
     p_mensagem.textContent = mensagem;
-    
+
     // Reinicia a animação da barra de progresso
     const progressBar = document.querySelector('#progress-bar-erro');
     progressBar.style.animation = 'none';

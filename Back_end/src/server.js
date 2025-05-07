@@ -1,17 +1,40 @@
-require('dotenv').config(); // Carrega as variáveis de ambiente
-const express = require('express');
-const session = require('express-session');
-const { Pool } = require('pg');
-const cors = require('cors');
+import express from 'express';
+import session from 'express-session';
+import pkg from 'pg';
+import cors from 'cors';
+import multer from 'multer';
+import sharp from 'sharp';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { createClient } from '@supabase/supabase-js';
 
+const supabaseUrl = 'https://ertkiirzzswpxkgcxret.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVydGtpaXJ6enN3cHhrZ2N4cmV0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjEyMzMwNCwiZXhwIjoyMDYxNjk5MzA0fQ.sldy2ROLnO14WI-Iam1iqjCyfHA2wfWFNWcbwcI1snE';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const { Pool } = pkg;
 const app = express();
+
+app.use((req, res, next) => {
+    res.setHeader(
+      'Content-Security-Policy',
+      "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+    );
+    next();
+  });
+
 const port = process.env.PORT || 3000;
+const upload = multer({ storage: multer.memoryStorage() });
+
+// Configuração do Content Security Policy
 
 app.use(cors({
   origin: 'http://127.0.0.1:5503', // ou 'http://localhost:5503'
   credentials: true
 }));
-
 
 // Configuração do PostgreSQL
 const pool = new Pool({
@@ -25,6 +48,7 @@ const pool = new Pool({
         rejectUnauthorized: false, // Permite a conexão mesmo sem verificar o certificado
     },
 });
+
 
 app.use(express.json()); // Permite que o servidor processe JSON no corpo da requisição
 
@@ -40,13 +64,13 @@ app.use(session({
   }));
 
 
-//TESTE DE ROTA  
+//TESTE DE ROTA
 app.get('/', (req, res) => {
     res.send('API SGA rodando!');
 });
 
 app.get('/', (req, res) => res.send('API rodando!'));
-  
+
 // Rota para retornar o usuário logado
 app.get('/api/usuario', (req, res) => {
     if (req.session.user) {
@@ -60,11 +84,10 @@ app.get('/api/usuario', (req, res) => {
       });
     }
   });
-  
+
 
 app.use(express.urlencoded({ extended: true })); // Permite processar dados de formulário
 
-const path = require('path');
 // Configura o servidor para servir arquivos estáticos da pasta "Front_end"
 app.use(express.static(path.join(__dirname, 'Front_end')));
 
@@ -120,12 +143,12 @@ app.get('/api/testar-sessao', (req, res) => {
       res.json({ logado: false });
     }
   });
-  
+
 
 
 app.get('/api/centro_estoque', async (req, res) => {
     try {
-        const { rows } = await pool.query(`SELECT 
+        const { rows } = await pool.query(`SELECT
             id_centro_estoque,
             nome_centro_estoque,
             localizacao_centro_estoque,
@@ -142,12 +165,12 @@ app.get('/api/centro_estoque', async (req, res) => {
 app.get('/api/produto', async (req, res) => {
     try {
         const { rows } = await pool.query(`
-            SELECT 
-            p.id_produto, 
-            p.produto, 
-            p.quantidade, 
-            p.preco_varejo, 
-            p.preco_atacado, 
+            SELECT
+            p.id_produto,
+            p.produto,
+            p.quantidade,
+            p.preco_varejo,
+            p.preco_atacado,
             p.descricao,
             p.data_cadastro,
             ce.nome_centro_estoque,
@@ -177,7 +200,7 @@ app.get('/api/contato', async (req, res) => {
         // Buscamos todas as categorias dos contatos em uma única query
         const idsContatos = contatos.map(c => c.id_contato);
         const categoriasQuery = await pool.query(
-            `SELECT cc.id_contato, cat.* 
+            `SELECT cc.id_contato, cat.*
              FROM sga.contato_categoria cc
              JOIN sga.categoria_contato cat ON cc.id_categoria = cat.id_categoria
              WHERE cc.id_contato = ANY($1)`,
@@ -189,7 +212,7 @@ app.get('/api/contato', async (req, res) => {
             const categorias = categoriasQuery.rows
                 .filter(row => row.id_contato === contato.id_contato)
                 .map(({ id_contato, ...categoria }) => categoria);
-            
+
             return {
                 ...contato,
                 categorias
@@ -208,7 +231,7 @@ app.get('/api/endereco/:id_endereco', async (req, res) => {
     const { id_endereco } = req.params;
     try {
         const { rows } = await pool.query(
-            `SELECT * FROM sga.endereco WHERE id_endereco = $1`, 
+            `SELECT * FROM sga.endereco WHERE id_endereco = $1`,
             [id_endereco]
         );
         if (rows.length === 0) {
@@ -228,11 +251,11 @@ app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {
     const { nome, localizacao, padrao, descricao } = req.body;
     try {
         const query = `
-            UPDATE sga.centro_estoque 
-            SET 
-                nome_centro_estoque = $1, 
-                localizacao_centro_estoque = $2, 
-                padrao_centro_estoque = $3, 
+            UPDATE sga.centro_estoque
+            SET
+                nome_centro_estoque = $1,
+                localizacao_centro_estoque = $2,
+                padrao_centro_estoque = $3,
                 descricao_centro_estoque = $4
             WHERE id_centro_estoque = $5
             RETURNING *;
@@ -259,11 +282,11 @@ app.put('/produto/:id_produto', async (req, res) => {
     const { produto, quantidade, preco_varejo, preco_atacado, descricao, id_centro_estoque} = req.body;
     try {
         const query = `
-            UPDATE sga.produto 
-            SET 
-                produto = $1, 
-                quantidade = $2, 
-                preco_varejo = $3, 
+            UPDATE sga.produto
+            SET
+                produto = $1,
+                quantidade = $2,
+                preco_varejo = $3,
                 preco_atacado = $4,
                 descricao = $5,
                 id_centro_estoque = $6
@@ -371,7 +394,7 @@ app.put('/api/contato/:id_contato', async (req, res) => {
         res.json(rows[0]);
     } catch (err) {
         console.error('Erro ao atualizar contato:', err);
-        
+
         // Tratamento de erros específicos do PostgreSQL
         if (err.code === '23505') { // Violação de chave única
             return res.status(409).json({ error: 'Documento (CNPJ/CPF) já cadastrado' });
@@ -379,7 +402,7 @@ app.put('/api/contato/:id_contato', async (req, res) => {
         if (err.code === '23503') { // Violação de chave estrangeira
             return res.status(400).json({ error: 'Endereço não encontrado' });
         }
-        
+
         res.status(500).json({ error: 'Erro ao atualizar contato' });
     }
 });
@@ -397,10 +420,10 @@ app.put('/api/contato/:id_contato/categorias', async (req, res) => {
 
         // Verificar se o contato existe
         const contatoExiste = await pool.query(
-            'SELECT 1 FROM sga.contato WHERE id_contato = $1', 
+            'SELECT 1 FROM sga.contato WHERE id_contato = $1',
             [id_contato]
         );
-        
+
         if (contatoExiste.rowCount === 0) {
             return res.status(404).json({ error: 'Contato não encontrado' });
         }
@@ -416,7 +439,7 @@ app.put('/api/contato/:id_contato/categorias', async (req, res) => {
 
         // Inserir as novas categorias
         if (categorias.length > 0) {
-            const values = categorias.map((id_categoria, index) => 
+            const values = categorias.map((id_categoria, index) =>
                 `($${index * 2 + 1}, $${index * 2 + 2})`
             ).join(', ');
 
@@ -437,7 +460,7 @@ app.put('/api/contato/:id_contato/categorias', async (req, res) => {
         // Rollback em caso de erro
         await pool.query('ROLLBACK');
         console.error('Erro ao atualizar categorias do contato:', err);
-        
+
         if (err.code === '23503') { // Foreign key violation
             res.status(400).json({ error: 'Uma ou mais categorias não existem' });
         } else {
@@ -487,9 +510,9 @@ app.put('/api/endereco/:id_endereco', async (req, res) => {
         const { rows } = await pool.query(query, values);
 
         if (rows.length === 0) {
-            return res.status(404).json({ 
+            return res.status(404).json({
                 success: false,
-                error: 'Endereço não encontrado' 
+                error: 'Endereço não encontrado'
             });
         }
 
@@ -500,16 +523,16 @@ app.put('/api/endereco/:id_endereco', async (req, res) => {
 
     } catch (err) {
         console.error('Erro ao atualizar endereço:', err);
-        
+
         if (err.code === '23505') { // Violação de constraint única
-            res.status(409).json({ 
+            res.status(409).json({
                 success: false,
-                error: 'Violação de regra única no banco de dados' 
+                error: 'Violação de regra única no banco de dados'
             });
         } else {
-            res.status(500).json({ 
+            res.status(500).json({
                 success: false,
-                error: 'Erro ao atualizar endereço' 
+                error: 'Erro ao atualizar endereço'
             });
         }
     }
@@ -520,8 +543,8 @@ app.delete('/centro_estoque/:id_centro_estoque', async (req, res) => {
     const { id_centro_estoque } = req.params;
     try {
         await pool.query(`
-            UPDATE sga.centro_estoque 
-            SET inativo = TRUE 
+            UPDATE sga.centro_estoque
+            SET inativo = TRUE
             WHERE id_centro_estoque = $1
         `, [id_centro_estoque]);
         res.status(200).json({ message: 'Centro de estoque excluído com sucesso!' });
@@ -534,8 +557,8 @@ app.delete('/produto/:id_produto', async (req, res) => {
     const { id_produto } = req.params;
     try {
         await pool.query(`
-            UPDATE sga.produto 
-            SET inativo = TRUE 
+            UPDATE sga.produto
+            SET inativo = TRUE
             WHERE id_produto = $1
         `, [id_produto]);
         res.status(200).json({ message: 'Produto excluído com sucesso!' });
@@ -548,8 +571,8 @@ app.delete('/contato/:id_contato', async (req, res) => {
     const { id_contato } = req.params;
     try {
         await pool.query(`
-            UPDATE sga.contato 
-            SET inativo = TRUE 
+            UPDATE sga.contato
+            SET inativo = TRUE
             WHERE id_contato = $1
         `, [id_contato]);
         res.status(200).json({ message: 'Centro de estoque excluído com sucesso!' });
@@ -557,6 +580,72 @@ app.delete('/contato/:id_contato', async (req, res) => {
         res.status(500).json({ error: 'Erro ao excluir' });
     }
 });
+
+// Rota para upload da imagem
+app.post('/upload-avatar', upload.single('avatar'), async (req, res) => {
+    try {
+        // 2. Validar arquivo e userId
+        if (!req.file) return res.status(400).json({ error: 'Nenhuma imagem enviada' });
+        const userId = req.body.userId;
+        if (!userId) return res.status(400).json({ error: 'ID do usuário não fornecido' });
+
+        // 4. Processar imagem
+        const optimizedImage = await sharp(req.file.buffer)
+            .resize(300, 300)
+            .webp({ quality: 80 })
+            .toBuffer();
+
+        supabase.storage.from('fotos-usuarios').remove(`${userId}.webp`);
+        // 5. Fazer upload
+        const filePath = `${userId}.webp`;
+        const { error } = await supabase.storage
+            .from('fotos-usuarios')
+            .upload(filePath, optimizedImage, {
+                contentType: 'image/webp',
+                upsert: true
+            });
+
+        if (error) throw error;
+
+        // 6. Retornar URL
+        const { data: { publicUrl } } = supabase.storage
+            .from('fotos-usuarios')
+            .getPublicUrl(filePath);
+
+        res.json({ success: true, url: publicUrl });
+
+    } catch (err) {
+        console.error('Erro:', err);
+        res.status(500).json({
+            error: 'Erro no upload',
+            details: err.message,
+            supabaseError: err.statusCode === 403 ? 'Acesso não autorizado - verifique as políticas RLS' : null
+        });
+    }
+});
+
+// Rota para buscar imagem por ID
+app.get('/api/imagem/:id', async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('fotos-usuarios')
+        .getPublicUrl(`${id}.webp`);
+
+      // 3. Retorna a URL ou redireciona
+      res.json({
+        success: true,
+        imageUrl: publicUrl,
+        // Ou para servir diretamente o arquivo:
+        // imageData: await fetch(publicUrl).then(res => res.blob())
+      });
+
+    } catch (error) {
+      console.error('Erro:', error);
+      res.status(500).json({ error: 'Erro ao buscar imagem' });
+    }
+  });
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);

@@ -1,8 +1,12 @@
-import { visibilidadeSenha } from "../../scripts/funcionalidades.js";
-import { carregarConteudo, mudarLogo } from "../../scripts/javaScript.js";
-import { popup } from "../../scripts/popup.js";
+import { visibilidadeSenha, alterarImgPerfil } from "../../scripts/funcionalidades.js";
+import { carregarConteudo, mudarLogoParaPadrao } from "../../scripts/javaScript.js";
+import { popup, popup_carregando } from "../../scripts/popup.js";
 
-export default function configuracao_usuario() {
+export default async function configuracao_usuario() {
+    const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
+    const data = await response.json();
+    alterarImgPerfil(data.imageUrl)
+
     function fechar_menu_editar() {
         menu_editar_foto.classList.add("hide")
     }
@@ -35,19 +39,6 @@ export default function configuracao_usuario() {
 
     let tamanho_maximo = 2 * 1024 * 1024;
 
-    function alterar_img_perfil(img) {
-        let div_logo_usuario = document.querySelectorAll(".logo_usuario")        
-        div_logo_usuario.forEach(e => {
-            e.innerHTML = ""
-            e.style.backgroundColor = "#fff"
-            let img_perfil = document.createElement("img")
-            img_perfil.src = img
-            img_perfil.classList.add("img_perfil")
-            e.appendChild(img_perfil)
-            popup("fechar")
-        })
-    }
-
     const btn_upload = document.querySelector(".btn_upload_img");
 
     btn_upload.addEventListener('click', () => {
@@ -62,26 +53,45 @@ export default function configuracao_usuario() {
             } else {
                 const reader = new FileReader();
                 reader.onload = function(event) {
+<<<<<<< HEAD
                     alterar_img_perfil(event.target.result)
                     salvarfotoservidor(file);
                 };
                 reader.readAsDataURL(file);
+=======
+                    // Exibir a imagem selecionada
+                    salvarImagemNoBanco(file)
+                };
+                reader.readAsDataURL(file);
+
+>>>>>>> teste
             }
         });
 
         fileInput.click();
     });
 
+<<<<<<< HEAD
     const salvarfotoservidor = async (file) => {
         const formData = new FormData();
         formData.append('imagem', file);
 
+=======
+    async function salvarImagemNoBanco(file, userId = 1) {
+>>>>>>> teste
         try {
-            const resposta = await fetch('http://localhost:3000/upload', {
+            popup_carregando(false, "Salvando imagem...")
+
+            const formData = new FormData();
+            formData.append('avatar', file);
+            formData.append('userId', userId);
+
+            const response = await fetch('http://localhost:3000/upload-avatar', {
                 method: 'POST',
                 body: formData
             });
 
+<<<<<<< HEAD
             if (!resposta.ok) throw new Error("Erro no upload");
 
             const dados = await resposta.json();
@@ -94,6 +104,30 @@ export default function configuracao_usuario() {
             alert("Erro ao enviar a imagem. Tente novamente.");
         }
     };
+=======
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(errorData.error || 'Erro no servidor');
+            }
+
+            const data = await response.json();
+
+            // Verifique se a URL foi retornada corretamente
+            if (!data.url) {
+              throw new Error('URL da imagem não retornada pelo servidor');
+            }
+
+            popup_carregando(true)
+            popup("fechar", 0, btn_mudar_foto)
+            alterarImgPerfil(data.url)
+            return data.url;
+
+          } catch (error) {
+            console.error('Erro ao salvar imagem:', error);
+            throw error; // Propague o erro para ser tratado no chamador
+          }
+    }
+>>>>>>> teste
 
     btn_upload.addEventListener('dragover', (e) => {
         e.preventDefault();
@@ -104,6 +138,7 @@ export default function configuracao_usuario() {
         btn_upload.classList.remove("drag");
     });
 
+    // Salvar imagem ao arrastar para o botão
     btn_upload.addEventListener('drop', (e) => {
         e.preventDefault();
         btn_upload.classList.remove("drag");
@@ -113,8 +148,12 @@ export default function configuracao_usuario() {
         } else {
             const reader = new FileReader();
             reader.onload = function(event) {
+<<<<<<< HEAD
                 alterar_img_perfil(event.target.result);
                 salvarfotoservidor(file);
+=======
+                salvarImagemNoBanco(file)
+>>>>>>> teste
             };
             reader.readAsDataURL(file);
         }
@@ -154,11 +193,16 @@ export default function configuracao_usuario() {
         fechar_menu_editar()
     })
 
+<<<<<<< HEAD
     mudarLogo()
+=======
+    // Botão de remover foto:
+>>>>>>> teste
     let btn_remover_foto = document.querySelector("#btn_remover_foto")
     btn_remover_foto.addEventListener('click', () => {
         let confirmar = window.confirm("Tem certeza que deseja remover a foto de perfil?")
         fechar_menu_editar()
+<<<<<<< HEAD
         if (confirmar) {
             localStorage.removeItem('userImage');
             mudarLogo();
@@ -168,4 +212,9 @@ export default function configuracao_usuario() {
     // Carregar imagem persistida
     const imagemSalva = localStorage.getItem('userImage');
     if (imagemSalva) alterar_img_perfil(imagemSalva);
+=======
+        if(confirmar)
+            mudarLogoParaPadrao()
+    })
+>>>>>>> teste
 }
