@@ -40,7 +40,7 @@ const data = await response.json();
 alterarImgPerfil(data.imageUrl)
 // mudarLogoParaPadrao()
 
-let btns_modulos = document.querySelectorAll(".btn, .item_dropdown, #btn_configuracao_usuario") // Seleciona todos os botões dos modulos
+let btns_modulos = document.querySelectorAll("#menu_lateral .btn, .item_dropdown, #btn_configuracao_usuario") // Seleciona todos os botões dos modulos
 btns_modulos.forEach(e =>{
   e.addEventListener("click",()=>{
     // e.id.slice(4): remove o "btn_" do id
@@ -65,7 +65,6 @@ logo_sga_principal.addEventListener("click",()=>{
 // Função de carregar conteúdo html dos módulos
 
 async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) {
-    console.log(url, elemento)
   elemento.innerHTML = "<p>Carregando...</p>"; // Feedback visual
 
   url = "../modulos/" + url;

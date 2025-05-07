@@ -1,6 +1,6 @@
 import { visibilidadeSenha, alterarImgPerfil } from "../../scripts/funcionalidades.js";
 import { carregarConteudo, mudarLogoParaPadrao } from "../../scripts/javaScript.js";
-import { popup, popup_aviso, popup_carregando, popup_erro } from "../../scripts/popup.js";
+import { popup, popup_aviso, popup_carregando, popup_confirmar, popup_erro } from "../../scripts/popup.js";
 
 export default async function configuracao_usuario() {
     const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
@@ -179,8 +179,8 @@ export default async function configuracao_usuario() {
 
     // Botão de remover foto:
     let btn_remover_foto = document.querySelector("#btn_remover_foto")
-    btn_remover_foto.addEventListener('click', () => {
-        let confirmar = popup_aviso("Tem certeza que deseja remover a foto de perfil?")
+    btn_remover_foto.addEventListener('click', async () => {
+        let confirmar = await popup_confirmar("Tem certeza que deseja remover a foto de perfil?")
         fechar_menu_editar()
         if(confirmar)
             mudarLogoParaPadrao()
