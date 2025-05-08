@@ -5,7 +5,11 @@ import { popup, popup_aviso, popup_carregando, popup_confirmar, popup_erro } fro
 export default async function configuracao_usuario() {
     const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
     const data = await response.json();
-    alterarImgPerfil(data.imageUrl)
+    if (data.error) {
+        mudarLogoParaPadrao()
+    } else {
+        alterarImgPerfil(data.imageUrl)
+    }
 
     function fechar_menu_editar() {
         menu_editar_foto.classList.add("hide")
@@ -23,7 +27,7 @@ export default async function configuracao_usuario() {
 
     window.addEventListener('click', (e) => {
         // Some com o menu quando o usuário clicar fora dele
-        if(!btnEditarFoto.contains(e.target) && !menu_editar_foto.contains(e.target)){
+        if (!btnEditarFoto.contains(e.target) && !menu_editar_foto.contains(e.target)) {
             fechar_menu_editar()
         }
     })
@@ -61,7 +65,7 @@ export default async function configuracao_usuario() {
                 popup_erro("O tamanho da imagem selecionada excede o limite de 2MB.");
             } else {
                 const reader = new FileReader();
-                reader.onload = function(event) {
+                reader.onload = function (event) {
                     // Exibir a imagem selecionada
                     salvarImagemNoBanco(file)
                 };
@@ -87,15 +91,15 @@ export default async function configuracao_usuario() {
             });
 
             if (!response.ok) {
-              const errorData = await response.json();
-              throw new Error(errorData.error || 'Erro no servidor');
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Erro no servidor');
             }
 
             const data = await response.json();
 
             // Verifique se a URL foi retornada corretamente
             if (!data.url) {
-              throw new Error('URL da imagem não retornada pelo servidor');
+                throw new Error('URL da imagem não retornada pelo servidor');
             }
 
             popup_carregando(true)
@@ -103,10 +107,10 @@ export default async function configuracao_usuario() {
             alterarImgPerfil(data.url)
             return data.url;
 
-          } catch (error) {
+        } catch (error) {
             console.error('Erro ao salvar imagem:', error);
             throw error; // Propague o erro para ser tratado no chamador
-          }
+        }
     }
 
     // Adiciona funcionalidade de arraste
@@ -125,10 +129,10 @@ export default async function configuracao_usuario() {
         btn_upload.classList.remove("drag");
         const file = e.dataTransfer.files[0];
         if (file.size > tamanho_maximo) {
-            alert("O tamanho da imagem selecionada excede o limite de 2MB.");
+            popup_aviso("O tamanho da imagem selecionada excede o limite de 2MB.");
         } else {
             const reader = new FileReader();
-            reader.onload = function(event) {
+            reader.onload = function (event) {
                 salvarImagemNoBanco(file)
             };
             reader.readAsDataURL(file);
@@ -139,9 +143,9 @@ export default async function configuracao_usuario() {
     let campos_usuario = [...document.querySelectorAll(".container_campo_input")]
     campos_usuario.forEach(e => {
         e.addEventListener("click", (el) => {
-            if( !el.target.classList.contains("campo_input_noborder")){
+            if (!el.target.classList.contains("campo_input_noborder")) {
                 let input = e.querySelector("input")
-                if (input.type != "password"){
+                if (input.type != "password") {
                     input.focus()
                 }
                 if (input.type != "email") {
@@ -153,8 +157,8 @@ export default async function configuracao_usuario() {
 
     let campo_senha = document.querySelector("#senha_usuario")
     let img_visibilidade_senha = document.querySelector(".visibilidade")
-    img_visibilidade_senha.addEventListener("click", ()=> {
-        visibilidadeSenha(campo_senha,img_visibilidade_senha)
+    img_visibilidade_senha.addEventListener("click", () => {
+        visibilidadeSenha(campo_senha, img_visibilidade_senha)
     })
 
     // Botão voltar:
@@ -166,14 +170,14 @@ export default async function configuracao_usuario() {
     // Botão de salvar:
     let btn_salvar = document.querySelector(".btn_salvar")
     btn_salvar.addEventListener('click', () => {
-        alert("Configurações salvas com sucesso!")
+        popup_aviso("Configurações salvas com sucesso!")
         carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"))
     })
 
     // Pop Up ver foto:
     let btn_ver_foto = document.querySelector("#btn_ver_foto")
     btn_ver_foto.addEventListener('click', () => {
-        popup('abrir',1,btn_ver_foto)
+        popup('abrir', 1, btn_ver_foto)
         fechar_menu_editar()
     })
 
@@ -183,14 +187,14 @@ export default async function configuracao_usuario() {
         let confirmar = await popup_confirmar("Tem certeza que deseja remover a foto de perfil?")
         fechar_menu_editar()
 
-        if(confirmar) {
+        if (confirmar) {
             mudarLogoParaPadrao()
             try {
-                const response = await fetch(`http://localhost:3000/api/remove-foto/${userId}`, {
-                  method: 'DELETE',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  }
+                const response = await fetch(`http://localhost:3000/api/remove-foto/${1}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
                 });
 
                 const result = await response.json();
@@ -200,10 +204,10 @@ export default async function configuracao_usuario() {
                 } else {
                     popup_erro(result.error);
                 }
-              } catch (error) {
+            } catch (error) {
                 popup_erro(result.error);
                 console.error('Falha na requisição:', error);
-              }
+            }
         }
 
     })
