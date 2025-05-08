@@ -45,6 +45,7 @@ function popup (status, idx = 0, btn) {
 
 function popup_confirmar(mensagem = "Tem certeza que deseja realizar essa ação?") {
     let btn_popup_cancelar = document.querySelector(".btn_popup_cancelar")
+    let btn_fechar_popup_excluir = document.querySelector("#btn_fechar_popup_excluir")
     let btn_popup_confirmar = document.querySelector(".btn_popup_confirmar")
     let container_popup = document.querySelector("#container_popup_excluir")
     let p_mensagem = document.querySelector(".msg_popup_alerta")
@@ -58,6 +59,11 @@ function popup_confirmar(mensagem = "Tem certeza que deseja realizar essa ação
             container_popup.classList.add("hide_popup");
             resolve(false);
         });
+        
+        btn_fechar_popup_excluir.addEventListener("click", () => {
+            container_popup.classList.add("hide_popup");
+            resolve(false);
+        })
 
         btn_popup_confirmar.addEventListener("click", () => {
             container_popup.classList.add("hide_popup");

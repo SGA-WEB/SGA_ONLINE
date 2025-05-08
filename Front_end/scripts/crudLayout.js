@@ -12,7 +12,7 @@ import visualizar_contato from "../modulos/contato/visualizar_contato/visualizar
 import editar_contato from "../modulos/contato/editar_contato/editar_contato.js";
 import excluir_contato from "../modulos/contato/excluir_contato.js";
 
-import { popup } from "./popup.js"
+import { popup, popup_confirmar } from "./popup.js"
 
 export default function crudLayout (obj, tr) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
@@ -81,7 +81,6 @@ export default function crudLayout (obj, tr) {
         switch (nomeTabelaAtual) { // Carrega a página do CRUD de acordo com a tabela atual
             case "centro de estoque":
                 if (acao == 'excluir') {
-                    popup('abrir',0,btn_excluir)
                     funcoes[`excluir_centro_de_estoque`](obj)
                 } else {
                     carregarConteudo(
@@ -95,7 +94,6 @@ export default function crudLayout (obj, tr) {
             break;
             case "produto":
                 if (acao == 'excluir') {
-                    popup('abrir',0,btn_excluir)
                     funcoes[`excluir_produto`](obj)
                 } else {
                     carregarConteudo(

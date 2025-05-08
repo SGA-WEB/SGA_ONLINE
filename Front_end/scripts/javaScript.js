@@ -22,7 +22,7 @@ import configuracoes from "../modulos/configuracoes/configuracoes.js";
 import { aguardarRenderizacao, alterarImgPerfil } from "./funcionalidades.js";
 import { popup_carregando } from "./popup.js";
 
-function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com o nome dele
+function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com o nome de
     let div_logo_usuario = document.querySelectorAll(".logo_usuario");
     div_logo_usuario.forEach(e => {
         // Pega a primeira letra do primeiro nome e a primeira letra do ultimo nome no nome do usuário:
