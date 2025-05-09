@@ -21,7 +21,7 @@ export default async function excluir_produto(dado, callbackFunction, ...param) 
                 let dados = await buscarDados('produto'); // Busca os dados da tabela, exibe na tela e permite pesquisar
                 carregarDadosNaTabela(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"])
             } else {
-                popup_erro(`Erro ao excluir prodtuoi 1: ${data.error}`)
+                popup_erro(`Erro ao excluir produto 1: ${data.error}`)
             }
         } catch (err) {
             popup_carregando(true)

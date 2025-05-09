@@ -13,7 +13,7 @@ export default async function contato() {
     window.addEventListener('resize', (e) => {
         if (document.querySelector(".tabela") != null){
             fecharMenu(document.querySelector(".tabela").offsetWidth, 480)
-        } 
+        }
     })
 
     // Inicializa o select2
@@ -30,7 +30,7 @@ export default async function contato() {
             "contato/cadastro_contato/criar_contato/criar_contato.html",
             document.querySelector(".modulo"),
             false,
-            cadastro_contato, 
+            cadastro_contato,
         )
     })
     const dadosContato = await buscarDados("contato"); // Busca os dados da tabela

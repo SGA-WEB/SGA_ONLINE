@@ -107,7 +107,6 @@ export default function crudLayout (obj, tr) {
             break;
             case "contato":
                 if (acao == 'excluir') {
-                    popup('abrir',0,btn_excluir)
                     funcoes[`excluir_contato`](obj)
                 } else {
                    await carregarConteudo(
