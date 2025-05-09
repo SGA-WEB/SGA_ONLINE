@@ -690,3 +690,4 @@ app.delete('/api/remove-foto/:userId', async (req, res) => {
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+
