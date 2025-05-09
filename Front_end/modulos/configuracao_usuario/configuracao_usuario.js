@@ -15,11 +15,13 @@ export default async function configuracao_usuario() {
         menu_editar_foto.classList.add("hide")
     }
 
+    // Quando o usuáiro clicar no botão de configuração essa função é chamada e o menu do usuário será fechado:
     document.querySelector("#menu_usuario").style.display = "none"
 
     const btnEditarFoto = document.querySelector('.btn_editar_foto');
     let menu_editar_foto = document.querySelector(".editar_foto")
     btnEditarFoto.addEventListener('click', () => {
+        // Abre o menu de editar foto
         menu_editar_foto.classList.remove("hide")
     })
 
@@ -36,20 +38,26 @@ export default async function configuracao_usuario() {
         fechar_menu_editar()
     })
 
+    // Botão de alterar senha
+
     let btn_alterar_senha = document.querySelector(".btn_alterar_senha")
     btn_alterar_senha.addEventListener('click', () => {
         window.location.href = "../redefinicao_senha/envio_email/envio_email.html"
         window.localStorage.setItem("from_config_usuario", true)
     })
 
-    let tamanho_maximo = 2 * 1024 * 1024;
+    // fazer upload da imagem dentro do popup:
+
+    let tamanho_maximo = 2 * 1024 * 1024 // 2MB
+    // o javaSript pega o tamanho do arquivo em bytes
 
     const btn_upload = document.querySelector(".btn_upload_img");
 
+    // Função para abrir a janela de seleção de arquivos
     btn_upload.addEventListener('click', () => {
         const fileInput = document.createElement('input');
         fileInput.type = 'file';
-        fileInput.accept = 'image/*';
+        fileInput.accept = 'image*';
 
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
@@ -57,33 +65,19 @@ export default async function configuracao_usuario() {
                 popup_erro("O tamanho da imagem selecionada excede o limite de 2MB.");
             } else {
                 const reader = new FileReader();
-                reader.onload = function(event) {
-<<<<<<< HEAD
-                    alterar_img_perfil(event.target.result)
-                    salvarfotoservidor(file);
-                };
-                reader.readAsDataURL(file);
-=======
+                reader.onload = function (event) {
                     // Exibir a imagem selecionada
                     salvarImagemNoBanco(file)
                 };
                 reader.readAsDataURL(file);
 
->>>>>>> teste
             }
         });
 
-        fileInput.click();
+        fileInput.click();  // Simula o clique no input file
     });
 
-<<<<<<< HEAD
-    const salvarfotoservidor = async (file) => {
-        const formData = new FormData();
-        formData.append('imagem', file);
-
-=======
     async function salvarImagemNoBanco(file, userId = 1) {
->>>>>>> teste
         try {
             popup_carregando(false, "Salvando imagem...")
 
@@ -96,20 +90,6 @@ export default async function configuracao_usuario() {
                 body: formData
             });
 
-<<<<<<< HEAD
-            if (!resposta.ok) throw new Error("Erro no upload");
-
-            const dados = await resposta.json();
-            console.log("Imagem salva no servidor!", dados);
-
-            // Salvar no localStorage para persistência
-            localStorage.setItem('userImage', dados.imageUrl);
-        } catch (erro) {
-            console.error("Falha no upload", erro);
-            alert("Erro ao enviar a imagem. Tente novamente.");
-        }
-    };
-=======
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.error || 'Erro no servidor');
@@ -132,14 +112,14 @@ export default async function configuracao_usuario() {
             throw error; // Propague o erro para ser tratado no chamador
         }
     }
->>>>>>> teste
 
+    // Adiciona funcionalidade de arraste
     btn_upload.addEventListener('dragover', (e) => {
         e.preventDefault();
         btn_upload.classList.add("drag");
     });
 
-    btn_upload.addEventListener('dragleave', () => {
+    btn_upload.addEventListener('dragleave', (e) => {
         btn_upload.classList.remove("drag");
     });
 
@@ -153,18 +133,13 @@ export default async function configuracao_usuario() {
         } else {
             const reader = new FileReader();
             reader.onload = function (event) {
-            reader.onload = function(event) {
-<<<<<<< HEAD
-                alterar_img_perfil(event.target.result);
-                salvarfotoservidor(file);
-=======
                 salvarImagemNoBanco(file)
->>>>>>> teste
             };
             reader.readAsDataURL(file);
         }
     });
 
+    // Focar no campo do usuário quando clicar no container dele ou no botão de editar
     let campos_usuario = [...document.querySelectorAll(".container_campo_input")]
     campos_usuario.forEach(e => {
         e.addEventListener("click", (el) => {
@@ -186,33 +161,52 @@ export default async function configuracao_usuario() {
         visibilidadeSenha(campo_senha, img_visibilidade_senha)
     })
 
+    // Botão voltar:
     let btn_voltar = document.querySelector(".btn_voltar")
     btn_voltar.addEventListener('click', () => {
         carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"))
     })
 
+    // Botão de salvar:
     let btn_salvar = document.querySelector(".btn_salvar")
     btn_salvar.addEventListener('click', () => {
         popup_aviso("Configurações salvas com sucesso!")
         carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"))
     })
 
+    // Pop Up ver foto:
     let btn_ver_foto = document.querySelector("#btn_ver_foto")
     btn_ver_foto.addEventListener('click', () => {
         popup('abrir', 1, btn_ver_foto)
         fechar_menu_editar()
     })
 
-<<<<<<< HEAD
-    mudarLogo()
-=======
     // Botão de remover foto:
->>>>>>> teste
     let btn_remover_foto = document.querySelector("#btn_remover_foto")
     btn_remover_foto.addEventListener('click', async () => {
         let confirmar = await popup_confirmar("Tem certeza que deseja remover a foto de perfil?")
         fechar_menu_editar()
-        if(confirmar)
+
+        if (confirmar) {
             mudarLogoParaPadrao()
+            try {
+                const response = await fetch(`http://localhost:3000/api/remove-foto/${1}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    popup_aviso("Foto removida com sucesso!");
+                } else {
+                    popup_erro(result.error);
+                }
+            } catch (error) {
+                popup_erro(result.error);
+                console.error('Falha na requisição:', error);
+            }
+        }
     })
 }

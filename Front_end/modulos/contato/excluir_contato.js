@@ -5,7 +5,6 @@ import { carregarDadosNaTabela } from "../../scripts/carregarDadosNaTabela.js"
 export default async function excluir_contato(dado, callbackFunction, ...param) {
     let confirmacao = await popup_confirmar(`Tem certeza que deseja excluir o contato ${dado['id_contato']} - ${dado['razao_social']}?`)
 
-    console.log(dado)
     if (confirmacao) {
         popup_carregando()
         try {

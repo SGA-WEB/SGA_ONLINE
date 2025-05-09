@@ -636,7 +636,7 @@ app.get('/api/imagem/:id', async (req, res) => {
         .list('', { search: fileName });
 
     if (!fileList?.length) {
-        return res.status(404).json({ error: 'Imagem não existe mais' }); // ❌
+        return res.json({ error: 'Imagem não existe mais' }); // ❌
     }
 
     // 2. Gera URL somente se o arquivo existir

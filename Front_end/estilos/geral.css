@@ -195,6 +195,11 @@
 
 /* Pop-Up */
 
+.container_popups {
+    position: fixed;
+    right:  0;
+}
+
 .hide_popup {
     display: none !important;
 }
@@ -244,7 +249,7 @@
 
 /* PopUp alerta */
 .container_popup_alerta {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
@@ -303,8 +308,8 @@
 /* Pop Up aviso: */
 .popup_aviso {
     z-index: 4;
-    position: fixed;
-    top: 100px;
+    position: sticky;
+    top: 96px;
     right: 0;
     background-color: var(--sucesso1);
     border-radius: 5px 0 0 5px;
@@ -312,6 +317,7 @@
     padding: 0;
     transform: translateX(0);
     transition: transform 0.5s ease;
+    margin-bottom: 1rem;
 }
 
 .popup_aviso .btn_fechar_popup {
