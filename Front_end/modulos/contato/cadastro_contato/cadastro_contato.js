@@ -3,7 +3,7 @@ import { dataAtual } from "../../../scripts/funcionalidades.js";
 import select2 from "../../../scripts/select.js";
 
 export default function cadastro_contato () {
-    let cont = 0        
+    let cont = 0
 
     // Mudar de tela ao clicar no menu superior da tela de contato:
     let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
@@ -12,7 +12,7 @@ export default function cadastro_contato () {
     }
 
     document.querySelectorAll('.link_nav').forEach(link => { // Seleciona todos os links
-        link.addEventListener("click", (e) => { 
+        link.addEventListener("click", (e) => {
             estilo_nav(e.target);
         });
     });
@@ -21,12 +21,12 @@ export default function cadastro_contato () {
     select2("100%")
     btnsProximoEVoltar()
     addListenerBtns()
-    
+
     fecharMenu(document.querySelector(".modulo").offsetWidth, 584)
-    window.addEventListener('resize', (e) => { 
+    window.addEventListener('resize', (e) => {
         if(document.querySelector(".modulo") != null){
             fecharMenu(document.querySelector(".modulo").offsetWidth, 421)
-        } 
+        }
     })
 
     function addListenerBtns () {
@@ -39,18 +39,18 @@ export default function cadastro_contato () {
     function estilo_nav (e) {
         let link = e
         if (e == "voltar_contatos") {
-            carregarConteudo('contato/contato.html', document.querySelector('.principal'), false, funcao)
+            carregarConteudo('contato/contato.html', document.querySelector('.principal'), false)
             return
         }
         let links_nav= document.querySelectorAll(".link_nav") // Seleciona todos os links do nav
         links_nav.forEach(e=>{
             e.classList.remove("link_nav_selecionado") // desmarca todos
         })
-        
+
         e.classList.add("link_nav_selecionado") // Adiciona a classe ao link clicado
         mudarDeAba(link.id)
     }
-    
+
     function mudarDeAba (link) {
         switch (link) {
             case "link_contato":

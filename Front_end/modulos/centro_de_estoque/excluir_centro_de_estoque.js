@@ -1,19 +1,11 @@
-import { popup, popup_aviso, popup_carregando, popup_erro } from "../../scripts/popup.js";
+import { popup, popup_aviso, popup_carregando, popup_erro, popup_confirmar } from "../../scripts/popup.js";
 import buscarDados from "../../scripts/buscarDados.js"; // Importa a função que busca os dados da tabela
 import { carregarDadosNaTabela } from "../../scripts/carregarDadosNaTabela.js";
 
-export default function excluir_centro_de_estoque(dado, callbackFunction, ...param) {
-    let codigo_popup_excluir = document.querySelector(".codigo_popup_excluir")
-    let item_popup_excluir = document.querySelector(".item_popup_excluir")
+export default async function excluir_centro_de_estoque(dado, callbackFunction, ...param) {
+    let confirmacao = await popup_confirmar(`Tem certeza que deseja excluir o centro de estoque ${dado['id_centro_estoque']} - ${dado['nome_centro_estoque']}?`)
 
-    codigo_popup_excluir.innerHTML = dado.id_centro_estoque
-    item_popup_excluir.innerHTML = dado.nome_centro_estoque
-
-    let btn_popup_excluir_excluir = document.querySelector("#btn_popup_excluir_excluir")
-    let btn_popup_excluir_cancelar = document.querySelector("#btn_popup_excluir_cancelar")
-
-    btn_popup_excluir_excluir.addEventListener("click", async () => {
-        popup("fechar", 0, btn_popup_excluir_excluir)
+    if (confirmacao) {
         popup_carregando()
         try {
             const response = await fetch(`http://localhost:3000/centro_estoque/${dado.id_centro_estoque}`, {
@@ -34,5 +26,5 @@ export default function excluir_centro_de_estoque(dado, callbackFunction, ...par
             console.log('Erro ao excluir centro de estoque:', err)
             popup_erro(`Erro ao excluir centro de estoque: ${dado.nome_centro_estoque}`)
         }
-    })
+    }
 }

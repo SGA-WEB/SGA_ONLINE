@@ -20,11 +20,11 @@ const app = express();
 
 app.use((req, res, next) => {
     res.setHeader(
-      'Content-Security-Policy',
-      "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
+        'Content-Security-Policy',
+        "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"
     );
     next();
-  });
+});
 
 const port = process.env.PORT || 3000;
 const upload = multer({ storage: multer.memoryStorage() });
@@ -32,8 +32,8 @@ const upload = multer({ storage: multer.memoryStorage() });
 // Configuração do Content Security Policy
 
 app.use(cors({
-  origin: 'http://127.0.0.1:5503', // ou 'http://localhost:5503'
-  credentials: true
+    origin: 'http://127.0.0.1:5503', // ou 'http://localhost:5503'
+    credentials: true
 }));
 
 // Configuração do PostgreSQL
@@ -57,11 +57,11 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 1000 * 60 * 30, // 30 minutos
-      sameSite: 'lax', // ou 'none' se for https
-      secure: false    // true só se for https
+        maxAge: 1000 * 60 * 30, // 30 minutos
+        sameSite: 'lax', // ou 'none' se for https
+        secure: false    // true só se for https
     }
-  }));
+}));
 
 
 //TESTE DE ROTA
@@ -74,16 +74,16 @@ app.get('/', (req, res) => res.send('API rodando!'));
 // Rota para retornar o usuário logado
 app.get('/api/usuario', (req, res) => {
     if (req.session.user) {
-      res.json({
-        logado: true,
-        usuario: req.session.user
-      });
+        res.json({
+            logado: true,
+            usuario: req.session.user
+        });
     } else {
-      res.json({
-        logado: false
-      });
+        res.json({
+            logado: false
+        });
     }
-  });
+});
 
 
 app.use(express.urlencoded({ extended: true })); // Permite processar dados de formulário
@@ -138,11 +138,11 @@ app.post('/api/login', async (req, res) => {
 //TESTE DE ROTA
 app.get('/api/testar-sessao', (req, res) => {
     if (req.session.user) {
-      res.json({ logado: true, usuario: req.session.user });
+        res.json({ logado: true, usuario: req.session.user });
     } else {
-      res.json({ logado: false });
+        res.json({ logado: false });
     }
-  });
+});
 
 
 
@@ -279,7 +279,7 @@ app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {
 
 app.put('/produto/:id_produto', async (req, res) => {
     const { id_produto } = req.params;
-    const { produto, quantidade, preco_varejo, preco_atacado, descricao, id_centro_estoque} = req.body;
+    const { produto, quantidade, preco_varejo, preco_atacado, descricao, id_centro_estoque } = req.body;
     try {
         const query = `
             UPDATE sga.produto
@@ -625,27 +625,67 @@ app.post('/upload-avatar', upload.single('avatar'), async (req, res) => {
 });
 
 // Rota para buscar imagem por ID
+// Rota GET /api/imagem/:id
 app.get('/api/imagem/:id', async (req, res) => {
-    try {
-      const { id } = req.params;
+    const { id } = req.params;
+    const fileName = `${id}.webp`;
 
-      const { data: { publicUrl } } = supabase.storage
+    // 1. Verifica existência REAL no bucket
+    const { data: fileList } = await supabase.storage
         .from('fotos-usuarios')
-        .getPublicUrl(`${id}.webp`);
+        .list('', { search: fileName });
 
-      // 3. Retorna a URL ou redireciona
-      res.json({
-        success: true,
-        imageUrl: publicUrl,
-        // Ou para servir diretamente o arquivo:
-        // imageData: await fetch(publicUrl).then(res => res.blob())
-      });
+    if (!fileList?.length) {
+        return res.json({ error: 'Imagem não existe mais' }); // ❌
+    }
+
+    // 2. Gera URL somente se o arquivo existir
+    const { data: { publicUrl } } = supabase.storage
+        .from('fotos-usuarios')
+        .getPublicUrl(fileName);
+
+    res.json({
+        exists: true, // ✅ Novo campo
+        imageUrl: publicUrl
+    });
+});
+
+app.delete('/api/remove-foto/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const fileName = `${userId}.webp`; // Padrão de nomeação
+
+        // 1. Verifica se o arquivo existe
+        const { data: fileList } = await supabase.storage
+            .from('fotos-usuarios')
+            .list('', {
+                search: fileName
+            });
+
+        if (!fileList || fileList.length === 0) {
+            return res.status(404).json({ error: 'Foto não encontrada' });
+        }
+
+        // 2. Remove o arquivo
+        const { error } = await supabase.storage
+            .from('fotos-usuarios')
+            .remove([fileName]);
+
+        if (error) throw error;
+
+        res.json({
+            success: true,
+            message: 'Foto removida com sucesso'
+        });
 
     } catch (error) {
-      console.error('Erro:', error);
-      res.status(500).json({ error: 'Erro ao buscar imagem' });
+        console.error('Erro ao remover foto:', error);
+        res.status(500).json({
+            error: 'Erro ao remover foto',
+            details: error.message
+        });
     }
-  });
+});
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
