@@ -12,7 +12,7 @@
         "grid_filha_graficos grid_filha_graficos grid_filha_graficos . ."
         "grid_filha_graficos grid_filha_graficos grid_filha_graficos . .";
 
-    grid-template-columns: minmax(265px, 344px) minmax(234px, 300px) minmax(296px, 300px) minmax(150px, 250px) minmax(150px, 250px);
+    grid-template-columns: minmax(275px, 344px) minmax(224px, 300px) minmax(257px, 300px) minmax(150px, 250px) minmax(150px, 250px);
 
     grid-template-rows: repeat(7, auto);
     gap: 1rem;
@@ -98,7 +98,8 @@
 .card_info_porcentagem {
     display: flex;
     justify-content: space-between;
-    gap: 0.9rem;
+    min-width: fit-content;
+    gap: 0.6rem;
     padding: 1rem;
     border-radius: 5px;
     box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.192);
@@ -350,7 +351,7 @@
             "grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos"
             "grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos"
             "grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos";
-        grid-template-columns: minmax(245px, 344px) minmax(234px, 300px) minmax(296px, 300px) minmax(200px, 250px) minmax(200px, 250px) minmax(200px, 250px) minmax(200px, 250px);
+        grid-template-columns: minmax(275px, 344px) minmax(234px, 300px) minmax(296px, 300px) minmax(200px, 250px) minmax(200px, 250px) minmax(200px, 250px) minmax(200px, 250px);
 
         grid-template-rows: repeat(7, auto);
     }
@@ -375,7 +376,7 @@
         "grid_filha_graficos grid_filha_graficos grid_filha_graficos"
         "grid_filha_graficos grid_filha_graficos grid_filha_graficos";
 
-        grid-template-columns: minmax(250px, 260px) minmax(95px, 170px) minmax(364px, 460px);
+        grid-template-columns: minmax(275px, 260px) minmax(50px, 170px) minmax(391px, 460px);
 
         grid-template-rows: repeat(8, auto);
     }
@@ -384,7 +385,7 @@
     }
 }
 
-@container (max-width: 750px) {
+@container (max-width: 763px) {
     #modulo_dashboard {
         grid-template-areas:
         "quantidade_total_produtos distribuicao_produtos_estoque"
@@ -396,7 +397,7 @@
         "div_produtos_maior_quantidade div_produtos_maior_quantidade"
         "grid_filha_graficos grid_filha_graficos";
 
-        grid-template-columns: minmax(200px, 320px) minmax(200px, 370px);
+        grid-template-columns: minmax(200px, 320px) minmax(275px, 370px);
 
         grid-template-rows: repeat(8, auto);
     }

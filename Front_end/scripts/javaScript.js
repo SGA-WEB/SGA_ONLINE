@@ -4,7 +4,7 @@
   E tem as funcionalidades da tela principal
 
   Funções:
-    - mudarLogo: Muda a logo do usuário de acordo com o seu nome;
+    - mudarLogoParaPadrao: Muda a logo do usuário de acordo com o seu nome;
     - carregarConteudo: Carrega o conteúdo HTML dos módulos;
     - menu lateral: Funções que controlam a visibilidade e o estilo do menu lateral e dos itens do menu dropdown;
     - menu do usuário: Funções que controlam a visibilidade e o estilo do menu do usuário;
@@ -19,10 +19,10 @@ import select2 from "./select.js";
 import produto from "../modulos/produto/produto.js";
 import centro_de_estoque from "../modulos/centro_de_estoque/centro_de_estoque.js";
 import configuracoes from "../modulos/configuracoes/configuracoes.js";
-import { aguardarRenderizacao } from "./funcionalidades.js";
+import { aguardarRenderizacao, alterarImgPerfil } from "./funcionalidades.js";
 import { popup_carregando } from "./popup.js";
 
-function mudarLogo(){ // Muda a logo do usuário de acordo com o nome dele
+function mudarLogoParaPadrao(){ // Muda a logo do usuário de acordo com o nome dele
   let div_logo_usuario = document.querySelectorAll(".logo_usuario");
   div_logo_usuario.forEach(e => {
       // Pega a primeira letra do primeiro nome e a primeira letra do ultimo nome no nome do usuário:
@@ -34,7 +34,11 @@ function mudarLogo(){ // Muda a logo do usuário de acordo com o nome dele
       e.style.backgroundColor = "aqua"
   });
 }
-mudarLogo()
+
+const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
+const data = await response.json();
+alterarImgPerfil(data.imageUrl)
+// mudarLogoParaPadrao()
 
 let btns_modulos = document.querySelectorAll(".btn, .item_dropdown, #btn_configuracao_usuario") // Seleciona todos os botões dos modulos
 btns_modulos.forEach(e =>{
@@ -103,7 +107,7 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
     }
 
 
-    let inputs = document.querySelectorAll("input:not([type='email']), textarea") // Seleciona todos os inputs e textareas que não são do tipo email
+    let inputs = document.querySelectorAll("input:not([type='email']),input:not([type='password']), textarea") // Seleciona todos os inputs e textareas que não são do tipo email
     inputs.forEach(e=>{
       e.addEventListener("input", (input) => {
         input.target.value = input.target.value.toUpperCase()
@@ -383,4 +387,4 @@ document.addEventListener("click",(e)=>{
 })
 
 
-export {carregarConteudo, btnMenuLateral, click_btn_menu,fecharMenu,mudarLogo}
+export {carregarConteudo, btnMenuLateral, click_btn_menu,fecharMenu,mudarLogoParaPadrao}

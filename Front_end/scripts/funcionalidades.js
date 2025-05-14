@@ -64,7 +64,7 @@ function formatarData(data) {
 function mudarPesquisa(input_pesquisa) {
   input_pesquisa.placeholder = "Pesquisar por " + $('.campo_select')
     .find(':selected')
-    .text() // Adiciona o texto do select no placeholder 
+    .text() // Adiciona o texto do select no placeholder
 
   // Adiciona evento de mudança de seleção no select2
   $('.campo_select').on('select2:select', function (e) {
@@ -149,11 +149,24 @@ function alterarOptionsSelect(select, dados_centros, id_centro_estoque) {
   // Alterar o select de acordo com os dados da tabela
   for (let i = 0; i < dados_centros.length; i++) {
     let option = document.createElement("option")
-    option.value = dados_centros[i].id_centro_estoque  
+    option.value = dados_centros[i].id_centro_estoque
     option.text = dados_centros[i].nome_centro_estoque
     select.appendChild(option)
   }
   select.value = id_centro_estoque
+}
+
+function alterarImgPerfil(img) {
+    const publicUrl = `https://ertkiirzzswpxkgcxret.supabase.co/storage/v1/object/public/fotos-usuarios/${1}.webp?v=${Date.now()}`
+    let div_logo_usuario = document.querySelectorAll(".logo_usuario")
+    div_logo_usuario.forEach(e => {
+        e.innerHTML = ""
+        e.style.backgroundColor = "#fff"
+        let img_perfil = document.createElement("img")
+        img_perfil.src = publicUrl
+        img_perfil.classList.add("img_perfil")
+        e.appendChild(img_perfil)
+    })
 }
 
 export {
@@ -163,5 +176,6 @@ export {
   mudarPesquisa,
   visibilidadeMenulateral,
   aguardarRenderizacao,
-  alterarOptionsSelect
+  alterarOptionsSelect,
+  alterarImgPerfil
 }

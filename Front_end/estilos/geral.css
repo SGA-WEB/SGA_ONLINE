@@ -351,6 +351,7 @@
 /* Pop Up carregando: */
 
 .popup_carregando {
+    z-index: 4;
     background-color: #e9f0ffe3;
 }
 
