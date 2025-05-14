@@ -26,39 +26,40 @@
             </div>
         </nav>
         <main class="main_config">
-            <div class="titulo">
+            <div class="titulo"> 
                 <h3 class="titulo2">Cadastro do usuário</h3>
-            </div>
+            </div> 
+            <form id="formulario_usuario">
             <div class="nome-usuario">
                 <span>Nome (Completo)</span>
                 <div class="Campo-nome">
-                    <input class="campo_input" type="text" id="digite-nome" name="Nome-usuario" required >
+                    <input class="campo_input" type="text" id="digite-nome" name="Nome-usuario" required autocomplete="" >
                 </div>
             </div>
             <div class="senha-container">
                 <div class="senha">
                     <span>Senha</span>
-                    <input class="campo_input" type="password" class="campo-senha" name="Senha" required>
+                    <input class="campo_input" type="password" class="campo-senha" id="senha" name="Senha" required autocomplete="new-password" maxlength="8">
                 </div>
                 <div class="senha">
                     <span>Confirme a Senha</span>
-                    <input class="campo_input" type="password" class="campo-senha" name="confirmar-senha">
+                    <input class="campo_input" type="password" class="campo-senha" id="confirmar-senha" name="confirmar-senha" autocomplete="new-password" maxlength="8">
                 </div>
             </div>
             <div class="email-container">
                 <div class="email">
                     <span>Email</span>
-                    <input class="campo_input" type="email" class="campo-email" name="email">
+                    <input class="campo_input" type="email" class="campo-email" id="email" name="email">
                 </div>
                 <div class="email">
-                    <span>Confirme mail</span>
-                    <input class="campo_input" type="email" class="campo-email" name="confirme-email">
+                    <span>Confirme Email</span>
+                    <input class="campo_input" type="email" class="campo-email" id ="confirmar-email" name="confirme-email">
                 </div>
             </div>
             <div class="fone-grupo-container">
                 <div class="fone-grupo">
-                    <span>Fone</span>
-                    <input class="campo_input" type="tel" class="campo-fone" name="fone">
+                    <span>Telefone</span>
+                    <input class="campo_input" type="tel" class="campo-fone" id = "fone" name="fone">
                 </div>
                 <div class="fone-grupo">
                     <span>Grupo</span>
@@ -68,11 +69,12 @@
                 </div>
             </div>
                <div class="salvar-container">
-            <button class="button-salvar btn">
-                <img class="icone-salvar" src="../imagens/salvar.png" alt="icone-salvar">
-                <span>Salvar</span>
-            </button>
+                    <button class="button-salvar btn" onsubmit="(e)=>{e.preventDefault()}">
+                        <img class="icone-salvar" src="../imagens/salvar.png" alt="icone-salvar">
+                        <span>Salvar</span>
+                    </button>
                </div>
+            </form>
         </main>
     </div>
 </section>
