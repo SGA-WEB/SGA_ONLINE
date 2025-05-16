@@ -41,6 +41,7 @@ const pool = new Pool({
     user: 'neondb_owner',
     /* host: 'ep-small-bar-a8bydmrx-pooler.eastus2.azure.neon.tech', */
     host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
+    //host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech', // Branch: Renata
     database: 'neondb',
     password: 'npg_Y3ZNL6fxehGI',
     port: 5432,
@@ -581,46 +582,20 @@ app.delete('/contato/:id_contato', async (req, res) => {
     }
 });
 
-// Rota para upload da imagem
-app.post('/upload-avatar', upload.single('avatar'), async (req, res) => {
+// Rota para cadastrar usuário (POST)
+app.post('/usuarios', async (req, res) => {
+    const { nome, email, celular, senha } = req.body;
+
     try {
-        // 2. Validar arquivo e userId
-        if (!req.file) return res.status(400).json({ error: 'Nenhuma imagem enviada' });
-        const userId = req.body.userId;
-        if (!userId) return res.status(400).json({ error: 'ID do usuário não fornecido' });
-
-        // 4. Processar imagem
-        const optimizedImage = await sharp(req.file.buffer)
-            .resize(300, 300)
-            .webp({ quality: 80 })
-            .toBuffer();
-
-        supabase.storage.from('fotos-usuarios').remove(`${userId}.webp`);
-        // 5. Fazer upload
-        const filePath = `${userId}.webp`;
-        const { error } = await supabase.storage
-            .from('fotos-usuarios')
-            .upload(filePath, optimizedImage, {
-                contentType: 'image/webp',
-                upsert: true
-            });
-
-        if (error) throw error;
-
-        // 6. Retornar URL
-        const { data: { publicUrl } } = supabase.storage
-            .from('fotos-usuarios')
-            .getPublicUrl(filePath);
-
-        res.json({ success: true, url: publicUrl });
-
+        const query = `
+            INSERT INTO sga.usuario (nome, email, celular, senha, data_criacao)
+            VALUES ($1, $2, $3, $4, NOW())
+        `;
+        const result = await pool.query(query, [nome, email, celular, senha]);
+        res.status(201).json({ message: 'Usuário cadastrado com sucesso!', result });
     } catch (err) {
-        console.error('Erro:', err);
-        res.status(500).json({
-            error: 'Erro no upload',
-            details: err.message,
-            supabaseError: err.statusCode === 403 ? 'Acesso não autorizado - verifique as políticas RLS' : null
-        });
+        console.error('Erro ao inserir usuário:', err);
+        res.status(500).json({ message: 'Erro ao cadastrar usuário', error: err });
     }
 });
 
@@ -687,7 +662,39 @@ app.delete('/api/remove-foto/:userId', async (req, res) => {
     }
 });
 
+
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
+});
+
+
+// Rota para ATUALIZAR usuário (PUT)
+app.put('/usuarios/:id_usuario', async (req, res) => {
+    const { id_usuario } = req.params;
+    const { nome, email, celular, senha } = req.body;
+
+    try {
+        const query = `
+            UPDATE sga.usuario
+            SET nome = $1, email = $2, celular = $3, senha = $4
+            WHERE id_usuario = $5
+            RETURNING *;
+        `;
+        const values = [nome, email, celular, senha, id_usuario];
+
+        const result = await pool.query(query, values);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Usuário não encontrado' });
+        }
+
+        res.status(200).json({
+            message: 'Usuário atualizado com sucesso!',
+            usuario: result.rows[0]
+        });
+    } catch (err) {
+        console.error('Erro ao atualizar usuário:', err);
+        res.status(500).json({ error: 'Erro ao atualizar usuário' });
+    }
 });
 
