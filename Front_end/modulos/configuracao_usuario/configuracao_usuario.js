@@ -92,6 +92,8 @@ export default async function configuracao_usuario() {
 
             if (!response.ok) {
                 const errorData = await response.json();
+                popup_erro("Erro ao enviar a imagem, verifique o formato da imagem.")
+                popup_carregando(true)
                 throw new Error(errorData.error || 'Erro no servidor');
             }
 
