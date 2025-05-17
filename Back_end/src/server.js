@@ -642,6 +642,50 @@ app.put('/usuarios/:id_usuario', async (req, res) => {
     }
 });
 
+// Rota para upload da imagem
+app.post('/upload-avatar', upload.single('avatar'), async (req, res) => {
+    try {
+        // 2. Validar arquivo e userId
+        if (!req.file) return res.status(400).json({ error: 'Nenhuma imagem enviada' });
+        const userId = req.body.userId;
+        if (!userId) return res.status(400).json({ error: 'ID do usuário não fornecido' });
+
+        // 4. Processar imagem
+        const optimizedImage = await sharp(req.file.buffer)
+            .resize(300, 300)
+            .webp({ quality: 80 })
+            .toBuffer();
+
+        supabase.storage.from('fotos-usuarios').remove(`${userId}.webp`);
+        // 5. Fazer upload
+        const filePath = `${userId}.webp`;
+        const { error } = await supabase.storage
+            .from('fotos-usuarios')
+            .upload(filePath, optimizedImage, {
+                contentType: 'image/webp',
+                upsert: true
+            });
+
+        if (error) throw error;
+
+        // 6. Retornar URL
+        const { data: { publicUrl } } = supabase.storage
+            .from('fotos-usuarios')
+            .getPublicUrl(filePath);
+
+        res.json({ success: true, url: publicUrl });
+
+    } catch (err) {
+        console.error('Erro:', err);
+        res.status(500).json({
+            error: 'Erro no upload',
+            details: err.message,
+            supabaseError: err.statusCode === 403 ? 'Acesso não autorizado - verifique as políticas RLS' : null
+        });
+    }
+});
+
+
 // Rota para buscar imagem por ID
 // Rota GET /api/imagem/:id
 app.get('/api/imagem/:id', async (req, res) => {

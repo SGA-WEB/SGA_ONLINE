@@ -1,20 +1,20 @@
 export default function salvarUsuario(dado) {
+    console.log(dado);
     'use strict';
     dado = dado[0];
-    console.log(dado);
 
     // Preenche os campos do formulário
     document.querySelector("#campo_editar_nome").value = dado.nome;
     document.querySelector("#campo_editar_email").value = dado.email;
     document.querySelector("#campo_editar_fone").value = dado.celular;
     document.querySelector("#senha_usuario").value = dado.senha;
-    
+
     document.querySelector("#btn_salvar_configuracoes_usuario").addEventListener("click", async () => {
         const nome = document.querySelector("#campo_editar_nome").value;
         const email = document.querySelector("#campo_editar_email").value;
         const celular = document.querySelector("#campo_editar_fone").value;
         const senha = document.querySelector("#senha_usuario").value;
-        
+
         const novoObjeto = {
             id_usuario: dado.id_usuario,
             nome: nome,

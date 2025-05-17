@@ -45,7 +45,7 @@ if (data.error) {
 }
 // mudarLogoParaPadrao()
 
-let btns_modulos = document.querySelectorAll("#menu_lateral .btn, .item_dropdown, #btn_configuracao_usuario") // Seleciona todos os botões dos modulos
+let btns_modulos = document.querySelectorAll("#menu_lateral .btn, .item_dropdown") // Seleciona todos os botões dos modulos
 btns_modulos.forEach(e => {
     e.addEventListener("click", () => {
         // e.id.slice(4): remove o "btn_" do id
@@ -88,7 +88,6 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
 
         // Aguarda o HTML ser totalmente renderizado antes de chamar a função
         await aguardarRenderizacao(elemento);
-
         if (funcao) {
             funcao(...parametro);
         }
@@ -97,9 +96,6 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
         }
         if (url === "../modulos/contato/contato.html" && !funcao) { // !funcao: para a função não ser chamada mais de uma fez
             contato();
-        }
-        if (url === "../modulos/configuracao_usuario/configuracao_usuario.html") {
-            configuracao_usuario();
         }
         if (url === "../modulos/produto/produto.html" && !funcao) {
             produto()
@@ -380,11 +376,12 @@ btn_configuracao_usuario.addEventListener("click", () => {
             }
         })
     }
+    carregarConteudo("configuracao_usuario/configuracao_usuario.html", document.querySelector(".principal"), false, configuracao_usuario) // Carrega o módulo de configuração do usuário
 })
 
 // Fechar o menu quando clicar fora do menu:
 document.addEventListener("click", (e) => {
-    if (!btnUsuario.contains(e.target) && !menu_usuario.contains(e.target)) {
+    if (!btnUsuario.contains(e.target)) {
         menu_usuario.style.display = "none"
         usuario_seta.style.transform = "rotate(0deg)"
         usuario_seta.style.transition = ".1s"
