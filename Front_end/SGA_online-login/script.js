@@ -1,24 +1,23 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('.login-form');
-    const usuario = document.getElementById('usuario');
+    const email = document.getElementById('email'); // Corrigido: id correto é "email"
     const senha = document.getElementById('senha');
     const empresa = document.getElementById('selecione-a-empresa');
     const mensagemErro = document.getElementById('mensagemErro');
 
-    form.addEventListener('submit', function(event) {
-        let valid = true;
-        // Remova ou comente a linha abaixo se não precisar limpar erros
-        // clearAllErrors();
-        
+    // Função para validar os campos do formulário
+    function validarFormulario() {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (usuario && usuario.value.trim() === '') {
-            alert('Usuário não pode estar vazio');
+        let valid = true;
+
+        if (!email || !email.value.trim()) { // Certifique-se de que o campo existe e tem valor
+            alert('E-mail não pode estar vazio');
             valid = false;
-        } else if (usuario && !emailRegex.test(usuario.value)) {
+        } else if (!emailRegex.test(email.value.trim())) { // Use .trim() para remover espaços em branco
             alert('Formato de e-mail inválido');
             valid = false;
         }
-    
+
         const senhaValor = senha ? senha.value.trim() : '';
         if (senhaValor === '') {
             alert('Senha não pode estar vazia');
@@ -27,50 +26,59 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Senha deve ter no mínimo 8 caracteres');
             valid = false;
         }
-    
+
         if (empresa && empresa.value === 'default') {
             alert('Selecione uma empresa');
             valid = false;
         }
-    
-        if (!valid) {
-            event.preventDefault();
-        }
-    });
 
-    form.addEventListener('submit', async (event) => {
-        event.preventDefault();
+        return valid;
+    }
 
-        if (usuario && senha) {
-            const email = usuario.value;
-            const senhaValor = senha.value;
+    // Função para enviar os dados via fetch
+    async function enviarDados(emailValor, senhaValor) {
+        try {
+            const resposta = await fetch('http://localhost:3000/api/login', {
+                method: 'POST', // Use POST para enviar dados sensíveis
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: emailValor, senha: senhaValor }),
+            });
 
-            try {
-                const resposta = await fetch('http://localhost:3000/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, senha: senhaValor }),
-                });
+            const dados = await resposta.json();
 
-                const dados = await resposta.json();
-
-                if (resposta.ok) {
-                    alert('Login bem-sucedido!');
-                    window.location.href = '/Front_end/Principal/principal.html';
-                } else {
-                    if (mensagemErro) {
-                        mensagemErro.textContent = dados.error;
-                        mensagemErro.style.color = 'red';
-                    }
-                }
-            } catch (error) {
-                console.error('Erro na requisição:', error);
+            if (resposta.ok) {
+                alert('Login bem-sucedido!');
+                window.location.href = '/Front_end/Principal/principal.html';
+            } else {
                 if (mensagemErro) {
-                    mensagemErro.textContent = 'Erro ao conectar com o servidor!';
+                    mensagemErro.textContent = dados.error || 'Erro desconhecido!';
                     mensagemErro.style.color = 'red';
                 }
             }
+        } catch (error) {
+            console.error('Erro na requisição:', error);
+            if (mensagemErro) {
+                mensagemErro.textContent = 'Erro ao conectar com o servidor!';
+                mensagemErro.style.color = 'red';
+            }
+        }
+    }
+
+    // Manipulador do evento de submit
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault(); // Impede o envio padrão do formulário
+
+        // Valida o formulário antes de prosseguir
+        if (validarFormulario()) {
+            // Exibe mensagem de carregamento
+            mensagemErro.textContent = 'Carregando...';
+            mensagemErro.style.color = 'blue';
+
+            const emailValor = email.value.trim();
+            const senhaValor = senha.value.trim();
+
+            // Envia os dados ao servidor
+            await enviarDados(emailValor, senhaValor);
         }
     });
 });
-
