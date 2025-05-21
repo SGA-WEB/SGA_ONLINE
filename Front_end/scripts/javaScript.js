@@ -45,7 +45,7 @@ if (data.error) {
 }
 // mudarLogoParaPadrao()
 
-let btns_modulos = document.querySelectorAll("#menu_lateral .btn, .item_dropdown") // Seleciona todos os botões dos modulos
+let btns_modulos = document.querySelectorAll("#menu_lateral .btn, .item_dropdown:not(.subitem)") // Seleciona todos os botões dos modulos
 btns_modulos.forEach(e => {
     e.addEventListener("click", () => {
         // e.id.slice(4): remove o "btn_" do id
@@ -177,6 +177,7 @@ function minimizarMenu(status) {
 // Função que modifica o botão de abrir e fechar o menu lateral
 function btnMenuLateral(target) {
     let icone_aba = document.querySelector("#icone_aba")
+    console.log(icone_aba)
     if (icone_aba.classList[0] == "aba_fechar") { // Se o menu estiver maximizado
         icone_aba.src = "../imagens/icone_abrir_aba.png"
         icone_aba.className = "aba_abrir"
@@ -270,7 +271,7 @@ btns_menu.forEach((e) => {
     })
 })
 
-let itemMenu = document.querySelectorAll(".item_dropdown")
+let itemMenu = document.querySelectorAll(".item_dropdown:not(.subitem)")
 itemMenu.forEach((e) => {
     e.addEventListener("click", e => {
         let widthBody = document.body.offsetWidth // Pega o tamanho do body
@@ -293,6 +294,7 @@ itens_dropdown.forEach(e => {
                     modulo_selecionado.classList.remove("modulo_selecionado") // Remove a classe "modulo_selecionado" de todos os módulos selecionados
                 }
                 let modulo_selecionado_atual = e.currentTarget.parentElement.parentElement.firstElementChild // Pega somente o ultimo módulo selecionado
+                console.log(modulo_selecionado_atual)
                 modulo_selecionado_atual.classList.add("modulo_selecionado") // Adiciona a classe "modulo_selecionado" somente no módulo clicado
                 modulo_selecionado_atual.classList.add("btn_menu_selecionado") // Adiciona a classe "btn_menu_selecionado" somente no módulo clicado
 
@@ -388,5 +390,21 @@ document.addEventListener("click", (e) => {
     }
 })
 
+// Menu dropdown - Entrada e saída de produtos da movimentação de estoque:
+let btn_movimentacao_de_estoque = document.querySelector("#btn_movimentacao_de_estoque")
+btn_movimentacao_de_estoque.addEventListener("click", () => {
+    let menu_movimentacao_estoque = document.querySelector("#menu_movimentacao_estoque")
+    if (menu_movimentacao_estoque.style.display == "none") {
+        menu_movimentacao_estoque.style.display = "flex"
+    } else {
+        menu_movimentacao_estoque.style.display = "none"
+    }
+})
+
+let btn_entrada_produto = document.querySelector("#btn_entrada_produtos")
+btn_entrada_produto.addEventListener("click", () => {
+    btn_entrada_produto.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
+    carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"))
+})
 
 export { carregarConteudo, btnMenuLateral, click_btn_menu, fecharMenu, mudarLogoParaPadrao }

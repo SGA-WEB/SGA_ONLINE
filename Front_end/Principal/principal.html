@@ -60,9 +60,9 @@
                 </div>
                 <img id="usuario_seta" src="../imagens/seta_baixo.png" alt="seta para baixo">
             </div>
-            <div id="menu_usuario" style="display: none;">
-                <a id="btn_configuracao_usuario" class="btn_menu_usuario">Configurações do usuário</a>
-                <a href="../SGA_online-login/index.html"  class="btn_menu_usuario">Sair do sistema</a>
+            <div id="menu_usuario" class="popup_dropdown" style="display: none;">
+                <a id="btn_configuracao_usuario" class="btn_menu_usuario item_popup_dropdown">Configurações do usuário</a>
+                <a href="../SGA_online-login/index.html"  class="btn_menu_usuario item_popup_dropdown">Sair do sistema</a>
             </div>
         </div>
     </header>
@@ -91,6 +91,10 @@
                     <a href="#" class="item_dropdown" id="btn_centro_de_estoque">Centro de estoque</a>
                     <a href="#" class="item_dropdown" id="btn_produto">Produto</a>
                     <a href="#" class="item_dropdown" id="btn_movimentacao_de_estoque">Movimentação de estoque</a>
+                    <div id="menu_movimentacao_estoque" style="display: none;">
+                        <a id="btn_entrada_produtos" class="item_dropdown subitem">Entrada de produtos</a>
+                        <a id="btn_saida_produtos" class="item_dropdown subitem">Saída de produtos</a>
+                    </div>
                     <a href="#" class="item_dropdown disable" id="btn_cadastro_auxiliares">Cadastro auxiliares</a>
                 </div>
             </div>
