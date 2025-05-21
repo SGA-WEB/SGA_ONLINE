@@ -1,6 +1,7 @@
 {
   "name": "sga-online",
   "version": "1.0.0",
+  "type": "module",
   "description": "Back-end do sistema SGA",
   "main": "src/server.js",
   "scripts": {

@@ -41,13 +41,35 @@ function popup (status, idx = 0, btn) {
     btn_fechar_popup.addEventListener("click", () => {
         fecharPopup(btn_fechar_popup)
     })
+}
 
-    // Se for o popup de alerta que tiver o botão de cancelar:
+function popup_confirmar(mensagem = "Tem certeza que deseja realizar essa ação?") {
+    let btn_popup_cancelar = document.querySelector(".btn_popup_cancelar")
+    let btn_fechar_popup_excluir = document.querySelector("#btn_fechar_popup_excluir")
+    let btn_popup_confirmar = document.querySelector(".btn_popup_confirmar")
+    let container_popup = document.querySelector("#container_popup_excluir")
+    let p_mensagem = document.querySelector(".msg_popup_alerta")
 
-    let btn_popup_excluir_cancelar = document.querySelector("#btn_popup_excluir_cancelar")
-    btn_popup_excluir_cancelar.addEventListener("click", () => {
-       fecharPopup(btn_popup_excluir_cancelar)
-    })
+    p_mensagem.textContent = mensagem
+
+    container_popup.classList.remove("hide_popup")
+
+    return new Promise((resolve, reject) => {
+        btn_popup_cancelar.addEventListener("click", () => {
+            container_popup.classList.add("hide_popup");
+            resolve(false);
+        });
+        
+        btn_fechar_popup_excluir.addEventListener("click", () => {
+            container_popup.classList.add("hide_popup");
+            resolve(false);
+        })
+
+        btn_popup_confirmar.addEventListener("click", () => {
+            container_popup.classList.add("hide_popup");
+            resolve(true);
+        });
+    });
 }
 
 function popup_aviso(mensagem = "Ação realizada com sucesso!") {
@@ -58,7 +80,7 @@ function popup_aviso(mensagem = "Ação realizada com sucesso!") {
     // Remove a classe hide_popup para mostrar o popup
     popup.classList.remove('hide_popup');
     p_mensagem.textContent = mensagem;
-    
+
     // Reinicia a animação da barra de progresso
     const progressBar = document.querySelector('.progress-bar');
     progressBar.style.animation = 'none';
@@ -78,7 +100,7 @@ function popup_aviso(mensagem = "Ação realizada com sucesso!") {
 function popup_carregando(fecharPopup = false,mensagem = "Salvando alterações...") {
     const popup = document.getElementById('popup_carregando');
     const p_mensagem = popup.querySelector('.mensagem_aviso');
-    
+
     p_mensagem.textContent = mensagem;
     popup.classList.remove('hide_popup');
 
@@ -93,11 +115,11 @@ function popup_erro(mensagem = "Erro ao realizar a ação!") {
     const popup = document.getElementById('popup_erro');
     const p_mensagem = popup.querySelector('.mensagem_erro');
     const btn_fechar_popup = document.querySelector('#btn_fechar_popup_erro');
-    
+
     // Remove a classe hide_popup para mostrar o popup
     popup.classList.remove('hide_popup');
     p_mensagem.textContent = mensagem;
-    
+
     // Reinicia a animação da barra de progresso
     const progressBar = document.querySelector('#progress-bar-erro');
     progressBar.style.animation = 'none';
@@ -116,4 +138,4 @@ function popup_erro(mensagem = "Erro ao realizar a ação!") {
     });
 }
 
-export { popup, popup_aviso, popup_carregando, popup_erro };
+export { popup, popup_aviso, popup_carregando, popup_erro, popup_confirmar};

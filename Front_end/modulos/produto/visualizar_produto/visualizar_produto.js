@@ -11,8 +11,8 @@ export default async function visualizar_produto (dado) {
 
     let centros_de_estoque = await buscarDados("centro_estoque")
     alterarOptionsSelect(
-        document.querySelector("#selecionar_centro_de_estoque"), 
-        centros_de_estoque, 
+        document.querySelector("#selecionar_centro_de_estoque"),
+        centros_de_estoque,
         dado.fk_id_centro_estoque
     )
 
@@ -48,7 +48,6 @@ export default async function visualizar_produto (dado) {
 
     let btn_excluir = document.querySelector(".btn_excluir")
     btn_excluir.addEventListener("click",() => {
-        popup("abrir", 0, btn_excluir)
         excluir_produto(dado, carregarConteudo, "produto/produto.html", document.querySelector(".principal"))
     })
 }

@@ -25,7 +25,6 @@ export default function visualizar_centro_de_estoque(dado) {
 
     let btn_excluir = document.querySelector(".btn_excluir")
     btn_excluir.addEventListener("click", () => {
-        popup("abrir", 0, btn_excluir)
         excluir_centro_de_estoque(dado, carregarConteudo, "centro_de_estoque/centro_de_estoque.html", document.querySelector(".principal"))
     })
 }

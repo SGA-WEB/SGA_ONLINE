@@ -6,7 +6,7 @@ import excluir_contato from "../excluir_contato.js";
 import { popup } from "../../../scripts/popup.js";
 
 export default function visualizar_contato (dado) {
-    let cont = 0        
+    let cont = 0
     // Mudar de tela ao clicar no menu superior da tela de contato:
     let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
     if (cont == 0) {
@@ -14,7 +14,7 @@ export default function visualizar_contato (dado) {
     }
 
     document.querySelectorAll('.link_nav').forEach(link => { // Seleciona todos os links que não possuem a classe link_nav_selecionado
-        link.addEventListener("click", (e) => { 
+        link.addEventListener("click", (e) => {
             estilo_nav(e.target);
         });
     });
@@ -23,7 +23,7 @@ export default function visualizar_contato (dado) {
     btnsProximoEVoltar()
     inserirDadoDoBanco()
     addListenerBtnsAcoes()
-    
+
     function addListenerBtnsAcoes () {
         document.querySelector(".btn_editar").addEventListener("click", async () => {
             await carregarConteudo(
@@ -39,20 +39,19 @@ export default function visualizar_contato (dado) {
                 true
             );
         })
-    
+
         let btn_excluir = document.querySelector(".btn_excluir")
         btn_excluir.addEventListener("click",() => {
-            popup("abrir", 0, btn_excluir)
             excluir_contato(dado, carregarConteudo, "contato/contato.html", document.querySelector(".principal"))
         })
     }
 
-    
+
     fecharMenu(document.querySelector(".modulo").offsetWidth, 584)
-    window.addEventListener('resize', (e) => { 
+    window.addEventListener('resize', (e) => {
         if(document.querySelector(".modulo") != null){
             fecharMenu(document.querySelector(".modulo").offsetWidth, 421)
-        } 
+        }
     })
 
     function estilo_nav (e) {
@@ -65,11 +64,11 @@ export default function visualizar_contato (dado) {
             carregarConteudo("contato/contato.html", document.querySelector(".principal"))
             return
         }
-        
+
         e.classList.add("link_nav_selecionado") // Adiciona a classe ao link clicado
         mudarDeAba(link.id)
     }
-    
+
     function mudarDeAba (link) {
         switch (link) {
             case "link_contato":
@@ -143,7 +142,7 @@ export default function visualizar_contato (dado) {
             document.querySelector("#perfil_tributario").value = dado.perfil_tributario
             document.querySelector("#tipo_consumidor").value = dado.tipo_consumidor
             document.querySelector("#observacao").value = dado.observacao
-        } 
+        }
         else if (document.querySelector(".h2_titulo").textContent.includes("Endereço")) {
             const response = await fetch(`http://localhost:3000/api/endereco/${dado.fk_id_endereco}`);
             const endereco = await response.json();
@@ -157,4 +156,4 @@ export default function visualizar_contato (dado) {
         }
     }
     cont++
-} 
+}

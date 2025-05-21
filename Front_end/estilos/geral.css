@@ -195,6 +195,16 @@
 
 /* Pop-Up */
 
+.container_popups {
+    position: fixed;
+    right:  0;
+    z-index: 4;
+}
+
+.hide_popup {
+    display: none !important;
+}
+
 .container_popup {
     display: none;
     position: fixed;
@@ -239,8 +249,24 @@
 }
 
 /* PopUp alerta */
+.container_popup_alerta {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 3;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
 .popup_alerta {
+    max-width: 21rem;
     padding: 0;
+    z-index: 4;
 }
 
 .popup_alerta main {
@@ -282,8 +308,9 @@
 
 /* Pop Up aviso: */
 .popup_aviso {
-    position: fixed;
-    top: 100px;
+    z-index: 4;
+    position: sticky;
+    top: 96px;
     right: 0;
     background-color: var(--sucesso1);
     border-radius: 5px 0 0 5px;
@@ -291,6 +318,7 @@
     padding: 0;
     transform: translateX(0);
     transition: transform 0.5s ease;
+    margin-bottom: 1rem;
 }
 
 .popup_aviso .btn_fechar_popup {
@@ -351,6 +379,7 @@
 /* Pop Up carregando: */
 
 .popup_carregando {
+    z-index: 4;
     background-color: #e9f0ffe3;
 }
 
@@ -379,6 +408,7 @@
 /* Pop Up Erro: */
 .popup_erro {
     background-color: var(--alerta1);
+    z-index: 4;
 }
 
 .popup_erro .progress-bar {
