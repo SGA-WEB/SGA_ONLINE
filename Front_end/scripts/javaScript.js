@@ -294,7 +294,14 @@ itens_dropdown.forEach(e => {
                     modulo_selecionado.classList.remove("modulo_selecionado") // Remove a classe "modulo_selecionado" de todos os módulos selecionados
                 }
                 let modulo_selecionado_atual = e.currentTarget.parentElement.parentElement.firstElementChild // Pega somente o ultimo módulo selecionado
-                console.log(modulo_selecionado_atual)
+                if (i.classList.contains("subitem")) { // Se o item for um subitem
+                    modulo_selecionado_atual = e.currentTarget.parentElement.parentElement.parentElement.firstElementChild // Pega somente o ultimo módulo selecionado
+                } else {
+                    let subitem = document.querySelector("#menu_movimentacao_estoque")
+                    if (subitem.style.display == "block") { // Se o menu dropdown estiver aberto
+                        subitem.style.display = "none" // Se tiver um subitem ele some
+                    }
+                }
                 modulo_selecionado_atual.classList.add("modulo_selecionado") // Adiciona a classe "modulo_selecionado" somente no módulo clicado
                 modulo_selecionado_atual.classList.add("btn_menu_selecionado") // Adiciona a classe "btn_menu_selecionado" somente no módulo clicado
 
