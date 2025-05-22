@@ -21,6 +21,7 @@ import centro_de_estoque from "../modulos/centro_de_estoque/centro_de_estoque.js
 import configuracoes from "../modulos/configuracoes/configuracoes.js";
 import { aguardarRenderizacao, alterarImgPerfil } from "./funcionalidades.js";
 import { popup_carregando } from "./popup.js";
+import tipos_de_entrada from "../modulos/lista_cadastro_entrada/tipos_de_entrada.js";
 
 function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com o nome de
     let div_logo_usuario = document.querySelectorAll(".logo_usuario");
@@ -389,7 +390,7 @@ document.addEventListener("click", (e) => {
 })
 
 document.querySelector("#btn_cadastro_auxiliares").addEventListener("click", () => {
-    carregarConteudo("lista_cadastro_entrada/tipos_de_entrada.html", document.querySelector(".principal"))
+    carregarConteudo("lista_cadastro_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada)
 })
 
 

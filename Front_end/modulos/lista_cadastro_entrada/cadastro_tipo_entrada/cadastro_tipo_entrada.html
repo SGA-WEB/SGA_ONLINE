@@ -1,4 +1,4 @@
-<section class="modulo" id="modulo_cadastro_produto">
+<section class="modulo" id="modulo_cadastro_tipo_entrada">
     <button class="btn_nav" id="btn_voltar_produtos">
         <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
         <p class="btn_voltar">Voltar</p>
@@ -6,49 +6,49 @@
     <div class="modulo_header header_cadastro">
         <h2 class="h2_titulo">Cadastro de Tipos de Entrada</h2> 
     </div>
-    <button class="Cancelar">
-        <img src="../imagens/" alt="Icone Cancelar">
-        <p>Canc.</p>
-    </button>
-    <button class="Editar">
-        <img src="../imagens/" alt="Icone Editar">
-        <p>Editar</p>
-    </button>
-    <button class="excluir">
-        <img src="../imagens/" alt="Icone Excluir">
-        <p>Excluir</p>
-    </button>
-    <button class="btn btn_salvar">
-        <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
-        <p>Salvar</p>
-    </button>
+    <div class="container_btns">
+        <button class="Cancelar btn">
+            <img src="../imagens/icone_fechar.svg" alt="Icone Cancelar">
+            <p>Canc.</p>
+        </button>
+        <button class="Editar btn">
+            <img src="../imagens/icone_editar.svg" alt="Icone Editar">
+            <p>Editar</p>
+        </button>
+        <button class="excluir btn">
+            <img src="../imagens/icone_excluir.svg" alt="Icone Excluir">
+            <p>Excluir</p>
+        </button>
+        <button class="btn btn_salvar">
+            <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
+            <p>Salvar</p>
+        </button>
+    </div>
     <div class="modulo_main">
         <div class="container_small_width" id="container_radios"> 
             <div class="campo_contato small_width">
                 <label for="codigo_entrada">Código:</label>
                 <input type="number" name="codigo_entrada" id="" class="campo_input">
             </div>
-            <div class="campo_contato normal_width">
+        </div>   
+        <div class="campo_contato normal_width">
             <label for="descricao">Descrição:</label>
             <input type="text" name="descricao" id="descricao" class="campo_input">
-        </div>   
         </div>
-        <div class="container_small_width">
-            <div class="campo_contato small_width">
-                <label for="CPOP">CPOP(Dentro):</label>
-                <input type="text" name="cpopD" id="" class="campo_input">
-            </div>
-            <div class="campo_contato small_width">
-                <label for="CPOP">CPOP(Fora):</label>
-                <input type="text" name="cpopF" id="" class="campo_input">
-            </div>
-            <div class="campo_contato small_width select_conainer">
-                <p>Ativo:</p>
-                <select id="centro_de_estoque" class="campo_select">
-                    <option value="sim">Sim</option>
-                    <option value="não">Não</option>
-                </select>
-            </div>
+        <div class="campo_contato small_width">
+            <label for="CPOP">CPOP(Dentro):</label>
+            <input type="text" name="cpopD" id="" class="campo_input">
+        </div>
+        <div class="campo_contato small_width">
+            <label for="CPOP">CPOP(Fora):</label>
+            <input type="text" name="cpopF" id="" class="campo_input">
+        </div>
+        <div class="campo_contato small_width select_conainer">
+            <p>Ativo:</p>
+            <select id="centro_de_estoque" class="campo_select">
+                <option value="sim">Sim</option>
+                <option value="não">Não</option>
+            </select>
         </div>
     </div>
     <label>
