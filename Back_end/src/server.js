@@ -81,23 +81,31 @@ app.use((err, req, res, next) => {
 });
 
 //// 🔐 Rota para validar o login
-app.get('/api/login', async (req, res) => {
+// Rota para validar o login (POST)
+app.post('/api/login', async (req, res) => {
     try {
         const { email, senha } = req.body;
 
+        // Validações básicas
+        if (!email || !senha) {
+            return res.status(400).json({ error: 'E-mail e senha são obrigatórios' });
+        }
+
+        // Verifica se o e-mail existe no banco de dados
         const userResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1', [email]);
 
         if (userResult.rows.length === 0) {
             return res.status(404).json({ error: 'E-mail não encontrado' });
         }
 
+        // Verifica se a senha está correta
         const senhaResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1 AND senha = $2', [email, senha]);
 
         if (senhaResult.rows.length === 0) {
             return res.status(401).json({ error: 'Senha incorreta' });
         }
 
-        // Criar sessão
+        // Cria a sessão do usuário
         req.session.user = {
             id: userResult.rows[0].id_usuario,
             nome: userResult.rows[0].nome,
@@ -107,10 +115,11 @@ app.get('/api/login', async (req, res) => {
         res.json({ message: 'Login bem-sucedido' });
 
     } catch (error) {
-        console.error(error);
+        console.error('Erro interno no servidor:', error);
         res.status(500).json({ error: 'Erro interno no servidor' });
     }
 });
+
 
 //TESTE DE ROTA
 app.get('/api/testar-sessao', (req, res) => {
