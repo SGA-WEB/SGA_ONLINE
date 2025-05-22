@@ -21,6 +21,7 @@ import centro_de_estoque from "../modulos/centro_de_estoque/centro_de_estoque.js
 import configuracoes from "../modulos/configuracoes/configuracoes.js";
 import { aguardarRenderizacao, alterarImgPerfil } from "./funcionalidades.js";
 import { popup_carregando } from "./popup.js";
+import entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.js";
 
 function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com o nome de
     let div_logo_usuario = document.querySelectorAll(".logo_usuario");
@@ -411,7 +412,7 @@ btn_movimentacao_de_estoque.addEventListener("click", () => {
 let btn_entrada_produto = document.querySelector("#btn_entrada_produtos")
 btn_entrada_produto.addEventListener("click", () => {
     btn_entrada_produto.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
-    carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"))
+    carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
 })
 
 export { carregarConteudo, btnMenuLateral, click_btn_menu, fecharMenu, mudarLogoParaPadrao }

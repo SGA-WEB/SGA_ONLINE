@@ -245,6 +245,16 @@ app.get('/api/endereco/:id_endereco', async (req, res) => {
     }
 });
 
+// Rota para buscar todos os dados da tabela entrada_produto
+app.get('/api/entrada_produto', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM sga.entrada_produto ORDER BY id_entrada_produto; JOIN sga.contato on sga.contato.id_contato = sga.entrada_produto.fornecedor_id');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao buscar entradas de produto' });
+  }
+});
 
 // Endpoint para atualizar um centro de estoque (PUT)
 app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {

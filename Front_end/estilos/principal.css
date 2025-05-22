@@ -501,6 +501,10 @@ body {
         font-size: 0.9em;
     }
 
+    #menu_movimentacao_estoque {
+        margin: 0 0 10px 10px;
+    }
+
     #menu_lateral .item_menu {
         width: 100%;
     }

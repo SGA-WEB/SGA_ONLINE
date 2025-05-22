@@ -2,9 +2,10 @@
 // Cria os botões de editar, visualizar e excluir (CRUD) e os adiciona nas tabelas
 
 import crudLayout from "./crudLayout.js" // Importa a função que cria os botões de editar, visualizar e excluir (CRUD)
+import { formatarData } from "./funcionalidades.js"
 
 function carregarDadosNaTabela (dados, colunasExibir) {
-    // Data: Array de objetos que contém os dados que serão exibidos na tabela (JSON)
+    // ColunasExibir: Array com os nomes das colunas do banco de dados que serão exibidas na tabela
     let tabela = document.querySelector(".tbody") // Tabela onde os dados serão exibidos
     let [...tr_tabela] = document.querySelectorAll(".table_tr")
     tr_tabela.map(e => e.remove(e)) // Remove todos os elementos da tabela
@@ -16,7 +17,7 @@ function carregarDadosNaTabela (dados, colunasExibir) {
         const firstDataKey = Object.keys(dados[0])[0]; // Pega a primeira chave do primeiro objeto do array de dados, que no caso é o id
         dados.sort((a, b) => a[firstDataKey] - b[firstDataKey]) // Ordena os dados pelo id
 
-        
+
         dados.map(objDado => { // Para cada objeto no array de dados
             let objDadoCompleto = objDado
             objDado = Object.entries(objDado) // Pega os campos até o limite de dados
@@ -34,10 +35,13 @@ function carregarDadosNaTabela (dados, colunasExibir) {
                 if (e === "data_cadastro") {
                     continue
                 }
+                if (e.search("data") != -1) {
+                    objDado[e] = formatarData(objDado[e])
+                }
                 let td = document.createElement('td')
                 td.setAttribute('class','dado_tabela')
                 td.setAttribute('id', e + "_" + objDado[e]) // nome do campo + valor do campo
-                if (typeof(objDado[e]) == 'boolean') { 
+                if (typeof(objDado[e]) == 'boolean') {
                     // Se o campo for booleano, exibe "S" ou "N"
                     if (objDado[e]) {
                         td.textContent = "S"
@@ -101,10 +105,10 @@ function pesquisar(dados, colunasExibir) {
             // Converte os campos booleanos para "s" ou "n"
             if (typeof(e.padrao_centro_estoque) === 'boolean') {
                 e.padrao_centro_estoque = e.padrao_centro_estoque ? "s" : "n"
-            } 
+            }
             return e
         })
-        
+
         let threshold // Define a tolerância da pesquisa
         if (campo_select.value == "padrao_centro_estoque"){
             // Se o campo selecionado for o "padrão", a pesquisa será feita com mais tolerância a variação de valores
@@ -129,7 +133,7 @@ function pesquisar(dados, colunasExibir) {
         if (value_input_pesquisa.includes('*')) {
             // Remove o curinga e ajusta a lógica de pesquisa
             let padrao = value_input_pesquisa.replace(/\*/g, ''); // Remove todos os "*"
-            
+
             value_input_pesquisa = value_input_pesquisa.toUpperCase() // Converte o valor da pesquisa para maiúsculo
             padrao = padrao.toUpperCase() // Converte o padrão para maiúsculo
 
@@ -140,7 +144,7 @@ function pesquisar(dados, colunasExibir) {
                     let itemUpperCase = item[campo_select.value].toUpperCase()
                     return itemUpperCase.includes(padrao)
                 });
-                
+
             } else if (value_input_pesquisa.startsWith('*')) {
                 // *a: Termina com "a"
                 newData = dados.filter(item => {
@@ -159,12 +163,12 @@ function pesquisar(dados, colunasExibir) {
             newData = fuse.search(value_input_pesquisa) // Faz a pesquisa
             newData = newData.map(e => e.item) // Pega apenas os itens do resultado da pesquisa
         }
-        
+
         if (value_input_pesquisa == "") { // Se o input estiver vazio
             newData = dados // Exibe todos os dados
         }
         carregarDadosNaTabela(newData, colunasExibir) // Manda os novos dados filtrados para a função carregarDadosNaTabela
-    }  
+    }
 }
 
 export { carregarDadosNaTabela, pesquisar } // Exporta as funções para serem usadas em outros arquivos
