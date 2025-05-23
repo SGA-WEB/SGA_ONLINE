@@ -248,7 +248,23 @@ app.get('/api/endereco/:id_endereco', async (req, res) => {
 // Rota para buscar todos os dados da tabela entrada_produto
 app.get('/api/entrada_produto', async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM sga.entrada_produto ORDER BY id_entrada_produto; JOIN sga.contato on sga.contato.id_contato = sga.entrada_produto.fornecedor_id');
+    const result = await pool.query(`
+      SELECT
+        ep.id_entrada_produto,
+        ep.tipo_entrada,
+        ep.numero_nf,
+        ep.data_recebimento,
+        c.razao_social AS fornecedor_razao_social,
+        ep.valor_total,
+        ep.desconto,
+        ep.total,
+        ep.status,
+        c.razao_social AS fornecedor_razao_social
+      FROM sga.entrada_produto ep
+      INNER JOIN sga.contato c
+        ON ep.fornecedor_id = c.id_contato
+      ORDER BY ep.id_entrada_produto
+    `);
     res.json(result.rows);
   } catch (err) {
     console.error(err);

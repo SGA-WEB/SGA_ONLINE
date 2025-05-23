@@ -178,7 +178,6 @@ function minimizarMenu(status) {
 // Função que modifica o botão de abrir e fechar o menu lateral
 function btnMenuLateral(target) {
     let icone_aba = document.querySelector("#icone_aba")
-    console.log(icone_aba)
     if (icone_aba.classList[0] == "aba_fechar") { // Se o menu estiver maximizado
         icone_aba.src = "../imagens/icone_abrir_aba.png"
         icone_aba.className = "aba_abrir"
