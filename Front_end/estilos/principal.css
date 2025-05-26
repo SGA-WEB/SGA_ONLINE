@@ -185,7 +185,7 @@ body {
 
 /* Menu do usuário */
 
-#menu_usuario {
+.popup_dropdown {
     position: absolute;
     display: flex;
     flex-flow: column wrap;
@@ -196,16 +196,16 @@ body {
     border-radius: 5px;
     box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.15);
 }
-.btn_menu_usuario {
+.item_popup_dropdown {
     padding: .6rem .7rem;
     cursor: pointer;
     transition: .2s;
     border-bottom: 1px solid var(--cinza3);
 }
-.btn_menu_usuario:last-of-type {
+.item_popup_dropdown:last-of-type {
     border: none;
 }
-.btn_menu_usuario:hover {
+.item_popup_dropdown:hover {
     background-color: var(--azul-1);
     transition: .2s;
     border-radius: 5px;
@@ -305,7 +305,7 @@ body {
 }
 #menu_lateral .btn:hover {
     background-color: var(--azul1);
-} 
+}
 #menu_lateral .btn_menu div {
     display: flex;
     gap: 10px;
@@ -338,12 +338,15 @@ body {
 /* Menu dropdonw */
 
 .dropdown {
+    position: relative;
+    overflow: visible;
     margin: 6px auto 6px 28px;
 }
 .dropdown a {
     display: block;
     padding: 5px 17px;
     border-left: 2px solid var(--cinza2);
+    cursor: pointer;
 }
 .dropdown a:hover {
     border-left: 2px solid var(--azul);
@@ -378,7 +381,15 @@ body {
     color: var(--azul) !important;
 }
 
-/* Estilos do menu minimizado */    
+/* Menu dropdown movimentação de estoque: */
+#menu_movimentacao_estoque {
+    position: static;
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 10px 20px;
+}
+
+/* Estilos do menu minimizado */
 
 .header_principal #container_logo_busca.mini {
     justify-content: flex-start;
@@ -461,7 +472,7 @@ body {
         height: auto;
         padding: 10px;
     }
-    
+
     .header_principal #campo_busca {
         display: none;
     }
@@ -469,11 +480,11 @@ body {
     .header_principal #container_logo_busca {
         flex-direction: column;
     }
-    
+
     .header_principal #campo_usuario {
         justify-content: flex-end;
     }
-    
+
     #menu_lateral {
         max-width: 50%;
         min-width: 196px;
@@ -490,6 +501,10 @@ body {
         font-size: 0.9em;
     }
 
+    #menu_movimentacao_estoque {
+        margin: 0 0 10px 10px;
+    }
+
     #menu_lateral .item_menu {
         width: 100%;
     }
@@ -498,7 +513,7 @@ body {
         padding: 10px; /* Aumenta o espaço para facilitar o toque em telas menores */
         width: 94%;
     }
-    
+
     .seta_cima_baixo {
         margin: 0 0 0 5px;
     }
@@ -506,7 +521,7 @@ body {
     #menu_lateral .btn_menu div{
         gap: 5px;
     }
-   
+
     #menu_lateral #btn_configuracoes {
         width: 100%;
         margin: auto 0 1rem 0; /* Espaçamento maior entre os botões */
@@ -563,7 +578,7 @@ body {
         margin-bottom: 10px; /* Reduz o espaçamento entre os itens do menu */
         font-size: small;
     }
-    
+
     #menu_lateral .btn_menu {
         font-size: 0.9rem; /* Ajusta o tamanho da fonte */
     }
@@ -572,7 +587,7 @@ body {
         gap: 2px;
         padding: 4px 2px;
     }
-    
+
     #menu_lateral .dropdown {
         margin: 6px 0px 6px 0px; /* Remove a margem esquerda em telas pequenas */
     }
@@ -593,7 +608,7 @@ body {
     }
 }
 /* Estilos para dispositivos com altura pequena ex: celular deitado */
-@media (max-height: 400px){ 
+@media (max-height: 400px){
     .header_principal {
         padding: 5px;
         height: auto;
@@ -667,7 +682,7 @@ body {
     #usuario_seta {
         display: none;
     }
-} 
+}
 
 @media screen and (max-width: 480px) and (orientation: portrait) {
     #btn_configuracoes {

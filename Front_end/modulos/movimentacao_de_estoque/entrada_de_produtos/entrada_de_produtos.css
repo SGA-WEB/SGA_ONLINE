@@ -1,0 +1,5 @@
+@container (max-width: 1087px) {
+    .container_tabela {
+        overflow-x: auto;
+    }
+}

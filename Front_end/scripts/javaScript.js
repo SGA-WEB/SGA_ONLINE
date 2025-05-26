@@ -22,6 +22,7 @@ import configuracoes from "../modulos/configuracoes/configuracoes.js";
 import { aguardarRenderizacao, alterarImgPerfil } from "./funcionalidades.js";
 import { popup_carregando } from "./popup.js";
 import tipos_de_entrada from "../modulos/lista_cadastro_entrada/tipos_de_entrada.js";
+import entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.js";
 
 function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com o nome de
     let div_logo_usuario = document.querySelectorAll(".logo_usuario");
@@ -46,7 +47,7 @@ if (data.error) {
 }
 // mudarLogoParaPadrao()
 
-let btns_modulos = document.querySelectorAll("#menu_lateral .btn, .item_dropdown") // Seleciona todos os botões dos modulos
+let btns_modulos = document.querySelectorAll("#menu_lateral .btn, .item_dropdown:not(.subitem)") // Seleciona todos os botões dos modulos
 btns_modulos.forEach(e => {
     e.addEventListener("click", () => {
         // e.id.slice(4): remove o "btn_" do id
@@ -271,7 +272,7 @@ btns_menu.forEach((e) => {
     })
 })
 
-let itemMenu = document.querySelectorAll(".item_dropdown")
+let itemMenu = document.querySelectorAll(".item_dropdown:not(.subitem)")
 itemMenu.forEach((e) => {
     e.addEventListener("click", e => {
         let widthBody = document.body.offsetWidth // Pega o tamanho do body
@@ -294,6 +295,14 @@ itens_dropdown.forEach(e => {
                     modulo_selecionado.classList.remove("modulo_selecionado") // Remove a classe "modulo_selecionado" de todos os módulos selecionados
                 }
                 let modulo_selecionado_atual = e.currentTarget.parentElement.parentElement.firstElementChild // Pega somente o ultimo módulo selecionado
+                if (i.classList.contains("subitem")) { // Se o item for um subitem
+                    modulo_selecionado_atual = e.currentTarget.parentElement.parentElement.parentElement.firstElementChild // Pega somente o ultimo módulo selecionado
+                } else {
+                    let subitem = document.querySelector("#menu_movimentacao_estoque")
+                    if (subitem.style.display == "block") { // Se o menu dropdown estiver aberto
+                        subitem.style.display = "none" // Se tiver um subitem ele some
+                    }
+                }
                 modulo_selecionado_atual.classList.add("modulo_selecionado") // Adiciona a classe "modulo_selecionado" somente no módulo clicado
                 modulo_selecionado_atual.classList.add("btn_menu_selecionado") // Adiciona a classe "btn_menu_selecionado" somente no módulo clicado
 
@@ -393,5 +402,21 @@ document.querySelector("#btn_cadastro_auxiliares").addEventListener("click", () 
     carregarConteudo("lista_cadastro_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada)
 })
 
+// Menu dropdown - Entrada e saída de produtos da movimentação de estoque:
+let btn_movimentacao_de_estoque = document.querySelector("#btn_movimentacao_de_estoque")
+btn_movimentacao_de_estoque.addEventListener("click", () => {
+    let menu_movimentacao_estoque = document.querySelector("#menu_movimentacao_estoque")
+    if (menu_movimentacao_estoque.style.display == "none") {
+        menu_movimentacao_estoque.style.display = "flex"
+    } else {
+        menu_movimentacao_estoque.style.display = "none"
+    }
+})
+
+let btn_entrada_produto = document.querySelector("#btn_entrada_produtos")
+btn_entrada_produto.addEventListener("click", () => {
+    btn_entrada_produto.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
+    carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
+})
 
 export { carregarConteudo, btnMenuLateral, click_btn_menu, fecharMenu, mudarLogoParaPadrao }
