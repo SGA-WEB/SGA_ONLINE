@@ -7,8 +7,8 @@
         <h2 class="h2_titulo">Cadastro de Tipos de Entrada</h2> 
     </div>
     <div class="container_btns">
-        <button class="Cancelar btn">
-            <img src="../imagens/icone_fechar.svg" alt="Icone Cancelar">
+        <!-- <button class="Cancelar btn"> -->
+            <!-- <img src="../imagens/icone_fechar.svg" alt="Icone Cancelar">
             <p>Canc.</p>
         </button>
         <button class="Editar btn">
@@ -18,8 +18,8 @@
         <button class="excluir btn">
             <img src="../imagens/icone_excluir.svg" alt="Icone Excluir">
             <p>Excluir</p>
-        </button>
-        <button class="btn btn_salvar">
+        </button> -->
+        <button class="btn btn_salvar" id="btn_salvar">
             <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
             <p>Salvar</p>
         </button>
@@ -28,7 +28,7 @@
         <div class="container_small_width" id="container_radios"> 
             <div class="campo_contato small_width">
                 <label for="codigo_entrada">Código:</label>
-                <input type="number" name="codigo_entrada" id="" class="campo_input">
+                <input type="number" name="codigo_entrada" id="codigo" class="campo_input">
             </div>
         </div>   
         <div class="campo_contato normal_width">
@@ -37,47 +37,47 @@
         </div>
         <div class="campo_contato small_width">
             <label for="CPOP">CPOP(Dentro):</label>
-            <input type="text" name="cpopD" id="" class="campo_input">
+            <input type="text" name="cpopD" id="cpop_dentro" class="campo_input">
         </div>
         <div class="campo_contato small_width">
             <label for="CPOP">CPOP(Fora):</label>
-            <input type="text" name="cpopF" id="" class="campo_input">
+            <input type="text" name="cpopF" id="cpop_fora" class="campo_input">
         </div>
         <div class="campo_contato small_width select_conainer">
             <p>Ativo:</p>
-            <select id="centro_de_estoque" class="campo_select">
-                <option value="sim">Sim</option>
-                <option value="não">Não</option>
+            <select id="ativo" class="campo_select">
+                <option value="true">Sim</option>
+                <option value="false">Não</option>
             </select>
         </div>
     </div>
-    <label>
-        <input type="checkbox" nome= "Movimenta Estoque" value="Movimenta Estoque">
-        Movimenta Estoque?
+    <label for="movimenta_estoque">
+        <input type="checkbox" nome="Movimenta Estoque" value="Movimenta Estoque" id="movimenta_estoque">
+        Movimenta Estoque
     </label><br>
 
-    <label>
-        <input type="checkbox" nome="Hab.Agrupamento" value="Hab.Agrupamento">
-        Hab.Agrupamento?
+    <label for="hab_agrupamento">
+        <input type="checkbox" nome="Hab.Agrupamento" value="Hab.Agrupamento" id="hab_agrupamento">
+        Habilita Agrupamento
     </label><br>
 
-    <label>
-        <input type="checkbox" nome="Hab.Movimento"  value="Hab.Movimento">
-        Hab.Movimento
+    <label for="hab_movimento">
+        <input type="checkbox" nome="Hab.Movimento"  value="Hab.Movimento" id="hab_movimento">
+        Habilita Movimento
     </label><br>
 
-     <label>
-        <input type="checkbox" nome="habilitaNF"  value="Habilita N.F">
+     <label for="hab_nf">
+        <input type="checkbox" nome="habilitaNF"  value="Habilita N.F" id="hab_nf">
         Habilita N.F
     </label><br>
 
-    <label>
-        <input type="checkbox" nome= "Atualiza Produto" value="Atualiza Produto">
-        Atualiza Produto?
+    <label for="atualiza_produto">
+        <input type="checkbox" nome= "Atualiza Produto" value="Atualiza Produto" id="atualiza_produto">
+        Atualiza Produto
     </label><br>
 
-      <label>
-        <input type="checkbox" nome= "Padrão" value="Padrão">
+      <label for="padrao">
+        <input type="checkbox" nome= "Padrão" value="Padrão" id="padrao">
         Padrão
     </label><br>
 

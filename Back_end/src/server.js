@@ -40,8 +40,8 @@ app.use(cors({
 const pool = new Pool({
     user: 'neondb_owner',
     /* host: 'ep-small-bar-a8bydmrx-pooler.eastus2.azure.neon.tech', */
-    host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
-    //host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech', // Branch: Renata
+    // host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
+    host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech', // Branch: Renata
     database: 'neondb',
     password: 'npg_Y3ZNL6fxehGI',
     port: 5432,
@@ -775,7 +775,53 @@ app.delete('/api/remove-foto/:userId', async (req, res) => {
     }
 });
 
+// Rota POST para inserir novo tipo_entrada
+app.post('/tipos_entrada', async (req, res) => {
+    const {
+        codigo,
+        descricao,
+        cpop_dentro,
+        cpop_fora,
+        ativo,
+        movimenta_estoque,
+        hab_agrupamento,
+        hab_movimento,
+        habilita_nf,
+        atualiza_produto,
+        padrao
+    } = req.body;
+
+    try {
+        const query = `
+            INSERT INTO sga.tipos_entrada
+            (codigo, descricao, cpop_dentro, cpop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            RETURNING *;
+        `;
+        const values = [codigo, descricao, cpop_dentro, cpop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao];
+
+        const result = await pool.query(query, values);
+
+        res.status(201).json({ message: 'Tipo de entrada criado com sucesso!', tipo_entrada: result.rows[0] });
+    } catch (err) {
+        console.error('Erro ao inserir tipo_entrada:', err);
+        res.status(500).json({ message: 'Erro ao inserir tipo_entrada', error: err.message });
+    }
+});
+
+// Rota GET para listar todos os tipos_entrada
+app.get('/api/tipos_entrada', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM sga.tipos_entrada ORDER BY codigo');
+        res.status(200).json(result.rows);
+    } catch (err) {
+        console.error('Erro ao buscar tipos_entrada:', err);
+        res.status(500).json({ message: 'Erro ao buscar tipos_entrada', error: err.message });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+
+
