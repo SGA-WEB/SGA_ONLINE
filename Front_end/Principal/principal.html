@@ -10,9 +10,11 @@
     <link rel="stylesheet" href="../estilos/tabela.css">
     <link rel="stylesheet" href="../estilos/geral.css">
 
+    <!-- Bando de dados para imagens -->
     <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
     <!-- Modulos -->
+
     <!-- Dashboard -->
     <link rel="stylesheet" href="../modulos/dashboard/dashboard.css">
     <!-- Configuração do usuário -->
@@ -20,7 +22,6 @@
 
     <!-- Modulo Contato -->
     <link rel="stylesheet" href="../modulos/contato/contato.css">
-
     <link rel="stylesheet" href="../modulos/contato/cadastro_contato/cadastro_contato.css">
     <link rel="stylesheet" href="../modulos/contato/cadastro_contato/endereco_contato/endereco_contato.css">
 
@@ -30,6 +31,10 @@
     <!-- Modulo Centro de Estoque -->
     <link rel="stylesheet" href="../modulos/centro_de_estoque/centro_de_estoque.css">
 
+    <!-- Modulo Movimentação de Estoque - Entrada de produtos -->
+    <link rel="stylesheet" href="../modulos/movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.css">
+
+    <!-- Modulo Configurações -->
     <link rel="stylesheet" href="../modulos/configuracoes/cadastro.css">
 
     <!-- Favicon: -->
@@ -60,9 +65,9 @@
                 </div>
                 <img id="usuario_seta" src="../imagens/seta_baixo.png" alt="seta para baixo">
             </div>
-            <div id="menu_usuario" style="display: none;">
-                <a id="btn_configuracao_usuario" class="btn_menu_usuario">Configurações do usuário</a>
-                <a href="../SGA_online-login/index.html"  class="btn_menu_usuario">Sair do sistema</a>
+            <div id="menu_usuario" class="popup_dropdown" style="display: none;">
+                <a id="btn_configuracao_usuario" class="btn_menu_usuario item_popup_dropdown">Configurações do usuário</a>
+                <a href="../SGA_online-login/index.html"  class="btn_menu_usuario item_popup_dropdown">Sair do sistema</a>
             </div>
         </div>
     </header>
@@ -91,6 +96,10 @@
                     <a href="#" class="item_dropdown" id="btn_centro_de_estoque">Centro de estoque</a>
                     <a href="#" class="item_dropdown" id="btn_produto">Produto</a>
                     <a href="#" class="item_dropdown" id="btn_movimentacao_de_estoque">Movimentação de estoque</a>
+                    <div id="menu_movimentacao_estoque" style="display: none;">
+                        <a id="btn_entrada_produtos" class="item_dropdown subitem">Entrada de produtos</a>
+                        <a id="btn_saida_produtos" class="item_dropdown subitem">Saída de produtos</a>
+                    </div>
                     <a href="#" class="item_dropdown disable" id="btn_cadastro_auxiliares">Cadastro auxiliares</a>
                 </div>
             </div>

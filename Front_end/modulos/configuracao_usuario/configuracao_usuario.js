@@ -2,13 +2,13 @@ import { visibilidadeSenha, alterarImgPerfil } from "../../scripts/funcionalidad
 import { carregarConteudo, mudarLogoParaPadrao } from "../../scripts/javaScript.js";
 import { popup, popup_aviso, popup_carregando, popup_confirmar, popup_erro } from "../../scripts/popup.js";
 
-export default async function configuracao_usuario() {
+export default async function configuracao_usuario( data ) {
     const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
-    const data = await response.json();
-    if (data.error) {
+    const dado = await response.json();
+    if (dado.error) {
         mudarLogoParaPadrao()
     } else {
-        alterarImgPerfil(data.imageUrl)
+        alterarImgPerfil(dado.imageUrl)
     }
 
     function fechar_menu_editar() {
@@ -92,6 +92,8 @@ export default async function configuracao_usuario() {
 
             if (!response.ok) {
                 const errorData = await response.json();
+                popup_erro("Erro ao enviar a imagem, verifique o formato da imagem.")
+                popup_carregando(true)
                 throw new Error(errorData.error || 'Erro no servidor');
             }
 
@@ -162,7 +164,7 @@ export default async function configuracao_usuario() {
     })
 
     // Botão voltar:
-    let btn_voltar = document.querySelector(".btn_voltar")
+    let btn_voltar = document.querySelector("#btn_voltar_contatos")
     btn_voltar.addEventListener('click', () => {
         carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"))
     })
@@ -186,7 +188,6 @@ export default async function configuracao_usuario() {
     btn_remover_foto.addEventListener('click', async () => {
         let confirmar = await popup_confirmar("Tem certeza que deseja remover a foto de perfil?")
         fechar_menu_editar()
-
         if (confirmar) {
             mudarLogoParaPadrao()
             try {

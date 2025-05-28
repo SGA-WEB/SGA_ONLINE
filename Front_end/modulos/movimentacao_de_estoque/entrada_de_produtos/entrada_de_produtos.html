@@ -1,0 +1,75 @@
+<section class="modulo">
+    <h1 class="titulo1">Entrada de produtos</h1>
+    <div class="header">
+        <div class="container_select">
+            <p>Coluna:</p>
+            <select id="select_coluna" class="campo_select">
+                <option value="id_entrada_produto">Código</option>
+                <option value="tipo_entrada">Tipo de Entrada</option>
+                <option value="numero_nf">Número NF</option>
+                <option value="data_recebimento">Data recebimento</option>
+                <option value="fornecedor_razao_social">Fornecedor</option>
+                <option value="valor_total">Valor total</option>
+                <option value="desconto">Desconto</option>
+                <option value="total">Total</option>
+                <option value="status">Status</option>
+            </select>
+        </div>
+        <div class="container_campo_pesquisa_btn">
+            <div class="campo_pesquisa" id="campo_pesquisa_produto">
+                <input id="input_pesquisa_tabela" type="text" placeholder="Pesquisar por Entrada" class="input_pesquisa">
+                <button class="btn_limpar_pesquisa hide center" id="btn_limpar_pesquisa_saida">
+                    <img id="icone_fechar" src="../imagens/icone_fechar.svg" alt="icone_fechar">
+                </button>
+                <button class="btn_pesquisar center" id="btn_pesquisar_produto">
+                    <img id="icone_pesquisa" src="../imagens/icone_pesquisa.png" alt="icone_pesquisa">
+                </button>
+            </div>
+        </div>
+    </div>
+    <button class="btn_add" id="btn_adicionar">
+        <img src="../imagens/btn_add.svg" alt="Icone Adicionar">
+        <span>Adicionar Entrada</span>
+    </button>
+    <div class="container_tabela">
+        <table class="tabela" id="tabela_produtos">
+            <thead>
+                <tr>
+                    <th id="tabela_codigo">Código</th>
+                    <th id="tabela_tipo_de_entrada">Tipo de Entrada</th>
+                    <th id="tabela_numero_nf">Número NF</th>
+                    <th id="tabela_data_recebimento">Data recebimento</th>
+                    <th id="tabela_fornecedor">Fornecedor</th>
+                    <th id="tabela_valor_total">Valor total</th>
+                    <th id="tabela_desconto">Desconto</th>
+                    <th id="tabela_total">Total</th>
+                    <th id="tabela_status">Status</th>
+                </tr>
+            </thead>
+            <tbody class="tbody">
+
+            </tbody>
+        </table>
+    </div>
+</section>
+<!-- POP-UP ALERTA -->
+<section class="container_popup " id="container_popup_excluir_produto">
+    <div class="popup popup_alerta" id="popup_excluir_produto">
+        <header>
+            <img src="..//..//imagens/icone_alerta.svg" alt="icone_alerta">
+            <h1>Confirme a exclusão</h1>
+            <button class="btn_fechar_popup" id="btn_fechar_popup_excluir_produto">
+                <img src="../imagens/icone_fechar.svg" alt="botão fechar popup" id="btn_fechar_popup_excluir_produto" class="icone_fechar">
+            </button>
+        </header>
+        <main>
+            <p>
+                Você tem certeza que deseja excluir o produto: <span class="codigo_popup_excluir"></span> - <span class="item_popup_excluir"></span>
+            </p>
+            <div class="btns_container">
+                <button class="btn" id="btn_popup_excluir_cancelar">Cancelar</button>
+                <button class="btn btn5" id="btn_popup_excluir_excluir">Excluir</button>
+            </div>
+        </main>
+    </div>
+</section>

@@ -198,6 +198,7 @@
 .container_popups {
     position: fixed;
     right:  0;
+    z-index: 4;
 }
 
 .hide_popup {
