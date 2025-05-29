@@ -399,13 +399,18 @@ document.addEventListener("click", (e) => {
 
 // Menu dropdown - Entrada e saída de produtos da movimentação de estoque:
 let btn_movimentacao_de_estoque = document.querySelector("#btn_movimentacao_de_estoque")
-btn_movimentacao_de_estoque.addEventListener("click", () => {
-    let menu_movimentacao_estoque = document.querySelector("#menu_movimentacao_estoque")
-    if (menu_movimentacao_estoque.style.display == "none") {
-        menu_movimentacao_estoque.style.display = "flex"
-    } else {
-        menu_movimentacao_estoque.style.display = "none"
-    }
+let ceta_movimentacao_estoque = btn_movimentacao_de_estoque.querySelector(".seta_cima_baixo")
+btn_movimentacao_de_estoque.addEventListener("mouseenter", () => {
+    document.querySelector("#menu_movimentacao_estoque").style.display = "flex"
+    ceta_movimentacao_estoque.style.transform = "rotate(180deg)"
+    ceta_movimentacao_estoque.style.transition = ".1s"
+})
+
+document.querySelector("#menu_movimentacao_estoque").addEventListener("mouseleave", (e) => {
+    e.stopPropagation() // Impede que o evento de mouseleave seja propagado para o documento
+    document.querySelector("#menu_movimentacao_estoque").style.display = "none"
+    ceta_movimentacao_estoque.style.transform = "rotate(0deg)"
+    ceta_movimentacao_estoque.style.transition = ".1s"
 })
 
 let btn_entrada_produto = document.querySelector("#btn_entrada_produtos")
