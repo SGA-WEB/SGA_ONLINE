@@ -5,7 +5,7 @@ import { carregarDadosNaTabela } from "../../scripts/carregarDadosNaTabela.js";
 
 export default async function tipos_de_entrada () {
     document.querySelector("#btn_adicionar_tipos_de_entrada").addEventListener("click",() => {
-        carregarConteudo("lista_cadastro_entrada/cadastro_tipo_entrada/cadastro_tipo_entrada.html", document.querySelector(".principal"), false, cadastro_tipo_entrada)
+        carregarConteudo("tipo_de_entrada/cadastro_tipo_entrada/cadastro_tipo_entrada.html", document.querySelector(".principal"), false, cadastro_tipo_entrada)
     })
 
     let dados = await buscarDados('tipos_entrada')

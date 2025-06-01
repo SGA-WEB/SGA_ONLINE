@@ -21,7 +21,7 @@ import centro_de_estoque from "../modulos/centro_de_estoque/centro_de_estoque.js
 import configuracoes from "../modulos/configuracoes/configuracoes.js";
 import { aguardarRenderizacao, alterarImgPerfil } from "./funcionalidades.js";
 import { popup_carregando } from "./popup.js";
-import tipos_de_entrada from "../modulos/lista_cadastro_entrada/tipos_de_entrada.js";
+import tipos_de_entrada from "../modulos/tipo_de_entrada/tipos_de_entrada.js";
 import entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.js";
 
 function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com o nome de
@@ -399,7 +399,7 @@ document.addEventListener("click", (e) => {
 })
 
 document.querySelector("#btn_cadastro_auxiliares").addEventListener("click", () => {
-    carregarConteudo("lista_cadastro_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada)
+    carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada)
 })
 
 // Menu dropdown - Entrada e saída de produtos da movimentação de estoque:
