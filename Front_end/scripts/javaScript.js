@@ -220,6 +220,8 @@ btns_menu.forEach((e) => {
                     el.classList.add("modulo_selecionado") // Adicionando a classe selecionado no modulo que foi clicado
                     document.querySelector(".item_hiden")?.remove()
                     document.querySelector(".modulo_pre-selecionado")?.classList.remove("modulo_pre-selecionado")
+                    document.querySelector(".sub_menu_pai").classList.add("sub_menu_fechado") // Fecha o sub menu caso houver um aberto
+
                     if (!btn) { // Se não for um botão
                         displayMenu(el.nextElementSibling) // Manda como parametro para função o proximo irmão do elemento selecionado
                     } else {
@@ -265,7 +267,7 @@ btns_menu.forEach((e) => {
             }
         })
 
-        document.querySelectorAll(".item_dropdown").forEach(e => { // Quando for selecionado um módulo é retirado a marcação de todos os itens do menu
+        document.querySelectorAll(".item_dropdown, .sub_menu_pai").forEach(e => { // Quando for selecionado um módulo é retirado a marcação de todos os itens do menu
             if (!btn_menu_selecionado)
                 e.classList.remove("item_menu_selecionado")
         })
@@ -302,9 +304,13 @@ itens_dropdown.forEach(e => {
                     if (subitem.style.display == "block") { // Se o menu dropdown estiver aberto
                         subitem.style.display = "none" // Se tiver um subitem ele some
                     }
+                    document.querySelector(".sub_menu_pai").classList.add("sub_menu_fechado") // Fecha submenu caso houver um aberto
                 }
                 modulo_selecionado_atual.classList.add("modulo_selecionado") // Adiciona a classe "modulo_selecionado" somente no módulo clicado
                 modulo_selecionado_atual.classList.add("btn_menu_selecionado") // Adiciona a classe "btn_menu_selecionado" somente no módulo clicado
+
+
+                document.querySelector(".item_menu_selecionado")?.classList.remove("item_menu_selecionado") // Se tiver um item selecionado é retirada sua a classe
 
                 e.currentTarget.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
             } else {
@@ -360,7 +366,7 @@ btnUsuario.addEventListener("click", () => {
 let btn_configuracao_usuario = document.querySelector("#btn_configuracao_usuario")
 btn_configuracao_usuario.addEventListener("click", () => {
     let item_hiden = false
-    let btn_modulos_ativos = document.querySelectorAll(".modulo_selecionado, .modulo_pre-selecionado")
+    let btn_modulos_ativos = document.querySelectorAll(".modulo_selecionado, .modulo_pre-selecionado, submenu_pai")
 
     document.querySelector("#usuario_seta").style.transform = "rotate(0deg)"
 
@@ -377,6 +383,7 @@ btn_configuracao_usuario.addEventListener("click", () => {
             ) {
                 displayMenu(btn_modulo_ativo.nextElementSibling, true) // Fecha o menu Dropdown
             }
+            document.querySelector(".sub_menu_pai").classList.add("sub_menu_fechado") // Fecha submenu caso houver um aberto
             btn_modulo_ativo.classList.remove("modulo_selecionado")
             btn_modulo_ativo.classList.remove("modulo_pre-selecionado")
             btn_modulo_ativo.classList.remove("btn_menu_selecionado")
@@ -403,19 +410,33 @@ document.querySelector("#btn_cadastro_auxiliares").addEventListener("click", () 
 })
 
 // Menu dropdown - Entrada e saída de produtos da movimentação de estoque:
+
 let btn_movimentacao_de_estoque = document.querySelector("#btn_movimentacao_de_estoque")
-btn_movimentacao_de_estoque.addEventListener("click", () => {
-    let menu_movimentacao_estoque = document.querySelector("#menu_movimentacao_estoque")
-    if (menu_movimentacao_estoque.style.display == "none") {
-        menu_movimentacao_estoque.style.display = "flex"
-    } else {
-        menu_movimentacao_estoque.style.display = "none"
+let menu_movimentacao_estoque = document.querySelector("#menu_movimentacao_estoque")
+
+// Se o cursor passar por cima do botão de movimentação de estoque, o menu dropdown abre
+btn_movimentacao_de_estoque.addEventListener("mouseenter", () => {
+    btn_movimentacao_de_estoque.classList.remove("sub_menu_fechado")
+})
+
+// Se o cursor sair do botão de movimentação de estoque, o menu dropdown fecha
+btn_movimentacao_de_estoque.addEventListener("mouseleave", (e) => {
+    if (!e.toElement.classList.contains("subitem") && !menu_movimentacao_estoque.querySelector(".item_menu_selecionado")) { // Se o cursor não estiver sobre um subitem
+        btn_movimentacao_de_estoque.classList.add("sub_menu_fechado") // Fecha o menu dropdown
+    }
+})
+
+// Se o cursor sair do menu de movimentação de estoque, o menu dropdown fecha
+menu_movimentacao_estoque.addEventListener("mouseleave", (e) => {
+    if(!menu_movimentacao_estoque.querySelector(".item_menu_selecionado")) {
+        btn_movimentacao_de_estoque.classList.add("sub_menu_fechado")
     }
 })
 
 let btn_entrada_produto = document.querySelector("#btn_entrada_produtos")
 btn_entrada_produto.addEventListener("click", () => {
     btn_entrada_produto.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
+    btn_movimentacao_de_estoque.classList.add("item_menu_selecionado")
     carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
 })
 

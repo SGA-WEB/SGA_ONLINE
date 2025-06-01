@@ -380,13 +380,36 @@ body {
     border-left: 2px solid var(--azul) !important;
     color: var(--azul) !important;
 }
+.dropdown .sub_menu_pai {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-right: 6px;
+}
 
-/* Menu dropdown movimentação de estoque: */
+/* Sub menu dropdown movimentação de estoque: */
 #menu_movimentacao_estoque {
     position: static;
     display: flex;
     flex-direction: column;
     margin: 0 0 10px 20px;
+}
+
+#btn_movimentacao_de_estoque .seta_cima_baixo {
+    transform: rotate(180deg);
+    transition: .2s;
+}
+
+.sub_menu_fechado  {
+
+    + #menu_movimentacao_estoque {
+        display: none !important;
+    }
+
+    .seta_cima_baixo {
+        transform: rotate(0deg) !important;
+        transition: .2s !important;
+    }
 }
 
 /* Estilos do menu minimizado */
