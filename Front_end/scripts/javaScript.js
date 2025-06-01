@@ -432,7 +432,7 @@ let btn_entrada_produto = document.querySelector("#btn_entrada_produtos")
 btn_entrada_produto.addEventListener("click", () => {
     btn_entrada_produto.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
     btn_movimentacao_de_estoque.classList.add("item_menu_selecionado")
-    carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
 })
+carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
 
 export { carregarConteudo, btnMenuLateral, click_btn_menu, fecharMenu, mudarLogoParaPadrao }

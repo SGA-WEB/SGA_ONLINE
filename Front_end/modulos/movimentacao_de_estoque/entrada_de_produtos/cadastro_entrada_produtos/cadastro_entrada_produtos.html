@@ -1,0 +1,78 @@
+<section class="modulo" id="modulo_cadastro_entrada_produto">
+    <button class="btn_nav" id="btn_voltar_entrada_produtos">
+        <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
+        <p class="btn_voltar">Voltar</p>
+    </button>
+    <div class="modulo_header header_cadastro">
+        <h2 class="h2_titulo">Cadastro de entrada de produtos</h2>
+        <div class="container_codigo_data">
+            <p class="p_codigo_id">Codigo: <span class="codigo_id">16</span></p>
+            <div class="div_data_cadastro">
+                <p class="p_data_cadastro">Data de cadastro:</p>
+                <p class="data_cadastro"></p>
+            </div>
+        </div>
+    </div>
+    <div class="modulo_main">
+        <div class="container_small_width" id="container_radios">
+            <div class="campo_contato small_width">
+                <label for="chave_nfe">Chave NF-e:</label>
+                <input type="number" name="chave_nfe" id="chave_nfe" class="campo_input">
+            </div>
+            <div class="campo_contato small_width">
+                <label for="numero_nf">Número N.F</label>
+                <input type="number" name="numero_nf" id="numero_nf" class="campo_input">
+            </div>
+        </div>
+        <div class="container_small_width">
+            <div class="campo_contato small_width">
+                <label for="modelo">Modelo Fiscal</label>
+                <input type="text" name="modelo" id="modelo" class="campo_input">
+            </div>
+            <div class="campo_contato small_width">
+                <label for="tipo_entrada">Tipo de entrada</label>
+                <input type="number" name="tipo_entrada" id="tipo_entrada" class="campo_input">
+            </div>
+        </div>
+        <div class="container_small_width">
+            <div class="campo_contato small_width">
+                <label for="serie">Série</label>
+                <input type="number" name="serie" id="serie" class="campo_input">
+            </div>
+            <div class="campo_contato small_width">
+                <label for="sub_serie">Sub-Série</label>
+                <input type="number" name="sub_serie" id="sub_serie" class="campo_input">
+            </div>
+        </div>
+        <div class="container_small_width">
+            <div class="campo_contato small_width">
+                <label for="data_emissão">Data de Emissão</label>
+                <input type="date" name="data_emissão" id="data_emissão" class="campo_input">
+            </div>
+            <div class="campo_contato small_width">
+                <label for="data_recebimento">Data de Recebimento</label>
+                <input type="date" name="data_recebimento" id="data_recebimento" class="campo_input">
+            </div>
+        </div>
+        <div class="container_small_width">
+            <div class="campo_contato small_width select_conainer">
+                <p>Fornecedor:</p>
+                <select id="fornecedor" class="campo_select">
+                    <option value="principal">Principal</option>
+                    <option value="secundario">Secundário</option>
+                </select>
+            </div>
+            <div class="campo_contato small_width select_conainer">
+                <p>Status:</p>
+                <select id="status" class="campo_select">
+                    <option value="principal">Principal</option>
+                    <option value="secundario">Secundário</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <button class="btn btn_salvar">
+        <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
+        <p>Salvar</p>
+    </button>
+</section>
