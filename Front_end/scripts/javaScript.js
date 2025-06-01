@@ -435,4 +435,35 @@ btn_entrada_produto.addEventListener("click", () => {
     carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
 })
 
+// Menu dropdown - cadastros auxiliares:
+
+let btn_cadastro_auxiliares = document.querySelector("#btn_cadastro_auxiliares")
+let menu_cadastro_auxiliares = document.querySelector("#menu_cadastro_auxiliares")
+
+btn_cadastro_auxiliares.addEventListener("mouseenter", () => {
+    btn_cadastro_auxiliares.classList.remove("sub_menu_fechado")
+})
+
+// Se o cursor sair do botão de movimentação de estoque, o menu dropdown fecha
+btn_cadastro_auxiliares.addEventListener("mouseleave", (e) => {
+    if (!e.toElement.classList.contains("subitem") && !menu_cadastro_auxiliares.querySelector(".item_menu_selecionado")) { // Se o cursor não estiver sobre um subitem
+        btn_cadastro_auxiliares.classList.add("sub_menu_fechado") // Fecha o menu dropdown
+    }
+})
+
+// Se o cursor sair do menu de movimentação de estoque, o menu dropdown fecha
+menu_cadastro_auxiliares.addEventListener("mouseleave", (e) => {
+    if(!menu_cadastro_auxiliares.querySelector(".item_menu_selecionado")) {
+        btn_cadastro_auxiliares.classList.add("sub_menu_fechado")
+    }
+})
+
+let btn_tipos_de_entrada = document.querySelector("#btn_tipos_de_entrada")
+btn_tipos_de_entrada.addEventListener("click", () => {
+    btn_tipos_de_entrada.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
+    btn_cadastro_auxiliares.classList.add("item_menu_selecionado")
+    carregarConteudo("")
+})
+
+
 export { carregarConteudo, btnMenuLateral, click_btn_menu, fecharMenu, mudarLogoParaPadrao }
