@@ -405,10 +405,6 @@ document.addEventListener("click", (e) => {
     }
 })
 
-document.querySelector("#btn_cadastro_auxiliares").addEventListener("click", () => {
-    carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada)
-})
-
 // Menu dropdown - Entrada e saída de produtos da movimentação de estoque:
 
 let btn_movimentacao_de_estoque = document.querySelector("#btn_movimentacao_de_estoque")
@@ -467,7 +463,7 @@ let btn_tipos_de_entrada = document.querySelector("#btn_tipos_de_entrada")
 btn_tipos_de_entrada.addEventListener("click", () => {
     btn_tipos_de_entrada.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
     btn_cadastro_auxiliares.classList.add("item_menu_selecionado")
-    carregarConteudo("")
+    carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada)
 })
 
 
