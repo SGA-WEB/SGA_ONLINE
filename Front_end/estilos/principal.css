@@ -388,21 +388,20 @@ body {
 }
 
 /* Sub menu dropdown movimentação de estoque: */
-#menu_movimentacao_estoque {
+.sub_menu {
     position: static;
     display: flex;
     flex-direction: column;
     margin: 0 0 10px 20px;
 }
 
-#btn_movimentacao_de_estoque .seta_cima_baixo {
+.sub_menu_pai .seta_cima_baixo {
     transform: rotate(180deg);
     transition: .2s;
 }
 
 .sub_menu_fechado  {
-
-    + #menu_movimentacao_estoque {
+    + .sub_menu {
         display: none !important;
     }
 

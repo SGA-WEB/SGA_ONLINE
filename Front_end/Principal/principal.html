@@ -93,7 +93,7 @@
                         <img class="img_icone_menu" src="../imagens/icone_estoque.png" alt="icone_estoque">
                         <span class="span_modulo">Estoque</span>
                     </div>
-                    <img class="seta_cima_baixo"  src="../imagens/seta_baixo.png" alt="seta_baixo">
+                    <img class="seta_cima_baixo" src="../imagens/seta_baixo.png" alt="seta_baixo">
                     <div class="hide_text">Estoque</div>
                 </button>
                 <div class="dropdown" id="dd_estoque" style="display: none;">
@@ -103,11 +103,18 @@
                         <span>Movimentação de estoque</span>
                         <img src="../imagens/seta_baixo.png" class="seta_cima_baixo" alt="seta baixo">
                     </a>
-                    <div id="menu_movimentacao_estoque">
+                    <div id="menu_movimentacao_estoque" class="sub_menu">
                         <a id="btn_entrada_produtos" class="item_dropdown subitem">Entrada de produtos</a>
                         <a id="btn_saida_produtos" class="item_dropdown subitem">Saída de produtos</a>
                     </div>
-                    <a href="#" class="item_dropdown" id="btn_cadastro_auxiliares">Cadastro auxiliares</a>
+                    <a href="#" class="sub_menu_pai sub_menu_fechado" id="btn_cadastro_auxiliares">
+                        <span>Cadastro auxiliares</span>
+                        <img src="../imagens/seta_baixo.png" class="seta_cima_baixo" alt="seta baixo">
+                    </a>
+                    <div id="menu_cadastro_auxiliares" class="sub_menu">
+                        <a id="btn_tipos_de_entrada" class="item_dropdown subitem">Tipos de entrada</a>
+                        <a id="btn_tipos_de_saida" class="item_dropdown subitem">Tipos de saída</a>
+                    </div>
                 </div>
             </div>
             <div class="item_menu">
@@ -116,7 +123,7 @@
                         <img class="img_icone_menu" src="../imagens/icone_vendas.png" alt="icone_vendas">
                         <span class="span_modulo">Vendas</span>
                     </div>
-                    <img class="seta_cima_baixo"  src="../imagens/seta_baixo.png" alt="seta_baixo">
+                    <img class="seta_cima_baixo" src="../imagens/seta_baixo.png" alt="seta_baixo">
                     <div class="hide_text">Vendas</div>
                 </button>
             </div>
