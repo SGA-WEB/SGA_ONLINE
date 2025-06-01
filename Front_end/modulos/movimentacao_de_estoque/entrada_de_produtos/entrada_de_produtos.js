@@ -10,6 +10,7 @@ export default async function entrada_de_produtos() {
     mudarPesquisa(document.querySelector("#input_pesquisa_tabela"))
 
     let dados = await buscarDados("entrada_produto")
+    console.log(dados)
     let colunasExibir = ["id_entrada_produto", "tipo_entrada", "numero_nf", "data_recebimento", "fornecedor_razao_social", "valor_total", "desconto", "total", "status" ]
 
     carregarDadosNaTabela(dados, colunasExibir)
@@ -21,7 +22,8 @@ export default async function entrada_de_produtos() {
             "movimentacao_de_estoque/entrada_de_produtos/cadastro_entrada_produtos/cadastro_entrada_produtos.html",
             document.querySelector(".principal"),
             false,
-            cadastro_entrada_produtos, dados
+            cadastro_entrada_produtos,
+            dados
         )
     })
 }

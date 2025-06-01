@@ -259,6 +259,7 @@ app.get('/api/entrada_produto', async (req, res) => {
         ep.desconto,
         ep.total,
         ep.status,
+        ep.fornecedor_id,
         c.razao_social AS fornecedor_razao_social
       FROM sga.entrada_produto ep
       INNER JOIN sga.contato c
@@ -666,6 +667,48 @@ app.put('/usuarios/:id_usuario', async (req, res) => {
         console.error('Erro ao atualizar usuário:', err);
         res.status(500).json({ error: 'Erro ao atualizar usuário' });
     }
+});
+
+// Rota para inserir entrada de produto
+app.post('/entrada_produto', async (req, res) => {
+  const {
+    tipo_entrada,
+    numero_nf,
+    data_recebimento,
+    fornecedor_id,
+    valor_total,
+    desconto,
+    total,
+    status,
+    modelo_documento_fiscal,
+    serie,
+    subserie,
+    data_emissao
+  } = req.body;
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO sga.entrada_produto (
+        tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
+        desconto, total, status, data_criacao,
+        modelo_documento_fiscal, serie, subserie, data_emissao
+      ) VALUES (
+        $1, $2, $3, $4, $5,
+        $6, $7, $8, CURRENT_TIMESTAMP,
+        $9, $10, $11, $12
+      ) RETURNING *`,
+      [
+        tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
+        desconto, total, status,
+        modelo_documento_fiscal, serie, subserie, data_emissao
+      ]
+    );
+
+    res.status(201).json({ sucesso: true, entrada: result.rows[0] });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ sucesso: false, erro: 'Erro ao inserir entrada de produto.' });
+  }
 });
 
 // Rota para upload da imagem
