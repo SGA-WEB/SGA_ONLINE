@@ -1,12 +1,16 @@
 import express from 'express';
 import session from 'express-session';
-import pkg from 'pg';
+// import pkg from 'pg';
 import cors from 'cors';
 import multer from 'multer';
 import sharp from 'sharp';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
+// import { Pool } from 'pg/lib/index.js';
+import pkg from 'pg';
+const { Pool } = pkg;
+
 
 const supabaseUrl = 'https://ertkiirzzswpxkgcxret.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVydGtpaXJ6enN3cHhrZ2N4cmV0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjEyMzMwNCwiZXhwIjoyMDYxNjk5MzA0fQ.sldy2ROLnO14WI-Iam1iqjCyfHA2wfWFNWcbwcI1snE';
@@ -15,7 +19,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const { Pool } = pkg;
+// const { Pool } = pkg;
 const app = express();
 
 app.use((req, res, next) => {
@@ -105,23 +109,31 @@ app.use((err, req, res, next) => {
 });
 
 //// 🔐 Rota para validar o login
+// Rota para validar o login (POST)
 app.post('/api/login', async (req, res) => {
     try {
         const { email, senha } = req.body;
 
+        // Validações básicas
+        if (!email || !senha) {
+            return res.status(400).json({ error: 'E-mail e senha são obrigatórios' });
+        }
+
+        // Verifica se o e-mail existe no banco de dados
         const userResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1', [email]);
 
         if (userResult.rows.length === 0) {
             return res.status(404).json({ error: 'E-mail não encontrado' });
         }
 
+        // Verifica se a senha está correta
         const senhaResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1 AND senha = $2', [email, senha]);
 
         if (senhaResult.rows.length === 0) {
             return res.status(401).json({ error: 'Senha incorreta' });
         }
 
-        // Criar sessão
+        // Cria a sessão do usuário
         req.session.user = {
             id: userResult.rows[0].id_usuario,
             nome: userResult.rows[0].nome,
@@ -131,10 +143,11 @@ app.post('/api/login', async (req, res) => {
         res.json({ message: 'Login bem-sucedido' });
 
     } catch (error) {
-        console.error(error);
+        console.error('Erro interno no servidor:', error);
         res.status(500).json({ error: 'Erro interno no servidor' });
     }
 });
+
 
 //TESTE DE ROTA
 app.get('/api/testar-sessao', (req, res) => {
