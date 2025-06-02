@@ -77,7 +77,7 @@ export default function crudLayout (obj, tr) {
             editar_contato: editar_contato,
             excluir_contato: excluir_contato
         }
-
+console.log(`Ação: ${acao} - Tabela: ${nomeTabelaAtual}`)
         switch (nomeTabelaAtual) { // Carrega a página do CRUD de acordo com a tabela atual
             case "centro de estoque":
                 if (acao == 'excluir') {
