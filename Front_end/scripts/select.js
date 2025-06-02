@@ -11,7 +11,7 @@ export default function select2 (largura = "80px") {
         $('.campo_select').select2({
             placeholder: 'Selecione a coluna',
             width: largura,
-            minimumResultsForSearch: Infinity,
+            minimumResultsForSearch: 5,
         });
     });
 }

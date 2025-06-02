@@ -1,9 +1,11 @@
 import { dataAtual } from "../../../../scripts/funcionalidades.js";
 import select2 from "../../../../scripts/select.js";
+import buscarDados from "../../../../scripts/buscarDados.js";
 
-export default function cadastro_entrada_produtos(dados) {
+export default async function cadastro_entrada_produtos(dados) {
     select2("100%")
     dataAtual()
+    let produtos = await buscarDados("produto")
 
     let ultimoIdProduto
     let fornecedores = []
@@ -14,9 +16,13 @@ export default function cadastro_entrada_produtos(dados) {
             fornecedor_razao_social: dado.fornecedor_razao_social
         })
     });
+
+    // Remove fornecedores duplicados
     fornecedores = [...new Set(fornecedores.map(f => f.fornecedor_id))].map(id => {
         return fornecedores.find(f => f.fornecedor_id === id);
     });
+    // Ordena os fornecedores pelo id
+    produtos = produtos.sort((a, b) => a.id_produto - b.id_produto);
 
     document.querySelector(".codigo_id").textContent = ultimoIdProduto + 1
 
@@ -27,7 +33,22 @@ export default function cadastro_entrada_produtos(dados) {
         document.querySelector("#fornecedor").appendChild(option);
     });
 
+    const selectProduto = document.querySelector("#produto");
+
+    produtos.forEach(produto => {
+        let option = document.createElement("option");
+        option.value = produto.produto;
+        option.text = `${produto.id_produto} - ${produto.produto}`;
+        selectProduto.appendChild(option);
+    })
+
     let formEntradaProduto = document.querySelector("#form_entrada_produto");
+
+    $('#produto').on('change', (e) => {
+        console.log(e.target.value);
+        let produtoSelecionado = produtos.find(produto => produto.produto === e.target.value);
+        console.log(produtoSelecionado);
+    })
 
     formEntradaProduto.addEventListener("submit", async (e) => {
         e.preventDefault();
