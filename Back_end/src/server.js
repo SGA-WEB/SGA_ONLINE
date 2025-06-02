@@ -255,9 +255,7 @@ app.get('/api/entrada_produto', async (req, res) => {
         ep.numero_nf,
         ep.data_recebimento,
         c.razao_social AS fornecedor_razao_social,
-        ep.valor_total,
         ep.desconto,
-        ep.total,
         ep.status,
         ep.fornecedor_id,
         c.razao_social AS fornecedor_razao_social

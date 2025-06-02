@@ -27,16 +27,16 @@ export default function cadastro_entrada_produtos(dados) {
         document.querySelector("#fornecedor").appendChild(option);
     });
 
-    console.log(dados)
     let formEntradaProduto = document.querySelector("#form_entrada_produto");
+
     formEntradaProduto.addEventListener("submit", async (e) => {
         e.preventDefault();
         let formData = new FormData(formEntradaProduto);
         let data = Object.fromEntries(formData);
-        console.log(data);
 
         // Converter campos numéricos corretamente
-        data.fornecedor_id = parseInt(data.fornecedor_id);
+        console.log(data);
+        data.fornecedor = parseInt(data.fornecedor);
         data.valor_total = parseFloat(data.valor_total);
         data.desconto = parseFloat(data.desconto || 0);
         data.total = parseFloat(data.total);
