@@ -855,7 +855,7 @@ app.post('/tipos_entrada', async (req, res) => {
 // Rota GET para listar todos os tipos_entrada
 app.get('/api/tipos_entrada', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM sga.tipos_entrada ORDER BY codigo');
+        const result = await pool.query('SELECT * FROM sga.tipos_entrada ORDER BY id_tipo_de_entrada');
         res.status(200).json(result.rows);
     } catch (err) {
         console.error('Erro ao buscar tipos_entrada:', err);
