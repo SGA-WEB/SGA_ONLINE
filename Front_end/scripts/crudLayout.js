@@ -12,7 +12,7 @@ import visualizar_contato from "../modulos/contato/visualizar_contato/visualizar
 import editar_contato from "../modulos/contato/editar_contato/editar_contato.js";
 import excluir_contato from "../modulos/contato/excluir_contato.js";
 
-import { popup, popup_confirmar } from "./popup.js"
+import excluir_tipo_de_entrada from "../modulos/tipo_de_entrada/excluir_tipos_de_entrada/excluir_tipo_de_entrada.js";
 
 export default function crudLayout (obj, tr) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
@@ -22,7 +22,10 @@ export default function crudLayout (obj, tr) {
     for (let key in obj) {
         if (key.startsWith('id_')) {
             key = key.replace('id_', '')
-            nomeTabelaAtual = key.replace('_', ' de ');
+            nomeTabelaAtual = key
+            if (!key.includes('de')) {
+                nomeTabelaAtual = key.replace('_', ' de ');
+            }
         }
     }
 
@@ -75,9 +78,10 @@ export default function crudLayout (obj, tr) {
             excluir_produto: excluir_produto,
             visualizar_contato: visualizar_contato,
             editar_contato: editar_contato,
-            excluir_contato: excluir_contato
+            excluir_contato: excluir_contato,
+            excluir_tipo_de_entrada: excluir_tipo_de_entrada,
         }
-console.log(`Ação: ${acao} - Tabela: ${nomeTabelaAtual}`)
+        console.log(`Ação: ${acao} - Tabela: ${nomeTabelaAtual}`)
         switch (nomeTabelaAtual) { // Carrega a página do CRUD de acordo com a tabela atual
             case "centro de estoque":
                 if (acao == 'excluir') {
@@ -120,6 +124,17 @@ console.log(`Ação: ${acao} - Tabela: ${nomeTabelaAtual}`)
                         funcoes[`${acao}_contato`],
                         obj,
                     );
+                }
+            break;
+            case "tipo_de_entrada":
+                if (acao == "excluir") {
+                    funcoes[`excluir_tipo_de_entrada`](obj)
+                } else {
+                    carregarConteudo(
+                        `tipo_de_entrada/${acao}_tipos_de_entrada/${acao}_tipo_de_entrada.html`,
+                        document.querySelector('.principal'),
+                        false,
+                    )
                 }
             break;
             default:
