@@ -1,6 +1,10 @@
 import { dataAtual } from "../../../../scripts/funcionalidades.js";
 import select2 from "../../../../scripts/select.js";
 import buscarDados from "../../../../scripts/buscarDados.js";
+import { carregarConteudo } from "../../../../scripts/javaScript.js";
+import entrada_de_produtos from "../entrada_de_produtos.js";
+import { popup } from "../../../../scripts/popup.js";
+import { carregarDadosNaTabela, pesquisar } from "../../../../scripts/carregarDadosNaTabela.js";
 
 export default async function cadastro_entrada_produtos(dados) {
     select2("100%")
@@ -33,25 +37,15 @@ export default async function cadastro_entrada_produtos(dados) {
         document.querySelector("#fornecedor").appendChild(option);
     });
 
-    const selectProduto = document.querySelector("#produto");
-
-    produtos.forEach(produto => {
-        let option = document.createElement("option");
-        option.value = produto.produto;
-        option.text = `${produto.id_produto} - ${produto.produto}`;
-        selectProduto.appendChild(option);
+    let btn_adicionar_relacao = document.querySelector("#btn_adicionar_relacao");
+    btn_adicionar_relacao.addEventListener("click", async () => {
+        popup("abrir", 0, btn_adicionar_relacao)
+        let dados = await buscarDados("produto")
+        carregarDadosNaTabela(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"])
+        pesquisar(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"])
     })
 
     let formEntradaProduto = document.querySelector("#form_entrada_produto");
-
-    $('#produto').on('change', (e) => {
-        let produtoSelecionado = produtos.find(produto => produto.produto === e.target.value);
-
-        for(let produto in produtoSelecionado) {
-            console.log(produto);
-        }
-    })
-
     formEntradaProduto.addEventListener("submit", async (e) => {
         e.preventDefault();
         let formData = new FormData(formEntradaProduto);
@@ -85,5 +79,9 @@ export default async function cadastro_entrada_produtos(dados) {
             alert('Erro ao conectar com a API.');
             console.error(err);
         }
+    })
+
+    document.querySelector("#btn_voltar_entrada_produtos").addEventListener("click", () => {
+        carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
     })
 }

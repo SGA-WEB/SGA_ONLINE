@@ -248,6 +248,14 @@
     background-color: transparent;
 }
 
+/* PopUp tabela de relação */
+.popup_relacao .popup {
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: scroll;
+    width: 100%;
+}
+
 /* PopUp alerta */
 .container_popup_alerta {
     position: absolute;

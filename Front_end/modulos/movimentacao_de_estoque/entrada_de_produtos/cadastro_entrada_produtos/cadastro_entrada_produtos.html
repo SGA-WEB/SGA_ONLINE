@@ -75,21 +75,77 @@
                     </select>
                 </div>
             </div>
-            <div class="container_small_width">
-                <div class="campo_contato small_width select_conainer">
-                    <p>Produto:</p>
-                    <select id="produto" class="campo_select" name="produto">
-                        <option value="Default">Escolha um produto</option>
-                    </select>
-                </div>
-            </div>
-            <table class="tabela_relacao">
 
-            </table>
         </div>
+        <button type="button" class="btn_add" id="btn_adicionar_relacao">
+            <img src="../imagens/btn_add.svg" alt="Icone Adicionar">
+            <span>Adicionar relação</span>
+        </button>
+        <table class="tabela_relacao">
+            <thead>
+                <th>
+                    <tr class="tr_relacao">
+                        <td>Código</td>
+                        <td>Produto</td>
+                        <td>Quantidade</td>
+                        <td>Preço varejo</td>
+                        <td>Preço atacado</td>
+                    </tr>
+                </th>
+            </thead>
+        </table>
         <button type="submit" class="btn btn_salvar">
             <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
             <p>Salvar</p>
         </button>
     </form>
+    <div class="container_popup popup_relacao">
+        <div class="popup">
+            <button class="btn_fechar_popup">
+                <img src="../../../../imagens/icone_fechar.svg" alt="Icone Fechar">
+            </button>
+            <h2>Selecione os produtos para relacionar a entrada</h2>
+            <h1 class="titulo1">Lista de Produtos</h1>
+            <div class="header">
+                <div class="container_select">
+                    <p>Coluna:</p>
+                    <select id="select_coluna" class="campo_select">
+                        <option value="id_produto">Código</option>
+                        <option value="produto">Produto</option>
+                        <option value="quantidade">Quantidade</option>
+                        <option value="preco_varejo">Preço Varejo</option>
+                        <option value="preco_atacado">Preço Atacado</option>
+                    </select>
+                </div>
+                <div class="container_campo_pesquisa_btn">
+                    <div class="campo_pesquisa" id="campo_pesquisa_produto">
+                        <input id="input_pesquisa_tabela" type="text" placeholder="Pesquisar por Código" class="input_pesquisa">
+                        <button class="btn_limpar_pesquisa hide center" id="btn_limpar_pesquisa_produto">
+                            <img id="icone_fechar" src="../imagens/icone_fechar.svg" alt="icone_fechar">
+                        </button>
+                        <button class="btn_pesquisar center" id="btn_pesquisar_produto">
+                            <img id="icone_pesquisa" src="../imagens/icone_pesquisa.png" alt="icone_pesquisa">
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <table class="tabela" id="tabela_produtos">
+                <thead>
+                    <tr>
+                        <th class="th_selecionar_todos">
+                            <input type="checkbox" name="selecionar_todos" id="selecionar_todos">
+                        </th>
+                        <th id="tabela_codigo">Código</th>
+                        <th id="tabela_produto">Produto</th>
+                        <th id="tabela_quantidade">Qtde.</th>
+                        <th id="tabela_preco_varejo">Preço Varejo</th>
+                        <th id="tabela_preco_atacado">Preço Atacado</th>
+                    </tr>
+                </thead>
+                <tbody class="tbody">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
 </section>
