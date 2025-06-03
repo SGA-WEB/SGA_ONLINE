@@ -257,6 +257,7 @@ app.get('/api/entrada_produto', async (req, res) => {
         c.razao_social AS fornecedor_razao_social,
         ep.desconto,
         ep.status,
+        ep.valor_total,
         ep.fornecedor_id,
         c.razao_social AS fornecedor_razao_social
       FROM sga.entrada_produto ep

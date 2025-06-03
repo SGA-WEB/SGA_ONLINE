@@ -45,9 +45,11 @@ export default async function cadastro_entrada_produtos(dados) {
     let formEntradaProduto = document.querySelector("#form_entrada_produto");
 
     $('#produto').on('change', (e) => {
-        console.log(e.target.value);
         let produtoSelecionado = produtos.find(produto => produto.produto === e.target.value);
-        console.log(produtoSelecionado);
+
+        for(let produto in produtoSelecionado) {
+            console.log(produto);
+        }
     })
 
     formEntradaProduto.addEventListener("submit", async (e) => {
