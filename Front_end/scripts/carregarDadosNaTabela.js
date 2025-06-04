@@ -4,7 +4,7 @@
 import crudLayout from "./crudLayout.js" // Importa a função que cria os botões de editar, visualizar e excluir (CRUD)
 import { formatarData } from "./funcionalidades.js"
 
-function carregarDadosNaTabela (dados, colunasExibir) {
+function carregarDadosNaTabela (dados, colunasExibir, ativarCrud = true) {
     // ColunasExibir: Array com os nomes das colunas do banco de dados que serão exibidas na tabela
     let tabela = document.querySelector(".tbody") // Tabela onde os dados serão exibidos
     let [...tr_tabela] = document.querySelectorAll(".table_tr")
@@ -65,7 +65,9 @@ function carregarDadosNaTabela (dados, colunasExibir) {
             }
 
             // CRUD:
-            crudLayout(objDadoCompleto, tr) // Adiciona os botões de editar, visualizar e excluir na linha
+            if (ativarCrud) {
+                crudLayout(objDadoCompleto, tr) // Adiciona os botões de editar, visualizar e excluir na linha
+            }
 
             tabela.appendChild(tr) // Adiciona a linha na tabela
         })
@@ -102,6 +104,7 @@ function pesquisar(dados, colunasExibir) {
 
     function handlePesquisar () {
         let value_input_pesquisa = document.querySelector('.input_pesquisa').value // Valor do input de pesquisa
+        console.log(value_input_pesquisa)
 
         if (value_input_pesquisa == "") { // Se o input estiver vazio
             btn_limpar.classList.add('hide') // Esconde o botão de fechar

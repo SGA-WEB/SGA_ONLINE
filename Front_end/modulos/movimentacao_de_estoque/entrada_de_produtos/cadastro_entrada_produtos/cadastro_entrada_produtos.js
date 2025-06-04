@@ -41,7 +41,7 @@ export default async function cadastro_entrada_produtos(dados) {
     btn_adicionar_relacao.addEventListener("click", async () => {
         popup("abrir", 0, btn_adicionar_relacao)
         let dados = await buscarDados("produto")
-        carregarDadosNaTabela(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"])
+        carregarDadosNaTabela(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"], false)
         pesquisar(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"])
     })
 

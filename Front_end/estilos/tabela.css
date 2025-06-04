@@ -38,7 +38,7 @@
 }
 
 .th_selecionar_todos {
-    max-width: fit-content;
+    width: 0px;
 }
 /* CRUD: */
 
