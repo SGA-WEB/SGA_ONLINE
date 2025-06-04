@@ -41,9 +41,38 @@ export default async function cadastro_entrada_produtos(dados) {
     btn_adicionar_relacao.addEventListener("click", async () => {
         popup("abrir", 0, btn_adicionar_relacao)
         let dados = await buscarDados("produto")
-        carregarDadosNaTabela(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"], false)
-        pesquisar(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"])
+        carregarDadosNaTabela(
+            produtos,
+            ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"],
+            document.querySelector("#tabela_selecionar_produtos"),
+            false
+        )
+        pesquisar(
+            produtos,
+            ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"],
+            document.querySelector("#tabela_selecionar_produtos"),
+            false
+        )
     })
+
+    let btn_selecionar_relacao = document.querySelector(".btn_selecionar_relacao");
+    let idProdutoSelecionados = []
+    btn_selecionar_relacao.addEventListener("click", () => {
+        let produtoSelecionados = document.querySelectorAll(".checkbox_selecionar_linha:checked");
+
+        produtoSelecionados.forEach(checkbox => {
+            idProdutoSelecionados.push(checkbox.id.replace("checkbox_", ""))
+        })
+
+        let novosDados = produtos.filter(produto => {
+            return idProdutoSelecionados.includes(produto.id_produto.toString())
+        })
+
+        carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"], document.querySelector("#tabela_produtos"), true)
+
+        popup("fechar", 0, btn_selecionar_relacao)
+    })
+
 
     let formEntradaProduto = document.querySelector("#form_entrada_produto");
     formEntradaProduto.addEventListener("submit", async (e) => {

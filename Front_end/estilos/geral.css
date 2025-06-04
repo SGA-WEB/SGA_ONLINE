@@ -17,6 +17,16 @@
     justify-content: start;
 }
 
+.end {
+    display: flex;
+    padding: .5rem;
+    justify-content: end;
+}
+
+.margin_left_auto {
+    margin-left: auto;
+}
+
 .align_center {
     display: flex;
     align-items: center;

@@ -81,9 +81,9 @@
             <img src="../imagens/btn_add.svg" alt="Icone Adicionar">
             <span>Adicionar relação</span>
         </button>
-        <table class="tabela_relacao">
+        <table class="tabela" id="tabela_produtos">
             <thead>
-                <th>
+                <tr>
                     <th class="th_selecionar_todos">
                         <input type="checkbox" name="selecionar_todos" id="selecionar_todos">
                     </th>
@@ -92,7 +92,11 @@
                     <th id="tabela_quantidade">Qtde.</th>
                     <th id="tabela_preco_varejo">Preço Varejo</th>
                     <th id="tabela_preco_atacado">Preço Atacado</th>
+                </tr>
             </thead>
+            <tbody class="tbody">
+
+            </tbody>
         </table>
         <button type="submit" class="btn btn_salvar">
             <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
@@ -102,7 +106,7 @@
     <div class="container_popup popup_relacao">
         <div class="popup">
             <button class="btn_fechar_popup">
-                <img src="../../../../imagens/icone_fechar.svg" alt="Icone Fechar">
+                <img src="../imagens/icone_fechar.svg" alt="Icone Fechar">
             </button>
             <h2>Selecione os produtos para relacionar a entrada</h2>
             <h1 class="titulo1">Lista de Produtos</h1>
@@ -129,7 +133,7 @@
                     </div>
                 </div>
             </div>
-            <table class="tabela" id="tabela_produtos">
+            <table class="tabela" id="tabela_selecionar_produtos">
                 <thead>
                     <tr>
                         <th class="th_selecionar_todos">
@@ -146,6 +150,10 @@
 
                 </tbody>
             </table>
+            <button class="btn margin_left_auto btn_selecionar_relacao" id="btn_selecionar_relacao_entrada">
+                <img src="../imagens/btn_add.svg" alt="Icone Adicionar">
+                <span>Adicionar Relação</span>
+            </button>
         </div>
     </div>
 </section>

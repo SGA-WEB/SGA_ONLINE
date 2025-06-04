@@ -2,6 +2,7 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
+    margin-bottom: 1rem;
 }
 .tabela th, td{
     padding: 7px 15px;
@@ -37,6 +38,10 @@
     position: relative; /* Permite que os elementos filhos usem position: absolute */
 }
 
+.table_tr {
+    cursor: pointer;
+}
+
 .th_selecionar_todos {
     width: 0px;
 }
@@ -45,12 +50,12 @@
 .acoes_tabela {
     display: flex;
     position: absolute;
-    right: 0; /* Posiciona os botões à direita */
-    top: 0; /* Alinha ao topo da célula */
-    width: auto; /* Ajusta a largura automaticamente */
+    right: 0;
+    top: 0;
+    width: auto;
     height: 100%;
-    text-align: right; /* Alinha os botões à direita */
-    white-space: nowrap; /* Impede que os botões quebrem de linha */
+    text-align: right;
+    white-space: nowrap; 
     justify-content: space-between;
     align-items: center;
     gap: 0.5rem;

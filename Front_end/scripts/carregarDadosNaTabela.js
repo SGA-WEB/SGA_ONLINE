@@ -4,9 +4,8 @@
 import crudLayout from "./crudLayout.js" // Importa a função que cria os botões de editar, visualizar e excluir (CRUD)
 import { formatarData } from "./funcionalidades.js"
 
-function carregarDadosNaTabela (dados, colunasExibir, ativarCrud = true) {
+function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySelector(".tbody"), ativarCrud = true) {
     // ColunasExibir: Array com os nomes das colunas do banco de dados que serão exibidas na tabela
-    let tabela = document.querySelector(".tbody") // Tabela onde os dados serão exibidos
     let [...tr_tabela] = document.querySelectorAll(".table_tr")
     tr_tabela.map(e => e.remove(e)) // Remove todos os elementos da tabela
     let td_info = document.querySelector(".td_nenhum_dado") // Pega o parágrafo de informação de que não há dados (Se existir)
@@ -31,13 +30,15 @@ function carregarDadosNaTabela (dados, colunasExibir, ativarCrud = true) {
             objDado = Object.fromEntries(objDado) // Converte o array em um objeto
             let tr = document.createElement('tr') // Cria uma linha
             tr.setAttribute('class','table_tr')
+            tr.setAttribute('id', 'tr_' + objDado[firstDataKey]) // Define o id da linha como tr_id
 
             let td = document.createElement('td') // Cria uma célula
             td.setAttribute("class", "selecionar_linha")
             let checkbox = document.createElement('input') // Cria um checkbox
             checkbox.setAttribute('type', 'checkbox') // Define o tipo do input como checkbox
+            checkbox.setAttribute('id', 'checkbox_' + objDado[firstDataKey]) // Define o id da célula como checkbox_id
+            checkbox.setAttribute('class', 'checkbox_selecionar_linha') // Define a classe do checkbox
             td.appendChild(checkbox) // Adiciona o checkbox na célula
-            td.setAttribute('id', 'checkbox_' + objDado[firstDataKey]) // Define o id da célula como checkbox_id
             tr.appendChild(td) // Adiciona a célula na linha
             for (let e in objDado) { // Para cada campo no objeto
                 if (e === "data_cadastro") {
@@ -70,6 +71,7 @@ function carregarDadosNaTabela (dados, colunasExibir, ativarCrud = true) {
             }
 
             tabela.appendChild(tr) // Adiciona a linha na tabela
+
         })
     } else { // Se não houver dados
         if (!td_info) { // Se o parágrafo de informação não existir
@@ -81,13 +83,32 @@ function carregarDadosNaTabela (dados, colunasExibir, ativarCrud = true) {
             tabela.appendChild(td_info)
         }
     }
+    tabela.addEventListener("click", (e) => {
+        let tr_id = e.target.parentElement.id.replace("tr_", "") // Pega número do id do elemento clicado
+        let checkbox = document.querySelector("#checkbox_" + tr_id) // Pega o checkbox da linha clicada
+        if (checkbox) { // Se o checkbox existir
+            checkbox.checked = !checkbox.checked // Inverte o estado do checkbox
+        }
+    })
+
+    let selecionar_todos = tabela.parentElement.querySelector("#selecionar_todos")
+    selecionar_todos.addEventListener("change", (e) => {
+        let checkboxes = document.querySelectorAll(".checkbox_selecionar_linha")
+        for (let checkbox of checkboxes) {
+            if (selecionar_todos.checked) {
+                checkbox.checked = true // Marca todos os checkboxes
+            } else {
+                checkbox.checked = false // Desmarca todos os checkboxes
+            }
+        }
+    })
 }
 
-function pesquisar(dados, colunasExibir) {
+function pesquisar(dados, colunasExibir, tabela = document.querySelector("#tabela"), ativarCrud = true) {
     // Função que pesquisa e manda os dados filtrados para a função carregarDadosNaTabela
 
     const btn_pesquisar = document.querySelector('.btn_pesquisar') // Botão de pesquisar
-    const campo_select = document.querySelector('.campo_select') // Select que contém os campos da tabela
+    const campo_select = document.querySelector('#select_coluna') // Select que contém os campos da tabela
     const btn_limpar = document.querySelector('.btn_limpar_pesquisa') // Botão de fechar
     const input_pesquisar = document.querySelector('.input_pesquisa') // Input de pesquisa
 
@@ -97,14 +118,13 @@ function pesquisar(dados, colunasExibir) {
         input_pesquisar.value = "" // Limpa o input
         handlePesquisar() // Chama a função de pesquisa
     })
-    $('.campo_select').on('change', () => {
+    $('#select_coluna').on('change', () => {
         input_pesquisar.value = "" // Limpa o input
         handlePesquisar()
     }) // Quando o select for alterado
 
     function handlePesquisar () {
         let value_input_pesquisa = document.querySelector('.input_pesquisa').value // Valor do input de pesquisa
-        console.log(value_input_pesquisa)
 
         if (value_input_pesquisa == "") { // Se o input estiver vazio
             btn_limpar.classList.add('hide') // Esconde o botão de fechar
@@ -178,7 +198,7 @@ function pesquisar(dados, colunasExibir) {
         if (value_input_pesquisa == "") { // Se o input estiver vazio
             newData = dados // Exibe todos os dados
         }
-        carregarDadosNaTabela(newData, colunasExibir) // Manda os novos dados filtrados para a função carregarDadosNaTabela
+        carregarDadosNaTabela(newData, colunasExibir, ativarCrud) // Manda os novos dados filtrados para a função carregarDadosNaTabela
     }
 }
 
