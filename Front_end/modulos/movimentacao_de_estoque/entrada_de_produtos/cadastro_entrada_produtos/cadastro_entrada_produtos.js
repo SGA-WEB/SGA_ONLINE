@@ -40,7 +40,6 @@ export default async function cadastro_entrada_produtos(dados) {
     let btn_adicionar_relacao = document.querySelector("#btn_adicionar_relacao");
     btn_adicionar_relacao.addEventListener("click", async () => {
         popup("abrir", 0, btn_adicionar_relacao)
-        let dados = await buscarDados("produto")
         carregarDadosNaTabela(
             produtos,
             ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"],
@@ -53,6 +52,7 @@ export default async function cadastro_entrada_produtos(dados) {
             document.querySelector("#tabela_selecionar_produtos"),
             false
         )
+        select2("200px")
     })
 
     let btn_selecionar_relacao = document.querySelector(".btn_selecionar_relacao");
