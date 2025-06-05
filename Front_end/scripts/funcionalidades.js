@@ -61,13 +61,13 @@ function formatarData(data) {
 }
 
 // Função que muda o placeholder do input de pesquisa de acordo com a opção do select
-function mudarPesquisa(input_pesquisa) {
-    input_pesquisa.placeholder = "Pesquisar por " + $('.campo_select')
+function mudarPesquisa(input_pesquisa, select = ".campo_select") {
+    input_pesquisa.placeholder = "Pesquisar por " + $(select)
         .find(':selected')
         .text() // Adiciona o texto do select no placeholder
 
     // Adiciona evento de mudança de seleção no select2
-    $('.campo_select').on('select2:select', function (e) {
+    $(select).on('select2:select', function (e) {
         // Sempre que o select for alterado muda o placeholder
         input_pesquisa.placeholder = "Pesquisar por " + e.params.data.text
         mudarPlaceholder() // Chama a funcao de mudar o placeholder sempre que o select for alterado

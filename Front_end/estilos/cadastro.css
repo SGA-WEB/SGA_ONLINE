@@ -193,7 +193,6 @@ a.link_nav_selecionado {
     height: 100% !important;
 }
 
-
 .modulo_footer {
     display: flex;
     justify-content: end;
@@ -202,9 +201,8 @@ a.link_nav_selecionado {
 .btn_nav{
     display: flex;
     align-items: center;
-    margin: 0 0 1rem .3rem;
+    margin: .3em 0 1rem .3rem;
 }
-
 
 @media (max-width: 900px) {
     .modulo {

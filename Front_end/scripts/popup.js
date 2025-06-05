@@ -43,7 +43,7 @@ function popup (status, idx = 0, btn) {
     })
 }
 
-function popup_confirmar(mensagem = "Tem certeza que deseja realizar essa ação?") {
+function popup_confirmar_exclusao(mensagem = "Tem certeza que deseja realizar essa ação?") {
     let btn_popup_cancelar = document.querySelector(".btn_popup_cancelar")
     let btn_fechar_popup_excluir = document.querySelector("#btn_fechar_popup_excluir")
     let btn_popup_confirmar = document.querySelector(".btn_popup_confirmar")
@@ -59,7 +59,7 @@ function popup_confirmar(mensagem = "Tem certeza que deseja realizar essa ação
             container_popup.classList.add("hide_popup");
             resolve(false);
         });
-        
+
         btn_fechar_popup_excluir.addEventListener("click", () => {
             container_popup.classList.add("hide_popup");
             resolve(false);
@@ -138,4 +138,4 @@ function popup_erro(mensagem = "Erro ao realizar a ação!") {
     });
 }
 
-export { popup, popup_aviso, popup_carregando, popup_erro, popup_confirmar};
+export { popup, popup_aviso, popup_carregando, popup_erro, popup_confirmar_exclusao };

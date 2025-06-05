@@ -1,9 +1,9 @@
-import { dataAtual } from "../../../../scripts/funcionalidades.js";
+import { dataAtual, mudarPesquisa } from "../../../../scripts/funcionalidades.js";
 import select2 from "../../../../scripts/select.js";
 import buscarDados from "../../../../scripts/buscarDados.js";
 import { carregarConteudo } from "../../../../scripts/javaScript.js";
 import entrada_de_produtos from "../entrada_de_produtos.js";
-import { popup } from "../../../../scripts/popup.js";
+import { popup, popup_confirmar_exclusao } from "../../../../scripts/popup.js";
 import { carregarDadosNaTabela, pesquisar } from "../../../../scripts/carregarDadosNaTabela.js";
 
 export default async function cadastro_entrada_produtos(dados) {
@@ -52,6 +52,7 @@ export default async function cadastro_entrada_produtos(dados) {
             document.querySelector("#tabela_selecionar_produtos"),
             false
         )
+        mudarPesquisa(document.querySelector(".input_pesquisa"),"#select_coluna")
         select2("200px")
     })
 
@@ -111,6 +112,12 @@ export default async function cadastro_entrada_produtos(dados) {
     })
 
     document.querySelector("#btn_voltar_entrada_produtos").addEventListener("click", () => {
-        carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
+        if (idProdutoSelecionados.length > 0) {
+            if (popup_confirmar("Tem certeza que deseja voltar? Todos os dados inseridos serão perdidos.",)) {
+                carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
+            }
+        }else {
+            carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
+        }
     })
 }

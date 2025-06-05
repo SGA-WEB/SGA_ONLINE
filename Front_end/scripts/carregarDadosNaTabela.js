@@ -71,7 +71,6 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
             }
 
             tabela.appendChild(tr) // Adiciona a linha na tabela
-
         })
     } else { // Se não houver dados
         if (!td_info) { // Se o parágrafo de informação não existir
@@ -198,7 +197,7 @@ function pesquisar(dados, colunasExibir, tabela = document.querySelector("#tabel
         if (value_input_pesquisa == "") { // Se o input estiver vazio
             newData = dados // Exibe todos os dados
         }
-        carregarDadosNaTabela(newData, colunasExibir, ativarCrud) // Manda os novos dados filtrados para a função carregarDadosNaTabela
+        carregarDadosNaTabela(newData, colunasExibir, tabela, ativarCrud) // Manda os novos dados filtrados para a função carregarDadosNaTabela
     }
 }
 
