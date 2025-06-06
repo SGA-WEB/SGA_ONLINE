@@ -322,6 +322,7 @@
     display: flex;
     justify-content: space-between;
     padding: 0 1rem;
+    gap: 1rem;
 }
 
 .popup_alerta .btns_container .btn {
@@ -436,6 +437,12 @@
 .popup_erro .progress-bar {
     background-color: var(--alerta2);
     animation: progress 5s linear forwards;
+}
+
+/* Pop Up confirmar:  */
+.icone_alerta {
+    width: 4rem;
+    margin-top: 1rem;
 }
 
 /* Estilo telas de formulário: */
