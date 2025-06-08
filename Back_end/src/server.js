@@ -272,6 +272,38 @@ app.get('/api/entrada_produto', async (req, res) => {
   }
 });
 
+// Rota para buscar todos os dados da tabela saída de produto
+app.get('/api/saida_produto', async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT
+        sp.id_saida_produto AS "ID de Saída",
+        sp.tipo_saida AS "Tipo de Saída",
+        sp.data AS "Data",
+        v.nome AS "Vendedor",
+        c.razao_social AS "Cliente",
+        p.nome AS "Produto",
+        sp.quantidade AS "Qtde.",
+        sp.valor_unitario AS "Valor Un.",
+        sp.valor_total AS "Valor Total",
+        sp.status AS "Status da Saída"
+      FROM sga.saida_produto sp
+      INNER JOIN sga.contato c
+        ON sp.cliente_id = c.id_contato
+      INNER JOIN sga.vendedor v
+        ON sp.vendedor_id = v.id_vendedor
+      INNER JOIN sga.produto p
+        ON sp.produto_id = p.id_produto
+      ORDER BY sp.id_saida_produto
+    `);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao buscar saídas de produto' });
+  }
+});
+
+
 // Endpoint para atualizar um centro de estoque (PUT)
 app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {
     const { id_centro_estoque } = req.params;
