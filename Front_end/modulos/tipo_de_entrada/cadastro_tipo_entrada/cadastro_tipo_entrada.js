@@ -1,14 +1,19 @@
+import { carregarConteudo } from "../../../scripts/javaScript.js";
 import select2 from "../../../scripts/select.js";
 
 export default function cadastro_tipo_entrada() {
     select2()
+    document.querySelector("#btn_voltar_tipos_de_entrada").addEventListener("click", () => { 
+        carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, null, null);
+        // Botão que volta para a tela de tipos de entrada
+    })
     let btn_salvar = document.querySelector("#btn_salvar")
     btn_salvar.addEventListener("click", async () => {
         const data = {
-            codigo: parseInt(document.getElementById('codigo').value),
+            id_tipo_de_entrada: parseInt(document.getElementById('codigo').value),
             descricao: document.getElementById('descricao').value,
-            cpop_dentro: document.getElementById('cpop_dentro').value,
-            cpop_fora: document.getElementById('cpop_fora').value,
+            cfop_dentro: document.getElementById('cfop_dentro').value,
+            cfop_fora: document.getElementById('cfop_fora').value,
             ativo: document.getElementById('ativo').value === "true",
             movimenta_estoque: document.getElementById('movimenta_estoque').checked,
             hab_agrupamento: document.getElementById('hab_agrupamento').checked,

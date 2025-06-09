@@ -29,6 +29,11 @@
     margin-bottom: 1rem;
 }
 
+.flex_direction_column {
+    display: flex !important;
+    flex-direction: column;
+}
+
 .menu_btns {
     width: 100%;
     flex-wrap: wrap;
