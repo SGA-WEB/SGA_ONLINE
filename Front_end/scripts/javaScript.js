@@ -467,10 +467,6 @@ btn_tipos_de_entrada.addEventListener("click", () => {
     carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada)
 })
 
-// document.querySelector("#btn_voltar_tipos_de_entrada").addEventListener("click", () => {
-//     // Botão que volta para a tela de tipos de entrada
-//     carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"))
-// })
-
+ 
 
 export { carregarConteudo, btnMenuLateral, click_btn_menu, fecharMenu, mudarLogoParaPadrao }

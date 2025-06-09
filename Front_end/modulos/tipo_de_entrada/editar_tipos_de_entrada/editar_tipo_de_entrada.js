@@ -1,78 +1,26 @@
 import { dataAtual, aguardarRenderizacao, formatarData } from "../../../scripts/funcionalidades.js";
 import { carregarConteudo } from "../../../scripts/javaScript.js";
 import select2 from "../../../scripts/select.js"
-import visualizar_centro_de_estoque from "../visualizar_centro_de_estoque/visualizar_centro_de_estoque.js";
-import centro_de_estoque from "../centro_de_estoque.js";
 import { popup, popup_aviso, popup_carregando } from "../../../scripts/popup.js";
+import tipos_de_entrada from "../tipos_de_entrada.js";
 
-export default function editar_centro_de_estoque(dado, telaAnteriorVisualizar) {
-    let caminho = "centro_de_estoque/centro_de_estoque.html"
-    let funcao = centro_de_estoque
-
-    if (telaAnteriorVisualizar) {
-        // se a tela anterior for a de visualizar deve voltar
-        // o caminho e a função é mudada para ir para tela de visualizar
-        caminho = "tipo_de_entrada/visualizar_centro_de_estoque/visualizar_centro_de_estoque.html"
-        funcao = visualizar_centro_de_estoque
-    }
+export default function editar_tipo_de_entrada(dado, telaAnteriorVisualizar) {
     select2("100%")
-    document.querySelector(".codigo_id").textContent = dado.id_centro_estoque
-    document.querySelector("#nome_centro_de_estoque").value = dado.nome_centro_estoque
-    document.querySelector("#localizacao").value = dado.localizacao_centro_estoque
-    document.querySelector("#padrao_centro_de_estoque").value = dado.padrao_centro_estoque ? "true" : "false"
-    document.querySelector("#descricao").value = dado.descricao_centro_estoque
-    //document.querySelector(".data_cadastro").textContent = formatarData(dado.data_cadastro)
-
-
-    document.querySelector("#btn_voltar_produtos").addEventListener("click", () => {
-        carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, dado)
-    })
-
-    document.querySelector(".btn_cancelar").addEventListener("click", () => {
-        carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, dado)
-    })
-
-    document.querySelector(".btn_salvar").addEventListener("click", () => { 
-        salvarEdicao(dado.id_centro_estoque)
-    })
-    
-    async function salvarEdicao(id_centro_estoque) {
-        const nome = document.querySelector("#nome_centro_de_estoque").value
-        const localizacao = document.querySelector("#localizacao").value 
-        const padrao = document.querySelector("#padrao_centro_de_estoque").value
-        const descricao = document.querySelector("#descricao").value
+   
+    document.querySelector("#btn_voltar_tipos_de_entrada").addEventListener("click", () => {
+        carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"),false, tipos_de_entrada)
         
-        popup_carregando()
-        try {
-            const response = await fetch(`http://localhost:3000/centro_estoque/${id_centro_estoque}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ nome, localizacao, padrao, descricao })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                const novoDado = { 
-                    // objeto para atualizar a tela de visualizar comforme os novos dados
-                    id_centro_estoque: id_centro_estoque,
-                    nome_centro_estoque: nome,
-                    localizacao_centro_estoque: localizacao,
-                    padrao_centro_estoque: padrao,
-                    descricao_centro_estoque: descricao, 
-                    data_cadastro: dado.data_cadastro
-                }
-                popup_carregando(true)
-                carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, novoDado)
-                popup_aviso("Centro de estoque alterado com sucesso!")
-            } else {
-                alert(`Erro: ${data.error}`);
-            }
-        } catch (error) {
-            console.error('Falha ao conectar com o servidor:', error);
-            alert('Erro ao salvar alterações. Tente novamente.');
-        }
-    }
+    })
+    document.querySelector(".data_cadastro").innerHTML = formatarData(dado.data_criacao)
+    document.querySelector(".codigo_id").innerHTML = dado.id_tipo_de_entrada
+    document.querySelector("#descricao_tipo_de_entrada").value = dado.descricao
+    document.querySelector("#cfop_dentro").value = dado.cfop_dentro
+    document.querySelector("#cfop_fora").value = dado.cfop_fora
+    document.querySelector("#ativo_tipo_de_entrada").value = dado.ativo
+    document.querySelector("#hab_agrupamento").checked = dado.hab_agrupamento
+    document.querySelector("#movimenta_estoque").checked = dado.movimenta_estoque
+    document.querySelector("#hab_movimento").checked = dado.hab_movimenta
+    document.querySelector("#hab_nf").checked = dado.habilita_nf
+    document.querySelector("#atualiza_produto").checked = dado.atualiza_produto
+    document.querySelector("#padrao").checked = dado.padrao
 }

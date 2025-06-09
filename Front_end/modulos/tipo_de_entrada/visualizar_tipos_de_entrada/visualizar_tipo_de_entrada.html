@@ -1,4 +1,4 @@
-<section class="modulo" id="modulo_cadastro_de_centro_de_estoque">
+<section class="modulo" id="modulo_cadastro_de_tipo_de_entrada">
     <menu class="menu_btns space_between align_center">
         <button class="btn_nav" id="btn_voltar_tipos_de_entrada">
             <img src="..//..//../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
@@ -28,58 +28,51 @@
     <div class="modulo_main">
         <div class="container_small_width" id="container_radios"> 
             <div class="campo_contato normal_width">
-                <label for="nome_centro_de_estoque">Nome do Tipo de Entrada:</label>
-                <input disabled type="text" name="nome_centro_de_estoque" id="nome_centro_de_estoque" class="campo_input">
+                <label for="nome_tipo_de_entrada">Descrição:</label>
+                <input disabled type="text" name="nome_tipo_de_entrada" id="descricao_tipo_de_entrada" class="campo_input">
             </div>
-            <div class="campo_contato normal_width">
-                <label for="descricao">Descrição:</label>
-                <textarea disabled name="descricao" id="" 
-                class="textarea" rows="4"></textarea>
-            </div>   
+    
             <div class="campo_contato small_width">
-                <label for="localizacao">CFOP(Dentro):</label>
-                <input disabled type="text" name="cfopD" id="" class="campo_input">
+                <label for="cfop_dentro">CFOP(Dentro):</label>
+                <input disabled type="text" name="cfopD" id="cfop_dentro" class="campo_input">
             </div>
              <div class="campo_contato small_width">
-                <label for="localizacao">CFOP(Fora):</label>
-                <input disabled type="text" name="cfopD" id="" class="campo_input">
+                <label for="cfop_fora">CFOP(Fora):</label>
+                <input disabled type="text" name="cfopD" id="cfop_fora" class="campo_input">
             </div>
             <div class="campo_contato small_width select_conainer">
-                <label for="padrao_centro_de_estoque">Padrão:</label>
-                <select disabled id="padrao_centro_de_estoque" class="campo_select">
-                    <option value="Sim">Sim</option>
-                    <option value="Não">Não</option>
+                <label for="ativo_tipo_de_entrada">Ativo:</label>
+                <select disabled id="ativo_tipo_de_entrada" class="campo_select">
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
                 </select>
             </div>
-            <label for="movimenta_estoque">
-        <input type="checkbox" nome="Movimenta Estoque" value="Movimenta Estoque" id="movimenta_estoque">
-        Movimenta Estoque
-    </label><br>
-
-    <label for="hab_agrupamento">
-        <input type="checkbox" nome="Hab.Agrupamento" value="Hab.Agrupamento" id="hab_agrupamento">
-        Habilita Agrupamento
-    </label><br>
-
-    <label for="hab_movimento">
-        <input type="checkbox" nome="Hab.Movimento"  value="Hab.Movimento" id="hab_movimento">
-        Habilita Movimento
-    </label><br>
-
-     <label for="hab_nf">
-        <input type="checkbox" nome="habilitaNF"  value="Habilita N.F" id="hab_nf">
-        Habilita N.F
-    </label><br>
-
-    <label for="atualiza_produto">
-        <input type="checkbox" nome= "Atualiza Produto" value="Atualiza Produto" id="atualiza_produto">
-        Atualiza Produto
-    </label><br>
-
-      <label for="padrao">
-        <input type="checkbox" nome= "Padrão" value="Padrão" id="padrao">
-        Padrão
-    </label><br>
+            <div class="chekboxes flex_direction_column">
+                <label for="movimenta_estoque">
+                    <input disabled type="checkbox" nome="Movimenta Estoque" value="Movimenta Estoque" id="movimenta_estoque">
+                    Movimenta Estoque
+                </label>
+                <label for="hab_agrupamento">
+                    <input disabled type="checkbox" nome="Hab.Agrupamento" value="Hab.Agrupamento" id="hab_agrupamento">
+                    Habilita Agrupamento
+                </label>
+                <label for="hab_movimento">
+                    <input disabled type="checkbox" nome="Hab.Movimento"  value="Hab.Movimento" id="hab_movimento">
+                    Habilita Movimento
+                </label>
+                    <label for="hab_nf">
+                    <input disabled type="checkbox" nome="habilitaNF"  value="Habilita N.F" id="hab_nf">
+                    Habilita N.F
+                </label>
+                <label for="atualiza_produto">
+                    <input disabled type="checkbox" nome="Atualiza Produto" value="Atualiza Produto" id="atualiza_produto">
+                    Atualiza Produto
+                </label>
+                <label for="padrão">
+                    <input disabled type="checkbox" nome="padrão" value="PADRÃO" id="padrao">
+                    Padrão
+                </label>
+            </div>
         </div>
 </section>
 <section class="container_popup " id="container_popup_excluir_contato">

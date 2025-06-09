@@ -3,7 +3,8 @@ import buscarDados from "../../../scripts/buscarDados.js"; // Importa a função
 import { carregarDadosNaTabela } from "../../../scripts/carregarDadosNaTabela.js";
 
 export default async function excluir_tipos_de_entrada(dado, callbackFunction, ...param) {
-    let confirmacao = await popup_confirmar(`Tem certeza que deseja excluir o tipo de entrada ${dado['id_tipo_entrada']} - ${dado['nome_tipo_entrada']}?`)
+    console.log(dado)
+    let confirmacao = await popup_confirmar(`Tem certeza que deseja excluir o tipo de entrada ${dado.id_tipo_de_entrada} - ${dado.descricao}?`)
 
     if (confirmacao) {
         popup_carregando()
@@ -14,7 +15,7 @@ export default async function excluir_tipos_de_entrada(dado, callbackFunction, .
             const data = await response.json();
             popup_carregando(true)
             if (response.ok) {
-                popup_aviso(`Tipo de entrada ${dado.nome_tipo_entrada} excluído com sucesso!`)
+                popup_aviso(`Tipo de entrada ${dado.descricao} excluído com sucesso!`)
                 if (callbackFunction) {
                     callbackFunction(...param) // Chama a função de callback, se existir
                 }
@@ -24,7 +25,7 @@ export default async function excluir_tipos_de_entrada(dado, callbackFunction, .
         } catch (err) {
             popup_carregando(true)
             console.log('Erro ao excluir tipo de entrada:', err)
-            popup_erro(`Erro ao excluir tipo de entrada: ${dado.nome_tipo_entrada} - ${err.message}`);
+            popup_erro(`Erro ao excluir tipo de entrada: ${dado.descricao} - ${err.message}`);
         }
     }
 }

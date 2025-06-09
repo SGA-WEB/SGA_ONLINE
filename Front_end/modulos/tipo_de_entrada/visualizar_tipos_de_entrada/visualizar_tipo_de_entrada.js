@@ -3,29 +3,27 @@ import { carregarConteudo } from "../../../scripts/javaScript.js";
 import { popup } from "../../../scripts/popup.js";
 import select2 from "../../../scripts/select.js"
 
-import editar_tipo_de_entrada from "../editar_tipos_de_entrada/editar_centro_de_estoque.js";
-import excluir_tipos_de_entrada from "../excluir_tipos_de_entrada/excluir_centro_de_estoque.js";
+import editar_tipo_de_entrada from "../editar_tipos_de_entrada/editar_tipo_de_entrada.js";
+import excluir_tipos_de_entrada from "../excluir_tipos_de_entrada/excluir_tipo_de_entrada.js";
+
+import tipos_de_entrada from "../tipos_de_entrada.js";
 
 export default function visualizar_tipo_de_entrada(dado) {
+    console.log(dado)
     select2("100%")
-    document.querySelector("#codigo").textContent = dado.codigo_tipo_de_entrada
-    document.querySelector("#descricao").value = dado.descricao_tipo_de_entrada
+    document.querySelector(".data_cadastro").innerHTML = formatarData(dado.data_criacao)
+    document.querySelector(".codigo_id").innerHTML = dado.id_tipo_de_entrada
+    document.querySelector("#descricao_tipo_de_entrada").value = dado.descricao
     document.querySelector("#cfop_dentro").value = dado.cfop_dentro
     document.querySelector("#cfop_fora").value = dado.cfop_fora
-    document.querySelector("#ativo").value = dado.ativo ? "Sim" : "Não"
-    //document.querySelector(".data_cadastro").textContent = formatarData(dado.data_cadastro)
-
+    document.querySelector("#ativo_tipo_de_entrada").value = dado.padrao
+    document.querySelector("#hab_agrupamento").checked = dado.hab_agrupamento
+    document.querySelector("#movimenta_estoque").checked = dado.movimenta_estoque
+    document.querySelector("#hab_movimento").checked = dado.hab_movimenta
+    document.querySelector("#hab_nf").checked = dado.habilita_nf
+    document.querySelector("#atualiza_produto").checked = dado.atualiza_produto
+    document.querySelector("#padrao").checked = dado.padrao
     document.querySelector("#btn_voltar_tipos_de_entrada").addEventListener("click", () => {
-        // Botão que volta para a tela de tipos de entrada
-        carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"))
-    })
-
-    document.querySelector(".btn_editar").addEventListener("click", () => {
-        carregarConteudo("tipo_de_entrada/editar_tipo_de_entrada/editar_tipo_de_entrada.html", document.querySelector(".principal"), false, editar_tipo_de_entrada, dado, true)
-    })
-
-    let btn_excluir = document.querySelector(".btn_excluir")
-    btn_excluir.addEventListener("click", () => {
-        excluir_tipos_de_entrada(dado, carregarConteudo, "tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"))
+        carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"),false, tipos_de_entrada)
     })
 }
