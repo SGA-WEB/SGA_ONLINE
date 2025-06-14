@@ -835,8 +835,8 @@ app.post('/tipos_entrada', async (req, res) => {
     const {
         codigo,
         descricao,
-        cpop_dentro,
-        cpop_fora,
+        cfop_dentro,
+        cfop_fora,
         ativo,
         movimenta_estoque,
         hab_agrupamento,
@@ -849,11 +849,11 @@ app.post('/tipos_entrada', async (req, res) => {
     try {
         const query = `
             INSERT INTO sga.tipos_entrada
-            (codigo, descricao, cpop_dentro, cpop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao)
+            (codigo, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
             RETURNING *;
         `;
-        const values = [codigo, descricao, cpop_dentro, cpop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao];
+        const values = [codigo, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao];
 
         const result = await pool.query(query, values);
 
@@ -867,7 +867,7 @@ app.post('/tipos_entrada', async (req, res) => {
 // Rota GET para listar todos os tipos_entrada
 app.get('/api/tipos_entrada', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM sga.tipos_entrada ORDER BY codigo');
+        const result = await pool.query('SELECT * FROM sga.tipos_entrada ORDER BY id_tipo_de_entrada');
         res.status(200).json(result.rows);
     } catch (err) {
         console.error('Erro ao buscar tipos_entrada:', err);
