@@ -277,7 +277,7 @@
 
 /* PopUp alerta */
 .container_popup_alerta {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;

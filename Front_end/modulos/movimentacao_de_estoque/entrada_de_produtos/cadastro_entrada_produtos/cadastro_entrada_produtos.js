@@ -134,4 +134,12 @@ export default async function cadastro_entrada_produtos(dados) {
             carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
         }
     })
+
+    document.querySelectorAll(".btn_excluir").forEach(btn => {
+        console.log(btn);
+        btn.removeEventListener("click")
+        btn.addEventListener("click", (e) => {
+            console.log(e.target);
+        });
+    });
 }

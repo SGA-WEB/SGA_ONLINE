@@ -36,6 +36,7 @@ export default function crudLayout (obj, tr) {
     let btn_visualizar = document.createElement('button') // Cria o botão de visualizar
     btn_visualizar.setAttribute('class','btn_visualizar')
     btn_visualizar.setAttribute('title',`Visualizar ${nomeTabelaAtual}`)
+    btn_visualizar.setAttribute('type','button')
     let img_visualizar = document.createElement('img') // Cria a imagem do botão de visualizar
     img_visualizar.setAttribute('src','../imagens/visibility_on.png')
     btn_visualizar.appendChild(img_visualizar) // Adiciona a imagem no botão
@@ -43,6 +44,8 @@ export default function crudLayout (obj, tr) {
     let btn_editar = document.createElement('button') // Cria o botão de editar
     btn_editar.setAttribute('class','btn_editar')
     btn_editar.setAttribute('title',`Editar ${nomeTabelaAtual}`)
+    btn_editar.setAttribute('type','button')
+
     let img_editar = document.createElement('img') // Cria a imagem do botão de editar
     img_editar.setAttribute('src','../imagens/icone_editar.svg')
     btn_editar.appendChild(img_editar) // Adiciona a imagem no botão
@@ -50,6 +53,8 @@ export default function crudLayout (obj, tr) {
     let btn_excluir = document.createElement('button') // Cria o botão de excluir
     btn_excluir.setAttribute('class','btn_excluir')
     btn_excluir.setAttribute('title',`Excluir ${nomeTabelaAtual}`)
+    btn_excluir.setAttribute('type','button')
+
     let img_excluir = document.createElement('img') // Cria a imagem do botão de excluir
     img_excluir.setAttribute('src','../imagens/icone_excluir.svg')
     btn_excluir.appendChild(img_excluir) // Adiciona a imagem no botão
