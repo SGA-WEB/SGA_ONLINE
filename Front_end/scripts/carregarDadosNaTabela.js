@@ -4,7 +4,7 @@
 import crudLayout from "./crudLayout.js" // Importa a função que cria os botões de editar, visualizar e excluir (CRUD)
 import { formatarData } from "./funcionalidades.js"
 
-function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySelector(".tbody"), ativarCrud = true) {
+function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySelector(".tbody"), ativarCrud = true, addListener = true) {
     // ColunasExibir: Array com os nomes das colunas do banco de dados que serão exibidas na tabela
     let [...tr_tabela] = document.querySelectorAll(".table_tr")
     tr_tabela.map(e => e.remove(e)) // Remove todos os elementos da tabela
@@ -67,8 +67,19 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
 
             // CRUD:
             if (ativarCrud) {
-                crudLayout(objDadoCompleto, tr) // Adiciona os botões de editar, visualizar e excluir na linha
+                crudLayout(objDadoCompleto, tr, addListener) // Adiciona os botões de editar, visualizar e excluir na linha
             }
+
+            checkbox.addEventListener("change", (e) => {
+                // Adiciona o evento de mudança no checkbox
+                let tr = e.target.parentElement.parentElement // Pega a linha da célula do checkbox
+                console.log(e.target)
+                if (e.target.checked) { // Se o checkbox estiver marcado
+                    tr.classList.add("linha_selecionada") // Adiciona a classe "selecionado" na linha
+                } else { // Se o checkbox estiver desmarcado
+                    tr.classList.remove("linha_selecionada") // Remove a classe "selecionado" da linha
+                }
+            })
 
             tabela.appendChild(tr) // Adiciona a linha na tabela
         })
@@ -87,6 +98,11 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
         let checkbox = document.querySelector("#checkbox_" + tr_id) // Pega o checkbox da linha clicada
         if (checkbox) { // Se o checkbox existir
             checkbox.checked = !checkbox.checked // Inverte o estado do checkbox
+            if (checkbox.checked) {
+                e.target.parentElement.classList.add("linha_selecionada")
+            } else {
+                e.target.parentElement.classList.remove("linha_selecionada")
+            }
         }
     })
 

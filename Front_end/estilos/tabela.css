@@ -17,6 +17,11 @@
     background-color: var(--cinza1);
 }
 
+.linha_selecionada {
+    background-color: var(--cinza1);
+}
+
+
 .tabela {
     border: 1px solid var(--cinza2);
     font-size: 1rem;
@@ -55,13 +60,18 @@
     width: auto;
     height: 100%;
     text-align: right;
-    white-space: nowrap; 
+    white-space: nowrap;
     justify-content: space-between;
     align-items: center;
     gap: 0.5rem;
     transform: translateX(100%); /* Move o elemento para fora da tela (direita) */
     transition: transform 0.2s ease-in-out; /* Animação suave */
     padding: .2rem .6rem 0 0;
+}
+
+.acoes_tabela img {
+    height: 100%;
+    width: 100%;
 }
 
 .table_tr td:not(.acoes_tabela):last-of-type {

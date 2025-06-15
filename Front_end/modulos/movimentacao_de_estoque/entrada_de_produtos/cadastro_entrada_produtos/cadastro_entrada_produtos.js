@@ -69,9 +69,16 @@ export default async function cadastro_entrada_produtos(dados) {
             return idProdutoSelecionados.includes(produto.id_produto.toString())
         })
 
-        carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"], document.querySelector("#tabela_produtos"), true)
+        carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"], document.querySelector("#tabela_produtos"), true, false)
 
         popup("fechar", 0, btn_selecionar_relacao)
+
+        document.querySelectorAll(".btn_excluir").forEach(btn => {
+            btn.addEventListener("click", (e) => {
+                let tr = e.currentTarget.parentElement.parentElement;
+                tr.remove(tr)
+            });
+        });
     })
 
 
@@ -134,12 +141,4 @@ export default async function cadastro_entrada_produtos(dados) {
             carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
         }
     })
-
-    document.querySelectorAll(".btn_excluir").forEach(btn => {
-        console.log(btn);
-        btn.removeEventListener("click")
-        btn.addEventListener("click", (e) => {
-            console.log(e.target);
-        });
-    });
 }

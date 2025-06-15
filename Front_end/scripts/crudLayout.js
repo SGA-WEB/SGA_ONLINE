@@ -18,7 +18,7 @@ import excluir_tipo_de_entrada from "../modulos/tipo_de_entrada/excluir_tipos_de
 import visualizar_tipo_de_entrada from "../modulos/tipo_de_entrada/visualizar_tipos_de_entrada/visualizar_tipo_de_entrada.js"
 import editar_tipo_de_entrada from "../modulos/tipo_de_entrada/editar_tipos_de_entrada/editar_tipo_de_entrada.js"
 
-export default function crudLayout (obj, tr) {
+export default function crudLayout (obj, tr, addListener = true) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
     acoes.setAttribute('class','acoes_tabela')
 
@@ -63,17 +63,19 @@ export default function crudLayout (obj, tr) {
     acoes.appendChild(btn_editar) // Adiciona o botão de editar nas ações
     acoes.appendChild(btn_excluir) // Adiciona o botão de excluir nas ações
 
-    btn_visualizar.addEventListener('click',() => {
-        executarAcao('visualizar')
-    })
+    if (addListener) {
+        btn_visualizar.addEventListener('click',() => {
+            executarAcao('visualizar')
+        })
 
-    btn_editar.addEventListener('click',() => {
-       executarAcao('editar')
-    })
+        btn_editar.addEventListener('click',() => {
+           executarAcao('editar')
+        })
 
-    btn_excluir.addEventListener('click',() => {
-        executarAcao('excluir')
-    })
+        btn_excluir.addEventListener('click',() => {
+            executarAcao('excluir')
+        })
+    }
 
     async function executarAcao(acao) {
         // Carrega na tela a página da ação de acordo com a tabela atual
