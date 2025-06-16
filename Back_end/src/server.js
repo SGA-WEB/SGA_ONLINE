@@ -44,8 +44,8 @@ app.use(cors({
 const pool = new Pool({
     user: 'neondb_owner',
     /* host: 'ep-small-bar-a8bydmrx-pooler.eastus2.azure.neon.tech', */
-    host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
-    //host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech', // Branch: Renata
+    //host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
+    host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech', // Branch: Renata
     database: 'neondb',
     password: 'npg_Y3ZNL6fxehGI',
     port: 5432,
@@ -833,7 +833,7 @@ app.delete('/api/remove-foto/:userId', async (req, res) => {
 // Rota POST para inserir novo tipo_entrada
 app.post('/tipos_entrada', async (req, res) => {
     const {
-        codigo,
+        id_tipo_de_entrada,
         descricao,
         cfop_dentro,
         cfop_fora,
@@ -849,11 +849,11 @@ app.post('/tipos_entrada', async (req, res) => {
     try {
         const query = `
             INSERT INTO sga.tipos_entrada
-            (codigo, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao)
+            (id_tipo_de_entrada, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
             RETURNING *;
         `;
-        const values = [codigo, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao];
+        const values = [id_tipo_de_entrada, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao];
 
         const result = await pool.query(query, values);
 
@@ -874,9 +874,91 @@ app.get('/api/tipos_entrada', async (req, res) => {
         res.status(500).json({ message: 'Erro ao buscar tipos_entrada', error: err.message });
     }
 });
+app.put('/tipos_entrada/:id', async (req, res) => {
+    const { id } = req.params;
+    const {
+        descricao,
+        cfop_dentro,
+        cfop_fora,
+        ativo,
+        movimenta_estoque,
+        hab_agrupamento,
+        hab_movimento,
+        habilita_nf,
+        atualiza_produto,
+        padrao
+    } = req.body;
+
+    try {
+        const query = `
+            UPDATE sga.tipos_entrada
+            SET 
+                descricao = $1,
+                cfop_dentro = $2,
+                cfop_fora = $3,
+                ativo = $4,
+                movimenta_estoque = $5,
+                hab_agrupamento = $6,
+                hab_movimento = $7,
+                habilita_nf = $8,
+                atualiza_produto = $9,
+                padrao = $10
+            WHERE id_tipo_de_entrada = $11
+            RETURNING *;
+        `;
+
+        const values = [
+            descricao,
+            cfop_dentro,
+            cfop_fora,
+            ativo,
+            movimenta_estoque,
+            hab_agrupamento,
+            hab_movimento,
+            habilita_nf,
+            atualiza_produto,
+            padrao,
+            id
+        ];
+
+        const result = await pool.query(query, values);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Tipo de entrada não encontrado.' });
+        }
+
+        res.status(200).json({ 
+            message: 'Tipo de entrada atualizado com sucesso.', 
+            tipo_entrada: result.rows[0] 
+        });
+
+    } catch (err) {
+        console.error('Erro ao atualizar tipo de entrada:', err);
+        res.status(500).json({ message: 'Erro ao atualizar tipo de entrada', error: err.message });
+    }
+});
+
+
+app.delete('/tipos_entrada/:id', async (req, res) => {
+    const { id} = req.params;
+    console.log(id)
+    try {
+        await pool.query(
+            `
+                DELETE FROM sga.tipos_entrada
+                WHERE id_tipo_de_entrada = $1
+                RETURNING *;
+            `
+        , [id]);
+        res.status(200).json({ message: 'Tipo de entrada excluído com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+
 
 

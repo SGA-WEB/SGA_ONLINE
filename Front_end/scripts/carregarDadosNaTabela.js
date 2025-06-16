@@ -17,7 +17,7 @@ function carregarDadosNaTabela (dados, colunasExibir) {
         const firstDataKey = Object.keys(dados[0])[0]; // Pega a primeira chave do primeiro objeto do array de dados, que no caso é o id
         dados.sort((a, b) => a[firstDataKey] - b[firstDataKey]) // Ordena os dados pelo id
 
-
+        console.log(dados)
         dados.map(objDado => { // Para cada objeto no array de dados
             let objDadoCompleto = objDado
             objDado = Object.entries(objDado) // Pega os campos até o limite de dados

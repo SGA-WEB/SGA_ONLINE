@@ -9,5 +9,5 @@ export default async function tipos_de_entrada () {
     })
 
     let dados = await buscarDados('tipos_entrada')
-    carregarDadosNaTabela(dados, ["id_tipo_de_entrada", "descricao", "cfop_dentro","cfop_fora","ativo"])
+    carregarDadosNaTabela(dados, ["id_tipo_de_entrada", "descricao", "cfop_dentro", "cfop_fora", "ativo"])
 }

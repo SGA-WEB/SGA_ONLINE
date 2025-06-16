@@ -3,13 +3,12 @@ import buscarDados from "../../../scripts/buscarDados.js"; // Importa a função
 import { carregarDadosNaTabela } from "../../../scripts/carregarDadosNaTabela.js";
 
 export default async function excluir_tipos_de_entrada(dado, callbackFunction, ...param) {
-    console.log(dado)
     let confirmacao = await popup_confirmar(`Tem certeza que deseja excluir o tipo de entrada ${dado.id_tipo_de_entrada} - ${dado.descricao}?`)
 
     if (confirmacao) {
         popup_carregando()
         try {
-            const response = await fetch(`http://localhost:3000/tipos_entrada/${dado.id_tipo_entrada}`, {
+            const response = await fetch(`http://localhost:3000/tipos_entrada/${dado.id_tipo_de_entrada}`, {
                 method: 'DELETE'
             });
             const data = await response.json();
@@ -20,7 +19,7 @@ export default async function excluir_tipos_de_entrada(dado, callbackFunction, .
                     callbackFunction(...param) // Chama a função de callback, se existir
                 }
                 let dados = await buscarDados('tipos_entrada'); // Busca os dados da tabela, exibe na tela e permite pesquisar
-                carregarDadosNaTabela(dados, ["id_tipo_entrada", "nome_tipo_entrada", "cfop_dentro", "cfop_fora", "ativo"]) // Exibe na tela e permite pesquisar
+                carregarDadosNaTabela(dados, ["id_tipo_de_entrada", "descricao", "cfop_dentro","cfop_fora","ativo"]) // Exibe na tela e permite pesquisar
             }
         } catch (err) {
             popup_carregando(true)
