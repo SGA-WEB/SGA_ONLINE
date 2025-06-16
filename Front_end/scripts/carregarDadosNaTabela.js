@@ -73,7 +73,6 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
             checkbox.addEventListener("change", (e) => {
                 // Adiciona o evento de mudança no checkbox
                 let tr = e.target.parentElement.parentElement // Pega a linha da célula do checkbox
-                console.log(e.target)
                 if (e.target.checked) { // Se o checkbox estiver marcado
                     tr.classList.add("linha_selecionada") // Adiciona a classe "selecionado" na linha
                 } else { // Se o checkbox estiver desmarcado
@@ -93,18 +92,11 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
             tabela.appendChild(td_info)
         }
     }
-    tabela.addEventListener("click", (e) => {
-        let tr_id = e.target.parentElement.id.replace("tr_", "") // Pega número do id do elemento clicado
-        let checkbox = document.querySelector("#checkbox_" + tr_id) // Pega o checkbox da linha clicada
-        if (checkbox) { // Se o checkbox existir
-            checkbox.checked = !checkbox.checked // Inverte o estado do checkbox
-            if (checkbox.checked) {
-                e.target.parentElement.classList.add("linha_selecionada")
-            } else {
-                e.target.parentElement.classList.remove("linha_selecionada")
-            }
-        }
-    })
+
+    // Primeiro remove (caso já exista)
+    tabela.removeEventListener("click", selecionarChekboxAoClicarNaLinha);
+    // Depois adiciona
+    tabela.addEventListener("click", selecionarChekboxAoClicarNaLinha);
 
     let selecionar_todos = tabela.parentElement.querySelector("#selecionar_todos")
     selecionar_todos.addEventListener("change", (e) => {
@@ -112,11 +104,26 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
         for (let checkbox of checkboxes) {
             if (selecionar_todos.checked) {
                 checkbox.checked = true // Marca todos os checkboxes
+                checkbox.parentElement.parentElement.classList.add("linha_selecionada");
             } else {
                 checkbox.checked = false // Desmarca todos os checkboxes
+                checkbox.parentElement.parentElement.classList.remove("linha_selecionada");
             }
         }
     })
+}
+
+function selecionarChekboxAoClicarNaLinha(e) {
+    let tr_id = e.target.parentElement.id.replace("tr_", "");
+    let checkbox = document.querySelector("#checkbox_" + tr_id);
+    if (checkbox) {
+        checkbox.checked = !checkbox.checked;
+        if (checkbox.checked) {
+            e.target.parentElement.classList.add("linha_selecionada");
+        } else {
+            e.target.parentElement.classList.remove("linha_selecionada");
+        }
+    }
 }
 
 function pesquisar(dados, colunasExibir, tabela = document.querySelector("#tabela"), ativarCrud = true) {

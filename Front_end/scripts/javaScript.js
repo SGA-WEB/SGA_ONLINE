@@ -440,7 +440,6 @@ btn_entrada_produto.addEventListener("click", () => {
 
 let btn_cadastro_auxiliares = document.querySelector("#btn_cadastro_auxiliares")
 let menu_cadastro_auxiliares = document.querySelector("#menu_cadastro_auxiliares")
-console.log(btn_cadastro_auxiliares)
 
 btn_cadastro_auxiliares.addEventListener("mouseenter", () => {
     btn_cadastro_auxiliares.classList.remove("sub_menu_fechado")
@@ -467,6 +466,6 @@ btn_tipos_de_entrada.addEventListener("click", () => {
     carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada)
 })
 
- 
+
 
 export { carregarConteudo, btnMenuLateral, click_btn_menu, fecharMenu, mudarLogoParaPadrao }

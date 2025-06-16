@@ -14,6 +14,7 @@ export default async function cadastro_entrada_produtos(dados) {
     let ultimoIdProduto
     let fornecedores = []
     dados.forEach(dado => {
+        console.log(dado)
         ultimoIdProduto = dado.id_entrada_produto
         fornecedores.push({
             fornecedor_id: dado.fornecedor_id,
@@ -27,10 +28,15 @@ export default async function cadastro_entrada_produtos(dados) {
     });
     // Ordena os fornecedores pelo id
     produtos = produtos.sort((a, b) => a.id_produto - b.id_produto);
-
+    produtos.map(produto => {
+        produto.valor_total = produto.preco_varejo * produto.quantidade;
+    })
+    console.log(produtos)
     document.querySelector(".codigo_id").textContent = ultimoIdProduto + 1
 
     fornecedores.forEach(fornecedor => {
+        // Altera o select de fornecedores para incluir os fornecedores do banco de dados
+        // Cria um novo elemento option para cada fornecedor
         let option = document.createElement("option");
         option.value = fornecedor.fornecedor_id;
         option.text = fornecedor.fornecedor_razao_social;
@@ -39,6 +45,9 @@ export default async function cadastro_entrada_produtos(dados) {
 
     let btn_adicionar_relacao = document.querySelector("#btn_adicionar_relacao");
     btn_adicionar_relacao.addEventListener("click", async () => {
+        // Quando o botão de adicionar relação for clicado
+        // Abre um popup para selecionar os produtos
+        // Carrega os produtos na tabela de seleção
         popup("abrir", 0, btn_adicionar_relacao)
         carregarDadosNaTabela(
             produtos,
@@ -54,19 +63,28 @@ export default async function cadastro_entrada_produtos(dados) {
         )
         mudarPesquisa(document.querySelector(".input_pesquisa"),"#select_coluna")
         select2("200px")
+        document.querySelectorAll(".table_tr").forEach(tr => {
+            let tr_id = tr.id.replace("tr_", "");
+            idProdutosSelecionados.forEach(idProduto => {
+                if (tr_id === idProduto) {
+                    tr.querySelector(".checkbox_selecionar_linha").checked = true;
+                    tr.classList.add("linha_selecionada");
+                }
+            })
+        })
     })
 
+    let idProdutosSelecionados = []
     let btn_selecionar_relacao = document.querySelector(".btn_selecionar_relacao");
-    let idProdutoSelecionados = []
     btn_selecionar_relacao.addEventListener("click", () => {
         let produtoSelecionados = document.querySelectorAll(".checkbox_selecionar_linha:checked");
-
+        idProdutosSelecionados = []
         produtoSelecionados.forEach(checkbox => {
-            idProdutoSelecionados.push(checkbox.id.replace("checkbox_", ""))
+            idProdutosSelecionados.push(checkbox.id.replace("checkbox_", ""))
         })
 
         let novosDados = produtos.filter(produto => {
-            return idProdutoSelecionados.includes(produto.id_produto.toString())
+            return idProdutosSelecionados.includes(produto.id_produto.toString())
         })
 
         carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"], document.querySelector("#tabela_produtos"), true, false)
@@ -74,9 +92,14 @@ export default async function cadastro_entrada_produtos(dados) {
         popup("fechar", 0, btn_selecionar_relacao)
 
         document.querySelectorAll(".btn_excluir").forEach(btn => {
+            // Adiciona o evento de click para cada botão de excluir
             btn.addEventListener("click", (e) => {
+                // Remove a linha da tabela e da lista de produtos selecionados
+                let id_tr = e.currentTarget.parentElement.parentElement.id.replace("tr_", "");
                 let tr = e.currentTarget.parentElement.parentElement;
                 tr.remove(tr)
+
+                idProdutosSelecionados = idProdutosSelecionados.filter(id => id !== id_tr);
             });
         });
     })
@@ -122,7 +145,7 @@ export default async function cadastro_entrada_produtos(dados) {
         let formData = new FormData(formEntradaProduto);
         let data = Object.fromEntries(formData);
         let dadosPreenchidos = false
-
+        // Se algum campo do formulário estiver preenchido, é necessário confirmar a saída
         for (let key in data) {
             if (data[key] === "") {
                 data[key] = null;
@@ -131,7 +154,7 @@ export default async function cadastro_entrada_produtos(dados) {
                 dadosPreenchidos = true;
             }
         }
-        if (idProdutoSelecionados.length > 0 || dadosPreenchidos) {
+        if (idProdutosSelecionados.length > 0 || dadosPreenchidos) {
             if (await popup_confirmar("Tem certeza que deseja voltar? Todos os dados inseridos serão perdidos.")) {
                 carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
             } else {
