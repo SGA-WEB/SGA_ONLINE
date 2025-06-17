@@ -51,13 +51,13 @@ export default async function cadastro_entrada_produtos(dados) {
         popup("abrir", 0, btn_adicionar_relacao)
         carregarDadosNaTabela(
             produtos,
-            ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"],
+            ["id_produto", "produto", "quantidade","preco_varejo"],
             document.querySelector("#tabela_selecionar_produtos"),
             false
         )
         pesquisar(
             produtos,
-            ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"],
+            ["id_produto", "produto", "quantidade","preco_varejo"],
             document.querySelector("#tabela_selecionar_produtos"),
             false
         )
