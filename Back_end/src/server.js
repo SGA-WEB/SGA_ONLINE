@@ -40,8 +40,9 @@ app.use(cors({
 const pool = new Pool({
     user: 'neondb_owner',
     /* host: 'ep-small-bar-a8bydmrx-pooler.eastus2.azure.neon.tech', */
-    host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
+    // host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
     //host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech', // Branch: Renata
+    host: 'ep-dawn-frog-a8ga6hxq-pooler.eastus2.azure.neon.tech', // Branch: Flora
     database: 'neondb',
     password: 'npg_Y3ZNL6fxehGI',
     port: 5432,
@@ -276,25 +277,20 @@ app.get('/api/entrada_produto', async (req, res) => {
 app.get('/api/saida_produto', async (req, res) => {
   try {
     const result = await pool.query(`
-      SELECT
-        sp.id_saida_produto AS "ID de Saída",
-        sp.tipo_saida AS "Tipo de Saída",
-        sp.data AS "Data",
-        v.nome AS "Vendedor",
-        c.razao_social AS "Cliente",
-        p.nome AS "Produto",
-        sp.quantidade AS "Qtde.",
-        sp.valor_unitario AS "Valor Un.",
-        sp.valor_total AS "Valor Total",
-        sp.status AS "Status da Saída"
-      FROM sga.saida_produto sp
-      INNER JOIN sga.contato c
-        ON sp.cliente_id = c.id_contato
-      INNER JOIN sga.vendedor v
-        ON sp.vendedor_id = v.id_vendedor
-      INNER JOIN sga.produto p
-        ON sp.produto_id = p.id_produto
-      ORDER BY sp.id_saida_produto
+        SELECT
+            sp.id_de_saida AS "ID de Saída",
+            sp.tipo_saida AS "Tipo de Saída",
+            sp.data_saida AS "Data",
+            sp.cliente AS "Cliente",  -- Usando campo direto da tabela saida_de_produto
+            sp.vendedor AS "Vendedor",  -- Usando campo direto da tabela saida_de_produto
+            sp.produto AS "Produto",  -- Usando campo direto da tabela saida_de_produto
+            sp.quantidade AS "Qtde.",
+            sp.valor_unidade AS "Valor Un.",
+            sp.valor_total AS "Valor Total",
+            sp.status_de_saida AS "Status da Saída",
+            TO_CHAR(sp.data_criacao, 'DD/MM/YYYY HH24:MI') AS "Data de Criação"
+        FROM sga.saida_de_produto sp
+        ORDER BY sp.id_de_saida DESC
     `);
     res.json(result.rows);
   } catch (err) {

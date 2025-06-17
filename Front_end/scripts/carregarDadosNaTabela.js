@@ -35,7 +35,7 @@ function carregarDadosNaTabela (dados, colunasExibir) {
                 if (e === "data_cadastro") {
                     continue
                 }
-                if (e.search("data") != -1) {
+                if (e.toLowerCase().search("data") != -1) {
                     objDado[e] = formatarData(objDado[e])
                 }
                 let td = document.createElement('td')
