@@ -36,6 +36,10 @@
 .tabela tr {
     position: relative; /* Permite que os elementos filhos usem position: absolute */
 }
+
+.th_selecionar_todos {
+    max-width: fit-content;
+}
 /* CRUD: */
 
 .acoes_tabela {

@@ -29,6 +29,11 @@
     margin-bottom: 1rem;
 }
 
+.flex_direction_column {
+    display: flex !important;
+    flex-direction: column;
+}
+
 .menu_btns {
     width: 100%;
     flex-wrap: wrap;
@@ -246,6 +251,14 @@
 .disable:hover {
     cursor: default;
     background-color: transparent;
+}
+
+/* PopUp tabela de relação */
+.popup_relacao .popup {
+    max-width: 90vw;
+    max-height: 90vh;
+    overflow: scroll;
+    width: 100%;
 }
 
 /* PopUp alerta */

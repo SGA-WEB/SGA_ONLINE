@@ -31,6 +31,14 @@ function carregarDadosNaTabela (dados, colunasExibir) {
             objDado = Object.fromEntries(objDado) // Converte o array em um objeto
             let tr = document.createElement('tr') // Cria uma linha
             tr.setAttribute('class','table_tr')
+
+            let td = document.createElement('td') // Cria uma célula
+            td.setAttribute("class", "selecionar_linha")
+            let checkbox = document.createElement('input') // Cria um checkbox
+            checkbox.setAttribute('type', 'checkbox') // Define o tipo do input como checkbox
+            td.appendChild(checkbox) // Adiciona o checkbox na célula
+            td.setAttribute('id', 'checkbox_' + objDado[firstDataKey]) // Define o id da célula como checkbox_id
+            tr.appendChild(td) // Adiciona a célula na linha
             for (let e in objDado) { // Para cada campo no objeto
                 if (e === "data_cadastro") {
                     continue

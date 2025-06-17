@@ -27,14 +27,14 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
 }
 
 #seta_select {
     position: relative;
     right: 1.7rem;
     overflow: auto;
-} 
+}
 
 .header .select2-selection {
     border: none !important;

@@ -1,12 +1,16 @@
 import express from 'express';
 import session from 'express-session';
-import pkg from 'pg';
+// import pkg from 'pg';
 import cors from 'cors';
 import multer from 'multer';
 import sharp from 'sharp';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
+// import { Pool } from 'pg/lib/index.js';
+import pkg from 'pg';
+const { Pool } = pkg;
+
 
 const supabaseUrl = 'https://ertkiirzzswpxkgcxret.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVydGtpaXJ6enN3cHhrZ2N4cmV0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjEyMzMwNCwiZXhwIjoyMDYxNjk5MzA0fQ.sldy2ROLnO14WI-Iam1iqjCyfHA2wfWFNWcbwcI1snE';
@@ -15,7 +19,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const { Pool } = pkg;
+// const { Pool } = pkg;
 const app = express();
 
 app.use((req, res, next) => {
@@ -106,23 +110,31 @@ app.use((err, req, res, next) => {
 });
 
 //// 🔐 Rota para validar o login
+// Rota para validar o login (POST)
 app.post('/api/login', async (req, res) => {
     try {
         const { email, senha } = req.body;
 
+        // Validações básicas
+        if (!email || !senha) {
+            return res.status(400).json({ error: 'E-mail e senha são obrigatórios' });
+        }
+
+        // Verifica se o e-mail existe no banco de dados
         const userResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1', [email]);
 
         if (userResult.rows.length === 0) {
             return res.status(404).json({ error: 'E-mail não encontrado' });
         }
 
+        // Verifica se a senha está correta
         const senhaResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1 AND senha = $2', [email, senha]);
 
         if (senhaResult.rows.length === 0) {
             return res.status(401).json({ error: 'Senha incorreta' });
         }
 
-        // Criar sessão
+        // Cria a sessão do usuário
         req.session.user = {
             id: userResult.rows[0].id_usuario,
             nome: userResult.rows[0].nome,
@@ -132,10 +144,11 @@ app.post('/api/login', async (req, res) => {
         res.json({ message: 'Login bem-sucedido' });
 
     } catch (error) {
-        console.error(error);
+        console.error('Erro interno no servidor:', error);
         res.status(500).json({ error: 'Erro interno no servidor' });
     }
 });
+
 
 //TESTE DE ROTA
 app.get('/api/testar-sessao', (req, res) => {
@@ -256,10 +269,10 @@ app.get('/api/entrada_produto', async (req, res) => {
         ep.numero_nf,
         ep.data_recebimento,
         c.razao_social AS fornecedor_razao_social,
-        ep.valor_total,
         ep.desconto,
-        ep.total,
         ep.status,
+        ep.valor_total,
+        ep.fornecedor_id,
         c.razao_social AS fornecedor_razao_social
       FROM sga.entrada_produto ep
       INNER JOIN sga.contato c
@@ -696,6 +709,48 @@ app.put('/usuarios/:id_usuario', async (req, res) => {
     }
 });
 
+// Rota para inserir entrada de produto
+app.post('/entrada_produto', async (req, res) => {
+  const {
+    tipo_entrada,
+    numero_nf,
+    data_recebimento,
+    fornecedor_id,
+    valor_total,
+    desconto,
+    total,
+    status,
+    modelo_documento_fiscal,
+    serie,
+    subserie,
+    data_emissao
+  } = req.body;
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO sga.entrada_produto (
+        tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
+        desconto, total, status, data_criacao,
+        modelo_documento_fiscal, serie, subserie, data_emissao
+      ) VALUES (
+        $1, $2, $3, $4, $5,
+        $6, $7, $8, CURRENT_TIMESTAMP,
+        $9, $10, $11, $12
+      ) RETURNING *`,
+      [
+        tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
+        desconto, total, status,
+        modelo_documento_fiscal, serie, subserie, data_emissao
+      ]
+    );
+
+    res.status(201).json({ sucesso: true, entrada: result.rows[0] });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ sucesso: false, erro: 'Erro ao inserir entrada de produto.' });
+  }
+});
+
 // Rota para upload da imagem
 app.post('/upload-avatar', upload.single('avatar'), async (req, res) => {
     try {
@@ -803,7 +858,53 @@ app.delete('/api/remove-foto/:userId', async (req, res) => {
     }
 });
 
+// Rota POST para inserir novo tipo_entrada
+app.post('/tipos_entrada', async (req, res) => {
+    const {
+        codigo,
+        descricao,
+        cfop_dentro,
+        cfop_fora,
+        ativo,
+        movimenta_estoque,
+        hab_agrupamento,
+        hab_movimento,
+        habilita_nf,
+        atualiza_produto,
+        padrao
+    } = req.body;
+
+    try {
+        const query = `
+            INSERT INTO sga.tipos_entrada
+            (codigo, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            RETURNING *;
+        `;
+        const values = [codigo, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao];
+
+        const result = await pool.query(query, values);
+
+        res.status(201).json({ message: 'Tipo de entrada criado com sucesso!', tipo_entrada: result.rows[0] });
+    } catch (err) {
+        console.error('Erro ao inserir tipo_entrada:', err);
+        res.status(500).json({ message: 'Erro ao inserir tipo_entrada', error: err.message });
+    }
+});
+
+// Rota GET para listar todos os tipos_entrada
+app.get('/api/tipos_entrada', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM sga.tipos_entrada ORDER BY id_tipo_de_entrada');
+        res.status(200).json(result.rows);
+    } catch (err) {
+        console.error('Erro ao buscar tipos_entrada:', err);
+        res.status(500).json({ message: 'Erro ao buscar tipos_entrada', error: err.message });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+
+
