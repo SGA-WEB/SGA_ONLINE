@@ -19,8 +19,16 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
 
         dados.map(objDado => { // Para cada objeto no array de dados
             let objDadoCompleto = objDado
-            objDado = Object.entries(objDado) // Pega os campos até o limite de dados
-            objDado = objDado.filter(e => {
+
+            let sortedObjDado = {}; // Objeto com os dados ordenados comforme as colunas a serem exibidas
+            colunasExibir.forEach(coluna => {
+                sortedObjDado[coluna] = objDado[coluna];
+            });
+            objDado = sortedObjDado;
+
+            objDado = Object.entries(objDado) // Converte o objeto em um array de pares chave-valor
+
+            objDado = objDado.filter(e => { // Filtra os campos do objeto para exibir apenas os que estão no array de colunas a serem exibidas
                 for (let coluna of colunasExibir) {
                     if (e[0] === coluna) {
                         return e // Se o campo estiver no array de colunas a serem exibidas, retorna true
@@ -28,6 +36,7 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
                 }
             })
             objDado = Object.fromEntries(objDado) // Converte o array em um objeto
+
             let tr = document.createElement('tr') // Cria uma linha
             tr.setAttribute('class','table_tr')
             tr.setAttribute('id', 'tr_' + objDado[firstDataKey]) // Define o id da linha como tr_id

@@ -14,7 +14,6 @@ export default async function cadastro_entrada_produtos(dados) {
     let ultimoIdProduto
     let fornecedores = []
     dados.forEach(dado => {
-        console.log(dado)
         ultimoIdProduto = dado.id_entrada_produto
         fornecedores.push({
             fornecedor_id: dado.fornecedor_id,
@@ -28,10 +27,13 @@ export default async function cadastro_entrada_produtos(dados) {
     });
     // Ordena os fornecedores pelo id
     produtos = produtos.sort((a, b) => a.id_produto - b.id_produto);
+
+    // Adiciona o campo valor_total e o desconto em cada produto
     produtos.map(produto => {
         produto.valor_total = produto.preco_varejo * produto.quantidade;
+        produto.desconto = 0; // Inicializa o desconto como 0
     })
-    console.log(produtos)
+
     document.querySelector(".codigo_id").textContent = ultimoIdProduto + 1
 
     fornecedores.forEach(fornecedor => {
@@ -77,6 +79,8 @@ export default async function cadastro_entrada_produtos(dados) {
     let idProdutosSelecionados = []
     let btn_selecionar_relacao = document.querySelector(".btn_selecionar_relacao");
     btn_selecionar_relacao.addEventListener("click", () => {
+        // Quando o botão de selecionar relação for clicado
+        // Seleciona os produtos que foram marcados na tabela de seleção
         let produtoSelecionados = document.querySelectorAll(".checkbox_selecionar_linha:checked");
         idProdutosSelecionados = []
         produtoSelecionados.forEach(checkbox => {
@@ -84,10 +88,13 @@ export default async function cadastro_entrada_produtos(dados) {
         })
 
         let novosDados = produtos.filter(produto => {
+            // Filtra os produtos que foram selecionados
             return idProdutosSelecionados.includes(produto.id_produto.toString())
         })
 
-        carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"], document.querySelector("#tabela_produtos"), true, false)
+        console.log(novosDados)
+
+        carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade","preco_varejo", "desconto", "valor_total"], document.querySelector("#tabela_produtos"), true, false)
 
         popup("fechar", 0, btn_selecionar_relacao)
 
