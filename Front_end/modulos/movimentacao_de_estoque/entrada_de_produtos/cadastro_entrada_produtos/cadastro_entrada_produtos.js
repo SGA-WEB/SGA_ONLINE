@@ -50,11 +50,14 @@ export default async function cadastro_entrada_produtos(dados) {
         // Quando o botão de adicionar relação for clicado
         // Abre um popup para selecionar os produtos
         // Carrega os produtos na tabela de seleção
+        console.log(produtos)
         popup("abrir", 0, btn_adicionar_relacao)
         carregarDadosNaTabela(
             produtos,
             ["id_produto", "produto", "quantidade","preco_varejo"],
             document.querySelector("#tabela_selecionar_produtos"),
+            false,
+            true,
             false
         )
         pesquisar(
@@ -65,7 +68,9 @@ export default async function cadastro_entrada_produtos(dados) {
         )
         mudarPesquisa(document.querySelector(".input_pesquisa"),"#select_coluna")
         select2("200px")
+
         document.querySelectorAll(".table_tr").forEach(tr => {
+            // Seleciona os tr's da tabela de produtos selecionados anteriormente
             let tr_id = tr.id.replace("tr_", "");
             idProdutosSelecionados.forEach(idProduto => {
                 if (tr_id === idProduto) {
@@ -78,7 +83,11 @@ export default async function cadastro_entrada_produtos(dados) {
 
     let idProdutosSelecionados = []
     let btn_selecionar_relacao = document.querySelector(".btn_selecionar_relacao");
-    btn_selecionar_relacao.addEventListener("click", () => {
+    let btn_fechar_popup = document.querySelector(".btn_fechar_popup");
+    btn_fechar_popup.addEventListener("click", selecionarProdutos)
+    btn_selecionar_relacao.addEventListener("click", selecionarProdutos)
+
+    function selecionarProdutos () {
         // Quando o botão de selecionar relação for clicado
         // Seleciona os produtos que foram marcados na tabela de seleção
         let produtoSelecionados = document.querySelectorAll(".checkbox_selecionar_linha:checked");
@@ -109,8 +118,7 @@ export default async function cadastro_entrada_produtos(dados) {
                 idProdutosSelecionados = idProdutosSelecionados.filter(id => id !== id_tr);
             });
         });
-    })
-
+    }
 
     let formEntradaProduto = document.querySelector("#form_entrada_produto");
     formEntradaProduto.addEventListener("submit", async (e) => {

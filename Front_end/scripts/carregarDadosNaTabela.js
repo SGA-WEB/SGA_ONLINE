@@ -4,10 +4,12 @@
 import crudLayout from "./crudLayout.js" // Importa a função que cria os botões de editar, visualizar e excluir (CRUD)
 import { formatarData } from "./funcionalidades.js"
 
-function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySelector(".tbody"), ativarCrud = true, addListener = true) {
+function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySelector(".tbody"), ativarCrud = true, addListener = true, removerLinhasTabela = true) {
     // ColunasExibir: Array com os nomes das colunas do banco de dados que serão exibidas na tabela
     let [...tr_tabela] = document.querySelectorAll(".table_tr")
-    tr_tabela.map(e => e.remove(e)) // Remove todos os elementos da tabela
+    if (removerLinhasTabela) { // Se removerLinhasTabela for true, remove as linhas da tabela
+       tr_tabela.map(e => e.remove(e)) // Remove todos os elementos da tabela
+    }
     let td_info = document.querySelector(".td_nenhum_dado") // Pega o parágrafo de informação de que não há dados (Se existir)
 
     if (dados.length !== 0 ) { // Se houver dados
