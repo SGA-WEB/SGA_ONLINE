@@ -46,6 +46,9 @@ a.link_nav_selecionado {
     margin-bottom: 2rem;
 }
 
+.h3_titulo {
+    margin-bottom: 1.5rem;
+}
 .container_codigo_data {
     display: flex;
     flex-wrap: wrap;

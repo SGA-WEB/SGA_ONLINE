@@ -81,3 +81,19 @@
 .table_tr:hover .acoes_tabela {
     transform: translateX(0); /* Traz o elemento de volta para a posição original */
 }
+
+.input_tabela {
+    border: 1px solid var(--cinza2);
+    background-color: transparent;
+    padding: 0.2rem 0.5rem;
+    font-size: 1rem;
+    border-color: var(--cinza2);
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    color: var(--secundaria);
+}
+
+.td_container_input {
+    max-width: 7rem;
+}

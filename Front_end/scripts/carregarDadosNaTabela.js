@@ -60,6 +60,7 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
                 }
                 let td = document.createElement('td')
                 td.setAttribute('class','dado_tabela')
+                td.classList.add('td_' + e) // Adiciona a classe da célula como td_nomeDoCampo
                 td.setAttribute('id', e + "_" + objDado[e]) // nome do campo + valor do campo
                 if (typeof(objDado[e]) == 'boolean') {
                     // Se o campo for booleano, exibe "S" ou "N"

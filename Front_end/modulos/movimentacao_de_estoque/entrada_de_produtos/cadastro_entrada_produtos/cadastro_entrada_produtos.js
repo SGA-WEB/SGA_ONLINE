@@ -50,7 +50,6 @@ export default async function cadastro_entrada_produtos(dados) {
         // Quando o botão de adicionar relação for clicado
         // Abre um popup para selecionar os produtos
         // Carrega os produtos na tabela de seleção
-        console.log(produtos)
         popup("abrir", 0, btn_adicionar_relacao)
         carregarDadosNaTabela(
             produtos,
@@ -101,8 +100,6 @@ export default async function cadastro_entrada_produtos(dados) {
             return idProdutosSelecionados.includes(produto.id_produto.toString())
         })
 
-        console.log(novosDados)
-
         carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade","preco_varejo", "desconto", "valor_total"], document.querySelector("#tabela_produtos"), true, false)
 
         popup("fechar", 0, btn_selecionar_relacao)
@@ -118,6 +115,54 @@ export default async function cadastro_entrada_produtos(dados) {
                 idProdutosSelecionados = idProdutosSelecionados.filter(id => id !== id_tr);
             });
         });
+
+        document.querySelectorAll(".td_quantidade").forEach(td => {
+            td.classList.add("td_container_input")
+            let inputQuantidade = document.createElement("input");
+            inputQuantidade.type = "number";
+            inputQuantidade.value = 1; // Define o valor inicial como 1
+            inputQuantidade.max = td.textContent; // Define o valor máximo como a quantidade do produto
+            inputQuantidade.min = 1; // Define o valor mínimo como 1
+            inputQuantidade.classList.add("input_quantidade");
+            inputQuantidade.classList.add("input_tabela");
+            inputQuantidade.addEventListener("input", calcularValorTotal);
+
+            td.textContent = ""
+            td.appendChild(inputQuantidade);
+        })
+
+        document.querySelectorAll(".td_desconto").forEach(td => {
+            td.classList.add("td_container_input")
+            let inputDesconto = document.createElement("input");
+            inputDesconto.type = "number";
+            inputDesconto.value = 0; // Define o valor inicial como 0
+            inputDesconto.classList.add("input_desconto");
+            inputDesconto.addEventListener("input", calcularValorTotal);
+            inputDesconto.classList.add("input_tabela");
+
+            td.textContent = ""
+            td.appendChild(inputDesconto);
+        })
+
+        calcularValorTotal();
+    }
+
+    function calcularValorTotal() {
+        let inputsQuantidade = document.querySelectorAll(".input_quantidade");
+        let inputsDesconto = document.querySelectorAll(".input_desconto");
+        let inputsPrecoVarejo = document.querySelectorAll(".td_preco_varejo");
+        let inputsValorTotal = document.querySelectorAll(".td_valor_total");
+
+        inputsQuantidade.forEach((input, index) => {
+            let precoVarejo = inputsPrecoVarejo[index].textContent;
+            let quantidade = input.value;
+            let desconto = inputsDesconto[index].value;
+            let valorTotal = (precoVarejo * quantidade) - desconto;
+            inputsPrecoVarejo[index].value = precoVarejo;
+            inputsQuantidade[index].value = quantidade;
+            inputsDesconto[index].value = desconto;
+            inputsValorTotal[index].textContent = valorTotal;
+        });
     }
 
     let formEntradaProduto = document.querySelector("#form_entrada_produto");
@@ -127,13 +172,14 @@ export default async function cadastro_entrada_produtos(dados) {
         let data = Object.fromEntries(formData);
 
         // Converter campos numéricos corretamente
-        console.log(data);
         data.fornecedor = parseInt(data.fornecedor);
         data.valor_total = parseFloat(data.valor_total);
         data.desconto = parseFloat(data.desconto || 0);
         data.total = parseFloat(data.total);
 
         console.log(data);
+        console.log(idProdutosSelecionados)
+        console.log(produtos)
         try {
             const response = await fetch('http://localhost:3000/entrada_produto', {
                 method: 'POST',

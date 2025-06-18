@@ -695,11 +695,17 @@ app.post('/entrada_produto', async (req, res) => {
     modelo_documento_fiscal,
     serie,
     subserie,
-    data_emissao
+    data_emissao,
+    itens // Array de itens de produtos
   } = req.body;
 
+  const client = await pool.connect();
+
   try {
-    const result = await pool.query(
+    await client.query('BEGIN');
+
+    // 1. Inserir o cabeçalho da entrada
+    const entradaResult = await client.query(
       `INSERT INTO sga.entrada_produto (
         tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
         desconto, total, status, data_criacao,
@@ -708,7 +714,7 @@ app.post('/entrada_produto', async (req, res) => {
         $1, $2, $3, $4, $5,
         $6, $7, $8, CURRENT_TIMESTAMP,
         $9, $10, $11, $12
-      ) RETURNING *`,
+      ) RETURNING id_entrada_produto`,
       [
         tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
         desconto, total, status,
@@ -716,10 +722,48 @@ app.post('/entrada_produto', async (req, res) => {
       ]
     );
 
-    res.status(201).json({ sucesso: true, entrada: result.rows[0] });
+    const entradaId = entradaResult.rows[0].id_entrada_produto;
+
+    // 2. Inserir os itens da entrada
+    for (const item of itens) {
+      await client.query(
+        `INSERT INTO sga.entrada_produto_itens (
+          entrada_id, produto_id, quantidade, valor_unitario,
+          desconto_item, lote, data_validade, centro_estoque_id
+        ) VALUES (
+          $1, $2, $3, $4, $5, $6, $7, $8
+        )`,
+        [
+          entradaId,
+          item.produto_id,
+          item.quantidade,
+          item.valor_unitario,
+          item.desconto_item || 0,
+          item.lote,
+          item.data_validade,
+          item.centro_estoque_id
+        ]
+      );
+    }
+
+    await client.query('COMMIT');
+
+    res.status(201).json({
+      sucesso: true,
+      entrada_id: entradaId,
+      message: 'Entrada de produto e itens cadastrados com sucesso'
+    });
+
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ sucesso: false, erro: 'Erro ao inserir entrada de produto.' });
+    await client.query('ROLLBACK');
+    console.error('Erro na transação:', error);
+    res.status(500).json({
+      sucesso: false,
+      erro: 'Erro ao processar entrada de produto',
+      detalhes: error.message
+    });
+  } finally {
+    client.release();
   }
 });
 
