@@ -1,5 +1,7 @@
 import { carregarConteudo } from "../../../scripts/javaScript.js";
 import select2 from "../../../scripts/select.js";
+import { popup_aviso } from "../../../scripts/popup.js";
+import tipos_de_entrada from "../tipos_de_entrada.js";
 
 export default function cadastro_tipo_entrada() {
     select2()
@@ -29,16 +31,16 @@ export default function cadastro_tipo_entrada() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-
             if (response.ok) {
-                alert('Cadastro feito com sucesso!');
+                popup_aviso('Cadastro feito com sucesso!');
+                carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada)
             } else {
                 const erro = await response.json();
-                alert('Erro ao cadastrar: ' + erro.message);
+                popup_erro('Erro ao cadastrar: ' + erro.message);
             }
         } catch (error) {
             console.error('Erro na requisição:', error);
-            alert('Erro ao conectar com o servidor.');
+            popup_erro('Erro ao conectar com o servidor.');
         }
     })
 }

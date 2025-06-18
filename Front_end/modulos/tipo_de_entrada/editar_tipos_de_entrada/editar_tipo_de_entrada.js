@@ -35,7 +35,7 @@ export default function editar_tipo_de_entrada(dado, telaAnteriorVisualizar) {
             const hab_agrupamento = document.querySelector("#hab_agrupamento").checked
             const movimenta_estoque = document.querySelector("#movimenta_estoque").checked
             const hab_movimento = document.querySelector("#hab_movimento").checked
-            const hab_nf = document.querySelector("#hab_nf").checked
+            const habilita_nf = document.querySelector("#hab_nf").checked
             const atualiza_produto = document.querySelector("#atualiza_produto").checked
             const padrao = document.querySelector("#padrao").checked
             
@@ -47,7 +47,7 @@ export default function editar_tipo_de_entrada(dado, telaAnteriorVisualizar) {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ descricao, cfop_dentro, cfop_fora, ativo, hab_agrupamento, movimenta_estoque, hab_movimento, hab_nf, atualiza_produto, padrao  })
+                    body: JSON.stringify({ descricao, cfop_dentro, cfop_fora, ativo, hab_agrupamento, movimenta_estoque, hab_movimento, habilita_nf, atualiza_produto, padrao  })
                 });
 
                 const data = await response.json();
@@ -62,12 +62,13 @@ export default function editar_tipo_de_entrada(dado, telaAnteriorVisualizar) {
                         hab_agrupamento: hab_agrupamento,
                         movimenta_estoque: movimenta_estoque,
                         hab_movimento: hab_movimento,
-                        hab_nf: hab_nf,
+                        habilita_nf: habilita_nf,
                         atualiza_produto: atualiza_produto,
                         padrao: padrao,
                     }
+                    console.log(novoDado)
                     popup_carregando(true)
-                    carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, novoDado)
+                    carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada, novoDado)
                     popup_aviso("Tipo de entrada alterado com sucesso!")
                 } else {
                     alert(`Erro: ${data.error}`);
