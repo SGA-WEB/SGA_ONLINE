@@ -312,6 +312,50 @@ app.get('/api/saida_produto', async (req, res) => {
   }
 });
 
+// Rota para inserir uma nova saída de produto
+app.post('/api/saida_produto', async (req, res) => {
+  const {
+    tipo_saida,
+    data_saida,
+    cliente,
+    vendedor,
+    produto,
+    quantidade,
+    valor_unidade,
+    valor_total,
+    status_de_saida
+  } = req.body;
+
+  try {
+    const result = await pool.query(
+      `INSERT INTO sga.saida_de_produto 
+      (tipo_saida, data_saida, cliente, vendedor, produto, quantidade, valor_unidade, valor_total, status_de_saida, data_criacao)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())
+      RETURNING *`,
+      [
+        tipo_saida,
+        data_saida,
+        cliente,
+        vendedor,
+        produto,
+        quantidade,
+        valor_unidade,
+        valor_total,
+        status_de_saida
+      ]
+    );
+
+    res.status(201).json({
+      mensagem: 'Saída de produto cadastrada com sucesso!',
+      dados: result.rows[0]
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: 'Erro ao cadastrar saída de produto' });
+  }
+});
+
+
 
 // Endpoint para atualizar um centro de estoque (PUT)
 app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {
