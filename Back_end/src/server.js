@@ -690,7 +690,6 @@ app.post('/entrada_produto', async (req, res) => {
     fornecedor_id,
     valor_total,
     desconto,
-    total,
     status,
     modelo_documento_fiscal,
     serie,
@@ -704,27 +703,27 @@ app.post('/entrada_produto', async (req, res) => {
   try {
     await client.query('BEGIN');
 
-    // 1. Inserir o cabeçalho da entrada
+    // 1. Inserir o cabeçalho da entrada - CORRIGIDO
     const entradaResult = await client.query(
       `INSERT INTO sga.entrada_produto (
         tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
-        desconto, total, status, data_criacao,
+        desconto, status, data_criacao,
         modelo_documento_fiscal, serie, subserie, data_emissao
       ) VALUES (
         $1, $2, $3, $4, $5,
-        $6, $7, $8, CURRENT_TIMESTAMP,
-        $9, $10, $11, $12
+        $6, $7, CURRENT_TIMESTAMP,
+        $8, $9, $10, $11
       ) RETURNING id_entrada_produto`,
       [
         tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
-        desconto, total, status,
+        desconto, status,
         modelo_documento_fiscal, serie, subserie, data_emissao
       ]
     );
 
     const entradaId = entradaResult.rows[0].id_entrada_produto;
 
-    // 2. Inserir os itens da entrada
+    // 2. Inserir os itens da entrada - CORRIGIDO
     for (const item of itens) {
       await client.query(
         `INSERT INTO sga.entrada_produto_itens (
@@ -739,9 +738,9 @@ app.post('/entrada_produto', async (req, res) => {
           item.quantidade,
           item.valor_unitario,
           item.desconto_item || 0,
-          item.lote,
-          item.data_validade,
-          item.centro_estoque_id
+          item.lote || null,          // Valor padrão caso não exista
+          item.data_validade || null, // Valor padrão caso não exista
+          item.centro_estoque_id || 1 // Valor padrão caso não exista
         ]
       );
     }

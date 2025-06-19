@@ -81,6 +81,7 @@ export default async function cadastro_entrada_produtos(dados) {
     })
 
     let idProdutosSelecionados = []
+    let produtosRelacionados = []
     let btn_selecionar_relacao = document.querySelector(".btn_selecionar_relacao");
     let btn_fechar_popup = document.querySelector(".btn_fechar_popup");
     btn_fechar_popup.addEventListener("click", selecionarProdutos)
@@ -89,15 +90,27 @@ export default async function cadastro_entrada_produtos(dados) {
     function selecionarProdutos () {
         // Quando o botão de selecionar relação for clicado
         // Seleciona os produtos que foram marcados na tabela de seleção
-        let produtoSelecionados = document.querySelectorAll(".checkbox_selecionar_linha:checked");
+        let checkboxProdutoSelecionados = document.querySelectorAll(".checkbox_selecionar_linha:checked");
         idProdutosSelecionados = []
-        produtoSelecionados.forEach(checkbox => {
-            idProdutosSelecionados.push(checkbox.id.replace("checkbox_", ""))
+        checkboxProdutoSelecionados.forEach(checkbox => {
+            idProdutosSelecionados.push(
+                checkbox.id.replace("checkbox_", "")
+            )
         })
 
         let novosDados = produtos.filter(produto => {
             // Filtra os produtos que foram selecionados
             return idProdutosSelecionados.includes(produto.id_produto.toString())
+        })
+
+        novosDados.forEach(produto => {
+            // Adiciona o produto selecionado na lista de produtos relacionados
+            produtosRelacionados.push({
+                id_produto: produto.id_produto,
+                quantidade: 1,
+                valor_unitario: produto.preco_varejo,
+                desconto: 0,
+            });
         })
 
         carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade","preco_varejo", "desconto", "valor_total"], document.querySelector("#tabela_produtos"), true, false)
@@ -146,14 +159,16 @@ export default async function cadastro_entrada_produtos(dados) {
 
         calcularValorTotal();
     }
-
+    let valorTotalTodosProdutos = 0;
     function calcularValorTotal() {
         let inputsQuantidade = document.querySelectorAll(".input_quantidade");
         let inputsDesconto = document.querySelectorAll(".input_desconto");
         let inputsPrecoVarejo = document.querySelectorAll(".td_preco_varejo");
         let inputsValorTotal = document.querySelectorAll(".td_valor_total");
+        valorTotalTodosProdutos = 0; // Reseta o valor total antes de calcular
 
         inputsQuantidade.forEach((input, index) => {
+            // Para cada input de quantidade e desconto, calcula o valor total
             let precoVarejo = inputsPrecoVarejo[index].textContent;
             let quantidade = input.value;
             let desconto = inputsDesconto[index].value;
@@ -162,6 +177,11 @@ export default async function cadastro_entrada_produtos(dados) {
             inputsQuantidade[index].value = quantidade;
             inputsDesconto[index].value = desconto;
             inputsValorTotal[index].textContent = valorTotal;
+            valorTotalTodosProdutos += valorTotal;
+
+            // Atualiza o objeto produtosRelacionados com os valores atualizados
+            produtosRelacionados[index].quantidade = quantidade;
+            produtosRelacionados[index].desconto = desconto;
         });
     }
 
@@ -173,13 +193,11 @@ export default async function cadastro_entrada_produtos(dados) {
 
         // Converter campos numéricos corretamente
         data.fornecedor = parseInt(data.fornecedor);
-        data.valor_total = parseFloat(data.valor_total);
         data.desconto = parseFloat(data.desconto || 0);
-        data.total = parseFloat(data.total);
+        data.total = valorTotalTodosProdutos;
+        data.itens = produtosRelacionados;
 
         console.log(data);
-        console.log(idProdutosSelecionados)
-        console.log(produtos)
         try {
             const response = await fetch('http://localhost:3000/entrada_produto', {
                 method: 'POST',
