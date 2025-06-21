@@ -126,10 +126,13 @@ export default async function cadastro_entrada_produtos(dados) {
                 tr.remove(tr)
 
                 idProdutosSelecionados = idProdutosSelecionados.filter(id => id !== id_tr);
+                produtosRelacionados = produtosRelacionados.filter(produto => produto.id_produto !== parseInt(id_tr));
+                calcularValorTotal();
             });
         });
 
         document.querySelectorAll(".td_quantidade").forEach(td => {
+            // Adiciona um input de quantidade em cada célula de quantidade
             td.classList.add("td_container_input")
             let inputQuantidade = document.createElement("input");
             inputQuantidade.type = "number";
