@@ -44,8 +44,8 @@ app.use(cors({
 const pool = new Pool({
     user: 'neondb_owner',
     /* host: 'ep-small-bar-a8bydmrx-pooler.eastus2.azure.neon.tech', */
-    //host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
-    host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech', // Branch: Renata
+    host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
+    // host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech', // Branch: Renata
     database: 'neondb',
     password: 'npg_Y3ZNL6fxehGI',
     port: 5432,
@@ -980,7 +980,7 @@ app.put('/tipos_entrada/:id', async (req, res) => {
     try {
         const query = `
             UPDATE sga.tipos_entrada
-            SET 
+            SET
                 descricao = $1,
                 cfop_dentro = $2,
                 cfop_fora = $3,
@@ -1015,9 +1015,9 @@ app.put('/tipos_entrada/:id', async (req, res) => {
             return res.status(404).json({ message: 'Tipo de entrada não encontrado.' });
         }
 
-        res.status(200).json({ 
-            message: 'Tipo de entrada atualizado com sucesso.', 
-            tipo_entrada: result.rows[0] 
+        res.status(200).json({
+            message: 'Tipo de entrada atualizado com sucesso.',
+            tipo_entrada: result.rows[0]
         });
 
     } catch (err) {
