@@ -18,21 +18,21 @@
             <div class="container_small_width" id="container_radios">
                 <div class="campo_contato small_width">
                     <label for="chave_nfe">Chave NF-e:</label>
-                    <input type="number" name="chave_nfe" id="chave_nfe" class="campo_input">
+                    <input type="number" name="chave_nfe" id="chave_nfe" class="campo_input" required>
                 </div>
                 <div class="campo_contato small_width">
                     <label for="numero_nf">Número N.F</label>
-                    <input type="number" name="numero_nf" id="numero_nf" class="campo_input" maxlength="20">
+                    <input type="number" name="numero_nf" id="numero_nf" class="campo_input" maxlength="20" required>
                 </div>
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width">
                     <label for="modelo">Modelo Fiscal</label>
-                    <input type="text" name="modelo" id="modelo" class="campo_input" maxlength="2">
+                    <input type="text" name="modelo" id="modelo" class="campo_input" maxlength="2" required>
                 </div>
                 <div class="campo_contato small_width select_conainer">
                     <p>Tipo de entrada</p>
-                    <select id="tipo_entrada" class="campo_select" name="tipo_entrada">
+                    <select id="tipo_entrada" class="campo_select" name="tipo_entrada" required>
                         <option value=""></option>
                         <option value="COMPRA">COMPRA</option>
                         <option value="DEVOLUÇÃO">DEVOLUÇÃO</option>
@@ -43,33 +43,53 @@
             <div class="container_small_width">
                 <div class="campo_contato small_width">
                     <label for="serie">Série</label>
-                    <input type="text" inputmode="numeric" name="serie" id="serie" class="campo_input" maxlength="3" pattern="[0-9]*">
+                    <input
+                        type="text"
+                        inputmode="numeric"
+                        name="serie"
+                        id="serie"
+                        class="campo_input"
+                        maxlength="3"
+                        pattern="[0-9]{1,3}"
+                        oninvalid="this.setCustomValidity('Série deve ser um número de 1 a 3 dígitos')"
+                        oninput="this.setCustomValidity('')"
+                    >
                 </div>
                 <div class="campo_contato small_width">
                     <label for="sub_serie">Sub-Série</label>
-                    <input type="text" inputmode="numeric" name="sub_serie" id="sub_serie" class="campo_input" maxlength="2" pattern="[0-9]*">
+                    <input
+                        type="text"
+                        inputmode="numeric"
+                        name="sub_serie"
+                        id="sub_serie"
+                        class="campo_input"
+                        maxlength="2"
+                        pattern="[0-9]{1,3}"
+                        oninvalid="this.setCustomValidity('Série deve ser um número de 1 a 3 dígitos')"
+                        oninput="this.setCustomValidity('')"
+                    >
                 </div>
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width">
                     <label for="data_emissão">Data de Emissão</label>
-                    <input type="date" name="data_emissão" id="data_emissão" class="campo_input">
+                    <input type="date" name="data_emissão" id="data_emissão" class="campo_input" required>
                 </div>
                 <div class="campo_contato small_width">
                     <label for="data_recebimento">Data de Recebimento</label>
-                    <input type="date" name="data_recebimento" id="data_recebimento" class="campo_input">
+                    <input type="date" name="data_recebimento" id="data_recebimento" class="campo_input" required>
                 </div>
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width select_conainer">
                     <p>Fornecedor:</p>
-                    <select id="fornecedor" class="campo_select" name="fornecedor">
+                    <select id="fornecedor" class="campo_select" name="fornecedor" required>
                         <option value=""></option>
                     </select>
                 </div>
                 <div class="campo_contato small_width select_conainer">
                     <p>Status:</p>
-                    <select id="status" class="campo_select" name="status">
+                    <select id="status" class="campo_select" name="status" required>
                         <option value=""></option>
                         <option value="FINALIZADO">FINALIZADO</option>
                         <option value="PENDENTE">PENDENTE</option>
@@ -126,7 +146,8 @@
                 </div>
                 <div class="container_campo_pesquisa_btn">
                     <div class="campo_pesquisa" id="campo_pesquisa_produto">
-                        <input id="input_pesquisa_tabela" type="text" placeholder="Pesquisar por Código" class="input_pesquisa">
+                        <input id="input_pesquisa_tabela" type="text" placeholder="Pesquisar por Código"
+                            class="input_pesquisa">
                         <button class="btn_limpar_pesquisa hide center" id="btn_limpar_pesquisa_produto">
                             <img id="icone_fechar" src="../imagens/icone_fechar.svg" alt="icone_fechar">
                         </button>

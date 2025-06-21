@@ -3,7 +3,7 @@ import select2 from "../../../../scripts/select.js";
 import buscarDados from "../../../../scripts/buscarDados.js";
 import { carregarConteudo } from "../../../../scripts/javaScript.js";
 import entrada_de_produtos from "../entrada_de_produtos.js";
-import { popup, popup_confirmar } from "../../../../scripts/popup.js";
+import { popup, popup_aviso, popup_carregando, popup_confirmar, popup_erro } from "../../../../scripts/popup.js";
 import { carregarDadosNaTabela, pesquisar } from "../../../../scripts/carregarDadosNaTabela.js";
 
 export default async function cadastro_entrada_produtos(dados) {
@@ -160,12 +160,14 @@ export default async function cadastro_entrada_produtos(dados) {
         calcularValorTotal();
     }
     let valorTotalTodosProdutos = 0;
+    let descontoTotal = 0
     function calcularValorTotal() {
         let inputsQuantidade = document.querySelectorAll(".input_quantidade");
         let inputsDesconto = document.querySelectorAll(".input_desconto");
         let inputsPrecoVarejo = document.querySelectorAll(".td_preco_varejo");
         let inputsValorTotal = document.querySelectorAll(".td_valor_total");
         valorTotalTodosProdutos = 0; // Reseta o valor total antes de calcular
+        descontoTotal = 0; // Reseta o desconto total antes de calcular
 
         inputsQuantidade.forEach((input, index) => {
             // Para cada input de quantidade e desconto, calcula o valor total
@@ -176,8 +178,10 @@ export default async function cadastro_entrada_produtos(dados) {
             inputsPrecoVarejo[index].value = precoVarejo;
             inputsQuantidade[index].value = quantidade;
             inputsDesconto[index].value = desconto;
-            inputsValorTotal[index].textContent = valorTotal;
+            inputsValorTotal[index].textContent = valorTotal.toFixed(2)
+
             valorTotalTodosProdutos += valorTotal;
+            descontoTotal += desconto.replace(",", ".") * 1; // Converte o desconto para número e acumula
 
             // Atualiza o objeto produtosRelacionados com os valores atualizados
             produtosRelacionados[index].quantidade = quantidade;
@@ -191,14 +195,21 @@ export default async function cadastro_entrada_produtos(dados) {
         let formData = new FormData(formEntradaProduto);
         let data = Object.fromEntries(formData);
 
-        // Converter campos numéricos corretamente
-        data.fornecedor = parseInt(data.fornecedor);
-        data.desconto = parseFloat(data.desconto || 0);
+        data.desconto = descontoTotal;
         data.total = valorTotalTodosProdutos;
         data.itens = produtosRelacionados;
 
         console.log(data);
+        if (data.itens.length === 0) {
+            popup_erro('É necessário selecionar pelo menos um produto para salvar a entrada.');
+            document.querySelector("#btn_adicionar_relacao").style.border = "1px solid red";
+            setTimeout(() => {
+                document.querySelector("#btn_adicionar_relacao").style.border = "none";
+            }, 5000);
+            return;
+        }
         try {
+            popup_carregando(false,'Salvando entrada de produto...');
             const response = await fetch('http://localhost:3000/entrada_produto', {
                 method: 'POST',
                 headers: {
@@ -208,14 +219,15 @@ export default async function cadastro_entrada_produtos(dados) {
             });
 
             const result = await response.json();
+            popup_carregando(true)
             if (response.ok) {
-                alert('Entrada salva com sucesso!');
-                form.reset();
+                popup_aviso('Entrada salva com sucesso!');
+                carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos);
             } else {
-                alert('Erro: ' + result.erro);
+                popup_erro('Erro: ' + result.erro);
             }
         } catch (err) {
-            alert('Erro ao conectar com a API.');
+            popup_erro('Erro ao conectar com a API.');
             console.error(err);
         }
     })

@@ -21,6 +21,7 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
 
         dados.map(objDado => { // Para cada objeto no array de dados
             let objDadoCompleto = objDado
+            console.log(objDado)
 
             let sortedObjDado = {}; // Objeto com os dados ordenados comforme as colunas a serem exibidas
             colunasExibir.forEach(coluna => {

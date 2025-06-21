@@ -687,7 +687,7 @@ app.post('/entrada_produto', async (req, res) => {
     tipo_entrada,
     numero_nf,
     data_recebimento,
-    fornecedor_id,
+    fornecedor,
     valor_total,
     desconto,
     status,
@@ -695,7 +695,7 @@ app.post('/entrada_produto', async (req, res) => {
     serie,
     subserie,
     data_emissao,
-    itens // Array de itens de produtos
+    itens
   } = req.body;
 
   const client = await pool.connect();
@@ -703,7 +703,37 @@ app.post('/entrada_produto', async (req, res) => {
   try {
     await client.query('BEGIN');
 
-    // 1. Inserir o cabeçalho da entrada - CORRIGIDO
+    // 1. Remover os triggers problemáticos temporariamente
+    await client.query(`
+      DROP TRIGGER IF EXISTS trg_recalcular_total_entrada ON sga.entrada_produto_itens;
+      DROP FUNCTION IF EXISTS sga.recalcular_total_entrada();
+    `);
+
+    // 2. Recriar a função com esquema qualificado
+    await client.query(`
+      CREATE OR REPLACE FUNCTION sga.recalcular_total_entrada()
+      RETURNS TRIGGER AS $$
+      BEGIN
+        UPDATE sga.entrada_produto ep
+        SET valor_total = (
+          SELECT COALESCE(SUM(epi.valor_total_item), 0)
+          FROM sga.entrada_produto_itens epi
+          WHERE epi.entrada_id = ep.id_entrada_produto
+        )
+        WHERE ep.id_entrada_produto = NEW.entrada_id;
+        RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql;
+    `);
+
+    // 3. Recriar o trigger
+    await client.query(`
+      CREATE TRIGGER trg_recalcular_total_entrada
+      AFTER INSERT OR UPDATE OR DELETE ON sga.entrada_produto_itens
+      FOR EACH ROW EXECUTE FUNCTION sga.recalcular_total_entrada();
+    `);
+
+    // 4. Inserir o cabeçalho da entrada
     const entradaResult = await client.query(
       `INSERT INTO sga.entrada_produto (
         tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
@@ -715,32 +745,37 @@ app.post('/entrada_produto', async (req, res) => {
         $8, $9, $10, $11
       ) RETURNING id_entrada_produto`,
       [
-        tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
-        desconto, status,
-        modelo_documento_fiscal, serie, subserie, data_emissao
+        tipo_entrada,
+        numero_nf,
+        data_recebimento,
+        fornecedor,
+        valor_total || 0,
+        desconto || 0,
+        status,
+        modelo_documento_fiscal,
+        serie,
+        subserie,
+        data_emissao
       ]
     );
 
     const entradaId = entradaResult.rows[0].id_entrada_produto;
 
-    // 2. Inserir os itens da entrada - CORRIGIDO
+    // 5. Inserir os itens da entrada
     for (const item of itens) {
       await client.query(
         `INSERT INTO sga.entrada_produto_itens (
           entrada_id, produto_id, quantidade, valor_unitario,
-          desconto_item, lote, data_validade, centro_estoque_id
+          desconto_item
         ) VALUES (
-          $1, $2, $3, $4, $5, $6, $7, $8
+          $1, $2, $3, $4, $5
         )`,
         [
           entradaId,
-          item.produto_id,
+          item.id_produto,
           item.quantidade,
           item.valor_unitario,
-          item.desconto_item || 0,
-          item.lote || null,          // Valor padrão caso não exista
-          item.data_validade || null, // Valor padrão caso não exista
-          item.centro_estoque_id || 1 // Valor padrão caso não exista
+          item.desconto || 0
         ]
       );
     }
@@ -755,11 +790,21 @@ app.post('/entrada_produto', async (req, res) => {
 
   } catch (error) {
     await client.query('ROLLBACK');
-    console.error('Erro na transação:', error);
+
+    console.error('Erro detalhado:', {
+      message: error.message,
+      stack: error.stack,
+      code: error.code,
+      detail: error.detail,
+      query: error.query
+    });
+
     res.status(500).json({
       sucesso: false,
       erro: 'Erro ao processar entrada de produto',
-      detalhes: error.message
+      detalhes: error.message,
+      codigo_erro: error.code,
+      query_erro: error.query
     });
   } finally {
     client.release();
