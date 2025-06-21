@@ -23,6 +23,12 @@ export default function visualizar_tipo_de_entrada(dado) {
     document.querySelector("#hab_nf").checked = dado.habilita_nf
     document.querySelector("#atualiza_produto").checked = dado.atualiza_produto
     document.querySelector("#padrao").checked = dado.padrao
+    document.querySelector(".btn_editar").addEventListener("click", () => {
+        carregarConteudo("tipo_de_entrada/editar_tipos_de_entrada/editar_tipo_de_entrada.html", document.querySelector(".principal"), false, editar_tipo_de_entrada, dado)
+    })
+    document.querySelector(".btn_excluir ").addEventListener("click", () => {
+       excluir_tipos_de_entrada(dado, carregarConteudo, "tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"))
+    })
     document.querySelector("#btn_voltar_tipos_de_entrada").addEventListener("click", () => {
         carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"),false, tipos_de_entrada)
     })

@@ -82,6 +82,14 @@
     height: 10px;
 }
 
+#modulo_tipos_de_entrada .container_select {
+    min-width: 21rem;
+}
+
+#modulo_tipos_de_entrada .container_select p {
+    text-wrap: nowrap;
+}
+
 /* Botões */
 
 
