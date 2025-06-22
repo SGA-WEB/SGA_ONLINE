@@ -6,7 +6,7 @@
     <div class="modulo_header header_cadastro">
         <h2 class="h2_titulo">Cadastro de saída de produtos</h2>
         <div class="container_codigo_data">
-            <p class="p_codigo_id">Codigo: <span class="codigo_id">16</span></p>
+            <p class="p_codigo_id">ID de Saída: <span class="codigo_id">16</span></p>
             <div class="div_data_cadastro">
                 <p class="p_data_cadastro">Data de cadastro:</p>
                 <p class="data_cadastro"></p>
@@ -15,85 +15,73 @@
     </div>
     <form id="form_saida_produto">
         <div class="modulo_main">
-            <div class="container_small_width" id="container_radios">
-                <div class="campo_contato small_width">
-                    <label for="chave_nfe">Chave NF-e:</label>
-                    <input type="number" name="chave_nfe" id="chave_nfe" class="campo_input">
-                </div>
-                <div class="campo_contato small_width">
-                    <label for="numero_nf">Número N.F</label>
-                    <input type="number" name="numero_nf" id="numero_nf" class="campo_input">
-                </div>
-            </div>
             <div class="container_small_width">
-                <div class="campo_contato small_width">
-                    <label for="modelo">Modelo Fiscal</label>
-                    <input type="text" name="modelo" id="modelo" class="campo_input">
-                </div>
                 <div class="campo_contato small_width select_conainer">
                     <p>Tipo de Saída</p>
-                    <select id="status" class="campo_select" name="status">
-                        <option value="COMPRA">Compra</option>
-                        <option value="DEVOLUÇÃO">devolução</option>
-                        <option value="INVENTÁRIO">Inventário</option>
+                    <select id="tipo_saida" class="campo_select" name="tipo_saida">
+                        <option value="VENDA">Venda</option>
+                        <option value="DEVOLUCAO">Devolução</option>
+                        <option value="BONIFICACAO">Bonificação</option>
+                        <option value="AMOSTRA">Amostra Grátis</option>
                     </select>
                 </div>
-            </div>
-            <div class="container_small_width">
                 <div class="campo_contato small_width">
-                    <label for="serie">Série</label>
-                    <input type="number" name="serie" id="serie" class="campo_input">
-                </div>
-                <div class="campo_contato small_width">
-                    <label for="sub_serie">Sub-Série</label>
-                    <input type="number" name="sub_serie" id="sub_serie" class="campo_input">
-                </div>
-            </div>
-            <div class="container_small_width">
-                <div class="campo_contato small_width">
-                    <label for="data_emissão">Data de Emissão</label>
-                    <input type="date" name="data_emissão" id="data_emissão" class="campo_input">
-                </div>
-                <div class="campo_contato small_width">
-                    <label for="data_recebimento">Data de Recebimento</label>
-                    <input type="date" name="data_recebimento" id="data_recebimento" class="campo_input">
+                    <label for="data_saida">Data</label>
+                    <input type="date" name="data_saida" id="data_saida" class="campo_input">
                 </div>
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width select_conainer">
-                    <p>Fornecedor:</p>
-                    <select id="fornecedor" class="campo_select" name="fornecedor">
-
+                    <p>Vendedor:</p>
+                    <select id="vendedor" class="campo_select" name="vendedor">
+                        <!-- Opções serão preenchidas dinamicamente -->
                     </select>
                 </div>
+                <div class="campo_contato small_width select_conainer">
+                    <p>Cliente:</p>
+                    <select id="cliente" class="campo_select" name="cliente">
+                        <!-- Opções serão preenchidas dinamicamente -->
+                    </select>
+                </div>
+            </div>
+            <div class="container_small_width">
                 <div class="campo_contato small_width select_conainer">
                     <p>Status:</p>
                     <select id="status" class="campo_select" name="status">
                         <option value="FINALIZADO">Finalizado</option>
                         <option value="PENDENTE">Pendente</option>
-                        <option value="CONCLUÍDO">Concluído</option>
+                        <option value="CANCELADO">Cancelado</option>
                     </select>
                 </div>
+                <div class="campo_contato small_width">
+                    <label for="observacoes">Observações</label>
+                    <input type="text" name="observacoes" id="observacoes" class="campo_input">
+                </div>
             </div>
-
         </div>
         <button type="button" class="btn_add" id="btn_adicionar_relacao">
             <img src="../imagens/btn_add.svg" alt="Icone Adicionar">
-            <span>Adicionar relação</span>
+            <span>Adicionar produtos</span>
         </button>
         <table class="tabela_relacao">
             <thead>
-                <th>
-                    <tr class="tr_relacao">
-                        <td>Código</td>
-                        <td>Produto</td>
-                        <td>Quantidade</td>
-                        <td>Preço varejo</td>
-                        <td>Preço atacado</td>
-                    </tr>
-                </th>
+                <tr class="tr_relacao">
+                    <th>Código</th>
+                    <th>Produto</th>
+                    <th>Quantidade</th>
+                    <th>Valor Un.</th>
+                    <th>Valor Total</th>
+                    <th>Ações</th>
+                </tr>
             </thead>
+            <tbody>
+                <!-- Produtos serão adicionados dinamicamente aqui -->
+            </tbody>
         </table>
+        <div class="container_total">
+            <p class="label_total">Total da Saída:</p>
+            <p class="valor_total">R$ 0,00</p>
+        </div>
         <button type="submit" class="btn btn_salvar">
             <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
             <p>Salvar</p>
@@ -104,7 +92,7 @@
             <button class="btn_fechar_popup">
                 <img src="../../../../imagens/icone_fechar.svg" alt="Icone Fechar">
             </button>
-            <h2>Selecione os produtos para relacionar a entrada</h2>
+            <h2>Selecione os produtos para a saída</h2>
             <h1 class="titulo1">Lista de Produtos</h1>
             <div class="header">
                 <div class="container_select">
@@ -114,7 +102,6 @@
                         <option value="produto">Produto</option>
                         <option value="quantidade">Quantidade</option>
                         <option value="preco_varejo">Preço Varejo</option>
-                        <option value="preco_atacado">Preço Atacado</option>
                     </select>
                 </div>
                 <div class="container_campo_pesquisa_btn">
@@ -137,15 +124,22 @@
                         </th>
                         <th id="tabela_codigo">Código</th>
                         <th id="tabela_produto">Produto</th>
-                        <th id="tabela_quantidade">Qtde.</th>
+                        <th id="tabela_quantidade">Qtde. Disponível</th>
                         <th id="tabela_preco_varejo">Preço Varejo</th>
-                        <th id="tabela_preco_atacado">Preço Atacado</th>
                     </tr>
                 </thead>
                 <tbody class="tbody">
-
+                    <!-- Produtos serão listados aqui dinamicamente -->
                 </tbody>
             </table>
+            <div class="popup_footer">
+                <button class="btn btn_cancelar" id="btn_cancelar_selecao">
+                    Cancelar
+                </button>
+                <button class="btn btn_confirmar" id="btn_confirmar_selecao">
+                    Confirmar Seleção
+                </button>
+            </div>
         </div>
     </div>
 </section>
