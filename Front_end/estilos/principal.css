@@ -551,7 +551,7 @@ body {
     }
 
     .principal {
-        margin-left: 196px; /* tamalho da barra lateral */
+        margin-left: 206px; /* tamalho da barra lateral */
         width: calc(100% - 206px);
     }
     .item_dashboard {

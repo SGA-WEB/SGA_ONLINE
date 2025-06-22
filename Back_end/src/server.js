@@ -47,6 +47,7 @@ const pool = new Pool({
     // host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
     //host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech', // Branch: Renata
     host: 'ep-dawn-frog-a8ga6hxq-pooler.eastus2.azure.neon.tech', // Branch: Flora
+    teste
     database: 'neondb',
     password: 'npg_Y3ZNL6fxehGI',
     port: 5432,
@@ -759,39 +760,127 @@ app.post('/entrada_produto', async (req, res) => {
     tipo_entrada,
     numero_nf,
     data_recebimento,
-    fornecedor_id,
+    fornecedor,
     valor_total,
     desconto,
-    total,
     status,
     modelo_documento_fiscal,
     serie,
     subserie,
-    data_emissao
+    data_emissao,
+    itens
   } = req.body;
 
+  const client = await pool.connect();
+
   try {
-    const result = await pool.query(
+    await client.query('BEGIN');
+
+    // 1. Remover os triggers problemáticos temporariamente
+    await client.query(`
+      DROP TRIGGER IF EXISTS trg_recalcular_total_entrada ON sga.entrada_produto_itens;
+      DROP FUNCTION IF EXISTS sga.recalcular_total_entrada();
+    `);
+
+    // 2. Recriar a função com esquema qualificado
+    await client.query(`
+      CREATE OR REPLACE FUNCTION sga.recalcular_total_entrada()
+      RETURNS TRIGGER AS $$
+      BEGIN
+        UPDATE sga.entrada_produto ep
+        SET valor_total = (
+          SELECT COALESCE(SUM(epi.valor_total_item), 0)
+          FROM sga.entrada_produto_itens epi
+          WHERE epi.entrada_id = ep.id_entrada_produto
+        )
+        WHERE ep.id_entrada_produto = NEW.entrada_id;
+        RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql;
+    `);
+
+    // 3. Recriar o trigger
+    await client.query(`
+      CREATE TRIGGER trg_recalcular_total_entrada
+      AFTER INSERT OR UPDATE OR DELETE ON sga.entrada_produto_itens
+      FOR EACH ROW EXECUTE FUNCTION sga.recalcular_total_entrada();
+    `);
+
+    // 4. Inserir o cabeçalho da entrada
+    const entradaResult = await client.query(
       `INSERT INTO sga.entrada_produto (
         tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
-        desconto, total, status, data_criacao,
+        desconto, status, data_criacao,
         modelo_documento_fiscal, serie, subserie, data_emissao
       ) VALUES (
         $1, $2, $3, $4, $5,
-        $6, $7, $8, CURRENT_TIMESTAMP,
-        $9, $10, $11, $12
-      ) RETURNING *`,
+        $6, $7, CURRENT_TIMESTAMP,
+        $8, $9, $10, $11
+      ) RETURNING id_entrada_produto`,
       [
-        tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
-        desconto, total, status,
-        modelo_documento_fiscal, serie, subserie, data_emissao
+        tipo_entrada,
+        numero_nf,
+        data_recebimento,
+        fornecedor,
+        valor_total || 0,
+        desconto || 0,
+        status,
+        modelo_documento_fiscal,
+        serie,
+        subserie,
+        data_emissao
       ]
     );
 
-    res.status(201).json({ sucesso: true, entrada: result.rows[0] });
+    const entradaId = entradaResult.rows[0].id_entrada_produto;
+
+    // 5. Inserir os itens da entrada
+    for (const item of itens) {
+      await client.query(
+        `INSERT INTO sga.entrada_produto_itens (
+          entrada_id, produto_id, quantidade, valor_unitario,
+          desconto_item
+        ) VALUES (
+          $1, $2, $3, $4, $5
+        )`,
+        [
+          entradaId,
+          item.id_produto,
+          item.quantidade,
+          item.valor_unitario,
+          item.desconto || 0
+        ]
+      );
+    }
+
+    await client.query('COMMIT');
+
+    res.status(201).json({
+      sucesso: true,
+      entrada_id: entradaId,
+      message: 'Entrada de produto e itens cadastrados com sucesso'
+    });
+
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ sucesso: false, erro: 'Erro ao inserir entrada de produto.' });
+    await client.query('ROLLBACK');
+
+    console.error('Erro detalhado:', {
+      message: error.message,
+      stack: error.stack,
+      code: error.code,
+      detail: error.detail,
+      query: error.query
+    });
+
+    res.status(500).json({
+      sucesso: false,
+      erro: 'Erro ao processar entrada de produto',
+      detalhes: error.message,
+      codigo_erro: error.code,
+      query_erro: error.query
+    });
+  } finally {
+    client.release();
   }
 });
 
@@ -905,7 +994,7 @@ app.delete('/api/remove-foto/:userId', async (req, res) => {
 // Rota POST para inserir novo tipo_entrada
 app.post('/tipos_entrada', async (req, res) => {
     const {
-        codigo,
+        id_tipo_de_entrada,
         descricao,
         cfop_dentro,
         cfop_fora,
@@ -921,11 +1010,11 @@ app.post('/tipos_entrada', async (req, res) => {
     try {
         const query = `
             INSERT INTO sga.tipos_entrada
-            (codigo, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao)
+            (id_tipo_de_entrada, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
             RETURNING *;
         `;
-        const values = [codigo, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao];
+        const values = [id_tipo_de_entrada, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao];
 
         const result = await pool.query(query, values);
 
@@ -946,9 +1035,91 @@ app.get('/api/tipos_entrada', async (req, res) => {
         res.status(500).json({ message: 'Erro ao buscar tipos_entrada', error: err.message });
     }
 });
+app.put('/tipos_entrada/:id', async (req, res) => {
+    const { id } = req.params;
+    const {
+        descricao,
+        cfop_dentro,
+        cfop_fora,
+        ativo,
+        movimenta_estoque,
+        hab_agrupamento,
+        hab_movimento,
+        habilita_nf,
+        atualiza_produto,
+        padrao
+    } = req.body;
+
+    try {
+        const query = `
+            UPDATE sga.tipos_entrada
+            SET
+                descricao = $1,
+                cfop_dentro = $2,
+                cfop_fora = $3,
+                ativo = $4,
+                movimenta_estoque = $5,
+                hab_agrupamento = $6,
+                hab_movimento = $7,
+                habilita_nf = $8,
+                atualiza_produto = $9,
+                padrao = $10
+            WHERE id_tipo_de_entrada = $11
+            RETURNING *;
+        `;
+
+        const values = [
+            descricao,
+            cfop_dentro,
+            cfop_fora,
+            ativo,
+            movimenta_estoque,
+            hab_agrupamento,
+            hab_movimento,
+            habilita_nf,
+            atualiza_produto,
+            padrao,
+            id
+        ];
+
+        const result = await pool.query(query, values);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Tipo de entrada não encontrado.' });
+        }
+
+        res.status(200).json({
+            message: 'Tipo de entrada atualizado com sucesso.',
+            tipo_entrada: result.rows[0]
+        });
+
+    } catch (err) {
+        console.error('Erro ao atualizar tipo de entrada:', err);
+        res.status(500).json({ message: 'Erro ao atualizar tipo de entrada', error: err.message });
+    }
+});
+
+
+app.delete('/tipos_entrada/:id', async (req, res) => {
+    const { id} = req.params;
+    console.log(id)
+    try {
+        await pool.query(
+            `
+                DELETE FROM sga.tipos_entrada
+                WHERE id_tipo_de_entrada = $1
+                RETURNING *;
+            `
+        , [id]);
+        res.status(200).json({ message: 'Tipo de entrada excluído com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+
 
 

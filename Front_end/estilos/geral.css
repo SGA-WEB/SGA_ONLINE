@@ -17,6 +17,16 @@
     justify-content: start;
 }
 
+.end {
+    display: flex;
+    padding: .5rem;
+    justify-content: end;
+}
+
+.margin_left_auto {
+    margin-left: auto;
+}
+
 .align_center {
     display: flex;
     align-items: center;
@@ -72,6 +82,14 @@
     height: 10px;
 }
 
+#modulo_tipos_de_entrada .container_select {
+    min-width: 21rem;
+}
+
+#modulo_tipos_de_entrada .container_select p {
+    text-wrap: nowrap;
+}
+
 /* Botões */
 
 
@@ -87,6 +105,10 @@
     padding: 0 .7rem;
     border-radius: 5px;
     transition: .1s;
+}
+
+.btn img {
+    filter: brightness(0);
 }
 
 .btn:hover {
@@ -263,7 +285,7 @@
 
 /* PopUp alerta */
 .container_popup_alerta {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -313,6 +335,7 @@
     display: flex;
     justify-content: space-between;
     padding: 0 1rem;
+    gap: 1rem;
 }
 
 .popup_alerta .btns_container .btn {
@@ -427,6 +450,12 @@
 .popup_erro .progress-bar {
     background-color: var(--alerta2);
     animation: progress 5s linear forwards;
+}
+
+/* Pop Up confirmar:  */
+.icone_alerta {
+    width: 4rem;
+    margin-top: 1rem;
 }
 
 /* Estilo telas de formulário: */

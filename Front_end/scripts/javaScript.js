@@ -447,7 +447,6 @@ btn_saida_produtos.addEventListener("click", () => {
 
 let btn_cadastro_auxiliares = document.querySelector("#btn_cadastro_auxiliares")
 let menu_cadastro_auxiliares = document.querySelector("#menu_cadastro_auxiliares")
-console.log(btn_cadastro_auxiliares)
 
 btn_cadastro_auxiliares.addEventListener("mouseenter", () => {
     btn_cadastro_auxiliares.classList.remove("sub_menu_fechado")
