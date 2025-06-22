@@ -1,16 +1,12 @@
 import express from 'express';
 import session from 'express-session';
-// import pkg from 'pg';
+import pkg from 'pg';
 import cors from 'cors';
 import multer from 'multer';
 import sharp from 'sharp';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
-// import { Pool } from 'pg/lib/index.js';
-import pkg from 'pg';
-const { Pool } = pkg;
-
 
 const supabaseUrl = 'https://ertkiirzzswpxkgcxret.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVydGtpaXJ6enN3cHhrZ2N4cmV0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjEyMzMwNCwiZXhwIjoyMDYxNjk5MzA0fQ.sldy2ROLnO14WI-Iam1iqjCyfHA2wfWFNWcbwcI1snE';
@@ -19,7 +15,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// const { Pool } = pkg;
+const { Pool } = pkg;
 const app = express();
 
 app.use((req, res, next) => {
@@ -44,9 +40,8 @@ app.use(cors({
 const pool = new Pool({
     user: 'neondb_owner',
     /* host: 'ep-small-bar-a8bydmrx-pooler.eastus2.azure.neon.tech', */
-    // host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
+    host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
     //host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech', // Branch: Renata
-    host: 'ep-dawn-frog-a8ga6hxq-pooler.eastus2.azure.neon.tech', // Branch: Flora
     database: 'neondb',
     password: 'npg_Y3ZNL6fxehGI',
     port: 5432,
@@ -110,31 +105,23 @@ app.use((err, req, res, next) => {
 });
 
 //// 🔐 Rota para validar o login
-// Rota para validar o login (POST)
 app.post('/api/login', async (req, res) => {
     try {
         const { email, senha } = req.body;
 
-        // Validações básicas
-        if (!email || !senha) {
-            return res.status(400).json({ error: 'E-mail e senha são obrigatórios' });
-        }
-
-        // Verifica se o e-mail existe no banco de dados
         const userResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1', [email]);
 
         if (userResult.rows.length === 0) {
             return res.status(404).json({ error: 'E-mail não encontrado' });
         }
 
-        // Verifica se a senha está correta
         const senhaResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1 AND senha = $2', [email, senha]);
 
         if (senhaResult.rows.length === 0) {
             return res.status(401).json({ error: 'Senha incorreta' });
         }
 
-        // Cria a sessão do usuário
+        // Criar sessão
         req.session.user = {
             id: userResult.rows[0].id_usuario,
             nome: userResult.rows[0].nome,
@@ -144,11 +131,10 @@ app.post('/api/login', async (req, res) => {
         res.json({ message: 'Login bem-sucedido' });
 
     } catch (error) {
-        console.error('Erro interno no servidor:', error);
+        console.error(error);
         res.status(500).json({ error: 'Erro interno no servidor' });
     }
 });
-
 
 //TESTE DE ROTA
 app.get('/api/testar-sessao', (req, res) => {
@@ -269,10 +255,10 @@ app.get('/api/entrada_produto', async (req, res) => {
         ep.numero_nf,
         ep.data_recebimento,
         c.razao_social AS fornecedor_razao_social,
-        ep.desconto,
-        ep.status,
         ep.valor_total,
-        ep.fornecedor_id,
+        ep.desconto,
+        ep.total,
+        ep.status,
         c.razao_social AS fornecedor_razao_social
       FROM sga.entrada_produto ep
       INNER JOIN sga.contato c
@@ -290,20 +276,25 @@ app.get('/api/entrada_produto', async (req, res) => {
 app.get('/api/saida_produto', async (req, res) => {
   try {
     const result = await pool.query(`
-        SELECT
-            sp.id_de_saida AS "ID de Saída",
-            sp.tipo_saida AS "Tipo de Saída",
-            sp.data_saida AS "Data",
-            sp.cliente AS "Cliente",  -- Usando campo direto da tabela saida_de_produto
-            sp.vendedor AS "Vendedor",  -- Usando campo direto da tabela saida_de_produto
-            sp.produto AS "Produto",  -- Usando campo direto da tabela saida_de_produto
-            sp.quantidade AS "Qtde.",
-            sp.valor_unidade AS "Valor Un.",
-            sp.valor_total AS "Valor Total",
-            sp.status_de_saida AS "Status da Saída",
-            TO_CHAR(sp.data_criacao, 'DD/MM/YYYY HH24:MI') AS "Data de Criação"
-        FROM sga.saida_de_produto sp
-        ORDER BY sp.id_de_saida DESC
+      SELECT
+        sp.id_saida_produto AS "ID de Saída",
+        sp.tipo_saida AS "Tipo de Saída",
+        sp.data AS "Data",
+        v.nome AS "Vendedor",
+        c.razao_social AS "Cliente",
+        p.nome AS "Produto",
+        sp.quantidade AS "Qtde.",
+        sp.valor_unitario AS "Valor Un.",
+        sp.valor_total AS "Valor Total",
+        sp.status AS "Status da Saída"
+      FROM sga.saida_produto sp
+      INNER JOIN sga.contato c
+        ON sp.cliente_id = c.id_contato
+      INNER JOIN sga.vendedor v
+        ON sp.vendedor_id = v.id_vendedor
+      INNER JOIN sga.produto p
+        ON sp.produto_id = p.id_produto
+      ORDER BY sp.id_saida_produto
     `);
     res.json(result.rows);
   } catch (err) {
@@ -312,50 +303,74 @@ app.get('/api/saida_produto', async (req, res) => {
   }
 });
 
-// Rota para inserir uma nova saída de produto
 app.post('/api/saida_produto', async (req, res) => {
-  const {
-    tipo_saida,
-    data_saida,
-    cliente,
-    vendedor,
-    produto,
-    quantidade,
-    valor_unidade,
-    valor_total,
-    status_de_saida
-  } = req.body;
-
-  try {
-    const result = await pool.query(
-      `INSERT INTO sga.saida_de_produto 
-      (tipo_saida, data_saida, cliente, vendedor, produto, quantidade, valor_unidade, valor_total, status_de_saida, data_criacao)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())
-      RETURNING *`,
-      [
+    const {
+        id_produto,
+        id_cliente,
+        id_vendedor,
         tipo_saida,
-        data_saida,
-        cliente,
-        vendedor,
-        produto,
         quantidade,
         valor_unidade,
-        valor_total,
         status_de_saida
-      ]
-    );
+    } = req.body;
 
-    res.status(201).json({
-      mensagem: 'Saída de produto cadastrada com sucesso!',
-      dados: result.rows[0]
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ erro: 'Erro ao cadastrar saída de produto' });
-  }
+    try {
+        // Verificar estoque disponível
+        const produtoQuery = await pool.query('SELECT quantidade FROM sga.produto WHERE id_produto = $1', [id_produto]);
+        if (produtoQuery.rows.length === 0) {
+            return res.status(404).json({ error: 'Produto não encontrado' });
+        }
+
+        const estoqueAtual = produtoQuery.rows[0].quantidade;
+        if (estoqueAtual < quantidade) {
+            return res.status(400).json({ error: 'Quantidade insuficiente em estoque' });
+        }
+
+        // Calcular valor total
+        const valor_total = quantidade * valor_unidade;
+
+        // Registrar saída de produto
+        const querySaida = `
+            INSERT INTO sga.saida_produto (
+                tipo_saida,
+                data_saida,
+                vendedor,
+                cliente,
+                produto,
+                quantidade,
+                valor_unidade,
+                valor_total,
+                status_de_saida,
+                data_criacao,
+                id_produto,
+                id_cliente,
+                id_vendedor
+            ) VALUES ($1, NOW(), $2, $3, $4, $5, $6, $7, $8, CURRENT_TIMESTAMP, $9, $10, $11)
+            RETURNING *;
+        `;
+        const saida = await pool.query(querySaida, [
+            tipo_saida || 'INVENTÁRIO',
+            id_vendedor,
+            id_cliente,
+            id_produto,
+            quantidade,
+            valor_unidade,
+            valor_total,
+            status_de_saida || 'Pendente',
+            id_produto,
+            id_cliente,
+            id_vendedor
+        ]);
+
+        // Atualizar estoque do produto
+        await pool.query('UPDATE sga.produto SET quantidade = quantidade - $1 WHERE id_produto = $2', [quantidade, id_produto]);
+
+        res.status(201).json({ message: 'Saída de produto registrada com sucesso!', saida: saida.rows[0] });
+    } catch (err) {
+        console.error('Erro ao registrar saída de produto:', err);
+        res.status(500).json({ error: 'Erro interno no servidor' });
+    }
 });
-
-
 
 // Endpoint para atualizar um centro de estoque (PUT)
 app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {
@@ -386,6 +401,53 @@ app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {
     } catch (err) {
         console.error('Erro ao atualizar usuário:', err);
         res.status(500).json({ error: 'Erro interno no servidor' });
+    }
+});
+
+// Endpoint para criar um novo centro de estoque (POST)
+app.post('/centro_estoque', async (req, res) => {
+    const { nome, localizacao, padrao, descricao } = req.body;
+    
+    // Validação dos campos obrigatórios
+    if (!nome || !localizacao) {
+        return res.status(400).json({ 
+            error: 'Campos obrigatórios faltando: nome e localização são requeridos' 
+        });
+    }
+
+    try {
+        const query = `
+            INSERT INTO sga.centro_estoque (
+                nome_centro_estoque,
+                localizacao_centro_estoque,
+                padrao_centro_estoque,
+                descricao_centro_estoque,
+                data_criacao,
+                data_atualizacao
+            )
+            VALUES ($1, $2, $3, $4, NOW(), NOW())
+            RETURNING *;
+        `;
+        
+        const values = [
+            nome, 
+            localizacao, 
+            padrao || false,
+            descricao || null
+        ];
+        
+        const result = await pool.query(query, values);
+
+        res.status(201).json({
+            message: 'Centro de estoque criado com sucesso!',
+            centro_estoque: result.rows[0]
+        });
+    } catch (err) {
+        console.error('Erro ao criar centro de estoque:', err);
+        res.status(500).json({ 
+            error: 'Erro interno no servidor',
+            details: process.env.NODE_ENV === 'development' ? err.message : undefined
+        });
     }
 });
 
@@ -753,136 +815,6 @@ app.put('/usuarios/:id_usuario', async (req, res) => {
     }
 });
 
-// Rota para inserir entrada de produto
-app.post('/entrada_produto', async (req, res) => {
-  const {
-    tipo_entrada,
-    numero_nf,
-    data_recebimento,
-    fornecedor,
-    valor_total,
-    desconto,
-    status,
-    modelo_documento_fiscal,
-    serie,
-    subserie,
-    data_emissao,
-    itens
-  } = req.body;
-
-  const client = await pool.connect();
-
-  try {
-    await client.query('BEGIN');
-
-    // 1. Remover os triggers problemáticos temporariamente
-    await client.query(`
-      DROP TRIGGER IF EXISTS trg_recalcular_total_entrada ON sga.entrada_produto_itens;
-      DROP FUNCTION IF EXISTS sga.recalcular_total_entrada();
-    `);
-
-    // 2. Recriar a função com esquema qualificado
-    await client.query(`
-      CREATE OR REPLACE FUNCTION sga.recalcular_total_entrada()
-      RETURNS TRIGGER AS $$
-      BEGIN
-        UPDATE sga.entrada_produto ep
-        SET valor_total = (
-          SELECT COALESCE(SUM(epi.valor_total_item), 0)
-          FROM sga.entrada_produto_itens epi
-          WHERE epi.entrada_id = ep.id_entrada_produto
-        )
-        WHERE ep.id_entrada_produto = NEW.entrada_id;
-        RETURN NEW;
-      END;
-      $$ LANGUAGE plpgsql;
-    `);
-
-    // 3. Recriar o trigger
-    await client.query(`
-      CREATE TRIGGER trg_recalcular_total_entrada
-      AFTER INSERT OR UPDATE OR DELETE ON sga.entrada_produto_itens
-      FOR EACH ROW EXECUTE FUNCTION sga.recalcular_total_entrada();
-    `);
-
-    // 4. Inserir o cabeçalho da entrada
-    const entradaResult = await client.query(
-      `INSERT INTO sga.entrada_produto (
-        tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
-        desconto, status, data_criacao,
-        modelo_documento_fiscal, serie, subserie, data_emissao
-      ) VALUES (
-        $1, $2, $3, $4, $5,
-        $6, $7, CURRENT_TIMESTAMP,
-        $8, $9, $10, $11
-      ) RETURNING id_entrada_produto`,
-      [
-        tipo_entrada,
-        numero_nf,
-        data_recebimento,
-        fornecedor,
-        valor_total || 0,
-        desconto || 0,
-        status,
-        modelo_documento_fiscal,
-        serie,
-        subserie,
-        data_emissao
-      ]
-    );
-
-    const entradaId = entradaResult.rows[0].id_entrada_produto;
-
-    // 5. Inserir os itens da entrada
-    for (const item of itens) {
-      await client.query(
-        `INSERT INTO sga.entrada_produto_itens (
-          entrada_id, produto_id, quantidade, valor_unitario,
-          desconto_item
-        ) VALUES (
-          $1, $2, $3, $4, $5
-        )`,
-        [
-          entradaId,
-          item.id_produto,
-          item.quantidade,
-          item.valor_unitario,
-          item.desconto || 0
-        ]
-      );
-    }
-
-    await client.query('COMMIT');
-
-    res.status(201).json({
-      sucesso: true,
-      entrada_id: entradaId,
-      message: 'Entrada de produto e itens cadastrados com sucesso'
-    });
-
-  } catch (error) {
-    await client.query('ROLLBACK');
-
-    console.error('Erro detalhado:', {
-      message: error.message,
-      stack: error.stack,
-      code: error.code,
-      detail: error.detail,
-      query: error.query
-    });
-
-    res.status(500).json({
-      sucesso: false,
-      erro: 'Erro ao processar entrada de produto',
-      detalhes: error.message,
-      codigo_erro: error.code,
-      query_erro: error.query
-    });
-  } finally {
-    client.release();
-  }
-});
-
 // Rota para upload da imagem
 app.post('/upload-avatar', upload.single('avatar'), async (req, res) => {
     try {
@@ -990,135 +922,7 @@ app.delete('/api/remove-foto/:userId', async (req, res) => {
     }
 });
 
-// Rota POST para inserir novo tipo_entrada
-app.post('/tipos_entrada', async (req, res) => {
-    const {
-        id_tipo_de_entrada,
-        descricao,
-        cfop_dentro,
-        cfop_fora,
-        ativo,
-        movimenta_estoque,
-        hab_agrupamento,
-        hab_movimento,
-        habilita_nf,
-        atualiza_produto,
-        padrao
-    } = req.body;
-
-    try {
-        const query = `
-            INSERT INTO sga.tipos_entrada
-            (id_tipo_de_entrada, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-            RETURNING *;
-        `;
-        const values = [id_tipo_de_entrada, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao];
-
-        const result = await pool.query(query, values);
-
-        res.status(201).json({ message: 'Tipo de entrada criado com sucesso!', tipo_entrada: result.rows[0] });
-    } catch (err) {
-        console.error('Erro ao inserir tipo_entrada:', err);
-        res.status(500).json({ message: 'Erro ao inserir tipo_entrada', error: err.message });
-    }
-});
-
-// Rota GET para listar todos os tipos_entrada
-app.get('/api/tipos_entrada', async (req, res) => {
-    try {
-        const result = await pool.query('SELECT * FROM sga.tipos_entrada ORDER BY id_tipo_de_entrada');
-        res.status(200).json(result.rows);
-    } catch (err) {
-        console.error('Erro ao buscar tipos_entrada:', err);
-        res.status(500).json({ message: 'Erro ao buscar tipos_entrada', error: err.message });
-    }
-});
-app.put('/tipos_entrada/:id', async (req, res) => {
-    const { id } = req.params;
-    const {
-        descricao,
-        cfop_dentro,
-        cfop_fora,
-        ativo,
-        movimenta_estoque,
-        hab_agrupamento,
-        hab_movimento,
-        habilita_nf,
-        atualiza_produto,
-        padrao
-    } = req.body;
-
-    try {
-        const query = `
-            UPDATE sga.tipos_entrada
-            SET
-                descricao = $1,
-                cfop_dentro = $2,
-                cfop_fora = $3,
-                ativo = $4,
-                movimenta_estoque = $5,
-                hab_agrupamento = $6,
-                hab_movimento = $7,
-                habilita_nf = $8,
-                atualiza_produto = $9,
-                padrao = $10
-            WHERE id_tipo_de_entrada = $11
-            RETURNING *;
-        `;
-
-        const values = [
-            descricao,
-            cfop_dentro,
-            cfop_fora,
-            ativo,
-            movimenta_estoque,
-            hab_agrupamento,
-            hab_movimento,
-            habilita_nf,
-            atualiza_produto,
-            padrao,
-            id
-        ];
-
-        const result = await pool.query(query, values);
-
-        if (result.rowCount === 0) {
-            return res.status(404).json({ message: 'Tipo de entrada não encontrado.' });
-        }
-
-        res.status(200).json({
-            message: 'Tipo de entrada atualizado com sucesso.',
-            tipo_entrada: result.rows[0]
-        });
-
-    } catch (err) {
-        console.error('Erro ao atualizar tipo de entrada:', err);
-        res.status(500).json({ message: 'Erro ao atualizar tipo de entrada', error: err.message });
-    }
-});
-
-
-app.delete('/tipos_entrada/:id', async (req, res) => {
-    const { id} = req.params;
-    console.log(id)
-    try {
-        await pool.query(
-            `
-                DELETE FROM sga.tipos_entrada
-                WHERE id_tipo_de_entrada = $1
-                RETURNING *;
-            `
-        , [id]);
-        res.status(200).json({ message: 'Tipo de entrada excluído com sucesso!' });
-    } catch (err) {
-        res.status(500).json({ error: 'Erro ao excluir' });
-    }
-});
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
-
-
-
