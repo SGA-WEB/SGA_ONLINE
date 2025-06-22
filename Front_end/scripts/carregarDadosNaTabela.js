@@ -4,6 +4,8 @@
 import crudLayout from "./crudLayout.js" // Importa a função que cria os botões de editar, visualizar e excluir (CRUD)
 import { formatarData } from "./funcionalidades.js"
 
+let handlersPorTabela = new Map() // Variável que armazena o handler da tabela, para evitar múltiplos handlers na mesma tabela;
+
 function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySelector(".tbody"), ativarCrud = true, addListener = true, removerLinhasTabela = true) {
     // ColunasExibir: Array com os nomes das colunas do banco de dados que serão exibidas na tabela
     let [...tr_tabela] = document.querySelectorAll(".table_tr")
@@ -29,13 +31,8 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
 
             objDado = Object.entries(objDado) // Converte o objeto em um array de pares chave-valor
 
-            objDado = objDado.filter(e => { // Filtra os campos do objeto para exibir apenas os que estão no array de colunas a serem exibidas
-                for (let coluna of colunasExibir) {
-                    if (e[0] === coluna) {
-                        return e // Se o campo estiver no array de colunas a serem exibidas, retorna true
-                    }
-                }
-            })
+            objDado = objDado.filter(([chave]) => colunasExibir.includes(chave)); // Filtra o array para incluir apenas as chaves que estão no array colunasExibir
+
             objDado = Object.fromEntries(objDado) // Converte o array em um objeto
 
             let tr = document.createElement('tr') // Cria uma linha
@@ -44,12 +41,15 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
 
             let td = document.createElement('td') // Cria uma célula
             td.setAttribute("class", "selecionar_linha")
+
             let checkbox = document.createElement('input') // Cria um checkbox
             checkbox.setAttribute('type', 'checkbox') // Define o tipo do input como checkbox
             checkbox.setAttribute('id', 'checkbox_' + objDado[firstDataKey]) // Define o id da célula como checkbox_id
             checkbox.setAttribute('class', 'checkbox_selecionar_linha') // Define a classe do checkbox
+
             td.appendChild(checkbox) // Adiciona o checkbox na célula
             tr.appendChild(td) // Adiciona a célula na linha
+
             for (let e in objDado) { // Para cada campo no objeto
                 if (e === "data_cadastro") {
                     continue
@@ -105,37 +105,44 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
     }
 
     // Primeiro remove (caso já exista)
-    tabela.removeEventListener("click", selecionarChekboxAoClicarNaLinha);
+    if (handlersPorTabela.has(tabela)) {
+        tabela.removeEventListener("click", handlersPorTabela.get(tabela));
+    }
+
+    const novoHandler = (e) => {
+        selecionarChekboxAoClicarNaLinha(e, tabela)
+    }
+
     // Depois adiciona
-    tabela.addEventListener("click", selecionarChekboxAoClicarNaLinha);
+    tabela.addEventListener("click", novoHandler);
+    handlersPorTabela.set(tabela, novoHandler); // Armazena o handler da tabela para evitar múltiplos handlers na mesma tabela
 
-    let selecionar_todos = tabela.parentElement.querySelector("#selecionar_todos")
-    selecionar_todos.addEventListener("change", (e) => {
-        let checkboxes = document.querySelectorAll(".checkbox_selecionar_linha")
-        for (let checkbox of checkboxes) {
-            if (selecionar_todos.checked) {
-                checkbox.checked = true // Marca todos os checkboxes
-                checkbox.parentElement.parentElement.classList.add("linha_selecionada");
-            } else {
-                checkbox.checked = false // Desmarca todos os checkboxes
-                checkbox.parentElement.parentElement.classList.remove("linha_selecionada");
-            }
-        }
-    })
-}
-
-function selecionarChekboxAoClicarNaLinha(e) {
-    let tr_id = e.target.parentElement.id.replace("tr_", "");
-    let checkbox = document.querySelector("#checkbox_" + tr_id);
-    if (checkbox) {
-        checkbox.checked = !checkbox.checked;
-        if (checkbox.checked) {
-            e.target.parentElement.classList.add("linha_selecionada");
-        } else {
-            e.target.parentElement.classList.remove("linha_selecionada");
-        }
+    let selecionar_todos = tabela.parentElement.querySelector("#selecionar_todos");
+    if (selecionar_todos) {
+        selecionar_todos.addEventListener("change", (e) => {
+            const checkboxes = tabela.querySelectorAll(".checkbox_selecionar_linha");
+            checkboxes.forEach(cb => {
+                console.log(cb);
+                cb.checked = e.target.checked;
+                cb.closest("tr").classList.toggle("linha_selecionada", cb.checked);
+            });
+        });
     }
 }
+
+function selecionarChekboxAoClicarNaLinha(e, tabela) {
+    const tr = e.target.closest("tr");
+    if (!tr) return;
+
+    const tr_id = tr.id.replace("tr_", "");
+    const checkbox = tabela.querySelector("#checkbox_" + tr_id);
+    if (!checkbox) return;
+
+    checkbox.checked = !checkbox.checked;
+    tr.classList.toggle("linha_selecionada", checkbox.checked);
+}
+
+
 
 function pesquisar(dados, colunasExibir, tabela = document.querySelector("#tabela"), ativarCrud = true) {
     // Função que pesquisa e manda os dados filtrados para a função carregarDadosNaTabela
