@@ -122,7 +122,6 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
         selecionar_todos.addEventListener("change", (e) => {
             const checkboxes = tabela.querySelectorAll(".checkbox_selecionar_linha");
             checkboxes.forEach(cb => {
-                console.log(cb);
                 cb.checked = e.target.checked;
                 cb.closest("tr").classList.toggle("linha_selecionada", cb.checked);
             });
@@ -132,7 +131,9 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
 
 function selecionarChekboxAoClicarNaLinha(e, tabela) {
     const tr = e.target.closest("tr");
-    if (!tr) return;
+    if (!tr || (e.target.type === "checkbox")) {
+        return;
+    }
 
     const tr_id = tr.id.replace("tr_", "");
     const checkbox = tabela.querySelector("#checkbox_" + tr_id);

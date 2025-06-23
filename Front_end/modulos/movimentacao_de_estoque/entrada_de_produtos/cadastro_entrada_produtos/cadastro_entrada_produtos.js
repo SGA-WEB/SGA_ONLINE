@@ -90,7 +90,7 @@ export default async function cadastro_entrada_produtos(dados) {
     function selecionarProdutos () {
         // Quando o botão de selecionar relação for clicado
         // Seleciona os produtos que foram marcados na tabela de seleção
-        let checkboxProdutoSelecionados = document.querySelectorAll(".checkbox_selecionar_linha:checked");
+        let checkboxProdutoSelecionados = document.querySelectorAll("#tabela_selecionar_produtos .checkbox_selecionar_linha:checked");
         idProdutosSelecionados = []
         checkboxProdutoSelecionados.forEach(checkbox => {
             idProdutosSelecionados.push(
@@ -202,7 +202,6 @@ export default async function cadastro_entrada_produtos(dados) {
         data.total = valorTotalTodosProdutos;
         data.itens = produtosRelacionados;
 
-        console.log(data);
         if (data.itens.length === 0) {
             popup_erro('É necessário selecionar pelo menos um produto para salvar a entrada.');
             document.querySelector("#btn_adicionar_relacao").style.border = "1px solid red";
