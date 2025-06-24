@@ -42,6 +42,7 @@ const pool = new Pool({
     /* host: 'ep-small-bar-a8bydmrx-pooler.eastus2.azure.neon.tech', */
     host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
     //host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech', // Branch: Renata
+    //host: 'ep-dawn-frog-a8ga6hxq-pooler.eastus2.azure.neon.tech', // Branch: Flora 
     database: 'neondb',
     password: 'npg_Y3ZNL6fxehGI',
     port: 5432,
