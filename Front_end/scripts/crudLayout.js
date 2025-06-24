@@ -18,6 +18,8 @@ import excluir_tipo_de_entrada from "../modulos/tipo_de_entrada/excluir_tipos_de
 import visualizar_tipo_de_entrada from "../modulos/tipo_de_entrada/visualizar_tipos_de_entrada/visualizar_tipo_de_entrada.js"
 import editar_tipo_de_entrada from "../modulos/tipo_de_entrada/editar_tipos_de_entrada/editar_tipo_de_entrada.js"
 
+import visualizar_entrada_de_produto from "../modulos/movimentacao_de_estoque/entrada_de_produtos/visualizar_entrada_de_produtos/visualizar_entrada_de_produtos.js";
+
 export default function crudLayout (obj, tr, addListener = true) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
     acoes.setAttribute('class','acoes_tabela')
@@ -92,7 +94,8 @@ export default function crudLayout (obj, tr, addListener = true) {
             excluir_contato: excluir_contato,
             excluir_tipo_de_entrada: excluir_tipo_de_entrada,
             visualizar_tipo_de_entrada: visualizar_tipo_de_entrada,
-            editar_tipo_de_entrada: editar_tipo_de_entrada
+            editar_tipo_de_entrada: editar_tipo_de_entrada,
+            visualizar_entrada_de_produto: visualizar_entrada_de_produto,
         }
         console.log(`Ação: ${acao} - Tabela: ${nomeTabelaAtual}`)
         switch (nomeTabelaAtual) { // Carrega a página do CRUD de acordo com a tabela atual
@@ -152,6 +155,15 @@ export default function crudLayout (obj, tr, addListener = true) {
                     )
                 }
             break;
+            case "entrada de produto":
+                console.log(funcoes[`${acao}_entrada_de_produto`])
+                carregarConteudo(
+                    `movimentacao_de_estoque/entrada_de_produtos/${acao}_entrada_de_produtos/${acao}_entrada_de_produtos.html`,
+                    document.querySelector('.principal'),
+                    false,
+                    funcoes[`${acao}_entrada_de_produto`],
+                    obj
+                )
             default:
                 console.warn(`Nenhuma ação definida para ${nomeTabelaAtual}`);
             break;
