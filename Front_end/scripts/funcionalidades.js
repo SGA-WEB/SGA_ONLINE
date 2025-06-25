@@ -53,11 +53,16 @@ function dataAtual() {
     }
 }
 
-function formatarData(data) {
-    let data_cadastro = data.split("T")[0] // Retira o horário
-    const [ano, mes, dia] = data_cadastro.split('-'); // Separa o ano, mes e dia
-    data_cadastro = `${dia}-${mes}-${ano}`; // Formata a data
-    return data_cadastro
+function formatarData(data, formatoUSA = false) {
+    if (data) {
+        let data_cadastro = data.split("T")[0] // Retira o horário
+        const [ano, mes, dia] = data_cadastro.split('-'); // Separa o ano, mes e dia
+        data_cadastro = `${dia}-${mes}-${ano}`; // Formata a data
+        if (formatoUSA) {
+            data_cadastro = `${ano}-${mes}-${dia}`; // Formata a data para o formato USA
+        }
+        return data_cadastro
+    }
 }
 
 // Função que muda o placeholder do input de pesquisa de acordo com a opção do select

@@ -1,22 +1,10 @@
 <section class="modulo" id="modulo_cadastro_entrada_produto">
-   <menu class="menu_btns space_between align_center">
-        <button class="btn_nav" id="btn_voltar_entrada_produtos">
-            <img src="..//..//../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
-            <p class="btn_voltar">Voltar</p>
-        </button>
-        <div class="container_btns space_between">
-            <button class="btn_editar btn btn2">
-                <img src="..//..//../imagens/icone_editar.svg" alt="icone_editar" >
-                <p>Editar</p>
-            </button>
-            <button class="btn_excluir btn btn5">
-                <img src="..//..//../imagens/icone_excluir.svg" alt="icone_editar" >
-                <p>Excluir</p>
-            </button>
-        </div>
-    </menu>
+    <button class="btn_nav" id="btn_voltar_entrada_produtos">
+        <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
+        <p class="btn_voltar">Voltar</p>
+    </button>
     <div class="modulo_header header_cadastro">
-        <h2 class="h2_titulo">Visualizar entrada de produtos</h2>
+        <h2 class="h2_titulo">Editar entrada de produtos</h2>
         <div class="container_codigo_data">
             <p class="p_codigo_id">Codigo: <span class="codigo_id">16</span></p>
             <div class="div_data_cadastro">
@@ -27,36 +15,35 @@
     </div>
     <form id="form_entrada_produto">
         <div class="modulo_main">
-            <div class="container_normal_width" id="container_chave_nfe" style="max-width: 500px;">
-                <div class="campo_contato">
+            <div class="container_small_width" id="container_radios">
+                <div class="campo_contato small_width">
                     <label for="chave_nfe">Chave NF-e:</label>
-                    <input disabled type="number" name="chave_nfe" id="chave_nfe" class="campo_input" required>
+                    <input type="number" name="chave_nfe" id="chave_nfe" class="campo_input" required>
                 </div>
-            </div>
-            <div class="container_small_width">
                 <div class="campo_contato small_width">
                     <label for="numero_nf">Número N.F</label>
-                    <input disabled type="text" name="numero_nf" id="numero_nf" class="campo_input" maxlength="20" required>
-                </div>
-                <div class="campo_contato small_width select_conainer">
-                    <p>Fornecedor:</p>
-                    <input id="fornecedor" class="campo_input" name="fornecedor" required disabled>
+                    <input type="text" name="numero_nf" id="numero_nf" class="campo_input" maxlength="20" required>
                 </div>
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width">
                     <label for="modelo">Modelo Fiscal</label>
-                    <input disabled type="text" name="modelo" id="modelo" class="campo_input" maxlength="2" required>
+                    <input type="text" name="modelo" id="modelo" class="campo_input" maxlength="2" required>
                 </div>
                 <div class="campo_contato small_width select_conainer">
                     <p>Tipo de entrada</p>
-                    <input disabled id="tipo_entrada" class="campo_input" name="tipo_entrada" required>
+                    <select id="tipo_entrada" class="campo_select" name="tipo_entrada" required>
+                        <option value=""></option>
+                        <option value="COMPRA">COMPRA</option>
+                        <option value="DEVOLUÇÃO">DEVOLUÇÃO</option>
+                        <option value="INVENTÁRIO">INVENTÁRIO</option>
+                    </select>
                 </div>
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width">
                     <label for="serie">Série</label>
-                    <input disabled
+                    <input
                         type="text"
                         inputmode="numeric"
                         name="serie"
@@ -70,7 +57,7 @@
                 </div>
                 <div class="campo_contato small_width">
                     <label for="sub_serie">Sub-Série</label>
-                    <input disabled
+                    <input
                         type="text"
                         inputmode="numeric"
                         name="sub_serie"
@@ -86,25 +73,43 @@
             <div class="container_small_width">
                 <div class="campo_contato small_width">
                     <label for="data_emissão">Data de Emissão</label>
-                    <input disabled type="date" name="data_emissão" id="data_emissão" class="campo_input" required >
+                    <input type="date" name="data_emissão" id="data_emissão" class="campo_input" required>
                 </div>
                 <div class="campo_contato small_width">
                     <label for="data_recebimento">Data de Recebimento</label>
-                    <input disabled type="date" name="data_recebimento" id="data_recebimento" class="campo_input" required >
+                    <input type="date" name="data_recebimento" id="data_recebimento" class="campo_input" required>
                 </div>
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width select_conainer">
+                    <p>Fornecedor:</p>
+                    <select id="fornecedor" class="campo_select" name="fornecedor" required>
+                        <option value=""></option>
+                    </select>
+                </div>
+                <div class="campo_contato small_width select_conainer">
                     <p>Status:</p>
-                    <input disabled id="status" class="campo_input" name="status" required>
+                    <select id="status" class="campo_select" name="status" required>
+                        <option value=""></option>
+                        <option value="FINALIZADO">FINALIZADO</option>
+                        <option value="PENDENTE">PENDENTE</option>
+                        <option value="CONCLUÍDO">CONCLUÍDO</option>
+                    </select>
                 </div>
             </div>
         </div>
         <h3 class="h3_titulo">Produtos relacionados:</h3>
+        <button type="button" class="btn_add" id="btn_adicionar_relacao">
+            <img src="../imagens/btn_add.svg" alt="Icone Adicionar">
+            <span>Adicionar relação</span>
+        </button>
         <div class="container_tabela">
             <table class="tabela" id="tabela_produtos">
                 <thead>
                     <tr>
+                        <th class="th_selecionar_todos">
+                            <input type="checkbox" name="selecionar_todos" id="selecionar_todos">
+                        </th>
                         <th id="tabela_codigo">Código</th>
                         <th id="tabela_produto">Produto</th>
                         <th id="tabela_quantidade">Qtde.</th>
@@ -117,6 +122,10 @@
                 </tbody>
             </table>
         </div>
+        <button type="submit" class="btn btn_salvar">
+            <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
+            <p>Salvar</p>
+        </button>
     </form>
     <div class="container_popup popup_relacao">
         <div class="popup">
@@ -137,7 +146,7 @@
                 </div>
                 <div class="container_campo_pesquisa_btn">
                     <div class="campo_pesquisa" id="campo_pesquisa_produto">
-                        <input disabled id="input_pesquisa_tabela" type="text" placeholder="Pesquisar por Código"
+                        <input id="input_pesquisa_tabela" type="text" placeholder="Pesquisar por Código"
                             class="input_pesquisa">
                         <button class="btn_limpar_pesquisa hide center" id="btn_limpar_pesquisa_produto">
                             <img id="icone_fechar" src="../imagens/icone_fechar.svg" alt="icone_fechar">
@@ -153,7 +162,7 @@
                     <thead>
                         <tr>
                             <th class="th_selecionar_todos">
-                                <input disabled type="checkbox" name="selecionar_todos" id="selecionar_todos">
+                                <input type="checkbox" name="selecionar_todos" id="selecionar_todos">
                             </th>
                             <th id="tabela_codigo">Código</th>
                             <th id="tabela_produto">Produto</th>

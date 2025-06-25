@@ -263,15 +263,8 @@ app.get('/api/entrada_produto', async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT
-        ep.id_entrada_produto,
-        ep.tipo_entrada,
-        ep.numero_nf,
-        ep.data_recebimento,
+        *,
         c.razao_social AS fornecedor_razao_social,
-        ep.desconto,
-        ep.status,
-        ep.valor_total,
-        ep.fornecedor_id,
         c.razao_social AS fornecedor_razao_social
       FROM sga.entrada_produto ep
       INNER JOIN sga.contato c
@@ -685,7 +678,7 @@ app.put('/usuarios/:id_usuario', async (req, res) => {
 app.post('/entrada_produto', async (req, res) => {
   const {
     tipo_entrada,
-    numero_nf,
+    chave_nfe,
     data_recebimento,
     fornecedor,
     valor_total,
@@ -693,7 +686,7 @@ app.post('/entrada_produto', async (req, res) => {
     status,
     modelo_documento_fiscal,
     serie,
-    subserie,
+    sub_serie,
     data_emissao,
     itens
   } = req.body;
@@ -746,7 +739,7 @@ app.post('/entrada_produto', async (req, res) => {
       ) RETURNING id_entrada_produto`,
       [
         tipo_entrada,
-        numero_nf,
+        chave_nfe,
         data_recebimento,
         fornecedor,
         valor_total || 0,
@@ -754,7 +747,7 @@ app.post('/entrada_produto', async (req, res) => {
         status,
         modelo_documento_fiscal,
         serie,
-        subserie,
+        sub_serie,
         data_emissao
       ]
     );
@@ -808,6 +801,53 @@ app.post('/entrada_produto', async (req, res) => {
     });
   } finally {
     client.release();
+  }
+});
+
+// Rota para buscar todos os itens de uma entrada de produto específica
+// Exemplo: GET /entrada_produto/1/itens
+app.get('/api/entrada_produto/:id/itens', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const query = `
+      SELECT
+        epi.id_item,
+        epi.entrada_id,
+        epi.produto_id,
+        p.produto AS nome_produto,
+        epi.quantidade,
+        epi.valor_unitario,
+        epi.desconto_item,
+        epi.valor_total_item
+      FROM sga.entrada_produto_itens epi
+      JOIN sga.produto p ON epi.produto_id = p.id_produto
+      WHERE epi.entrada_id = $1
+      ORDER BY epi.id_item
+    `;
+
+    const result = await pool.query(query, [id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        sucesso: false,
+        mensagem: 'Nenhum item encontrado para esta entrada ou entrada não existe'
+      });
+    }
+
+    res.status(200).json({
+      sucesso: true,
+      quantidade_itens: result.rows.length,
+      itens: result.rows
+    });
+
+  } catch (error) {
+    console.error('Erro ao buscar itens da entrada:', error);
+    res.status(500).json({
+      sucesso: false,
+      erro: 'Erro ao buscar itens da entrada',
+      detalhes: error.message
+    });
   }
 });
 

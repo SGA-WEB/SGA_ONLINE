@@ -39,16 +39,18 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
             tr.setAttribute('class','table_tr')
             tr.setAttribute('id', 'tr_' + objDado[firstDataKey]) // Define o id da linha como tr_id
 
-            let td = document.createElement('td') // Cria uma célula
-            td.setAttribute("class", "selecionar_linha")
 
             let checkbox = document.createElement('input') // Cria um checkbox
-            checkbox.setAttribute('type', 'checkbox') // Define o tipo do input como checkbox
-            checkbox.setAttribute('id', 'checkbox_' + objDado[firstDataKey]) // Define o id da célula como checkbox_id
-            checkbox.setAttribute('class', 'checkbox_selecionar_linha') // Define a classe do checkbox
+            let td = document.createElement('td') // Cria uma célula
+            if (addListener) {
+                td.setAttribute("class", "selecionar_linha")
+                checkbox.setAttribute('type', 'checkbox') // Define o tipo do input como checkbox
+                checkbox.setAttribute('id', 'checkbox_' + objDado[firstDataKey]) // Define o id da célula como checkbox_id
+                checkbox.setAttribute('class', 'checkbox_selecionar_linha') // Define a classe do checkbox
+                td.appendChild(checkbox) // Adiciona o checkbox na célula
+                tr.appendChild(td) // Adiciona a célula na linha
+            }
 
-            td.appendChild(checkbox) // Adiciona o checkbox na célula
-            tr.appendChild(td) // Adiciona a célula na linha
 
             for (let e in objDado) { // Para cada campo no objeto
                 if (e === "data_cadastro") {
@@ -81,16 +83,17 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
                 crudLayout(objDadoCompleto, tr, addListener) // Adiciona os botões de editar, visualizar e excluir na linha
             }
 
-            checkbox.addEventListener("change", (e) => {
-                // Adiciona o evento de mudança no checkbox
-                let tr = e.target.parentElement.parentElement // Pega a linha da célula do checkbox
-                if (e.target.checked) { // Se o checkbox estiver marcado
-                    tr.classList.add("linha_selecionada") // Adiciona a classe "selecionado" na linha
-                } else { // Se o checkbox estiver desmarcado
-                    tr.classList.remove("linha_selecionada") // Remove a classe "selecionado" da linha
-                }
-            })
-
+            if (addListener) {
+                checkbox.addEventListener("change", (e) => {
+                    // Adiciona o evento de mudança no checkbox
+                    let tr = e.target.parentElement.parentElement // Pega a linha da célula do checkbox
+                    if (e.target.checked) { // Se o checkbox estiver marcado
+                        tr.classList.add("linha_selecionada") // Adiciona a classe "selecionado" na linha
+                    } else { // Se o checkbox estiver desmarcado
+                        tr.classList.remove("linha_selecionada") // Remove a classe "selecionado" da linha
+                    }
+                })
+            }
             tabela.appendChild(tr) // Adiciona a linha na tabela
         })
     } else { // Se não houver dados
@@ -114,8 +117,10 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
     }
 
     // Depois adiciona
-    tabela.addEventListener("click", novoHandler);
-    handlersPorTabela.set(tabela, novoHandler); // Armazena o handler da tabela para evitar múltiplos handlers na mesma tabela
+    if (addListener) {
+        tabela.addEventListener("click", novoHandler);
+        handlersPorTabela.set(tabela, novoHandler); // Armazena o handler da tabela para evitar múltiplos handlers na mesma tabela
+    }
 
     let selecionar_todos = tabela.parentElement.querySelector("#selecionar_todos");
     if (selecionar_todos) {

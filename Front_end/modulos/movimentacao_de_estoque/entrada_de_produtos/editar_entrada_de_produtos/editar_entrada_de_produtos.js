@@ -1,14 +1,26 @@
-import { dataAtual, mudarPesquisa } from "../../../../scripts/funcionalidades.js";
 import select2 from "../../../../scripts/select.js";
-import buscarDados from "../../../../scripts/buscarDados.js";
+import { formatarData } from "../../../../scripts/funcionalidades.js";
 import { carregarConteudo } from "../../../../scripts/javaScript.js";
 import entrada_de_produtos from "../entrada_de_produtos.js";
-import { popup, popup_aviso, popup_carregando, popup_confirmar, popup_erro } from "../../../../scripts/popup.js";
-import { carregarDadosNaTabela, pesquisar } from "../../../../scripts/carregarDadosNaTabela.js";
+import buscarDados from "../../../../scripts/buscarDados.js";
+import { carregarDadosNaTabela } from "../../../../scripts/carregarDadosNaTabela.js";
+import { popup, popup_carregando, popup_erro, popup_aviso, popup_confirmar } from "../../../../scripts/popup.js";
 
-export default async function cadastro_entrada_produtos(dados) {
+export default async function editar_entrada_de_produtos(entrada) {
+    document.querySelector(".codigo_id").textContent = entrada.id_entrada_produto
+    document.querySelector(".data_cadastro").textContent = formatarData(entrada.data_cadastro)
+    document.querySelector("#chave_nfe").value = entrada.chave_nfe
+    document.querySelector("#numero_nf").value = entrada.numero_nf
+    document.querySelector("#modelo").value = entrada.modelo_documento_fiscal
+    document.querySelector("#tipo_entrada").value = entrada.tipo_entrada
+    document.querySelector("#serie").value = entrada.serie
+    document.querySelector("#sub_serie").value = entrada.subserie
+    document.querySelector("#data_emissão").value = formatarData(entrada.data_emissao, true)
+    document.querySelector("#data_recebimento").value = formatarData(entrada.data_recebimento, true)
+    document.querySelector("#status").value = entrada.status
+
     select2("100%")
-    dataAtual()
+
     let produtos = await buscarDados("produto")
     let contatos = await buscarDados("contato");
 
@@ -30,6 +42,8 @@ export default async function cadastro_entrada_produtos(dados) {
         selectfornecedor.appendChild(option);
     })
 
+    selectfornecedor.value = entrada.fornecedor_id
+
     // Ordena os fornecedores pelo id
     produtos = produtos.sort((a, b) => a.id_produto - b.id_produto);
 
@@ -38,13 +52,6 @@ export default async function cadastro_entrada_produtos(dados) {
         produto.valor_total = produto.preco_varejo * produto.quantidade;
         produto.desconto = 0; // Inicializa o desconto como 0
     })
-
-    let ultimoIdProduto
-    dados.forEach(entrada => {
-        console.log(entrada)
-        ultimoIdProduto = entrada.id_entrada_produto
-    })
-    document.querySelector(".codigo_id").textContent = ultimoIdProduto + 1
 
     let btn_adicionar_relacao = document.querySelector("#btn_adicionar_relacao");
     btn_adicionar_relacao.addEventListener("click", async () => {
@@ -203,7 +210,6 @@ export default async function cadastro_entrada_produtos(dados) {
         data.total = valorTotalTodosProdutos;
         data.itens = produtosRelacionados;
 
-        console.log(data)
         if (data.itens.length === 0) {
             popup_erro('É necessário selecionar pelo menos um produto para salvar a entrada.');
             document.querySelector("#btn_adicionar_relacao").style.border = "1px solid red";
@@ -250,7 +256,7 @@ export default async function cadastro_entrada_produtos(dados) {
             }
         }
         if (idProdutosSelecionados.length > 0 || dadosPreenchidos) {
-            if (await popup_confirmar("Tem certeza que deseja voltar? Todos os dados inseridos serão perdidos.")) {
+            if (await popup_confirmar("Tem certeza que deseja voltar? Todas as edições feitas serão perdidas.")) {
                 carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
             } else {
                 return;

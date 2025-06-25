@@ -19,21 +19,13 @@ import visualizar_tipo_de_entrada from "../modulos/tipo_de_entrada/visualizar_ti
 import editar_tipo_de_entrada from "../modulos/tipo_de_entrada/editar_tipos_de_entrada/editar_tipo_de_entrada.js"
 
 import visualizar_entrada_de_produto from "../modulos/movimentacao_de_estoque/entrada_de_produtos/visualizar_entrada_de_produtos/visualizar_entrada_de_produtos.js";
+import editar_entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/editar_entrada_de_produtos/editar_entrada_de_produtos.js";
 
 export default function crudLayout (obj, tr, addListener = true) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
     acoes.setAttribute('class','acoes_tabela')
 
-    let nomeTabelaAtual;
-    for (let key in obj) {
-        if (key.startsWith('id_')) {
-            key = key.replace('id_', '')
-            nomeTabelaAtual = key
-            if (!key.includes('de')) {
-                nomeTabelaAtual = key.replace('_', ' de ');
-            }
-        }
-    }
+    let nomeTabelaAtual = document.querySelector(".modulo").id;
 
     let btn_visualizar = document.createElement('button') // Cria o botão de visualizar
     btn_visualizar.setAttribute('class','btn_visualizar')
@@ -86,20 +78,24 @@ export default function crudLayout (obj, tr, addListener = true) {
             visualizar_centro_de_estoque: visualizar_centro_de_estoque,
             editar_centro_de_estoque: editar_centro_de_estoque,
             excluir_centro_de_estoque: excluir_centro_de_estoque,
+
             visualizar_produto: visualizar_produto,
             editar_produto: editar_produto,
             excluir_produto: excluir_produto,
+
             visualizar_contato: visualizar_contato,
             editar_contato: editar_contato,
             excluir_contato: excluir_contato,
+
             excluir_tipo_de_entrada: excluir_tipo_de_entrada,
             visualizar_tipo_de_entrada: visualizar_tipo_de_entrada,
             editar_tipo_de_entrada: editar_tipo_de_entrada,
+
             visualizar_entrada_de_produto: visualizar_entrada_de_produto,
+            editar_entrada_de_produto: editar_entrada_de_produtos
         }
-        console.log(`Ação: ${acao} - Tabela: ${nomeTabelaAtual}`)
         switch (nomeTabelaAtual) { // Carrega a página do CRUD de acordo com a tabela atual
-            case "centro de estoque":
+            case "centro_de_estoque":
                 if (acao == 'excluir') {
                     funcoes[`excluir_centro_de_estoque`](obj)
                 } else {
@@ -155,8 +151,7 @@ export default function crudLayout (obj, tr, addListener = true) {
                     )
                 }
             break;
-            case "entrada de produto":
-                console.log(funcoes[`${acao}_entrada_de_produto`])
+            case "entrada_de_produto":
                 carregarConteudo(
                     `movimentacao_de_estoque/entrada_de_produtos/${acao}_entrada_de_produtos/${acao}_entrada_de_produtos.html`,
                     document.querySelector('.principal'),
@@ -164,6 +159,7 @@ export default function crudLayout (obj, tr, addListener = true) {
                     funcoes[`${acao}_entrada_de_produto`],
                     obj
                 )
+            break;
             default:
                 console.warn(`Nenhuma ação definida para ${nomeTabelaAtual}`);
             break;
