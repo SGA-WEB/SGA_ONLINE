@@ -15,14 +15,38 @@ export default async function editar_entrada_de_produtos(entrada) {
     document.querySelector("#tipo_entrada").value = entrada.tipo_entrada
     document.querySelector("#serie").value = entrada.serie
     document.querySelector("#sub_serie").value = entrada.subserie
-    document.querySelector("#data_emissão").value = formatarData(entrada.data_emissao, true)
+    document.querySelector("#data_emissao").value = formatarData(entrada.data_emissao, true)
     document.querySelector("#data_recebimento").value = formatarData(entrada.data_recebimento, true)
     document.querySelector("#status").value = entrada.status
 
     select2("100%")
 
+    let valorTotalTodosProdutos = 0;
+    let descontoTotal = 0
+    let idProdutosSelecionados = []
+    let produtosRelacionados = []
+    let produtosRelacionadosAtual = await buscarDados(`entrada_produto/${entrada.id_entrada_produto}/itens`)
     let produtos = await buscarDados("produto")
     let contatos = await buscarDados("contato");
+    produtosRelacionadosAtual = produtosRelacionadosAtual.itens;
+
+    carregarDadosNaTabela(
+        produtosRelacionadosAtual,
+        ["id_item", "nome_produto", "quantidade", "valor_unitario", "desconto_item", "valor_total_item"],
+        document.querySelector(".tbody"),
+        true,
+        false
+    )
+    produtosRelacionadosAtual.forEach(produto => {
+        // Adiciona o produto selecionado na lista de produtos relacionados
+        produtosRelacionados.push({
+            id_produto: produto.id_produto,
+            quantidade: 1,
+            valor_unitario: produto.preco_varejo,
+            desconto: 0,
+        });
+    })
+    criarInputsQuantidadeDesconto();
 
     let fornecedores = []
 
@@ -88,8 +112,6 @@ export default async function editar_entrada_de_produtos(entrada) {
         })
     })
 
-    let idProdutosSelecionados = []
-    let produtosRelacionados = []
     let btn_selecionar_relacao = document.querySelector(".btn_selecionar_relacao");
     let btn_fechar_popup = document.querySelector(".btn_fechar_popup");
     btn_fechar_popup.addEventListener("click", selecionarProdutos)
@@ -139,44 +161,14 @@ export default async function editar_entrada_de_produtos(entrada) {
             });
         });
 
-        document.querySelectorAll(".td_quantidade").forEach(td => {
-            // Adiciona um input de quantidade em cada célula de quantidade
-            td.classList.add("td_container_input")
-            let inputQuantidade = document.createElement("input");
-            inputQuantidade.type = "number";
-            inputQuantidade.value = 1; // Define o valor inicial como 1
-            inputQuantidade.max = td.textContent; // Define o valor máximo como a quantidade do produto
-            inputQuantidade.min = 1; // Define o valor mínimo como 1
-            inputQuantidade.classList.add("input_quantidade");
-            inputQuantidade.classList.add("input_tabela");
-            inputQuantidade.addEventListener("input", calcularValorTotal);
-
-            td.textContent = ""
-            td.appendChild(inputQuantidade);
-        })
-
-        document.querySelectorAll(".td_desconto").forEach(td => {
-            td.classList.add("td_container_input")
-            let inputDesconto = document.createElement("input");
-            inputDesconto.type = "number";
-            inputDesconto.value = 0; // Define o valor inicial como 0
-            inputDesconto.classList.add("input_desconto");
-            inputDesconto.addEventListener("input", calcularValorTotal);
-            inputDesconto.classList.add("input_tabela");
-
-            td.textContent = ""
-            td.appendChild(inputDesconto);
-        })
-
-        calcularValorTotal();
+        criarInputsQuantidadeDesconto();
     }
-    let valorTotalTodosProdutos = 0;
-    let descontoTotal = 0
+
     function calcularValorTotal() {
         let inputsQuantidade = document.querySelectorAll(".input_quantidade");
         let inputsDesconto = document.querySelectorAll(".input_desconto");
-        let inputsPrecoVarejo = document.querySelectorAll(".td_preco_varejo");
-        let inputsValorTotal = document.querySelectorAll(".td_valor_total");
+        let inputsPrecoVarejo = document.querySelectorAll(".td_valor_unitario");
+        let inputsValorTotal = document.querySelectorAll(".td_valor_total_item");
         valorTotalTodosProdutos = 0; // Reseta o valor total antes de calcular
         descontoTotal = 0; // Reseta o desconto total antes de calcular
 
@@ -198,6 +190,38 @@ export default async function editar_entrada_de_produtos(entrada) {
             produtosRelacionados[index].quantidade = quantidade;
             produtosRelacionados[index].desconto = desconto;
         });
+    }
+
+    function criarInputsQuantidadeDesconto() {
+        document.querySelectorAll(".td_quantidade").forEach(td => {
+            // Adiciona um input de quantidade em cada célula de quantidade
+            td.classList.add("td_container_input")
+            let inputQuantidade = document.createElement("input");
+            inputQuantidade.type = "number";
+            inputQuantidade.value = td.firstChild.textContent; // valor inicial da quantidade salva no banco de dados
+            inputQuantidade.max = td.textContent; // Define o valor máximo como a quantidade do produto
+            inputQuantidade.min = 1; // Define o valor mínimo como 1
+            inputQuantidade.classList.add("input_quantidade");
+            inputQuantidade.classList.add("input_tabela");
+            inputQuantidade.addEventListener("input", calcularValorTotal);
+
+            td.textContent = ""
+            td.appendChild(inputQuantidade);
+        })
+
+        document.querySelectorAll(".td_desconto_item").forEach(td => {
+            td.classList.add("td_container_input")
+            let inputDesconto = document.createElement("input");
+            inputDesconto.type = "number";
+            inputDesconto.value = td.firstChild.textContent; // valor inicial do desconto salvo no banco de dados
+            inputDesconto.classList.add("input_desconto");
+            inputDesconto.addEventListener("input", calcularValorTotal);
+            inputDesconto.classList.add("input_tabela");
+
+            td.textContent = ""
+            td.appendChild(inputDesconto);
+        })
+        calcularValorTotal();
     }
 
     let formEntradaProduto = document.querySelector("#form_entrada_produto");

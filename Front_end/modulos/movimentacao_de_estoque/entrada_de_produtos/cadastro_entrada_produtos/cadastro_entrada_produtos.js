@@ -41,7 +41,6 @@ export default async function cadastro_entrada_produtos(dados) {
 
     let ultimoIdProduto
     dados.forEach(entrada => {
-        console.log(entrada)
         ultimoIdProduto = entrada.id_entrada_produto
     })
     document.querySelector(".codigo_id").textContent = ultimoIdProduto + 1
@@ -56,9 +55,6 @@ export default async function cadastro_entrada_produtos(dados) {
             produtos,
             ["id_produto", "produto", "quantidade","preco_varejo"],
             document.querySelector("#tabela_selecionar_produtos"),
-            false,
-            true,
-            false
         )
         pesquisar(
             produtos,

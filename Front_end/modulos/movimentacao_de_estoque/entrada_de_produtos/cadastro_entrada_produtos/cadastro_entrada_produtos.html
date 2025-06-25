@@ -15,8 +15,8 @@
     </div>
     <form id="form_entrada_produto">
         <div class="modulo_main">
-            <div class="container_small_width" id="container_radios">
-                <div class="campo_contato small_width">
+            <div class="container_normal_width" id="container_chave_nfe" style="max-width: 500px;">
+                <div class="campo_contato">
                     <label for="chave_nfe">Chave NF-e:</label>
                     <input
                         type="text"
@@ -31,9 +31,17 @@
                         oninput="this.setCustomValidity('')"
                     >
                 </div>
+            </div>
+            <div class="container_small_width" id="container_radios">
                 <div class="campo_contato small_width">
                     <label for="numero_nf">Número N.F</label>
                     <input type="text" name="numero_nf" id="numero_nf" class="campo_input" maxlength="20" required>
+                </div>
+                <div class="campo_contato small_width select_conainer">
+                    <p>Fornecedor:</p>
+                    <select id="fornecedor" class="campo_select" name="fornecedor" required>
+                        <option value=""></option>
+                    </select>
                 </div>
             </div>
             <div class="container_small_width">
@@ -93,12 +101,6 @@
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width select_conainer">
-                    <p>Fornecedor:</p>
-                    <select id="fornecedor" class="campo_select" name="fornecedor" required>
-                        <option value=""></option>
-                    </select>
-                </div>
-                <div class="campo_contato small_width select_conainer">
                     <p>Status:</p>
                     <select id="status" class="campo_select" name="status" required>
                         <option value=""></option>
@@ -118,9 +120,6 @@
             <table class="tabela" id="tabela_produtos">
                 <thead>
                     <tr>
-                        <th class="th_selecionar_todos">
-                            <input type="checkbox" name="selecionar_todos" id="selecionar_todos">
-                        </th>
                         <th id="tabela_codigo">Código</th>
                         <th id="tabela_produto">Produto</th>
                         <th id="tabela_quantidade">Qtde.</th>

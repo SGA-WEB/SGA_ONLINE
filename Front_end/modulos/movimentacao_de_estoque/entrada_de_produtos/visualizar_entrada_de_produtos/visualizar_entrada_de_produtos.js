@@ -4,6 +4,7 @@ import { carregarConteudo } from "../../../../scripts/javaScript.js";
 import entrada_de_produtos from "../entrada_de_produtos.js";
 import buscarDados from "../../../../scripts/buscarDados.js";
 import { carregarDadosNaTabela } from "../../../../scripts/carregarDadosNaTabela.js";
+import editar_entrada_de_produtos from "../editar_entrada_de_produtos/editar_entrada_de_produtos.js";
 
 export default async function visualizar_entrada_de_produtos(entrada) {
     select2("100%")
@@ -22,6 +23,16 @@ export default async function visualizar_entrada_de_produtos(entrada) {
 
     let produtosRelacionados = await buscarDados(`entrada_produto/${entrada.id_entrada_produto}/itens`)
     carregarDadosNaTabela(produtosRelacionados.itens, ["id_item", "nome_produto", "quantidade", "valor_unitario", "desconto_item", "valor_total_item"], document.querySelector(".tbody"), false, false)
+
+    document.querySelector(".btn_editar").addEventListener("click", () => {
+        carregarConteudo(
+            "movimentacao_de_estoque/entrada_de_produtos/editar_entrada_de_produtos/editar_entrada_de_produtos.html",
+            document.querySelector(".principal"),
+            false,
+            editar_entrada_de_produtos,
+            entrada
+        )
+    })
 
     document.querySelector("#btn_voltar_entrada_produtos").addEventListener("click", () => {
         carregarConteudo(

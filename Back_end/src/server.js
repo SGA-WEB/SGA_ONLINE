@@ -11,7 +11,6 @@ import { createClient } from '@supabase/supabase-js';
 import pkg from 'pg';
 const { Pool } = pkg;
 
-
 const supabaseUrl = 'https://ertkiirzzswpxkgcxret.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVydGtpaXJ6enN3cHhrZ2N4cmV0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjEyMzMwNCwiZXhwIjoyMDYxNjk5MzA0fQ.sldy2ROLnO14WI-Iam1iqjCyfHA2wfWFNWcbwcI1snE';
 const supabase = createClient(supabaseUrl, supabaseKey);
@@ -678,16 +677,17 @@ app.put('/usuarios/:id_usuario', async (req, res) => {
 app.post('/entrada_produto', async (req, res) => {
   const {
     tipo_entrada,
-    chave_nfe,
+    numero_nf,
     data_recebimento,
     fornecedor,
     valor_total,
     desconto,
     status,
-    modelo_documento_fiscal,
+    modelo,
     serie,
     sub_serie,
     data_emissao,
+    chave_nfe,
     itens
   } = req.body;
 
@@ -731,24 +731,25 @@ app.post('/entrada_produto', async (req, res) => {
       `INSERT INTO sga.entrada_produto (
         tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
         desconto, status, data_criacao,
-        modelo_documento_fiscal, serie, subserie, data_emissao
+        modelo_documento_fiscal, serie, subserie, data_emissao, chave_nfe
       ) VALUES (
         $1, $2, $3, $4, $5,
         $6, $7, CURRENT_TIMESTAMP,
-        $8, $9, $10, $11
+        $8, $9, $10, $11, $12
       ) RETURNING id_entrada_produto`,
       [
         tipo_entrada,
-        chave_nfe,
+        numero_nf,
         data_recebimento,
         fornecedor,
         valor_total || 0,
         desconto || 0,
         status,
-        modelo_documento_fiscal,
+        modelo,
         serie,
         sub_serie,
-        data_emissao
+        data_emissao,
+        chave_nfe
       ]
     );
 
