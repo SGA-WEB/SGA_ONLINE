@@ -2,6 +2,7 @@ import { carregarConteudo } from "../../../scripts/javaScript.js";
 import select2 from "../../../scripts/select.js";
 import { popup_aviso } from "../../../scripts/popup.js";
 import tipos_de_entrada from "../tipos_de_entrada.js";
+import { popup_erro } from "../../../scripts/popup.js";
 
 export default function cadastro_tipo_entrada() {
     select2()
