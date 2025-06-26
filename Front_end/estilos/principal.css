@@ -462,7 +462,7 @@ body {
 
 .main_principal {
     display: flex;
-    margin-top: 95px;
+    margin-top: 77px;
 }
 .principal {
     width: calc(100% - 274px);
