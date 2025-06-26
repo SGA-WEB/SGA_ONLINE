@@ -30,7 +30,8 @@ export default async function visualizar_entrada_de_produtos(entrada) {
             document.querySelector(".principal"),
             false,
             editar_entrada_de_produtos,
-            entrada
+            entrada,
+            true
         )
     })
 

@@ -123,7 +123,8 @@ export default async function cadastro_entrada_produtos(dados) {
                 tr.remove(tr)
 
                 idProdutosSelecionados = idProdutosSelecionados.filter(id => id !== id_tr);
-                produtosRelacionados = produtosRelacionados.filter(produto => produto.id_produto !== parseInt(id_tr));
+                produtosRelacionados = produtosRelacionados.filter(produto => {console.log(produto.id_produto, parseInt(id_tr)); return produto.id_produto !== parseInt(id_tr)});
+                console.log(produtosRelacionados)
                 calcularValorTotal();
             });
         });

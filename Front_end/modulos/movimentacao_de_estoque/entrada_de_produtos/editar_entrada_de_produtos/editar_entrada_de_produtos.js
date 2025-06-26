@@ -5,8 +5,11 @@ import entrada_de_produtos from "../entrada_de_produtos.js";
 import buscarDados from "../../../../scripts/buscarDados.js";
 import { carregarDadosNaTabela } from "../../../../scripts/carregarDadosNaTabela.js";
 import { popup, popup_carregando, popup_erro, popup_aviso, popup_confirmar } from "../../../../scripts/popup.js";
+import visualizar_entrada_de_produtos from "../visualizar_entrada_de_produtos/visualizar_entrada_de_produtos.js";
 
-export default async function editar_entrada_de_produtos(entrada) {
+export default async function editar_entrada_de_produtos(entrada, telaAnteriorVisualizar = false) {
+    popup_carregando(false, 'Carregando dados da entrada de produtos...');
+
     document.querySelector(".codigo_id").textContent = entrada.id_entrada_produto
     document.querySelector(".data_cadastro").textContent = formatarData(entrada.data_cadastro)
     document.querySelector("#chave_nfe").value = entrada.chave_nfe
@@ -20,6 +23,14 @@ export default async function editar_entrada_de_produtos(entrada) {
     document.querySelector("#status").value = entrada.status
 
     select2("100%")
+
+    let caminho = "movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html"
+    let funcao = entrada_de_produtos
+
+    if (telaAnteriorVisualizar) {
+        caminho = "movimentacao_de_estoque/entrada_de_produtos/visualizar_entrada_de_produtos/visualizar_entrada_de_produtos.html"
+        funcao = visualizar_entrada_de_produtos
+    }
 
     let valorTotalTodosProdutos = 0;
     let descontoTotal = 0
@@ -39,14 +50,16 @@ export default async function editar_entrada_de_produtos(entrada) {
     )
     produtosRelacionadosAtual.forEach(produto => {
         // Adiciona o produto selecionado na lista de produtos relacionados
+        console.log(produto)
         produtosRelacionados.push({
-            id_produto: produto.id_produto,
+            id_produto: produto.produto_id,
             quantidade: 1,
-            valor_unitario: produto.preco_varejo,
+            valor_unitario: produto.valor_unitario,
             desconto: 0,
         });
     })
     criarInputsQuantidadeDesconto();
+    addListenerExcluirProdutos();
 
     let fornecedores = []
 
@@ -76,6 +89,8 @@ export default async function editar_entrada_de_produtos(entrada) {
         produto.valor_total = produto.preco_varejo * produto.quantidade;
         produto.desconto = 0; // Inicializa o desconto como 0
     })
+
+    popup_carregando(true)
 
     let btn_adicionar_relacao = document.querySelector("#btn_adicionar_relacao");
     btn_adicionar_relacao.addEventListener("click", async () => {
@@ -161,6 +176,7 @@ export default async function editar_entrada_de_produtos(entrada) {
             });
         });
 
+        addListenerExcluirProdutos();
         criarInputsQuantidadeDesconto();
     }
 
@@ -224,6 +240,26 @@ export default async function editar_entrada_de_produtos(entrada) {
         calcularValorTotal();
     }
 
+    function addListenerExcluirProdutos () {
+        document.querySelectorAll(".btn_excluir").forEach(btn => {
+            // Adiciona o evento de click para cada botão de excluir
+            btn.addEventListener("click", (e) => {
+                // Remove a linha da tabela e da lista de produtos selecionados
+                let id_tr = e.currentTarget.parentElement.parentElement.id.replace("tr_", "");
+                let tr = e.currentTarget.parentElement.parentElement;
+                tr.remove(tr)
+
+                idProdutosSelecionados = idProdutosSelecionados.filter(id => id !== id_tr);
+                produtosRelacionados = produtosRelacionados.filter(produto => {
+                    console.log(produto.id_item, parseInt(id_tr))
+                    return produto.id_item !== parseInt(id_tr);
+                })
+                console.log(produtosRelacionados)
+                calcularValorTotal();
+            });
+        });
+    }
+
     let formEntradaProduto = document.querySelector("#form_entrada_produto");
     formEntradaProduto.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -233,6 +269,9 @@ export default async function editar_entrada_de_produtos(entrada) {
         data.desconto = descontoTotal;
         data.total = valorTotalTodosProdutos;
         data.itens = produtosRelacionados;
+
+        let id_entrada = document.querySelector(".codigo_id").textContent;
+        console.log(data)
 
         if (data.itens.length === 0) {
             popup_erro('É necessário selecionar pelo menos um produto para salvar a entrada.');
@@ -244,8 +283,8 @@ export default async function editar_entrada_de_produtos(entrada) {
         }
         try {
             popup_carregando(false,'Salvando entrada de produto...');
-            const response = await fetch('http://localhost:3000/entrada_produto', {
-                method: 'POST',
+            const response = await fetch('http://localhost:3000/entrada_produto/'+id_entrada, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -266,7 +305,13 @@ export default async function editar_entrada_de_produtos(entrada) {
         }
     })
 
-    document.querySelector("#btn_voltar_entrada_produtos").addEventListener("click", async () => {
+    document.querySelector("#btn_voltar_entrada_produtos").addEventListener("click", voltarTelaAnterior)
+    document.querySelector(".btn_cancelar").addEventListener("click", (e) => {
+        e.preventDefault();
+        voltarTelaAnterior();
+    })
+
+    async function voltarTelaAnterior () {
         let formData = new FormData(formEntradaProduto);
         let data = Object.fromEntries(formData);
         let dadosPreenchidos = false
@@ -281,12 +326,12 @@ export default async function editar_entrada_de_produtos(entrada) {
         }
         if (idProdutosSelecionados.length > 0 || dadosPreenchidos) {
             if (await popup_confirmar("Tem certeza que deseja voltar? Todas as edições feitas serão perdidas.")) {
-                carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
+                carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, entrada)
             } else {
                 return;
             }
         }else {
-            carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
+            carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, entrada)
         }
-    })
+    }
 }
