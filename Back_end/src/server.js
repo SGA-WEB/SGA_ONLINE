@@ -262,13 +262,24 @@ app.get('/api/entrada_produto', async (req, res) => {
   try {
     const result = await pool.query(`
       SELECT
-        *,
+        ep.*,
         c.razao_social AS fornecedor_razao_social,
-        c.razao_social AS fornecedor_razao_social
-      FROM sga.entrada_produto ep
-      INNER JOIN sga.contato c
-        ON ep.fornecedor_id = c.id_contato
-      ORDER BY ep.id_entrada_produto
+        c.cnpj AS fornecedor_cnpj,
+        COUNT(epi.id_item) AS total_itens,
+        SUM(epi.quantidade) AS total_quantidade,
+        SUM(epi.valor_total_item) AS valor_total_calculado
+        FROM
+            sga.entrada_produto ep
+        INNER JOIN
+            sga.contato c ON ep.fornecedor_id = c.id_contato
+        LEFT JOIN
+            sga.entrada_produto_itens epi ON ep.id_entrada_produto = epi.entrada_id
+        WHERE
+            ep.inativo = FALSE
+        GROUP BY
+            ep.id_entrada_produto, c.razao_social, c.cnpj
+        ORDER BY
+            ep.id_entrada_produto DESC;
     `);
     res.json(result.rows);
   } catch (err) {
@@ -977,6 +988,64 @@ app.put('/entrada_produto/:id', async (req, res) => {
   } finally {
     client.release();
   }
+});
+
+// Endpoint para inativar entrada de produto (DELETE)
+app.delete('/entrada_produto/:id_entrada', async (req, res) => {
+    const { id_entrada } = req.params;
+
+    const client = await pool.connect();
+
+    try {
+        await client.query('BEGIN');
+
+        // 1. Verificar se a entrada existe
+        const entradaExistente = await client.query(
+            'SELECT 1 FROM sga.entrada_produto WHERE id_entrada_produto = $1 AND inativo = FALSE',
+            [id_entrada]
+        );
+
+        if (entradaExistente.rowCount === 0) {
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Entrada não encontrada ou já inativada'
+            });
+        }
+
+        // 2. Inativar a entrada principal
+        await client.query(`
+            UPDATE sga.entrada_produto
+            SET inativo = TRUE
+            WHERE id_entrada_produto = $1
+        `, [id_entrada]);
+
+        // 3. Opcional: Inativar também os itens relacionados
+        await client.query(`
+            UPDATE sga.entrada_produto_itens
+            SET inativo = TRUE
+            WHERE entrada_id = $1
+        `, [id_entrada]);
+
+        await client.query('COMMIT');
+
+        res.status(200).json({
+            sucesso: true,
+            mensagem: 'Entrada de produto inativada com sucesso!',
+            id_entrada: id_entrada
+        });
+
+    } catch (err) {
+        await client.query('ROLLBACK');
+        console.error('Erro ao inativar entrada:', err);
+
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao inativar entrada de produto',
+            detalhes: err.message
+        });
+    } finally {
+        client.release();
+    }
 });
 
 // Rota para upload da imagem

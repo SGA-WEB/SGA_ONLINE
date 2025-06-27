@@ -20,6 +20,7 @@ import editar_tipo_de_entrada from "../modulos/tipo_de_entrada/editar_tipos_de_e
 
 import visualizar_entrada_de_produto from "../modulos/movimentacao_de_estoque/entrada_de_produtos/visualizar_entrada_de_produtos/visualizar_entrada_de_produtos.js";
 import editar_entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/editar_entrada_de_produtos/editar_entrada_de_produtos.js";
+import excluir_entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/excluir_entrada_de_produtos.js";
 
 export default function crudLayout (obj, tr, addListener = true) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
@@ -92,7 +93,8 @@ export default function crudLayout (obj, tr, addListener = true) {
             editar_tipo_de_entrada: editar_tipo_de_entrada,
 
             visualizar_entrada_de_produto: visualizar_entrada_de_produto,
-            editar_entrada_de_produto: editar_entrada_de_produtos
+            editar_entrada_de_produto: editar_entrada_de_produtos,
+            excluir_entrada_de_produtos: excluir_entrada_de_produtos
         }
         switch (nomeTabelaAtual) { // Carrega a página do CRUD de acordo com a tabela atual
             case "centro_de_estoque":
@@ -152,13 +154,17 @@ export default function crudLayout (obj, tr, addListener = true) {
                 }
             break;
             case "entrada_de_produto":
-                carregarConteudo(
-                    `movimentacao_de_estoque/entrada_de_produtos/${acao}_entrada_de_produtos/${acao}_entrada_de_produtos.html`,
-                    document.querySelector('.principal'),
-                    false,
-                    funcoes[`${acao}_entrada_de_produto`],
-                    obj
-                )
+                if (acao == "excluir") {
+                    funcoes[`excluir_entrada_de_produtos`](obj)
+                } else {
+                    carregarConteudo(
+                        `movimentacao_de_estoque/entrada_de_produtos/${acao}_entrada_de_produtos/${acao}_entrada_de_produtos.html`,
+                        document.querySelector('.principal'),
+                        false,
+                        funcoes[`${acao}_entrada_de_produto`],
+                        obj
+                    )
+                }
             break;
             default:
                 console.warn(`Nenhuma ação definida para ${nomeTabelaAtual}`);

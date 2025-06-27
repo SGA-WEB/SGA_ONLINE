@@ -12,7 +12,7 @@ export default async function editar_entrada_de_produtos(entrada, telaAnteriorVi
     popup_carregando(false, 'Carregando dados da entrada de produtos...');
 
     document.querySelector(".codigo_id").textContent = entrada.id_entrada_produto
-    document.querySelector(".data_cadastro").textContent = formatarData(entrada.data_cadastro)
+    document.querySelector(".data_cadastro").textContent = formatarData(entrada.data_criacao)
     document.querySelector("#chave_nfe").value = entrada.chave_nfe
     document.querySelector("#numero_nf").value = entrada.numero_nf
     document.querySelector("#modelo").value = entrada.modelo_documento_fiscal
@@ -37,21 +37,18 @@ export default async function editar_entrada_de_produtos(entrada, telaAnteriorVi
     let descontoTotal = 0
     let idProdutosSelecionados = []
     let produtosRelacionados = []
-    let produtosRelacionadosAtual = []
     let itemsRelacionados = await buscarDados(`entrada_produto/${entrada.id_entrada_produto}/itens`)
     let produtos = await buscarDados("produto")
     let contatos = await buscarDados("contato");
     itemsRelacionados = itemsRelacionados.itens;
-    console.log(produtos)
-    console.log(itemsRelacionados)
 
-    // Adiciona no array produtosRelacionadosAtual os produtos que estão relacionados com a entrada de produtos
+    // Adiciona no array produtosRelacionados os produtos que estão relacionados com a entrada de produtos
     produtos.forEach(produto => {
         itemsRelacionados.forEach(item => {
             if (produto.id_produto === item.produto_id) {
                 // Se o produto já estiver na lista de produtos relacionados, não adiciona novamente
-                if (!produtosRelacionadosAtual.some(p => p.id_item === item.id_item)) {
-                    produtosRelacionadosAtual.push({
+                if (!produtosRelacionados.some(p => p.id_item === item.id_item)) {
+                    produtosRelacionados.push({
                         // adicionas as chaves que já são usadas na tabela de produtos
                         id_produto: item.produto_id,
                         produto: produto.produto,
@@ -65,25 +62,23 @@ export default async function editar_entrada_de_produtos(entrada, telaAnteriorVi
         })
     })
 
-    console.log(produtosRelacionadosAtual)
-
     carregarDadosNaTabela(
-        produtosRelacionadosAtual,
+        produtosRelacionados,
         ["id_produto", "produto", "quantidade","preco_varejo", "desconto", "valor_total"],
         document.querySelector(".tbody"),
         true,
         false
     )
-    produtosRelacionadosAtual.forEach(produto => {
-        // Adiciona o produto selecionado na lista de produtos relacionados
-        produtosRelacionados.push({
-            id_item: produto.id_item, // id_item é o id do item na tabela de entrada_produto_itens
-            id_produto: produto.produto_id,
-            quantidade: 1,
-            valor_unitario: produto.valor_unitario,
-            desconto: 0,
-        });
-    })
+    // produtosRelacionados.forEach(produto => {
+    //     // Adiciona o produto selecionado na lista de produtos relacionados
+    //     produtosRelacionados.push({
+    //         id_item: produto.id_item, // id_item é o id do item na tabela de entrada_produto_itens
+    //         id_produto: produto.produto_id,
+    //         quantidade: 1,
+    //         valor_unitario: produto.valor_unitario,
+    //         desconto: 0,
+    //     });
+    // })
     criarInputsQuantidadeDesconto();
     addListenerExcluirProdutos();
 
@@ -215,13 +210,13 @@ export default async function editar_entrada_de_produtos(entrada, telaAnteriorVi
         valorTotalTodosProdutos = 0; // Reseta o valor total antes de calcular
         descontoTotal = 0; // Reseta o desconto total antes de calcular
 
-        console.log(inputsQuantidade, inputsDesconto)
         inputsQuantidade.forEach((input, index) => {
             // Para cada input de quantidade e desconto, calcula o valor total
             let precoVarejo = inputsPrecoVarejo[index].textContent;
             let quantidade = input.value;
             let desconto = inputsDesconto[index].value;
             let valorTotal = (precoVarejo * quantidade) - desconto;
+
             inputsPrecoVarejo[index].value = precoVarejo;
             inputsQuantidade[index].value = quantidade;
             inputsDesconto[index].value = desconto;
@@ -294,6 +289,10 @@ export default async function editar_entrada_de_produtos(entrada, telaAnteriorVi
         data.desconto = descontoTotal;
         data.total = valorTotalTodosProdutos;
         data.itens = produtosRelacionados;
+        data.itens.forEach(item => {
+            item.valor_unitario = item.preco_varejo;
+            delete item.preco_varejo;
+        });
 
         let id_entrada = document.querySelector(".codigo_id").textContent;
 

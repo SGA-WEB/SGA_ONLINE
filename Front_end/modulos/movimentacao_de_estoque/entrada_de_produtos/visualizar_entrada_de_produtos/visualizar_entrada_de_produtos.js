@@ -5,11 +5,12 @@ import entrada_de_produtos from "../entrada_de_produtos.js";
 import buscarDados from "../../../../scripts/buscarDados.js";
 import { carregarDadosNaTabela } from "../../../../scripts/carregarDadosNaTabela.js";
 import editar_entrada_de_produtos from "../editar_entrada_de_produtos/editar_entrada_de_produtos.js";
+import excluir_entrada_de_produtos from "../excluir_entrada_de_produtos.js";
 
 export default async function visualizar_entrada_de_produtos(entrada) {
     select2("100%")
     document.querySelector(".codigo_id").textContent = entrada.id_entrada_produto
-    document.querySelector(".data_cadastro").textContent = formatarData(entrada.data_cadastro)
+    document.querySelector(".data_cadastro").textContent = formatarData(entrada.data_criacao)
     document.querySelector("#chave_nfe").value = entrada.chave_nfe
     document.querySelector("#numero_nf").value = entrada.numero_nf
     document.querySelector("#modelo").value = entrada.modelo_documento_fiscal
@@ -33,6 +34,10 @@ export default async function visualizar_entrada_de_produtos(entrada) {
             entrada,
             true
         )
+    })
+
+    document.querySelector(".btn_excluir").addEventListener("click", () => {
+        excluir_entrada_de_produtos(entrada, entrada_de_produtos, entrada)
     })
 
     document.querySelector("#btn_voltar_entrada_produtos").addEventListener("click", () => {
