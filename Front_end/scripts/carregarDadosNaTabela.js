@@ -150,11 +150,11 @@ function selecionarChekboxAoClicarNaLinha(e, tabela) {
 
 
 
-function pesquisar(dados, colunasExibir, tabela = document.querySelector("#tabela"), ativarCrud = true) {
+function pesquisar(dados, colunasExibir, tabela = document.querySelector(".tbody"), ativarCrud = true) {
     // Função que pesquisa e manda os dados filtrados para a função carregarDadosNaTabela
 
     const btn_pesquisar = document.querySelector('.btn_pesquisar') // Botão de pesquisar
-    const campo_select = document.querySelector('#select_coluna') // Select que contém os campos da tabela
+    const campo_select = document.querySelector('.select_coluna') // Select que contém os campos da tabela
     const btn_limpar = document.querySelector('.btn_limpar_pesquisa') // Botão de fechar
     const input_pesquisar = document.querySelector('.input_pesquisa') // Input de pesquisa
 

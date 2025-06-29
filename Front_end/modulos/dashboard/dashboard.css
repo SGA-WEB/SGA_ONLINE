@@ -12,7 +12,7 @@
         "grid_filha_graficos grid_filha_graficos grid_filha_graficos . ."
         "grid_filha_graficos grid_filha_graficos grid_filha_graficos . .";
 
-    grid-template-columns: minmax(275px, 344px) minmax(224px, 300px) minmax(257px, 300px) minmax(150px, 250px) minmax(150px, 250px);
+    grid-template-columns: minmax(285px, 344px) minmax(224px, 300px) minmax(257px, 300px) minmax(150px, 250px) minmax(150px, 250px);
 
     grid-template-rows: repeat(7, auto);
     gap: 1rem;
