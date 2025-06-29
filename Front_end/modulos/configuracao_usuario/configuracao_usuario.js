@@ -1,6 +1,6 @@
 import { visibilidadeSenha, alterarImgPerfil } from "../../scripts/funcionalidades.js";
 import { carregarConteudo, mudarLogoParaPadrao } from "../../scripts/javaScript.js";
-import { popup, popup_aviso, popup_carregando, popup_confirmar_exclusao, popup_erro } from "../../scripts/popup.js";
+import { popup, popup_aviso, popup_carregando, popup_confirmar, popup_erro } from "../../scripts/popup.js";
 
 export default async function configuracao_usuario( data ) {
     const response = await fetch(`http://localhost:3000/api/imagem/${1}`);

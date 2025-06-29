@@ -1,9 +1,13 @@
+import select2 from "../scripts/select.js";
+
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('.login-form');
     const email = document.getElementById('email'); // Corrigido: id correto é "email"
     const senha = document.getElementById('senha');
     const empresa = document.getElementById('selecione-a-empresa');
     const mensagemErro = document.getElementById('mensagemErro');
+    console.log('Script de login carregado');
+    select2("fit-content"); // Chama a função select2 para estilizar o select
 
     // Função para validar os campos do formulário
     function validarFormulario() {
