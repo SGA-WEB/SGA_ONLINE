@@ -94,6 +94,7 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
             funcao(...parametro);
         }
         if (url === "../modulos/dashboard/dashboard.html" && !funcao) {
+            document.querySelector("#btn_dashboard").classList.add("modulo_selecionado")
             dashBorad();
         }
         if (url === "../modulos/contato/contato.html" && !funcao) { // !funcao: para a função não ser chamada mais de uma fez
