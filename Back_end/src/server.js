@@ -643,7 +643,7 @@ app.post('/usuarios', async (req, res) => {
 
 
 // Rota para listar usuários (GET)
-app.get('/usuarios', async (req, res) => {
+app.get('/api/usuarios', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM sga.usuario');
         res.status(200).json(result.rows);
