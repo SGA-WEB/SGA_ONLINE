@@ -5,4 +5,8 @@
 }
 .container_select {
     min-width: 10rem;
+    flex-wrap: wrap;
+}
+.container_select p {
+    text-wrap: nowrap;
 }

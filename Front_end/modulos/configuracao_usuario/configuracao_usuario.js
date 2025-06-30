@@ -5,8 +5,8 @@ import { popup, popup_aviso, popup_carregando, popup_confirmar, popup_erro } fro
 import salvarUsuario from "./salvarUsuarios.js";
 
 export default async function configuracao_usuario( data ) {
+    popup_carregando(false, "Carregando configurações do usuário...");
     const usuario = await buscarDados("usuarios")
-    console.log(usuario)
     const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
     const dado = await response.json();
 
@@ -217,4 +217,5 @@ export default async function configuracao_usuario( data ) {
             }
         }
     })
+    popup_carregando(true)
 }

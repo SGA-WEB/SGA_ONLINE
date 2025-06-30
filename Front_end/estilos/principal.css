@@ -169,11 +169,12 @@ body {
     flex-shrink: 0;
     background-color: aqua;
     border-radius: 50%;
-    font: bold 1.3rem arial;
+    font: bold 1.2rem arial;
 }
 #nome-empresa_usuario span#nome_usuario {
     display: block;
     font: bold 14px arial;
+    text-wrap: nowrap;
 }
 #nome-empresa_usuario span#empresa_usuario {
     display: block;

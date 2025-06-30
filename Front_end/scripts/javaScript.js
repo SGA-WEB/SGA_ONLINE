@@ -25,11 +25,12 @@ import tipos_de_entrada from "../modulos/tipo_de_entrada/tipos_de_entrada.js";
 import entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.js";
 import buscarDados from "../scripts/buscarDados.js";
 
-function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com o nome de
+function mudarLogoParaPadrao(nome) { // Muda a logo do usuário de acordo com o nome de
     let div_logo_usuario = document.querySelectorAll(".logo_usuario");
     div_logo_usuario.forEach(e => {
         // Pega a primeira letra do primeiro nome e a primeira letra do ultimo nome no nome do usuário:
         let nome_usuario = document.querySelector("#nome_usuario").textContent.trim();
+        if (nome) nome_usuario = nome;
         let nome_completo = nome_usuario.split(" ");
         let primeira_letra_primeiro_nome = nome_completo[0][0].toUpperCase();
         let primeira_letra_ultimo_nome = nome_completo[nome_completo.length - 1][0].toUpperCase();
@@ -45,6 +46,8 @@ function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com o nome
 // Alterar foto de perfil comforme a imagem do banco de dados (supabase):
 const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
 const data = await response.json();
+const usuario = await buscarDados("usuarios")
+document.querySelector("#nome_usuario").textContent = usuario[0].nome; // Altera o nome do usuário na tela principal
 if (data.error) {
     mudarLogoParaPadrao()
 } else {
@@ -353,13 +356,6 @@ window.addEventListener("resize", () => {
 
 // Menu Usuário:
 
-async function alterarNomeUsuario() {
-    const usuario = await buscarDados("usuarios")
-    console.log(usuario)
-    document.querySelector("#nome_usuario").textContent = usuario[0].nome; // Altera o nome do usuário na tela principal
-}
-alterarNomeUsuario() // Chama a função para alterar o nome do usuário na tela principal
-
 let btnUsuario = document.querySelector("#usuario")
 let menu_usuario = document.querySelector("#menu_usuario")
 let usuario_seta = document.querySelector("#usuario_seta")
@@ -444,6 +440,7 @@ menu_movimentacao_estoque.addEventListener("mouseleave", (e) => {
 
 let btn_entrada_produto = document.querySelector("#btn_entrada_produtos")
 btn_entrada_produto.addEventListener("click", () => {
+    btn_cadastro_auxiliares.classList.add("sub_menu_fechado") // Fecha o menu dropdown de cadastros auxiliares
     btn_entrada_produto.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
     btn_movimentacao_de_estoque.classList.add("item_menu_selecionado")
     carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
@@ -458,14 +455,12 @@ btn_cadastro_auxiliares.addEventListener("mouseenter", () => {
     btn_cadastro_auxiliares.classList.remove("sub_menu_fechado")
 })
 
-// Se o cursor sair do botão de movimentação de estoque, o menu dropdown fecha
 btn_cadastro_auxiliares.addEventListener("mouseleave", (e) => {
     if (!e.toElement.classList.contains("subitem") && !menu_cadastro_auxiliares.querySelector(".item_menu_selecionado")) { // Se o cursor não estiver sobre um subitem
         btn_cadastro_auxiliares.classList.add("sub_menu_fechado") // Fecha o menu dropdown
     }
 })
 
-// Se o cursor sair do menu de movimentação de estoque, o menu dropdown fecha
 menu_cadastro_auxiliares.addEventListener("mouseleave", (e) => {
     if(!menu_cadastro_auxiliares.querySelector(".item_menu_selecionado")) {
         btn_cadastro_auxiliares.classList.add("sub_menu_fechado")
@@ -474,6 +469,7 @@ menu_cadastro_auxiliares.addEventListener("mouseleave", (e) => {
 
 let btn_tipos_de_entrada = document.querySelector("#btn_tipos_de_entrada")
 btn_tipos_de_entrada.addEventListener("click", () => {
+    btn_movimentacao_de_estoque.classList.add("sub_menu_fechado")
     btn_tipos_de_entrada.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
     btn_cadastro_auxiliares.classList.add("item_menu_selecionado")
     carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada)
