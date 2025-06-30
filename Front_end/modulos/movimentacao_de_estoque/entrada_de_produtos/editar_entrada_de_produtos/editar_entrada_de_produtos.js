@@ -1,16 +1,86 @@
-import { dataAtual, mudarPesquisa } from "../../../../scripts/funcionalidades.js";
 import select2 from "../../../../scripts/select.js";
-import buscarDados from "../../../../scripts/buscarDados.js";
+import { formatarData } from "../../../../scripts/funcionalidades.js";
 import { carregarConteudo } from "../../../../scripts/javaScript.js";
 import entrada_de_produtos from "../entrada_de_produtos.js";
-import { popup, popup_aviso, popup_carregando, popup_confirmar, popup_erro } from "../../../../scripts/popup.js";
+import buscarDados from "../../../../scripts/buscarDados.js";
 import { carregarDadosNaTabela, pesquisar } from "../../../../scripts/carregarDadosNaTabela.js";
+import { popup, popup_carregando, popup_erro, popup_aviso, popup_confirmar } from "../../../../scripts/popup.js";
+import visualizar_entrada_de_produtos from "../visualizar_entrada_de_produtos/visualizar_entrada_de_produtos.js";
+import { mudarPesquisa } from "../../../../scripts/funcionalidades.js";
 
-export default async function cadastro_entrada_produtos(dados) {
+export default async function editar_entrada_de_produtos(entrada, telaAnteriorVisualizar = false) {
+    popup_carregando(false, 'Carregando dados da entrada de produtos...');
+
+    document.querySelector(".codigo_id").textContent = entrada.id_entrada_produto
+    document.querySelector(".data_cadastro").textContent = formatarData(entrada.data_criacao)
+    document.querySelector("#chave_nfe").value = entrada.chave_nfe
+    document.querySelector("#numero_nf").value = entrada.numero_nf
+    document.querySelector("#modelo").value = entrada.modelo_documento_fiscal
+    document.querySelector("#tipo_entrada").value = entrada.tipo_entrada
+    document.querySelector("#serie").value = entrada.serie
+    document.querySelector("#sub_serie").value = entrada.subserie
+    document.querySelector("#data_emissao").value = formatarData(entrada.data_emissao, true)
+    document.querySelector("#data_recebimento").value = formatarData(entrada.data_recebimento, true)
+    document.querySelector("#status").value = entrada.status
+
     select2("100%")
-    dataAtual()
+
+    let caminho = "movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html"
+    let funcao = entrada_de_produtos
+
+    if (telaAnteriorVisualizar) {
+        caminho = "movimentacao_de_estoque/entrada_de_produtos/visualizar_entrada_de_produtos/visualizar_entrada_de_produtos.html"
+        funcao = visualizar_entrada_de_produtos
+    }
+
+    let valorTotalTodosProdutos = 0;
+    let descontoTotal = 0
+    let idProdutosSelecionados = []
+    let produtosRelacionados = []
+    let itemsRelacionados = await buscarDados(`entrada_produto/${entrada.id_entrada_produto}/itens`)
     let produtos = await buscarDados("produto")
     let contatos = await buscarDados("contato");
+    itemsRelacionados = itemsRelacionados.itens;
+
+    // Adiciona no array produtosRelacionados os produtos que estão relacionados com a entrada de produtos
+    produtos.forEach(produto => {
+        itemsRelacionados.forEach(item => {
+            if (produto.id_produto === item.produto_id) {
+                // Se o produto já estiver na lista de produtos relacionados, não adiciona novamente
+                if (!produtosRelacionados.some(p => p.id_item === item.id_item)) {
+                    produtosRelacionados.push({
+                        // adicionas as chaves que já são usadas na tabela de produtos
+                        id_produto: item.produto_id,
+                        produto: produto.produto,
+                        quantidade: item.quantidade,
+                        preco_varejo: item.valor_unitario,
+                        desconto: item.desconto_item,
+                        valor_total: item.valor_total_item
+                    });
+                }
+            }
+        })
+    })
+
+    carregarDadosNaTabela(
+        produtosRelacionados,
+        ["id_produto", "produto", "quantidade","preco_varejo", "desconto", "valor_total"],
+        document.querySelector(".tbody"),
+        true,
+        false
+    )
+    // produtosRelacionados.forEach(produto => {
+    //     // Adiciona o produto selecionado na lista de produtos relacionados
+    //     produtosRelacionados.push({
+    //         id_item: produto.id_item, // id_item é o id do item na tabela de entrada_produto_itens
+    //         id_produto: produto.produto_id,
+    //         quantidade: 1,
+    //         valor_unitario: produto.valor_unitario,
+    //         desconto: 0,
+    //     });
+    // })
+    criarInputsQuantidadeDesconto();
+    addListenerExcluirProdutos();
 
     let fornecedores = []
 
@@ -30,6 +100,8 @@ export default async function cadastro_entrada_produtos(dados) {
         selectfornecedor.appendChild(option);
     })
 
+    selectfornecedor.value = entrada.fornecedor_id
+
     // Ordena os fornecedores pelo id
     produtos = produtos.sort((a, b) => a.id_produto - b.id_produto);
 
@@ -39,11 +111,7 @@ export default async function cadastro_entrada_produtos(dados) {
         produto.desconto = 0; // Inicializa o desconto como 0
     })
 
-    let ultimoIdProduto
-    dados.forEach(entrada => {
-        ultimoIdProduto = entrada.id_entrada_produto
-    })
-    document.querySelector(".codigo_id").textContent = ultimoIdProduto + 1
+    popup_carregando(true)
 
     let btn_adicionar_relacao = document.querySelector("#btn_adicionar_relacao");
     btn_adicionar_relacao.addEventListener("click", async () => {
@@ -55,6 +123,9 @@ export default async function cadastro_entrada_produtos(dados) {
             produtos,
             ["id_produto", "produto", "quantidade","preco_varejo"],
             document.querySelector("#tabela_selecionar_produtos"),
+            false,
+            true,
+            false
         )
         pesquisar(
             produtos,
@@ -77,8 +148,6 @@ export default async function cadastro_entrada_produtos(dados) {
         })
     })
 
-    let idProdutosSelecionados = []
-    let produtosRelacionados = []
     let btn_selecionar_relacao = document.querySelector(".btn_selecionar_relacao");
     let btn_fechar_popup = document.querySelector(".btn_fechar_popup");
     btn_fechar_popup.addEventListener("click", selecionarProdutos)
@@ -110,7 +179,7 @@ export default async function cadastro_entrada_produtos(dados) {
             });
         })
 
-        carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade","preco_varejo", "desconto", "valor_total"], document.querySelector("#tabela_produtos"), true, false)
+        carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade","preco_varejo", "desconto", "valor_total"], document.querySelector("#tabela_produtos"), true, false, false)
 
         popup("fechar", 0, btn_selecionar_relacao)
 
@@ -123,50 +192,21 @@ export default async function cadastro_entrada_produtos(dados) {
                 tr.remove(tr)
 
                 idProdutosSelecionados = idProdutosSelecionados.filter(id => id !== id_tr);
-                produtosRelacionados = produtosRelacionados.filter(produto => {console.log(produto.id_produto, parseInt(id_tr)); return produto.id_produto !== parseInt(id_tr)});
-                console.log(produtosRelacionados)
+                produtosRelacionados = produtosRelacionados.filter(produto => produto.id_produto !== parseInt(id_tr));
                 calcularValorTotal();
             });
         });
 
-        document.querySelectorAll(".td_quantidade").forEach(td => {
-            // Adiciona um input de quantidade em cada célula de quantidade
-            td.classList.add("td_container_input")
-            let inputQuantidade = document.createElement("input");
-            inputQuantidade.type = "number";
-            inputQuantidade.value = 1; // Define o valor inicial como 1
-            inputQuantidade.max = td.textContent; // Define o valor máximo como a quantidade do produto
-            inputQuantidade.min = 1; // Define o valor mínimo como 1
-            inputQuantidade.classList.add("input_quantidade");
-            inputQuantidade.classList.add("input_tabela");
-            inputQuantidade.addEventListener("input", calcularValorTotal);
-
-            td.textContent = ""
-            td.appendChild(inputQuantidade);
-        })
-
-        document.querySelectorAll(".td_desconto").forEach(td => {
-            td.classList.add("td_container_input")
-            let inputDesconto = document.createElement("input");
-            inputDesconto.type = "number";
-            inputDesconto.value = 0; // Define o valor inicial como 0
-            inputDesconto.classList.add("input_desconto");
-            inputDesconto.addEventListener("input", calcularValorTotal);
-            inputDesconto.classList.add("input_tabela");
-
-            td.textContent = ""
-            td.appendChild(inputDesconto);
-        })
-
-        calcularValorTotal();
+        addListenerExcluirProdutos();
+        criarInputsQuantidadeDesconto();
     }
-    let valorTotalTodosProdutos = 0;
-    let descontoTotal = 0
+
     function calcularValorTotal() {
-        let inputsQuantidade = document.querySelectorAll(".input_quantidade");
-        let inputsDesconto = document.querySelectorAll(".input_desconto");
-        let inputsPrecoVarejo = document.querySelectorAll(".td_preco_varejo");
-        let inputsValorTotal = document.querySelectorAll(".td_valor_total");
+        let tabela = document.querySelector("#tabela_produtos")
+        let inputsQuantidade = tabela.querySelectorAll(".input_quantidade");
+        let inputsDesconto = tabela.querySelectorAll(".input_desconto");
+        let inputsPrecoVarejo = tabela.querySelectorAll(".td_preco_varejo");
+        let inputsValorTotal = tabela.querySelectorAll(".td_valor_total");
         valorTotalTodosProdutos = 0; // Reseta o valor total antes de calcular
         descontoTotal = 0; // Reseta o desconto total antes de calcular
 
@@ -176,6 +216,7 @@ export default async function cadastro_entrada_produtos(dados) {
             let quantidade = input.value;
             let desconto = inputsDesconto[index].value;
             let valorTotal = (precoVarejo * quantidade) - desconto;
+
             inputsPrecoVarejo[index].value = precoVarejo;
             inputsQuantidade[index].value = quantidade;
             inputsDesconto[index].value = desconto;
@@ -190,6 +231,55 @@ export default async function cadastro_entrada_produtos(dados) {
         });
     }
 
+    function criarInputsQuantidadeDesconto() {
+        document.querySelectorAll(".td_quantidade").forEach(td => {
+            // Adiciona um input de quantidade em cada célula de quantidade
+            td.classList.add("td_container_input")
+            let inputQuantidade = document.createElement("input");
+            inputQuantidade.type = "number";
+            inputQuantidade.value = td.firstChild.textContent; // valor inicial da quantidade salva no banco de dados
+            inputQuantidade.max = td.textContent; // Define o valor máximo como a quantidade do produto
+            inputQuantidade.min = 1; // Define o valor mínimo como 1
+            inputQuantidade.classList.add("input_quantidade");
+            inputQuantidade.classList.add("input_tabela");
+            inputQuantidade.addEventListener("input", calcularValorTotal);
+
+            td.textContent = ""
+            td.appendChild(inputQuantidade);
+        })
+
+        document.querySelectorAll(".td_desconto").forEach(td => {
+            td.classList.add("td_container_input")
+            let inputDesconto = document.createElement("input");
+            inputDesconto.type = "number";
+            inputDesconto.value = td.firstChild.textContent; // valor inicial do desconto salvo no banco de dados
+            inputDesconto.classList.add("input_desconto");
+            inputDesconto.addEventListener("input", calcularValorTotal);
+            inputDesconto.classList.add("input_tabela");
+
+            td.textContent = ""
+            td.appendChild(inputDesconto);
+        })
+        calcularValorTotal();
+    }
+
+    function addListenerExcluirProdutos () {
+        document.querySelectorAll(".btn_excluir").forEach(btn => {
+            // Adiciona o evento de click para cada botão de excluir
+            btn.addEventListener("click", (e) => {
+                // Remove a linha da tabela e da lista de produtos selecionados
+                let id_tr = e.currentTarget.parentElement.parentElement.id.replace("tr_", "");
+                let tr = e.currentTarget.parentElement.parentElement;
+                tr.remove(tr)
+                idProdutosSelecionados = idProdutosSelecionados.filter(id => id !== id_tr);
+                produtosRelacionados = produtosRelacionados.filter(produto => {
+                    return produto.id_item !== parseInt(id_tr);
+                })
+                calcularValorTotal();
+            });
+        });
+    }
+
     let formEntradaProduto = document.querySelector("#form_entrada_produto");
     formEntradaProduto.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -199,8 +289,13 @@ export default async function cadastro_entrada_produtos(dados) {
         data.desconto = descontoTotal;
         data.total = valorTotalTodosProdutos;
         data.itens = produtosRelacionados;
+        data.itens.forEach(item => {
+            item.valor_unitario = item.preco_varejo;
+            delete item.preco_varejo;
+        });
 
-        console.log(data)
+        let id_entrada = document.querySelector(".codigo_id").textContent;
+
         if (data.itens.length === 0) {
             popup_erro('É necessário selecionar pelo menos um produto para salvar a entrada.');
             document.querySelector("#btn_adicionar_relacao").style.border = "1px solid red";
@@ -211,8 +306,8 @@ export default async function cadastro_entrada_produtos(dados) {
         }
         try {
             popup_carregando(false,'Salvando entrada de produto...');
-            const response = await fetch('http://localhost:3000/entrada_produto', {
-                method: 'POST',
+            const response = await fetch('http://localhost:3000/entrada_produto/'+id_entrada, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -233,7 +328,13 @@ export default async function cadastro_entrada_produtos(dados) {
         }
     })
 
-    document.querySelector("#btn_voltar_entrada_produtos").addEventListener("click", async () => {
+    document.querySelector("#btn_voltar_entrada_produtos").addEventListener("click", voltarTelaAnterior)
+    document.querySelector(".btn_cancelar").addEventListener("click", (e) => {
+        e.preventDefault();
+        voltarTelaAnterior();
+    })
+
+    async function voltarTelaAnterior () {
         let formData = new FormData(formEntradaProduto);
         let data = Object.fromEntries(formData);
         let dadosPreenchidos = false
@@ -247,13 +348,13 @@ export default async function cadastro_entrada_produtos(dados) {
             }
         }
         if (idProdutosSelecionados.length > 0 || dadosPreenchidos) {
-            if (await popup_confirmar("Tem certeza que deseja voltar? Todos os dados inseridos serão perdidos.")) {
-                carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
+            if (await popup_confirmar("Tem certeza que deseja voltar? Todas as edições feitas serão perdidas.")) {
+                carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, entrada)
             } else {
                 return;
             }
         }else {
-            carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
+            carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, entrada)
         }
-    })
+    }
 }

@@ -5,8 +5,8 @@ import tipos_de_entrada from "../tipos_de_entrada.js";
 import { popup_erro } from "../../../scripts/popup.js";
 
 export default function cadastro_tipo_entrada() {
-    select2()
-    document.querySelector("#btn_voltar_tipos_de_entrada").addEventListener("click", () => { 
+    select2("100%")
+    document.querySelector("#btn_voltar_tipos_de_entrada").addEventListener("click", () => {
         carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, null, null);
         // Botão que volta para a tela de tipos de entrada
     })
@@ -25,7 +25,6 @@ export default function cadastro_tipo_entrada() {
             atualiza_produto: document.getElementById('atualiza_produto').checked,
             padrao: document.getElementById('padrao').checked
         };
-        console.log(data)
         try {
             const response = await fetch('http://localhost:3000/tipos_entrada', {
                 method: 'POST',
