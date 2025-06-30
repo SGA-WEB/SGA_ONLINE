@@ -152,7 +152,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 232px;
+    width: fit-content;
     height: 54px;
     padding: 5px 13px;
     gap: 12px;
@@ -169,7 +169,7 @@ body {
     flex-shrink: 0;
     background-color: aqua;
     border-radius: 50%;
-    font: bold 18px arial;
+    font: bold 1.3rem arial;
 }
 #nome-empresa_usuario span#nome_usuario {
     display: block;

@@ -23,6 +23,7 @@ import { aguardarRenderizacao, alterarImgPerfil } from "./funcionalidades.js";
 import { popup_carregando } from "./popup.js";
 import tipos_de_entrada from "../modulos/tipo_de_entrada/tipos_de_entrada.js";
 import entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.js";
+import buscarDados from "../scripts/buscarDados.js";
 
 function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com o nome de
     let div_logo_usuario = document.querySelectorAll(".logo_usuario");
@@ -32,7 +33,11 @@ function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com o nome
         let nome_completo = nome_usuario.split(" ");
         let primeira_letra_primeiro_nome = nome_completo[0][0].toUpperCase();
         let primeira_letra_ultimo_nome = nome_completo[nome_completo.length - 1][0].toUpperCase();
-        e.textContent = primeira_letra_primeiro_nome + primeira_letra_ultimo_nome;
+        if (nome_completo.length == 1) {
+            e.textContent = primeira_letra_primeiro_nome; // Se o nome tiver apenas um nome, só coloca a primeira letra do primeiro nome
+        } else {
+            e.textContent = primeira_letra_primeiro_nome + primeira_letra_ultimo_nome;
+        }
         e.style.backgroundColor = "aqua"
     });
 }
@@ -347,6 +352,13 @@ window.addEventListener("resize", () => {
 
 
 // Menu Usuário:
+
+async function alterarNomeUsuario() {
+    const usuario = await buscarDados("usuarios")
+    console.log(usuario)
+    document.querySelector("#nome_usuario").textContent = usuario[0].nome; // Altera o nome do usuário na tela principal
+}
+alterarNomeUsuario() // Chama a função para alterar o nome do usuário na tela principal
 
 let btnUsuario = document.querySelector("#usuario")
 let menu_usuario = document.querySelector("#menu_usuario")
