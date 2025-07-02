@@ -18,7 +18,7 @@
 #logo_usuario_config {
     width: 11.25rem;
     height: 11.25rem;
-    font-size: 4rem;
+    font-size: 4.5rem;
     border: 1px solid var(--cinza3);
 }
 
@@ -41,7 +41,7 @@
     max-width: 400px;
     flex: 1 1 300px;
     margin-bottom: 1.5rem;
-} 
+}
 
 .editar_foto {
     display: flex;
@@ -92,7 +92,7 @@
 .icone_editar_foto {
     width: 5rem;
     display: none;
-    transition: .2s;
+    transition: .2s
 }
 
 .icone_editar {
@@ -124,7 +124,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-} 
+}
 
 .btn_upload_img {
     background-color: var(--azul1);
@@ -144,7 +144,7 @@
 
 .img_upload {
     width: 5rem;
-    
+
 }
 
 .p_upload {

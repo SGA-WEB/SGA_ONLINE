@@ -8,10 +8,14 @@ export default function select2 (largura = "80px") {
     */
 
     $(document).ready(function () {
-        $('.campo_select').select2({
-            placeholder: 'Selecione a coluna',
-            width: largura,
-            minimumResultsForSearch: Infinity,
+        document.querySelectorAll('.campo_select').forEach(el => {
+            if (!$(el).hasClass('select2-hidden-accessible')) {
+                $(el).select2({
+                    placeholder: 'Selecione a coluna',
+                    width: largura,
+                    minimumResultsForSearch: 5,
+                });
+            }
         });
     });
 }

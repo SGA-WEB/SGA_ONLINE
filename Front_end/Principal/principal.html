@@ -1,21 +1,30 @@
-<!DOCTYPE html>
+<Server><!DOCTYPE html></Server>1
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src *; font-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline'">
     <title>SGA ONLINE</title>
+    <link rel="icon" href="../imagens/icone_sga.ico" type="image/x-icon">
     <!-- Estilos: -->
     <link rel="stylesheet" href="../estilos/principal.css">
     <link rel="stylesheet" href="../estilos/tabela.css">
-    
+    <link rel="stylesheet" href="../estilos/geral.css">
+    <link rel="stylesheet" href="../estilos/cadastro.css">
+
+    <!-- Bando de dados para imagens -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
     <!-- Modulos -->
+
+    <!-- Dashboard -->
+    <link rel="stylesheet" href="../modulos/dashboard/dashboard.css">
     <!-- Configuração do usuário -->
     <link rel="stylesheet" href="../modulos/configuracao_usuario/configuracao_usuario.css">
-    
+
     <!-- Modulo Contato -->
-    <link rel="stylesheet" href="../modulos/contato/lista_contatos/contato.css">
-    
-    <link rel="stylesheet" href="../modulos/contato/cadastro_contato/cadastro_contato.css">
+    <link rel="stylesheet" href="../modulos/contato/contato.css">
+    <!-- <link rel="stylesheet" href="../modulos/contato/cadastro_contato/cadastro_contato.css"> -->
     <link rel="stylesheet" href="../modulos/contato/cadastro_contato/endereco_contato/endereco_contato.css">
 
     <!-- Modulo produto -->
@@ -24,8 +33,15 @@
     <!-- Modulo Centro de Estoque -->
     <link rel="stylesheet" href="../modulos/centro_de_estoque/centro_de_estoque.css">
 
+    <!-- Modulo Movimentação de Estoque - Entrada de produtos -->
+    <link rel="stylesheet" href="../modulos/movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.css">
+
+    <!-- Modulo Configurações -->
     <link rel="stylesheet" href="../modulos/configuracoes/cadastro.css">
-    
+
+    <!-- Modulo Tipo de Entrada -->
+    <link rel="stylesheet" href="../modulos/tipo_de_entrada/cadastro_tipo_entrada/cadastro_tipo_entrada.css">
+
     <!-- Favicon: -->
     <link rel="shortcut icon" href="../imagens/icone_sga.ico" type="image/x-icon">
 
@@ -38,6 +54,7 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/fuse.js@6.6.2"></script>
+
 </head>
 <body>
     <header class="header_principal">
@@ -48,14 +65,14 @@
             <div id="usuario">
                 <div id="logo_usuario_header" class="logo_usuario">NU</div>
                 <div id="nome-empresa_usuario">
-                    <span id="nome_usuario">Nome do Usuário</span>
+                    <span id="nome_usuario"></span>
                     <span id="empresa_usuario">INTEGRA ENGENHARIA</span>
                 </div>
                 <img id="usuario_seta" src="../imagens/seta_baixo.png" alt="seta para baixo">
             </div>
-            <div id="menu_usuario" style="display: none;">
-                <a id="btn_configuracao_usuario" class="btn_menu_usuario">Configurações do usuário</a>
-                <a href="../SGA_online-login/index.html"  class="btn_menu_usuario">Sair do sistema</a>
+            <div id="menu_usuario" class="popup_dropdown" style="display: none;">
+                <a id="btn_configuracao_usuario" class="btn_menu_usuario item_popup_dropdown">Configurações do usuário</a>
+                <a href="../SGA_online-login/index.html"  class="btn_menu_usuario item_popup_dropdown">Sair do sistema</a>
             </div>
         </div>
     </header>
@@ -77,27 +94,41 @@
                         <img class="img_icone_menu" src="../imagens/icone_estoque.png" alt="icone_estoque">
                         <span class="span_modulo">Estoque</span>
                     </div>
-                    <img class="seta_cima_baixo"  src="../imagens/seta_baixo.png" alt="seta_baixo">
+                    <img class="seta_cima_baixo" src="../imagens/seta_baixo.png" alt="seta_baixo">
                     <div class="hide_text">Estoque</div>
                 </button>
                 <div class="dropdown" id="dd_estoque" style="display: none;">
                     <a href="#" class="item_dropdown" id="btn_centro_de_estoque">Centro de estoque</a>
                     <a href="#" class="item_dropdown" id="btn_produto">Produto</a>
-                    <a href="#" class="item_dropdown disable" id="btn_movimentacao_de_estoque">Movimentação de estoque</a>
-                    <a href="#" class="item_dropdown disable" id="btn_cadastro_auxiliares">Cadastro auxiliares</a>
+                    <a href="#" class="sub_menu_pai sub_menu_fechado" id="btn_movimentacao_de_estoque">
+                        <span>Movimentação de estoque</span>
+                        <img src="../imagens/seta_baixo.png" class="seta_cima_baixo" alt="seta baixo">
+                    </a>
+                    <div id="menu_movimentacao_estoque" class="sub_menu">
+                        <a id="btn_entrada_produtos" class="item_dropdown subitem">Entrada de produtos</a>
+                        <a id="btn_saida_produtos" class="item_dropdown subitem">Saída de produtos</a>
+                    </div>
+                    <a href="#" class="sub_menu_pai sub_menu_fechado" id="btn_cadastro_auxiliares">
+                        <span>Cadastro auxiliares</span>
+                        <img src="../imagens/seta_baixo.png" class="seta_cima_baixo" alt="seta baixo">
+                    </a>
+                    <div id="menu_cadastro_auxiliares" class="sub_menu">
+                        <a id="btn_tipos_de_entrada" class="item_dropdown subitem">Tipos de entrada</a>
+                        <a id="btn_tipos_de_saida" class="item_dropdown subitem">Tipos de saída</a>
+                    </div>
                 </div>
             </div>
-            <div class="item_menu">
+            <div class="item_menu invert80">
                 <button class="btn_menu disable" id="btn_vendas">
                     <div>
                         <img class="img_icone_menu" src="../imagens/icone_vendas.png" alt="icone_vendas">
                         <span class="span_modulo">Vendas</span>
                     </div>
-                    <img class="seta_cima_baixo"  src="../imagens/seta_baixo.png" alt="seta_baixo">
+                    <img class="seta_cima_baixo" src="../imagens/seta_baixo.png" alt="seta_baixo">
                     <div class="hide_text">Vendas</div>
                 </button>
             </div>
-            <div class="item_menu">
+            <div class="item_menu invert80">
                 <button class="btn_menu disable" id="btn_relatorios">
                     <div>
                         <img class="img_icone_menu" src="../imagens/icone_relatorios.png" alt="icone_relatorios">
@@ -107,7 +138,7 @@
                     <div class="hide_text">Relatórios</div>
                 </button>
             </div>
-            <div class="item_menu">
+            <div class="item_menu invert80">
                 <button class="btn_menu disable" id="btn_financeiro">
                     <div>
                         <img class="img_icone_menu" src="../imagens/icone_financeiro.png" alt="icone_financeiro">
@@ -117,7 +148,7 @@
                     <div class="hide_text">Financeiro</div>
                 </button>
             </div>
-            <div class="item_menu">
+            <div class="item_menu invert80">
                 <button class="btn_menu disable" id="btn_administracao">
                     <div>
                         <img class="img_icone_menu" src="../imagens/icone_administracao.png" alt="icone_administracao">
@@ -128,8 +159,8 @@
                 </button>
             </div>
             <button class="btn btn_menu disable" id="btn_veiculo">
-                <img class="img_icone_menu" src="../imagens/icone_veiculo.png" alt="icone_veiculo">
-                <span class="span_modulo">Veículo</span>
+                <img class="img_icone_menu invert80" src="../imagens/icone_veiculo.png" alt="icone_veiculo">
+                <span class="span_modulo invert80">Veículo</span>
                 <div class="hide_text">Veículo</div>
             </button>
             <button class="btn btn_menu" id="btn_contato">
@@ -144,16 +175,91 @@
             </button>
         </nav>
         <section class="principal">
-            
+
         </section>
+        <!-- Popups temporarios: -->
+        <section class="container_popup_alerta hide_popup" id="container_popup_excluir">
+            <div class="popup popup_alerta" id="popup_excluir">
+                <header>
+                    <img src="..//..//imagens/icone_alerta.svg" alt="icone_alerta">
+                    <h1>Confirme a exclusão</h1>
+                    <button class="btn_fechar_popup" id="btn_fechar_popup_excluir">
+                        <img src="../imagens/icone_fechar.svg" alt="botão fechar popup" id="btn_fechar_popup_excluir" class="icone_fechar">
+                    </button>
+                </header>
+                <main>
+                    <p>
+                        <span class="msg_popup_alerta"></span>
+                    </p>
+                    <div class="btns_container">
+                        <button class="btn btn_popup_cancelar" id="btn_popup_excluir_cancelar">Cancelar</button>
+                        <button class="btn btn5 btn_popup_confirmar" id="btn_popup_excluir_excluir">Excluir</button>
+                    </div>
+                </main>
+            </div>
+        </section>
+        <section class="container_popup_alerta hide_popup" id="container_popup_confirmar">
+            <div class="popup popup_alerta" id="popup_confirmar">
+                <button class="btn_fechar_popup" id="btn_fechar_popup_confirmar">
+                    <img src="../imagens/icone_fechar.svg" alt="botão fechar popup" id="btn_fechar_popup_confirmar" class="icone_fechar">
+                </button>
+                <img src="..//..//imagens/icone_alerta.svg" alt="icone_alerta" class="icone_alerta">
+                <main>
+                    <p>
+                        <span class="msg_popup_alerta" id="msg_popup_confirmar"></span>
+                    </p>
+                    <div class="btns_container">
+                        <button class="btn btn2 btn_popup_cancelar" id="btn_popup_confirmar_cancelar">Cancelar</button>
+                        <button class="btn btn1 btn_popup_confirmar" id="btn_popup_confirmar_confirmar">Confirmar</button>
+                    </div>
+                </main>
+            </div>
+        </section>
+        <div class="container_popups">
+            <div class="popup_aviso hide_popup" id="popup_aviso">
+                <button class="btn_fechar_popup" id="btn_fechar_popup_aviso">
+                    <img src="../imagens/icone_fechar.svg" alt="botão fechar popup" class="icone_fechar">
+                </button>
+                <main>
+                    <img src="..//../imagens/check.svg" alt="icone_check">
+                    <p class="mensagem_aviso">Alteração salva com sucesso!</p>
+                </main>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar-aviso"></div>
+                </div>
+            </div>
+            <div class="popup_erro popup_aviso hide_popup" id="popup_erro">
+                <button class="btn_fechar_popup" id="btn_fechar_popup_erro">
+                    <img src="../imagens/icone_fechar.svg" alt="botão fechar popup" class="icone_fechar">
+                </button>
+                <main>
+                    <img src="../imagens/icone_fechar.svg" alt="icone_check">
+                    <p class="mensagem_erro">Erro ao salvar alteração</p>
+                </main>
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar-erro"></div>
+                </div>
+            </div>
+            <div class="popup_aviso popup_carregando hide_popup" id="popup_carregando">
+                <main>
+                    <div class="gear-icon">
+                        <img src="../imagens/icone_carregando.svg" alt="engrenagem">
+                    </div>
+                    <p class="mensagem_aviso">Salvando alterações...</p>
+                </main>
+            </div>
+        </div>
     </main>
     <script type="module" src="../modulos/dashboard/dashboard.js"></script>
-    <script type="module" src="../modulos/contato/lista_contatos/contato.js"></script>
+    <script type="module" src="../modulos/contato/contato.js"></script>
     <script type="module" src="../scripts/javaScript.js"></script>
     <script type="module" src="../modulos/contato/cadastro_contato/cadastro_contato.js"></script>
-    <script type="module" src="../modulos/configuracao_usuario/configuracao_usuario.js"></script>
+    <script type="module" src="../modulos/configuracao_usuario/configuracao_usuario.js" defer></script>
     <script type="module" src="../modulos/produto/produto.js"></script>
     <script type="module" src="../modulos/centro_de_estoque/centro_de_estoque.js"></script>
     <script type="module" src="../modulos/configuracoes/configuracoes.js"></script>
+    <script type="module" src="../modulos/produto/visualizar_produto/visualizar_produto.js"></script>
+    <script type="module" src="../scripts/sessao.js"></script>
+    <script type="module" src="../scripts/usuarioHeader.js"></script>
 </body>
 </html>

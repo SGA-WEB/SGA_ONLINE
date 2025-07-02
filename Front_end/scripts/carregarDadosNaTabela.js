@@ -1,71 +1,99 @@
 // Objetivo: Função que carrega os dados na tabela e função que pesquisa os dados
+// Cria os botões de editar, visualizar e excluir (CRUD) e os adiciona nas tabelas
 
-function carregarDadosNaTabela (data) {
-    // Data: Array de objetos que contém os dados que serão exibidos na tabela (JSON)
+import crudLayout from "./crudLayout.js" // Importa a função que cria os botões de editar, visualizar e excluir (CRUD)
+import { formatarData } from "./funcionalidades.js"
 
-    let tabela = document.querySelector(".tbody") // Tabela onde os dados serão exibidos
+let handlersPorTabela = new Map() // Variável que armazena o handler da tabela, para evitar múltiplos handlers na mesma tabela;
+
+function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySelector(".tbody"), ativarCrud = true, addListener = true, removerLinhasTabela = true) {
+    // ColunasExibir: Array com os nomes das colunas do banco de dados que serão exibidas na tabela
     let [...tr_tabela] = document.querySelectorAll(".table_tr")
-    tr_tabela.map(e => e.remove(e)) // Remove todos os elementos da tabela
+    if (removerLinhasTabela) { // Se removerLinhasTabela for true, remove as linhas da tabela
+       tr_tabela.map(e => e.remove(e)) // Remove todos os elementos da tabela
+    }
     let td_info = document.querySelector(".td_nenhum_dado") // Pega o parágrafo de informação de que não há dados (Se existir)
 
-    if (data.length !== 0 ) { // Se houver dados
+    if (dados.length !== 0 ) { // Se houver dados
         td_info ? td_info.remove() : null // Se houver o parágrafo de informação, ele é removido
 
-        const firstDataKey = Object.keys(data[0])[0]; // Pega a primeira chave do primeiro objeto do array de dados, que no caso é o id
-        data.sort((a, b) => a[firstDataKey] - b[firstDataKey]) // Ordena os dados pelo id
+        const firstDataKey = Object.keys(dados[0])[0]; // Pega a primeira chave do primeiro objeto do array de dados, que no caso é o id
+        dados.sort((a, b) => a[firstDataKey] - b[firstDataKey]) // Ordena os dados pelo id
 
-        data.map(obj => { // Para cada objeto no array de dados
+        dados.map(objDado => { // Para cada objeto no array de dados
+            let objDadoCompleto = objDado
+
+            let sortedObjDado = {}; // Objeto com os dados ordenados comforme as colunas a serem exibidas
+            colunasExibir.forEach(coluna => {
+                sortedObjDado[coluna] = objDado[coluna];
+            });
+            objDado = sortedObjDado;
+
+            objDado = Object.entries(objDado) // Converte o objeto em um array de pares chave-valor
+
+            objDado = objDado.filter(([chave]) => colunasExibir.includes(chave)); // Filtra o array para incluir apenas as chaves que estão no array colunasExibir
+
+            objDado = Object.fromEntries(objDado) // Converte o array em um objeto
+
             let tr = document.createElement('tr') // Cria uma linha
             tr.setAttribute('class','table_tr')
-    
-            for (let e in obj) { // Para cada campo no objeto
+            tr.setAttribute('id', 'tr_' + objDado[firstDataKey]) // Define o id da linha como tr_id
+
+
+            let checkbox = document.createElement('input') // Cria um checkbox
+            let td = document.createElement('td') // Cria uma célula
+            if (addListener) {
+                td.setAttribute("class", "selecionar_linha")
+                checkbox.setAttribute('type', 'checkbox') // Define o tipo do input como checkbox
+                checkbox.setAttribute('id', 'checkbox_' + objDado[firstDataKey]) // Define o id da célula como checkbox_id
+                checkbox.setAttribute('class', 'checkbox_selecionar_linha') // Define a classe do checkbox
+                td.appendChild(checkbox) // Adiciona o checkbox na célula
+                tr.appendChild(td) // Adiciona a célula na linha
+            }
+
+
+            for (let e in objDado) { // Para cada campo no objeto
+                if (e === "data_cadastro") {
+                    continue
+                }
+                if (e.search("data") != -1) {
+                    objDado[e] = formatarData(objDado[e])
+                }
                 let td = document.createElement('td')
                 td.setAttribute('class','dado_tabela')
-                td.setAttribute('id', e + "_" + obj[e]) // nome do campo + valor do campo
-                if (typeof(obj[e]) == 'boolean') { 
+                td.classList.add('td_' + e) // Adiciona a classe da célula como td_nomeDoCampo
+                td.setAttribute('id', e + "_" + objDado[e]) // nome do campo + valor do campo
+                if (typeof(objDado[e]) == 'boolean') {
                     // Se o campo for booleano, exibe "S" ou "N"
-                    if (obj[e]) {
+                    if (objDado[e]) {
                         td.textContent = "S"
                     } else {
                         td.textContent = "N"
                     }
                 } else {
                     // Se não, exibe o valor do campo
-                    td.textContent = obj[e]
+                    td.textContent = objDado[e]
                 }
 
-                
                 tr.appendChild(td) // Adiciona a célula na linha
             }
 
             // CRUD:
-            let acoes = document.createElement('div') // Cria um div para as ações do CRUD
-            acoes.setAttribute('class','acoes_tabela')
+            if (ativarCrud) {
+                crudLayout(objDadoCompleto, tr, addListener) // Adiciona os botões de editar, visualizar e excluir na linha
+            }
 
-            let btn_editar = document.createElement('button') // Cria o botão de editar
-            btn_editar.setAttribute('class','btn_editar')
-            let img_editar = document.createElement('img') // Cria a imagem do botão de editar
-            img_editar.setAttribute('src','../imagens/icone_editar.svg')
-            btn_editar.appendChild(img_editar) // Adiciona a imagem no botão
-
-            let btn_visualizar = document.createElement('button') // Cria o botão de visualizar
-            btn_visualizar.setAttribute('class','btn_visualizar')
-            let img_visualizar = document.createElement('img') // Cria a imagem do botão de visualizar
-            img_visualizar.setAttribute('src','../imagens/visibility_on.png')
-            btn_visualizar.appendChild(img_visualizar) // Adiciona a imagem no botão
-
-            let btn_excluir = document.createElement('button') // Cria o botão de excluir
-            btn_excluir.setAttribute('class','btn_excluir')
-            let img_excluir = document.createElement('img') // Cria a imagem do botão de excluir
-            img_excluir.setAttribute('src','../imagens/icone_excluir.svg')
-            btn_excluir.appendChild(img_excluir) // Adiciona a imagem no botão
-
-            acoes.appendChild(btn_editar) // Adiciona o botão de editar nas ações
-            acoes.appendChild(btn_visualizar) // Adiciona o botão de visualizar nas ações
-            acoes.appendChild(btn_excluir) // Adiciona o botão de excluir nas ações
-
-            tr.appendChild(acoes) // Adiciona as ações na linha
-
+            if (addListener) {
+                checkbox.addEventListener("change", (e) => {
+                    // Adiciona o evento de mudança no checkbox
+                    let tr = e.target.parentElement.parentElement // Pega a linha da célula do checkbox
+                    if (e.target.checked) { // Se o checkbox estiver marcado
+                        tr.classList.add("linha_selecionada") // Adiciona a classe "selecionado" na linha
+                    } else { // Se o checkbox estiver desmarcado
+                        tr.classList.remove("linha_selecionada") // Remove a classe "selecionado" da linha
+                    }
+                })
+            }
             tabela.appendChild(tr) // Adiciona a linha na tabela
         })
     } else { // Se não houver dados
@@ -78,13 +106,55 @@ function carregarDadosNaTabela (data) {
             tabela.appendChild(td_info)
         }
     }
+
+    // Primeiro remove (caso já exista)
+    if (handlersPorTabela.has(tabela)) {
+        tabela.removeEventListener("click", handlersPorTabela.get(tabela));
+    }
+
+    const novoHandler = (e) => {
+        selecionarChekboxAoClicarNaLinha(e, tabela)
+    }
+
+    // Depois adiciona
+    if (addListener) {
+        tabela.addEventListener("click", novoHandler);
+        handlersPorTabela.set(tabela, novoHandler); // Armazena o handler da tabela para evitar múltiplos handlers na mesma tabela
+    }
+
+    let selecionar_todos = tabela.parentElement.querySelector("#selecionar_todos");
+    if (selecionar_todos) {
+        selecionar_todos.addEventListener("change", (e) => {
+            const checkboxes = tabela.querySelectorAll(".checkbox_selecionar_linha");
+            checkboxes.forEach(cb => {
+                cb.checked = e.target.checked;
+                cb.closest("tr").classList.toggle("linha_selecionada", cb.checked);
+            });
+        });
+    }
 }
 
-function pesquisar(data) {
+function selecionarChekboxAoClicarNaLinha(e, tabela) {
+    const tr = e.target.closest("tr");
+    if (!tr || (e.target.type === "checkbox")) {
+        return;
+    }
+
+    const tr_id = tr.id.replace("tr_", "");
+    const checkbox = tabela.querySelector("#checkbox_" + tr_id);
+    if (!checkbox) return;
+
+    checkbox.checked = !checkbox.checked;
+    tr.classList.toggle("linha_selecionada", checkbox.checked);
+}
+
+
+
+function pesquisar(dados, colunasExibir, tabela = document.querySelector(".tbody"), ativarCrud = true) {
     // Função que pesquisa e manda os dados filtrados para a função carregarDadosNaTabela
 
     const btn_pesquisar = document.querySelector('.btn_pesquisar') // Botão de pesquisar
-    const campo_select = document.querySelector('.campo_select') // Select que contém os campos da tabela
+    const campo_select = document.querySelector('.select_coluna') // Select que contém os campos da tabela
     const btn_limpar = document.querySelector('.btn_limpar_pesquisa') // Botão de fechar
     const input_pesquisar = document.querySelector('.input_pesquisa') // Input de pesquisa
 
@@ -94,7 +164,7 @@ function pesquisar(data) {
         input_pesquisar.value = "" // Limpa o input
         handlePesquisar() // Chama a função de pesquisa
     })
-    $('.campo_select').on('change', () => {
+    $('#select_coluna').on('change', () => {
         input_pesquisar.value = "" // Limpa o input
         handlePesquisar()
     }) // Quando o select for alterado
@@ -108,14 +178,14 @@ function pesquisar(data) {
             btn_limpar.classList.remove('hide') // Mostra o botão de fechar
         }
 
-        data = data.map(e => {
+        dados = dados.map(e => {
             // Converte os campos booleanos para "s" ou "n"
             if (typeof(e.padrao_centro_estoque) === 'boolean') {
                 e.padrao_centro_estoque = e.padrao_centro_estoque ? "s" : "n"
-            } 
+            }
             return e
         })
-        
+
         let threshold // Define a tolerância da pesquisa
         if (campo_select.value == "padrao_centro_estoque"){
             // Se o campo selecionado for o "padrão", a pesquisa será feita com mais tolerância a variação de valores
@@ -133,36 +203,35 @@ function pesquisar(data) {
             keys: [campo_select.value],
             threshold: threshold,
         }
-
-        const fuse = new Fuse(data, options) // Inicializa o fuse com os dados e as configurações
+        const fuse = new Fuse(dados, options) // Inicializa o fuse com os dados e as configurações
 
         let newData
 
         if (value_input_pesquisa.includes('*')) {
             // Remove o curinga e ajusta a lógica de pesquisa
             let padrao = value_input_pesquisa.replace(/\*/g, ''); // Remove todos os "*"
-            
+
             value_input_pesquisa = value_input_pesquisa.toUpperCase() // Converte o valor da pesquisa para maiúsculo
             padrao = padrao.toUpperCase() // Converte o padrão para maiúsculo
 
             // Se tiver algum caractere coringa "*" na pesquisa:
             if (value_input_pesquisa.startsWith('*') && value_input_pesquisa.endsWith('*')) {
                 // *a*: Contém "a" em qualquer lugar
-                newData = data.filter(item => {
+                newData = dados.filter(item => {
                     let itemUpperCase = item[campo_select.value].toUpperCase()
                     return itemUpperCase.includes(padrao)
                 });
-                
+
             } else if (value_input_pesquisa.startsWith('*')) {
                 // *a: Termina com "a"
-                newData = data.filter(item => {
+                newData = dados.filter(item => {
                     let itemUpperCase = item[campo_select.value].toUpperCase()
                     return itemUpperCase.endsWith(padrao)
                 });
 
             } else if (value_input_pesquisa.endsWith('*')) {
                 // a*: Começa com "a"
-                newData = data.filter(item => {
+                newData = dados.filter(item => {
                     let itemUpperCase = item[campo_select.value].toUpperCase()
                     return itemUpperCase.startsWith(padrao)
                 });
@@ -171,12 +240,12 @@ function pesquisar(data) {
             newData = fuse.search(value_input_pesquisa) // Faz a pesquisa
             newData = newData.map(e => e.item) // Pega apenas os itens do resultado da pesquisa
         }
-        
+
         if (value_input_pesquisa == "") { // Se o input estiver vazio
-            newData = data // Exibe todos os dados
+            newData = dados // Exibe todos os dados
         }
-        carregarDadosNaTabela(newData) // Manda os novos dados filtrados para a função carregarDadosNaTabela
-    }  
+        carregarDadosNaTabela(newData, colunasExibir, tabela, ativarCrud) // Manda os novos dados filtrados para a função carregarDadosNaTabela
+    }
 }
 
 export { carregarDadosNaTabela, pesquisar } // Exporta as funções para serem usadas em outros arquivos

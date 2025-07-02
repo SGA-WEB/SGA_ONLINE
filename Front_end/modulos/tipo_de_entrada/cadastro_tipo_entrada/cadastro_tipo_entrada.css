@@ -1,0 +1,19 @@
+#modulo_cadastro_tipo_entrada {
+    .container_btns{
+        display: flex;
+        justify-content: end;
+        gap: 1rem;
+    
+    }
+    .btn_salvar {
+        margin: 0;
+    }
+    .modulo_main {
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .container_small_width {
+        max-width: 200px;
+        min-width: 100px;
+    }
+}

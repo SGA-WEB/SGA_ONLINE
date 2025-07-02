@@ -1,0 +1,521 @@
+.principal {
+    container-type: inline-size;
+}
+#modulo_dashboard {
+    display: grid;
+    grid-template-areas:
+        "quantidade_total_produtos valor_total_estoque valor_total_estoque produtos_em_falta produtos_em_falta"
+        "distribuicao_produtos_estoque valor_total_estoque_por_centro_estoque valor_total_estoque_por_centro_estoque produtos_em_falta produtos_em_falta"
+        "distribuicao_produtos_estoque valor_total_estoque_por_centro_estoque valor_total_estoque_por_centro_estoque div_produtos_maior_quantidade div_produtos_maior_quantidade"
+        "distribuicao_produtos_estoque contatos contatos produtos_mais_vendidos produtos_mais_vendidos"
+        "grid_filha_graficos grid_filha_graficos grid_filha_graficos produtos_mais_vendidos produtos_mais_vendidos"
+        "grid_filha_graficos grid_filha_graficos grid_filha_graficos . ."
+        "grid_filha_graficos grid_filha_graficos grid_filha_graficos . .";
+
+    grid-template-columns: minmax(285px, 344px) minmax(224px, 300px) minmax(257px, 300px) minmax(150px, 250px) minmax(150px, 250px);
+
+    grid-template-rows: repeat(7, auto);
+    gap: 1rem;
+    padding: 1rem;
+    margin-left: 1rem;
+}
+
+.graficos h2 {
+    font-size: 1.3em;
+    font-weight: 600;
+    text-align: center;
+    color: var(--azul_escuro);;
+}
+
+#div_quantidade_total_produtos {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    justify-content: center;
+}
+
+#div_quantidade_total_produtos h2 {
+    font-size: 1.3em;
+    justify-self: flex-start;
+}
+
+.quantidade_produtos {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--azul);
+}
+
+#div_valor_total_estoque {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    height: 100%;
+    width: 100%;
+    min-width: fit-content;
+    text-align: center;
+}
+
+.valores_estoque {
+    display: flex;
+    justify-content: space-around;
+    gap: 2rem;
+}
+
+.valor_total {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: var(--verde_dinheiro);
+}
+
+#div_produtos_em_falta {
+    grid-column: 1 / span 2;
+    width: 100%;
+    height: fit-content;
+    padding: 1rem 0 0 0;
+}
+
+#div_distribuicao_produtos_estoque {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#div_distribuicao_produtos_estoque h2 {
+    margin-bottom: 1.3rem;
+}
+
+#grafico_distribuicao_produtos_estoque {
+    min-width: 220px;
+    min-height: 220px;
+    aspect-ratio: 1 / 1 !important;
+    margin: 0 auto 1.5rem auto;
+}
+
+.card_info_porcentagem {
+    display: flex;
+    justify-content: space-between;
+    min-width: fit-content;
+    gap: 0.6rem;
+    padding: 1rem;
+    border-radius: 5px;
+    box-shadow: 3px 3px 15px rgba(0, 0, 0, 0.192);
+    background-color: var(--principal);
+    margin-bottom: 1rem;
+}
+
+.card_info_porcentagem:first-child {
+    background-color: var(--azul);
+    color: white;
+    font-weight: bolder;
+    box-shadow: 0px 10px 17.6px hsla(234, 76%, 67%, 0.363);
+    border-left: 10px solid transparent;
+
+}
+
+.card_info_porcentagem_contato:nth-child(2) {
+    border-left: 10px solid var(--azul1);
+}
+
+.card_info_porcentagem_contato:nth-child(3) {
+    border-left: 10px solid var(--azul-1);
+}
+
+.card_info_porcentagem_contato .container_porcentagem_estoque {
+    gap: .5rem;
+}
+
+.container_porcentagem_estoque {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.porcentagem_estoque {
+    min-width: 76px;
+    font-size: 1.4rem;
+}
+
+.quantidade_card {
+    display: flex;
+    align-items: center;
+}
+
+#div_valor_total_estoque_por_centro_estoque {
+    width: 100%;
+}
+
+#div_valor_total_estoque_por_centro_estoque h2 {
+    margin-bottom: 1.3rem;
+}
+.container_info_valores_estoques {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: .5rem;
+    width: 100%;
+    height: calc(100% - 4rem);
+}
+
+.container_info_valor_estoque {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-bottom: 1rem;
+}
+
+.container_barra_valor_estoque {
+    margin-left: .5rem;
+    width: calc(100% - 8rem);
+}
+
+.valor_estoque {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--verde_dinheiro);
+    text-align: right;
+    margin-left: 1rem;
+}
+
+.barra_valor_estoque {
+    background-color: var(--azul);
+    height: .6rem;
+    width: 100%;
+    border-radius: 0 5px 5px 0;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.144);
+}
+.barra_estoque {
+    background-color: var(--azul-1);
+    border-radius: 0 5px 5px 0;
+}
+
+/* Grafico dos contatos: */
+#div_contatos {
+   width: 100%;
+}
+
+#div_contatos h2 {
+    margin-bottom: 1.4rem;
+}
+
+#grafico_contatos {
+    max-width: 14rem;
+    max-height: 14rem;
+}
+
+.container_grafico_card {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.container_card_info_porcentagem {
+    width: 100%;
+}
+/* tabela produtos com maior quantidade */
+#div_produtos_maior_quantidade {
+    width: 100%;
+    padding: 1rem 0 0 0;
+    height: fit-content;
+}
+
+.grid_filha_graficos {
+    display: grid;
+    grid-template-areas:
+        "entrada_de_produtos saida_de_produtos"
+        "diferenca_entrada_saida .";
+    grid-template-columns: repeat(2, auto);
+    grid-template-rows: repeat(2, auto);
+    width: 100%;
+    gap: 1rem;
+}
+
+.grid_filha_graficos .item_dashboard {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+}
+
+#modulo_dashboard {
+    box-shadow: none;
+}
+.select2-selection {
+    border: none !important;
+    background-color: var(--azul-1) !important;
+}
+.item_dashboard {
+    /* max-width: 800px; */
+    /* min-width: 400px; */
+    flex: 1 1 400px;
+    /* height: min-content; */
+    height: fit-content;
+    background-color: var(--principal);
+    padding: 0.8rem;
+    border-radius: 5px;
+    box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.144);
+}
+.header_grafico {
+    display: flex;
+    flex-flow: column;
+    gap: 10px;
+    justify-content: space-between;
+    padding: 0 10px;
+    margin-bottom: 10px;
+}
+.header_grafico h2 {
+    text-align: center;
+    font: 600 1.2em arial;
+    margin-bottom: 10px;
+}
+.filtro_grafico {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    gap: 15px;
+}
+.filtro {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    font-size: 0.9em;
+}
+.filtro span {
+    white-space: nowrap;
+}
+.input_date {
+    background-color: var(--azul-1);
+    border: none;
+    padding: 5px;
+    border-radius: 5px;
+    max-width: 127px;
+}
+.config_grafico {
+    font-size: 0.9em;
+}
+.config_grafico select {
+    background-color: var(--azul-1); /* Cor de fundo do select */
+    color: var(--secundaria); /* Cor do texto */
+    border-radius: 5px; /* Arredondar bordas */
+    border: none;
+}
+.config_grafico select:focus {
+    outline: none; /* Remove o contorno padrão quando focado */
+    border: none;
+}
+
+.config_grafico option {
+    background-color: var(--azul-1); /* Cor de fundo das opções */
+    color: var(--secundaria);
+}
+.config_grafico select option:hover {
+    cursor: pointer;
+    background-color: var(--azul1);
+}
+
+/* Tabela dashboard: */
+#div_produtos_mais_vendidos {
+    padding: 0;
+}
+#div_produtos_mais_vendidos .header_grafico {
+    padding: .8em;
+}
+#tabela_dashboard td, #tabela_dashboard th {
+    border-right: none;
+}
+
+#tabela_dashboard td:last-child, #tabela_dashboard th:last-child{
+    text-align: right !important;
+}
+
+.td_nenhum_dado {
+    margin: 1rem 0rem 1rem 1rem;
+    white-space: nowrap;
+}
+
+@container (min-width: 1750px) {
+    #modulo_dashboard {
+        background-color: red;
+        display: grid;
+        grid-template-areas:
+            "quantidade_total_produtos valor_total_estoque valor_total_estoque produtos_em_falta produtos_em_falta produtos_mais_vendidos produtos_mais_vendidos"
+            "distribuicao_produtos_estoque valor_total_estoque_por_centro_estoque valor_total_estoque_por_centro_estoque produtos_em_falta produtos_em_falta produtos_mais_vendidos produtos_mais_vendidos"
+            "distribuicao_produtos_estoque valor_total_estoque_por_centro_estoque valor_total_estoque_por_centro_estoque div_produtos_maior_quantidade div_produtos_maior_quantidade produtos_mais_vendidos produtos_mais_vendidos"
+            "distribuicao_produtos_estoque contatos contatos . . . ."
+            "grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos"
+            "grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos"
+            "grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos grid_filha_graficos";
+        grid-template-columns: minmax(289px, 344px) minmax(234px, 300px) minmax(296px, 300px) minmax(200px, 250px) minmax(200px, 250px) minmax(200px, 250px) minmax(200px, 250px);
+
+        grid-template-rows: repeat(7, auto);
+    }
+   .grid_filha_graficos {
+        grid-template-areas:
+            "entrada_de_produtos saida_de_produtos diferenca_entrada_saida";
+        grid-template-columns: repeat(1, auto);
+   }
+}
+
+@container (max-width: 1140px) {
+    #modulo_dashboard {
+        grid-template-areas:
+        "quantidade_total_produtos valor_total_estoque valor_total_estoque"
+        "distribuicao_produtos_estoque valor_total_estoque_por_centro_estoque valor_total_estoque_por_centro_estoque"
+        "distribuicao_produtos_estoque valor_total_estoque_por_centro_estoque valor_total_estoque_por_centro_estoque"
+        "distribuicao_produtos_estoque contatos contatos"
+        "produtos_em_falta produtos_em_falta div_produtos_maior_quantidade"
+        "produtos_em_falta produtos_em_falta div_produtos_maior_quantidade"
+        "produtos_mais_vendidos produtos_mais_vendidos ."
+        "grid_filha_graficos grid_filha_graficos grid_filha_graficos"
+        "grid_filha_graficos grid_filha_graficos grid_filha_graficos"
+        "grid_filha_graficos grid_filha_graficos grid_filha_graficos";
+
+        grid-template-columns: minmax(289px, 260px) minmax(50px, 170px) minmax(391px, 460px);
+
+        grid-template-rows: repeat(8, auto);
+    }
+    .container_grafico_card {
+        gap: 1rem;
+    }
+}
+
+@container (max-width: 763px) {
+    #modulo_dashboard {
+        grid-template-areas:
+        "quantidade_total_produtos distribuicao_produtos_estoque"
+        "valor_total_estoque distribuicao_produtos_estoque"
+        "contatos contatos"
+        "valor_total_estoque_por_centro_estoque valor_total_estoque_por_centro_estoque"
+        "produtos_em_falta produtos_em_falta"
+        "produtos_mais_vendidos produtos_mais_vendidos"
+        "div_produtos_maior_quantidade div_produtos_maior_quantidade"
+        "grid_filha_graficos grid_filha_graficos";
+
+        grid-template-columns: minmax(200px, 320px) minmax(275px, 370px);
+
+        grid-template-rows: repeat(8, auto);
+    }
+
+    #div_quantidade_total_produtos p{
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5em;
+    }
+
+    .valores_estoque {
+        flex-direction: column;
+        height: 100%;
+    }
+    #div_valor_total_estoque h2 {
+        margin-top: .5rem;
+    }
+    #grafico_distribuicao_produtos_estoque {
+        max-height: 150px;
+        max-width: 150px;
+    }
+
+    .grid_filha_graficos {
+        grid-template-areas:
+            "entrada_de_produtos"
+            "saida_de_produtos"
+            "diferenca_entrada_saida";
+        grid-template-columns: repeat(1, auto);
+    }
+}
+
+@container (max-width: 520px) {
+    #modulo_dashboard {
+        grid-template-areas:
+            "quantidade_total_produtos"
+            "valor_total_estoque"
+            "contatos"
+            "distribuicao_produtos_estoque"
+            "valor_total_estoque_por_centro_estoque"
+            "produtos_em_falta"
+            "produtos_mais_vendidos"
+            "div_produtos_maior_quantidade"
+            "grid_filha_graficos";
+
+        grid-template-columns: minmax(200px, 490px);
+        margin-left: .4rem;
+    }
+
+    .valores_estoque {
+        flex-direction: row;
+        height: 100%;
+    }
+
+    .container_grafico_card {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .container_barra_valor_estoque {
+        min-width: 150px;
+    }
+
+
+}
+
+@media (max-width: 480px) {
+    /* Configurações do campo_select */
+    /* BEM CSS: */
+    /* Estilos no escopo da config_grafico */
+    .config_grafico {
+        .select2-container--default .select2-selection--single {
+            height: 1.375rem !important;
+            line-height: 1.375rem  !important;
+            padding: 0 !important;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 1.375rem !important;
+        }
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 1.375rem !important;
+        }
+    }
+
+    /* Estilos globais para dropdown gerado pelo Select2 */
+    .select2-container--default .select2-results__option--selected {
+        font-size: 0.8rem !important;
+    }
+
+    .select2-container--default .select2-results__option {
+        font-size: 0.8rem !important;
+        padding: 4px 10px !important;
+    }
+
+    .select2-container--default .select2-results__option--highlighted {
+        background-color: var(--azul1) !important;
+        color: var(--secundaria) !important;
+    }
+
+    .item_dashboard {
+        padding: 0.5rem;
+        min-width: 200px;
+        flex: 1 1 200px;
+    }
+    canvas {
+        font-size: 0.8rem;
+    }
+    .main_principal {
+        margin-top: 65px;
+    }
+    .filtro_grafico {
+        gap: 7px;
+    }
+    .input_date {
+        font-size: 0.75rem;
+        width: 6rem;
+        padding: 3px;
+    }
+}
