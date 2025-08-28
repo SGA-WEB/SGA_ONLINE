@@ -157,8 +157,6 @@ app.get('/api/testar-sessao', (req, res) => {
     }
 });
 
-
-
 app.get('/api/centro_estoque', async (req, res) => {
     try {
         const { rows } = await pool.query(`SELECT
@@ -169,6 +167,17 @@ app.get('/api/centro_estoque', async (req, res) => {
             data_cadastro,
             descricao_centro_estoque
             FROM sga.centro_estoque WHERE inativo = FALSE`);
+        res.json(rows);
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao buscar centro_estoque' });
+    }
+});
+
+app.get('/api/id_centros_estoques', async (req, res) => {
+    try {
+        const { rows } = await pool.query(`SELECT
+            id_centro_estoque
+            FROM sga.centro_estoque`);
         res.json(rows);
     } catch (err) {
         res.status(500).json({ error: 'Erro ao buscar centro_estoque' });
@@ -259,8 +268,8 @@ app.get('/api/endereco/:id_endereco', async (req, res) => {
 
 // Rota para buscar todos os dados da tabela entrada_produto
 app.get('/api/entrada_produto', async (req, res) => {
-  try {
-    const result = await pool.query(`
+    try {
+        const result = await pool.query(`
       SELECT
         ep.*,
         c.razao_social AS fornecedor_razao_social,
@@ -281,11 +290,11 @@ app.get('/api/entrada_produto', async (req, res) => {
         ORDER BY
             ep.id_entrada_produto DESC;
     `);
-    res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Erro ao buscar entradas de produto' });
-  }
+        res.json(result.rows);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao buscar entradas de produto' });
+    }
 });
 
 // Endpoint para atualizar um centro de estoque (PUT)
@@ -686,35 +695,35 @@ app.put('/usuarios/:id_usuario', async (req, res) => {
 
 // Rota para inserir entrada de produto
 app.post('/entrada_produto', async (req, res) => {
-  const {
-    tipo_entrada,
-    numero_nf,
-    data_recebimento,
-    fornecedor,
-    valor_total,
-    desconto,
-    status,
-    modelo,
-    serie,
-    sub_serie,
-    data_emissao,
-    chave_nfe,
-    itens
-  } = req.body;
+    const {
+        tipo_entrada,
+        numero_nf,
+        data_recebimento,
+        fornecedor,
+        valor_total,
+        desconto,
+        status,
+        modelo,
+        serie,
+        sub_serie,
+        data_emissao,
+        chave_nfe,
+        itens
+    } = req.body;
 
-  const client = await pool.connect();
+    const client = await pool.connect();
 
-  try {
-    await client.query('BEGIN');
+    try {
+        await client.query('BEGIN');
 
-    // 1. Remover os triggers problemáticos temporariamente
-    await client.query(`
+        // 1. Remover os triggers problemáticos temporariamente
+        await client.query(`
       DROP TRIGGER IF EXISTS trg_recalcular_total_entrada ON sga.entrada_produto_itens;
       DROP FUNCTION IF EXISTS sga.recalcular_total_entrada();
     `);
 
-    // 2. Recriar a função com esquema qualificado
-    await client.query(`
+        // 2. Recriar a função com esquema qualificado
+        await client.query(`
       CREATE OR REPLACE FUNCTION sga.recalcular_total_entrada()
       RETURNS TRIGGER AS $$
       BEGIN
@@ -730,16 +739,16 @@ app.post('/entrada_produto', async (req, res) => {
       $$ LANGUAGE plpgsql;
     `);
 
-    // 3. Recriar o trigger
-    await client.query(`
+        // 3. Recriar o trigger
+        await client.query(`
       CREATE TRIGGER trg_recalcular_total_entrada
       AFTER INSERT OR UPDATE OR DELETE ON sga.entrada_produto_itens
       FOR EACH ROW EXECUTE FUNCTION sga.recalcular_total_entrada();
     `);
 
-    // 4. Inserir o cabeçalho da entrada
-    const entradaResult = await client.query(
-      `INSERT INTO sga.entrada_produto (
+        // 4. Inserir o cabeçalho da entrada
+        const entradaResult = await client.query(
+            `INSERT INTO sga.entrada_produto (
         tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
         desconto, status, data_criacao,
         modelo_documento_fiscal, serie, subserie, data_emissao, chave_nfe
@@ -748,81 +757,81 @@ app.post('/entrada_produto', async (req, res) => {
         $6, $7, CURRENT_TIMESTAMP,
         $8, $9, $10, $11, $12
       ) RETURNING id_entrada_produto`,
-      [
-        tipo_entrada,
-        numero_nf,
-        data_recebimento,
-        fornecedor,
-        valor_total || 0,
-        desconto || 0,
-        status,
-        modelo,
-        serie,
-        sub_serie,
-        data_emissao,
-        chave_nfe
-      ]
-    );
+            [
+                tipo_entrada,
+                numero_nf,
+                data_recebimento,
+                fornecedor,
+                valor_total || 0,
+                desconto || 0,
+                status,
+                modelo,
+                serie,
+                sub_serie,
+                data_emissao,
+                chave_nfe
+            ]
+        );
 
-    const entradaId = entradaResult.rows[0].id_entrada_produto;
+        const entradaId = entradaResult.rows[0].id_entrada_produto;
 
-    // 5. Inserir os itens da entrada
-    for (const item of itens) {
-      await client.query(
-        `INSERT INTO sga.entrada_produto_itens (
+        // 5. Inserir os itens da entrada
+        for (const item of itens) {
+            await client.query(
+                `INSERT INTO sga.entrada_produto_itens (
           entrada_id, produto_id, quantidade, valor_unitario,
           desconto_item
         ) VALUES (
           $1, $2, $3, $4, $5
         )`,
-        [
-          entradaId,
-          item.id_produto,
-          item.quantidade,
-          item.valor_unitario,
-          item.desconto || 0
-        ]
-      );
+                [
+                    entradaId,
+                    item.id_produto,
+                    item.quantidade,
+                    item.valor_unitario,
+                    item.desconto || 0
+                ]
+            );
+        }
+
+        await client.query('COMMIT');
+
+        res.status(201).json({
+            sucesso: true,
+            entrada_id: entradaId,
+            message: 'Entrada de produto e itens cadastrados com sucesso'
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+
+        console.error('Erro detalhado:', {
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+            detail: error.detail,
+            query: error.query
+        });
+
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao processar entrada de produto',
+            detalhes: error.message,
+            codigo_erro: error.code,
+            query_erro: error.query
+        });
+    } finally {
+        client.release();
     }
-
-    await client.query('COMMIT');
-
-    res.status(201).json({
-      sucesso: true,
-      entrada_id: entradaId,
-      message: 'Entrada de produto e itens cadastrados com sucesso'
-    });
-
-  } catch (error) {
-    await client.query('ROLLBACK');
-
-    console.error('Erro detalhado:', {
-      message: error.message,
-      stack: error.stack,
-      code: error.code,
-      detail: error.detail,
-      query: error.query
-    });
-
-    res.status(500).json({
-      sucesso: false,
-      erro: 'Erro ao processar entrada de produto',
-      detalhes: error.message,
-      codigo_erro: error.code,
-      query_erro: error.query
-    });
-  } finally {
-    client.release();
-  }
 });
 
 // Rota para buscar todos os itens de uma entrada de produto específica
 // Exemplo: GET /entrada_produto/1/itens
 app.get('/api/entrada_produto/:id/itens', async (req, res) => {
-  const { id } = req.params;
+    const { id } = req.params;
 
-  try {
-    const query = `
+    try {
+        const query = `
       SELECT
         epi.id_item,
         epi.entrada_id,
@@ -838,56 +847,56 @@ app.get('/api/entrada_produto/:id/itens', async (req, res) => {
       ORDER BY epi.id_item
     `;
 
-    const result = await pool.query(query, [id]);
+        const result = await pool.query(query, [id]);
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({
-        sucesso: false,
-        mensagem: 'Nenhum item encontrado para esta entrada ou entrada não existe'
-      });
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Nenhum item encontrado para esta entrada ou entrada não existe'
+            });
+        }
+
+        res.status(200).json({
+            sucesso: true,
+            quantidade_itens: result.rows.length,
+            itens: result.rows
+        });
+
+    } catch (error) {
+        console.error('Erro ao buscar itens da entrada:', error);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao buscar itens da entrada',
+            detalhes: error.message
+        });
     }
-
-    res.status(200).json({
-      sucesso: true,
-      quantidade_itens: result.rows.length,
-      itens: result.rows
-    });
-
-  } catch (error) {
-    console.error('Erro ao buscar itens da entrada:', error);
-    res.status(500).json({
-      sucesso: false,
-      erro: 'Erro ao buscar itens da entrada',
-      detalhes: error.message
-    });
-  }
 });
 
 app.put('/entrada_produto/:id', async (req, res) => {
-  const { id } = req.params;
-  const {
-    tipo_entrada,
-    numero_nf,
-    data_recebimento,
-    fornecedor,
-    valor_total,
-    desconto,
-    status,
-    modelo,
-    serie,
-    sub_serie,
-    data_emissao,
-    chave_nfe,
-    itens
-  } = req.body;
+    const { id } = req.params;
+    const {
+        tipo_entrada,
+        numero_nf,
+        data_recebimento,
+        fornecedor,
+        valor_total,
+        desconto,
+        status,
+        modelo,
+        serie,
+        sub_serie,
+        data_emissao,
+        chave_nfe,
+        itens
+    } = req.body;
 
-  const client = await pool.connect();
+    const client = await pool.connect();
 
-  try {
-    await client.query('BEGIN');
+    try {
+        await client.query('BEGIN');
 
-    // 1. Atualizar o cabeçalho da entrada
-    const updateEntradaQuery = `
+        // 1. Atualizar o cabeçalho da entrada
+        const updateEntradaQuery = `
       UPDATE sga.entrada_produto
       SET
         tipo_entrada = $1,
@@ -906,88 +915,88 @@ app.put('/entrada_produto/:id', async (req, res) => {
       RETURNING *;
     `;
 
-    const entradaResult = await client.query(updateEntradaQuery, [
-      tipo_entrada,
-      numero_nf,
-      data_recebimento,
-      fornecedor,
-      valor_total,
-      desconto,
-      status,
-      modelo,
-      serie,
-      sub_serie,
-      data_emissao,
-      chave_nfe,
-      id
-    ]);
+        const entradaResult = await client.query(updateEntradaQuery, [
+            tipo_entrada,
+            numero_nf,
+            data_recebimento,
+            fornecedor,
+            valor_total,
+            desconto,
+            status,
+            modelo,
+            serie,
+            sub_serie,
+            data_emissao,
+            chave_nfe,
+            id
+        ]);
 
-    if (entradaResult.rowCount === 0) {
-      await client.query('ROLLBACK');
-      return res.status(404).json({
-        sucesso: false,
-        mensagem: 'Entrada de produto não encontrada'
-      });
-    }
+        if (entradaResult.rowCount === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Entrada de produto não encontrada'
+            });
+        }
 
-    // 2. Remover todos os itens existentes (opcional - pode ser substituído por atualização individual)
-    await client.query(
-      'DELETE FROM sga.entrada_produto_itens WHERE entrada_id = $1',
-      [id]
-    );
+        // 2. Remover todos os itens existentes (opcional - pode ser substituído por atualização individual)
+        await client.query(
+            'DELETE FROM sga.entrada_produto_itens WHERE entrada_id = $1',
+            [id]
+        );
 
-    // 3. Inserir os novos itens da entrada
-    for (const item of itens) {
-      await client.query(
-        `INSERT INTO sga.entrada_produto_itens (
+        // 3. Inserir os novos itens da entrada
+        for (const item of itens) {
+            await client.query(
+                `INSERT INTO sga.entrada_produto_itens (
           entrada_id, produto_id, quantidade, valor_unitario,
           desconto_item
         ) VALUES (
           $1, $2, $3, $4, $5
         )`,
-        [
-          id,
-          item.id_produto,
-          item.quantidade,
-          item.valor_unitario,
-          item.desconto || 0,
-        ]
-      );
+                [
+                    id,
+                    item.id_produto,
+                    item.quantidade,
+                    item.valor_unitario,
+                    item.desconto || 0,
+                ]
+            );
+        }
+
+        await client.query('COMMIT');
+
+        // 4. Obter os dados atualizados completos para retornar
+        const entradaCompleta = await client.query(
+            `SELECT * FROM sga.entrada_produto WHERE id_entrada_produto = $1`,
+            [id]
+        );
+
+        const itensAtualizados = await client.query(
+            `SELECT * FROM sga.entrada_produto_itens WHERE entrada_id = $1`,
+            [id]
+        );
+
+        res.status(200).json({
+            sucesso: true,
+            mensagem: 'Entrada de produto atualizada com sucesso',
+            entrada: entradaCompleta.rows[0],
+            itens: itensAtualizados.rows
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Erro ao atualizar entrada:', error);
+
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao atualizar entrada de produto',
+            detalhes: error.message,
+            codigo_erro: error.code
+        });
+    } finally {
+        client.release();
     }
-
-    await client.query('COMMIT');
-
-    // 4. Obter os dados atualizados completos para retornar
-    const entradaCompleta = await client.query(
-      `SELECT * FROM sga.entrada_produto WHERE id_entrada_produto = $1`,
-      [id]
-    );
-
-    const itensAtualizados = await client.query(
-      `SELECT * FROM sga.entrada_produto_itens WHERE entrada_id = $1`,
-      [id]
-    );
-
-    res.status(200).json({
-      sucesso: true,
-      mensagem: 'Entrada de produto atualizada com sucesso',
-      entrada: entradaCompleta.rows[0],
-      itens: itensAtualizados.rows
-    });
-
-  } catch (error) {
-    await client.query('ROLLBACK');
-    console.error('Erro ao atualizar entrada:', error);
-
-    res.status(500).json({
-      sucesso: false,
-      erro: 'Erro ao atualizar entrada de produto',
-      detalhes: error.message,
-      codigo_erro: error.code
-    });
-  } finally {
-    client.release();
-  }
 });
 
 // Endpoint para inativar entrada de produto (DELETE)
@@ -1189,6 +1198,55 @@ app.post('/tipos_entrada', async (req, res) => {
     }
 });
 
+app.post('/centros-estoque', async (req, res) => {
+    // Extrai os dados do corpo da requisição
+    const {
+        descricao_centro_estoque,
+        localizacao_centro_estoque,
+        padrao_centro_estoque,
+        nome_centro_estoque, // Opcional, pois tem DEFAULT
+        inativo // Opcional, pois tem DEFAULT
+    } = req.body;
+
+    // Validação básica dos campos obrigatórios
+    if (!descricao_centro_estoque || !localizacao_centro_estoque || typeof padrao_centro_estoque !== 'boolean') {
+        return res.status(400).json({
+            error: 'Campos obrigatórios estão faltando ou são inválidos: descricao_centro_estoque, localizacao_centro_estoque, padrao_centro_estoque (boolean).'
+        });
+    }
+
+    try {
+        const insertQuery = `
+      INSERT INTO sga.centro_estoque
+        (descricao_centro_estoque, localizacao_centro_estoque, padrao_centro_estoque, nome_centro_estoque, inativo)
+      VALUES
+        ($1, $2, $3, $4, $5)
+      RETURNING *;
+    `;
+
+        // O valor de 'inativo' será false se não for enviado.
+        const inativoValue = typeof inativo === 'boolean' ? inativo : false;
+
+        // O valor de 'nome_centro_estoque' usará o DEFAULT do banco se for null/undefined
+        const values = [
+            descricao_centro_estoque,
+            localizacao_centro_estoque,
+            padrao_centro_estoque,
+            nome_centro_estoque, // Se for null, o DEFAULT 'Padrão' será usado pelo banco
+            inativoValue
+        ];
+
+        const result = await pool.query(insertQuery, values);
+
+        // Retorna o registro recém-criado com status 201 (Created)
+        res.status(201).json(result.rows[0]);
+
+    } catch (error) {
+        console.error('Erro ao inserir no banco de dados:', error);
+        res.status(500).json({ error: 'Erro interno do servidor.' });
+    }
+});
+
 // Rota GET para listar todos os tipos_entrada
 app.get('/api/tipos_entrada', async (req, res) => {
     try {
@@ -1265,7 +1323,7 @@ app.put('/tipos_entrada/:id', async (req, res) => {
 
 
 app.delete('/tipos_entrada/:id', async (req, res) => {
-    const { id} = req.params;
+    const { id } = req.params;
     console.log(id)
     try {
         await pool.query(
@@ -1274,7 +1332,7 @@ app.delete('/tipos_entrada/:id', async (req, res) => {
                 WHERE id_tipo_de_entrada = $1
                 RETURNING *;
             `
-        , [id]);
+            , [id]);
         res.status(200).json({ message: 'Tipo de entrada excluído com sucesso!' });
     } catch (err) {
         res.status(500).json({ error: 'Erro ao excluir' });
