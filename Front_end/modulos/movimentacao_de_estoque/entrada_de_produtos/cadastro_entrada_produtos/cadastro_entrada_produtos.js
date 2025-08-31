@@ -124,7 +124,6 @@ export default async function cadastro_entrada_produtos(dados) {
 
                 idProdutosSelecionados = idProdutosSelecionados.filter(id => id !== id_tr);
                 produtosRelacionados = produtosRelacionados.filter(produto => {console.log(produto.id_produto, parseInt(id_tr)); return produto.id_produto !== parseInt(id_tr)});
-                console.log(produtosRelacionados)
                 calcularValorTotal();
             });
         });
@@ -200,7 +199,6 @@ export default async function cadastro_entrada_produtos(dados) {
         data.total = valorTotalTodosProdutos;
         data.itens = produtosRelacionados;
 
-        console.log(data)
         if (data.itens.length === 0) {
             popup_erro('É necessário selecionar pelo menos um produto para salvar a entrada.');
             document.querySelector("#btn_adicionar_relacao").style.border = "1px solid red";

@@ -1247,6 +1247,61 @@ app.post('/centros-estoque', async (req, res) => {
     }
 });
 
+// Rota para criar um novo produto.
+app.post('/produtos', async (req, res) => {
+    // 1. Extrai os dados do corpo da requisição.
+    const {
+        produto,          // Obrigatório
+        quantidade,       // Obrigatório
+        preco_varejo,     // Obrigatório
+        preco_atacado,    // Obrigatório
+        descricao,        // Opcional
+        inativo,          // Opcional (padrão: false)
+        id_centro_estoque // Opcional (padrão: 1)
+    } = req.body;
+
+    // 2. Validação dos campos obrigatórios e seus tipos.
+    if (!produto || typeof quantidade !== 'number' || typeof preco_varejo !== 'number' || typeof preco_atacado !== 'number') {
+        return res.status(400).json({
+            error: 'Campos obrigatórios estão faltando ou com tipos inválidos. Campos requeridos: produto(string), quantidade(number), preco_varejo(number), preco_atacado(number).'
+        });
+    }
+
+    // 3. Bloco try...catch para lidar com possíveis erros do banco de dados.
+    try {
+        // 4. Comando SQL parametrizado para evitar SQL Injection.
+        const insertQuery = `
+      INSERT INTO sga.produto
+        (produto, quantidade, preco_varejo, preco_atacado, descricao, inativo, id_centro_estoque)
+      VALUES
+        ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING *;
+    `;
+
+        // 5. Monta o array de valores, tratando os campos opcionais.
+        const values = [
+            produto,
+            quantidade,
+            preco_varejo,
+            preco_atacado,
+            descricao || null, // Se a descrição não for enviada, insere NULL no banco.
+            typeof inativo === 'boolean' ? inativo : false, // Se 'inativo' não for um booleano, assume 'false'.
+            id_centro_estoque || 1 // Se 'id_centro_estoque' não for enviado, assume '1'.
+        ];
+
+        // 6. Executa a query no banco de dados.
+        const result = await pool.query(insertQuery, values);
+
+        // 7. Retorna o registro recém-criado com status 201 (Created).
+        res.status(201).json(result.rows[0]);
+
+    } catch (error) {
+        // 8. Em caso de erro, loga no console e retorna uma mensagem genérica.
+        console.error('Erro ao inserir produto:', error);
+        res.status(500).json({ error: 'Erro interno do servidor ao tentar cadastrar o produto.' });
+    }
+});
+
 // Rota GET para listar todos os tipos_entrada
 app.get('/api/tipos_entrada', async (req, res) => {
     try {
