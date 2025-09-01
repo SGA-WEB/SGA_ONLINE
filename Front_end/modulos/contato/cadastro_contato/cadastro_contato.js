@@ -1,9 +1,18 @@
 import { carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
 import { dataAtual } from "../../../scripts/funcionalidades.js";
 import select2 from "../../../scripts/select.js";
+import { inserirDadoDoLocalStorageNaTela, salvarNovosDadosDaTelaNoLocalStorage } from "../localStorage.js";
+import buscarDados from "../../../scripts/buscarDados.js";
 
-export default function cadastro_contato () {
+export default async function cadastro_contato() {
     let cont = 0
+
+    let contatos = await buscarDados('contato');
+    let contatosComMaiorId = contatos.reduce((prev, curr) => {
+        return prev.id_contato > curr.id_contato ? prev : curr;
+    })
+    let nextIdContato = contatosComMaiorId.id_contato + 1;
+    document.querySelector(".codigo_id").innerHTML = nextIdContato;
 
     // Mudar de tela ao clicar no menu superior da tela de contato:
     let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
@@ -24,26 +33,30 @@ export default function cadastro_contato () {
 
     fecharMenu(document.querySelector(".modulo").offsetWidth, 584)
     window.addEventListener('resize', (e) => {
-        if(document.querySelector(".modulo") != null){
+        if (document.querySelector(".modulo") != null) {
             fecharMenu(document.querySelector(".modulo").offsetWidth, 421)
         }
     })
 
-    function addListenerBtns () {
+    function addListenerBtns() {
         document.querySelector(".btn_cancelar").addEventListener("click", () => {
             carregarConteudo('contato/contato.html', document.querySelector('.principal'), false)
         })
+        document.querySelector(".btn_salvar").addEventListener("click", () => {
+            let data = new Date()
+            salvarNovosDadosDaTelaNoLocalStorage({ data_cadastro: data.toISOString(), id_contato: nextIdContato }, "Cadastro de contato")
+        });
     }
 
 
-    function estilo_nav (e) {
+    function estilo_nav(e) {
         let link = e
         if (e == "voltar_contatos") {
             carregarConteudo('contato/contato.html', document.querySelector('.principal'), false)
             return
         }
-        let links_nav= document.querySelectorAll(".link_nav") // Seleciona todos os links do nav
-        links_nav.forEach(e=>{
+        let links_nav = document.querySelectorAll(".link_nav") // Seleciona todos os links do nav
+        links_nav.forEach(e => {
             e.classList.remove("link_nav_selecionado") // desmarca todos
         })
 
@@ -51,18 +64,20 @@ export default function cadastro_contato () {
         mudarDeAba(link.id)
     }
 
-    function mudarDeAba (link) {
+    function mudarDeAba(link) {
+        salvarNovosDadosDaTelaNoLocalStorage({ data_cadastro: new Date().toISOString(), id_contato: nextIdContato }, "Cadastro de contato")
         switch (link) {
             case "link_contato":
-                carregarConteudo("contato/cadastro_contato/criar_contato/criar_contato.html", document.querySelector(".modulo"), false, chamarFuncoes); // E passada a função chamarFuncoes para que os botões sejam ativados e os dados sejam inseridos novamente
-            break;
+                carregarConteudo("contato/cadastro_contato/criar_contato/criar_contato.html", document.querySelector(".modulo"), false, chamarFuncoes); // É passada a função chamarFuncoes para que os botões sejam ativados e os dados sejam inseridos novamente
+                break;
             case "link_endereco":
                 carregarConteudo("contato/cadastro_contato/endereco_contato/endereco_contato.html", document.querySelector(".modulo"), false, chamarFuncoes);
-            break;
+                break;
         }
     }
 
-    function chamarFuncoes () {
+    function chamarFuncoes() {
+        inserirDadoDoLocalStorageNaTela("Cadastro de contato")
         btnsProximoEVoltar()
         addListenerBtns()
         select2("100%")
@@ -70,8 +85,8 @@ export default function cadastro_contato () {
 
     function btnsProximoEVoltar() {
         let btn_nav = document.querySelectorAll(".btn_nav")
-        btn_nav.forEach(e=>{
-            e.addEventListener("click", (e)=>{
+        btn_nav.forEach(e => {
+            e.addEventListener("click", (e) => {
                 let btn = e.target.closest(".btn_nav").id.slice(4) // Pega o id do botão que foi clicado e retira o "btn_"
                 let link_nav = document.getElementById(btn)
                 if (link_nav == null) {
