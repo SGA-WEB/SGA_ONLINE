@@ -3,9 +3,11 @@ import { dataAtual } from "../../../scripts/funcionalidades.js";
 import select2 from "../../../scripts/select.js";
 import { inserirDadoDoLocalStorageNaTela, salvarNovosDadosDaTelaNoLocalStorage } from "../localStorage.js";
 import buscarDados from "../../../scripts/buscarDados.js";
+import { popup_carregando } from "../../../scripts/popup.js";
 
 export default async function cadastro_contato() {
     let cont = 0
+    popup_carregando()
 
     let contatos = await buscarDados('contato');
     let contatosComMaiorId = contatos.reduce((prev, curr) => {
@@ -96,4 +98,6 @@ export default async function cadastro_contato() {
             })
         })
     }
+
+    popup_carregando(true)
 }
