@@ -87,6 +87,8 @@ export default async function editar_contato (dado, telaAnteriorVisualizar) {
     }
 
     async function mudarDeAba (link) {
+        let dados = new FormData(document.querySelector("form"))
+        console.log(dados)
         salvarNovosDadosDaTelaNoLocalStorage(dado, "Editar contato")
         switch (link) {
             case "link_contato":

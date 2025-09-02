@@ -91,7 +91,6 @@ function salvarNovosDadosDaTelaNoLocalStorage(dado, tituloTela) { // SET
                 arrCategorias.push(elementCategorias[categoria].value)
             }
         }
-        console.log(dado)
         localStorage.setItem("categorias", arrCategorias)
         localStorage.setItem("data_cadastro", dado.data_cadastro)
         localStorage.setItem("id_contato", dado.id_contato)
