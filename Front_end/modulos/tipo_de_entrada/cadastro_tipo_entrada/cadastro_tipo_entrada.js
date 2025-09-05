@@ -19,8 +19,9 @@ export default function cadastro_tipo_entrada(tipos_entradas) {
         // Botão que volta para a tela de tipos de entrada
     })
 
-    let btn_salvar = document.querySelector("#btn_salvar")
-    btn_salvar.addEventListener("click", async () => {
+    let btn_salvar = document.querySelector("form")
+    btn_salvar.addEventListener("submit", async (e) => {
+        e.preventDefault()
         popup_carregando(false, "Salvando tipo de entrada...");
         const data = {
             id_tipo_de_entrada: ultimoIdProduto + 1,

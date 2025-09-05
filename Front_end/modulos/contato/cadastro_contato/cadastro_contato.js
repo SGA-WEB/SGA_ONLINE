@@ -9,6 +9,7 @@ export default async function cadastro_contato() {
     let cont = 0
     popup_carregando()
 
+
     let contatos = await buscarDados('contato');
     let contatosComMaiorId = contatos.reduce((prev, curr) => {
         return prev.id_contato > curr.id_contato ? prev : curr;
@@ -67,6 +68,10 @@ export default async function cadastro_contato() {
     }
 
     function mudarDeAba(link) {
+        let form = document.querySelector("form")
+        console.log(form)
+        let dadosFomr = Object.fromEntries(new FormData(form))
+        console.log(dadosFomr)
         salvarNovosDadosDaTelaNoLocalStorage({ data_cadastro: new Date().toISOString(), id_contato: nextIdContato }, "Cadastro de contato")
         switch (link) {
             case "link_contato":
