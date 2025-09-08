@@ -1,5 +1,5 @@
 import { carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
-import { dataAtual } from "../../../scripts/funcionalidades.js";
+import { dataAtual, formatarData } from "../../../scripts/funcionalidades.js";
 import select2 from "../../../scripts/select.js";
 import { inserirDadoDoLocalStorageNaTela, salvarNovosDadosDaTelaNoLocalStorage } from "../localStorage.js";
 import buscarDados from "../../../scripts/buscarDados.js";
@@ -67,14 +67,24 @@ export default async function cadastro_contato() {
         mudarDeAba(link.id)
     }
 
+    let dados = {}
+    let arrCategorias = []
+
     function mudarDeAba(link) {
         let form = document.querySelector("form")
-        console.log(form)
         let dadosFomr = Object.fromEntries(new FormData(form))
-        console.log(dadosFomr)
-        salvarNovosDadosDaTelaNoLocalStorage({ data_cadastro: new Date().toISOString(), id_contato: nextIdContato }, "Cadastro de contato")
+        let elementCategorias = document.getElementsByName("categorias")
+        for (let categoria in elementCategorias) {
+            if (elementCategorias[categoria].checked) {
+                arrCategorias.push(elementCategorias[categoria].value)
+            }
+        }
+        dados = { ...dados, ...dadosFomr }
+        dados.categorias = arrCategorias
+        inserirDadosNaTela("Cadastro de contato")
         switch (link) {
             case "link_contato":
+                arrCategorias = [] // Zera o array para que não haja duplicidade de categorias
                 carregarConteudo("contato/cadastro_contato/criar_contato/criar_contato.html", document.querySelector(".modulo"), false, chamarFuncoes); // É passada a função chamarFuncoes para que os botões sejam ativados e os dados sejam inseridos novamente
                 break;
             case "link_endereco":
@@ -84,7 +94,7 @@ export default async function cadastro_contato() {
     }
 
     function chamarFuncoes() {
-        inserirDadoDoLocalStorageNaTela("Cadastro de contato")
+        inserirDadosNaTela("Cadastro de contato")
         btnsProximoEVoltar()
         addListenerBtns()
         select2("100%")
@@ -102,6 +112,62 @@ export default async function cadastro_contato() {
                 estilo_nav(link_nav)
             })
         })
+    }
+
+    function inserirDadosNaTela(tituloTela) {
+        console.log(dados)
+        if (document.querySelector(".h2_titulo").textContent == tituloTela) { // Verifica se a tela é de visualização
+            if (dados.tipo_pessoa === "JURÍDICA") {
+                document.querySelector("#contato_juridico").checked = true
+            } else if (dados.tipo_pessoa === "FÍSICA") {
+                document.querySelector("#contato_fisico").checked = true
+            }
+
+            if (dados.situacao === "ATIVO") {
+                document.querySelector("#ativo").checked = true
+            } else if (dados.situacao === "INATIVO") {
+                document.querySelector("#inativo").checked = true
+            }
+
+            let categorias = dados.categorias
+            console.log(categorias)
+            for (let i = 0; i < categorias.length; i++) {
+                if (categorias[i] === "CLIENTE") {
+                    document.querySelector("#cliente").checked = true
+                }
+                if (categorias[i] === "FORNECEDOR") {
+                    document.querySelector("#fornecedor").checked = true
+                }
+                if (categorias[i] === "FUNCIONÁRIO") {
+                    document.querySelector("#funcionario").checked = true
+                }
+            }
+            let data = new Date()
+            document.querySelector(".codigo_id").textContent = nextIdContato
+            document.querySelector(".data_cadastro").textContent = formatarData(data.toISOString())
+            document.querySelector("#nome_razao_social").value = dados.nome_razao_social
+            document.querySelector("#nome_fantasia").value = dados.nome_fantasia
+            document.querySelector("#fone1").value = dados.fone1
+            document.querySelector("#fone2").value = dados.fone2
+            document.getElementsByName("tipo_pessoa").value = dados.tipo_pessoa
+            document.querySelector("#insc_municipal").value = dados.insc_municipal
+            document.querySelector("#insc_estadual").value = dados.insc_estadual
+            document.querySelector("#cnpj").value = dados.cnpj
+            document.querySelector("#cpf").value = dados.cpf
+            document.querySelector("#email_padrao").value = dados.email_padrao
+            document.querySelector("#perfil_tributario").value = dados.perfil_tributario
+            document.querySelector("#tipo_consumidor").value = dados.tipo_consumidor
+            document.querySelector("#observacao").value = dados.observacao
+        }
+        else if (document.querySelector(".h2_titulo").textContent.includes("Endereço")) {
+            document.querySelector("#caixa_postal_principal").value = dados.cep
+            document.querySelector("#pais_principal").value = dados.pais
+            document.querySelector("#estado_principal").value = dados.estado
+            document.querySelector("#municipio_principal").value = dados.municipio
+            document.querySelector("#endereco_principal").value = dados.endereco
+            document.querySelector("#referencia_principal").value = dados.ponto_referencia
+            document.querySelector("#setor_principal").value = dados.setor
+        }
     }
 
     popup_carregando(true)
