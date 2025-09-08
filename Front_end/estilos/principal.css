@@ -152,7 +152,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: fit-content;
+    width: 232px;
     height: 54px;
     padding: 5px 13px;
     gap: 12px;
@@ -169,12 +169,11 @@ body {
     flex-shrink: 0;
     background-color: aqua;
     border-radius: 50%;
-    font: bold 1.2rem arial;
+    font: bold 18px arial;
 }
 #nome-empresa_usuario span#nome_usuario {
     display: block;
     font: bold 14px arial;
-    text-wrap: nowrap;
 }
 #nome-empresa_usuario span#empresa_usuario {
     display: block;
@@ -463,7 +462,7 @@ body {
 
 .main_principal {
     display: flex;
-    margin-top: 77px;
+    margin-top: 95px;
 }
 .principal {
     width: calc(100% - 274px);
@@ -552,7 +551,7 @@ body {
     }
 
     .principal {
-        margin-left: 206px; /* tamalho da barra lateral */
+        margin-left: 196px; /* tamalho da barra lateral */
         width: calc(100% - 206px);
     }
     .item_dashboard {

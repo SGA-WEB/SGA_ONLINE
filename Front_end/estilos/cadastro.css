@@ -46,9 +46,6 @@ a.link_nav_selecionado {
     margin-bottom: 2rem;
 }
 
-.h3_titulo {
-    margin-bottom: 1.5rem;
-}
 .container_codigo_data {
     display: flex;
     flex-wrap: wrap;
@@ -196,6 +193,7 @@ a.link_nav_selecionado {
     height: 100% !important;
 }
 
+
 .modulo_footer {
     display: flex;
     justify-content: end;
@@ -204,8 +202,9 @@ a.link_nav_selecionado {
 .btn_nav{
     display: flex;
     align-items: center;
-    margin: .3em 0 1rem .3rem;
+    margin: 0 0 1rem .3rem;
 }
+
 
 @media (max-width: 900px) {
     .modulo {

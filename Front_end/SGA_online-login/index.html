@@ -7,9 +7,6 @@
   <!-- Importando o arquivo CSS externo -->
   <link rel="stylesheet" href="style.css">
   <link rel="shortcut icon" href="../imagens/icone_sga.ico" type="image/x-icon">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
 <body>
 
@@ -28,27 +25,27 @@
       <div id="mensagemErro" style="color: red; font-weight: bold;"></div>
       <label for="email">Usuário:</label>
       <input type="email" id="email" placeholder="Digite seu usuário">
-
+      
       <label for="senha">Senha:</label>
       <input type="password" id="senha" placeholder="Digite sua senha">
         <div id="conteiner-select">
         <a href="../redefinicao_senha/envio_email/envio_email.html" target="_self">Esqueci minha senha</a>
-        <select name="Selecione a empresa" id="selecione-a-empresa" class="campo_select">
-
+        <select name="Selecione a empresa" id="selecione-a-empresa"> 
+  
           <option value="default">Selecione a empresa</option>
           <option>INTEGRA ENGENHARIA</option>
-
-        </select>
-
+  
+        </select> 
+        
       </div>
-
+      
       <div id="botao-login">
-
+        
         <button type="submit" id="btn_entrar">Entrar</button>
       </div>
     </form>
   </div>
-  <script type="module" src="../SGA_online-login/script.js"></script>
+  <script src="../SGA_online-login/script.js"></script>
   <!-- <script type="MIME/javascript" src="../SGA_online-login/script.js"></script> -->
 </body>
 </html>

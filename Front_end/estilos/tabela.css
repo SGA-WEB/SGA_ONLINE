@@ -2,7 +2,6 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9em;
-    margin-bottom: 1rem;
 }
 .tabela th, td{
     padding: 7px 15px;
@@ -16,11 +15,6 @@
 .tabela tr:hover {
     background-color: var(--cinza1);
 }
-
-.linha_selecionada {
-    background-color: var(--cinza1);
-}
-
 
 .tabela {
     border: 1px solid var(--cinza2);
@@ -42,25 +36,17 @@
 .tabela tr {
     position: relative; /* Permite que os elementos filhos usem position: absolute */
 }
-
-.table_tr {
-    cursor: pointer;
-}
-
-.th_selecionar_todos {
-    width: 0px;
-}
 /* CRUD: */
 
 .acoes_tabela {
     display: flex;
     position: absolute;
-    right: 0;
-    top: 0;
-    width: auto;
+    right: 0; /* Posiciona os botões à direita */
+    top: 0; /* Alinha ao topo da célula */
+    width: auto; /* Ajusta a largura automaticamente */
     height: 100%;
-    text-align: right;
-    white-space: nowrap;
+    text-align: right; /* Alinha os botões à direita */
+    white-space: nowrap; /* Impede que os botões quebrem de linha */
     justify-content: space-between;
     align-items: center;
     gap: 0.5rem;
@@ -69,31 +55,10 @@
     padding: .2rem .6rem 0 0;
 }
 
-.acoes_tabela img {
-    /* height: 100%;
-    width: 100%; */
-}
-
 .table_tr td:not(.acoes_tabela):last-of-type {
     padding-right: 6.25rem; /* Ajusta o padding da última célula para acomodar os botões (100px em rem) */
 }
 
 .table_tr:hover .acoes_tabela {
     transform: translateX(0); /* Traz o elemento de volta para a posição original */
-}
-
-.input_tabela {
-    border: 1px solid var(--cinza2);
-    background-color: transparent;
-    padding: 0.2rem 0.5rem;
-    font-size: 1rem;
-    border-color: var(--cinza2);
-    width: 100%;
-    height: 100%;
-    border-radius: 5px;
-    color: var(--secundaria);
-}
-
-.td_container_input {
-    max-width: 7rem;
 }

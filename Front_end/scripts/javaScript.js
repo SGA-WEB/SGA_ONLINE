@@ -23,22 +23,16 @@ import { aguardarRenderizacao, alterarImgPerfil } from "./funcionalidades.js";
 import { popup_carregando } from "./popup.js";
 import tipos_de_entrada from "../modulos/tipo_de_entrada/tipos_de_entrada.js";
 import entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.js";
-import buscarDados from "../scripts/buscarDados.js";
 
-function mudarLogoParaPadrao(nome) { // Muda a logo do usuário de acordo com o nome de
+function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com o nome de
     let div_logo_usuario = document.querySelectorAll(".logo_usuario");
     div_logo_usuario.forEach(e => {
         // Pega a primeira letra do primeiro nome e a primeira letra do ultimo nome no nome do usuário:
         let nome_usuario = document.querySelector("#nome_usuario").textContent.trim();
-        if (nome) nome_usuario = nome;
         let nome_completo = nome_usuario.split(" ");
         let primeira_letra_primeiro_nome = nome_completo[0][0].toUpperCase();
         let primeira_letra_ultimo_nome = nome_completo[nome_completo.length - 1][0].toUpperCase();
-        if (nome_completo.length == 1) {
-            e.textContent = primeira_letra_primeiro_nome; // Se o nome tiver apenas um nome, só coloca a primeira letra do primeiro nome
-        } else {
-            e.textContent = primeira_letra_primeiro_nome + primeira_letra_ultimo_nome;
-        }
+        e.textContent = primeira_letra_primeiro_nome + primeira_letra_ultimo_nome;
         e.style.backgroundColor = "aqua"
     });
 }
@@ -46,8 +40,6 @@ function mudarLogoParaPadrao(nome) { // Muda a logo do usuário de acordo com o 
 // Alterar foto de perfil comforme a imagem do banco de dados (supabase):
 const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
 const data = await response.json();
-const usuario = await buscarDados("usuarios")
-document.querySelector("#nome_usuario").textContent = usuario[0].nome; // Altera o nome do usuário na tela principal
 if (data.error) {
     mudarLogoParaPadrao()
 } else {
@@ -102,7 +94,6 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
             funcao(...parametro);
         }
         if (url === "../modulos/dashboard/dashboard.html" && !funcao) {
-            document.querySelector("#btn_dashboard").classList.add("modulo_selecionado")
             dashBorad();
         }
         if (url === "../modulos/contato/contato.html" && !funcao) { // !funcao: para a função não ser chamada mais de uma fez
@@ -440,7 +431,6 @@ menu_movimentacao_estoque.addEventListener("mouseleave", (e) => {
 
 let btn_entrada_produto = document.querySelector("#btn_entrada_produtos")
 btn_entrada_produto.addEventListener("click", () => {
-    btn_cadastro_auxiliares.classList.add("sub_menu_fechado") // Fecha o menu dropdown de cadastros auxiliares
     btn_entrada_produto.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
     btn_movimentacao_de_estoque.classList.add("item_menu_selecionado")
     carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
@@ -450,17 +440,20 @@ btn_entrada_produto.addEventListener("click", () => {
 
 let btn_cadastro_auxiliares = document.querySelector("#btn_cadastro_auxiliares")
 let menu_cadastro_auxiliares = document.querySelector("#menu_cadastro_auxiliares")
+console.log(btn_cadastro_auxiliares)
 
 btn_cadastro_auxiliares.addEventListener("mouseenter", () => {
     btn_cadastro_auxiliares.classList.remove("sub_menu_fechado")
 })
 
+// Se o cursor sair do botão de movimentação de estoque, o menu dropdown fecha
 btn_cadastro_auxiliares.addEventListener("mouseleave", (e) => {
     if (!e.toElement.classList.contains("subitem") && !menu_cadastro_auxiliares.querySelector(".item_menu_selecionado")) { // Se o cursor não estiver sobre um subitem
         btn_cadastro_auxiliares.classList.add("sub_menu_fechado") // Fecha o menu dropdown
     }
 })
 
+// Se o cursor sair do menu de movimentação de estoque, o menu dropdown fecha
 menu_cadastro_auxiliares.addEventListener("mouseleave", (e) => {
     if(!menu_cadastro_auxiliares.querySelector(".item_menu_selecionado")) {
         btn_cadastro_auxiliares.classList.add("sub_menu_fechado")
@@ -469,12 +462,15 @@ menu_cadastro_auxiliares.addEventListener("mouseleave", (e) => {
 
 let btn_tipos_de_entrada = document.querySelector("#btn_tipos_de_entrada")
 btn_tipos_de_entrada.addEventListener("click", () => {
-    btn_movimentacao_de_estoque.classList.add("sub_menu_fechado")
     btn_tipos_de_entrada.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
     btn_cadastro_auxiliares.classList.add("item_menu_selecionado")
     carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada)
 })
 
+// document.querySelector("#btn_voltar_tipos_de_entrada").addEventListener("click", () => {
+//     // Botão que volta para a tela de tipos de entrada
+//     carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"))
+// })
 
 
 export { carregarConteudo, btnMenuLateral, click_btn_menu, fecharMenu, mudarLogoParaPadrao }

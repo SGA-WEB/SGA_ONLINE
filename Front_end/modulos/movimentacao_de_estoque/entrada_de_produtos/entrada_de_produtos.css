@@ -3,13 +3,3 @@
         overflow-x: auto;
     }
 }
-.container_select {
-    min-width: 10rem;
-    flex-wrap: wrap;
-}
-#modulo_cadastro_entrada_produto .container_select {
-    flex-wrap: nowrap;
-}
-.container_select p {
-    text-wrap: nowrap;
-}

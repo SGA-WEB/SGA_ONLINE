@@ -1,9 +1,9 @@
-import { popup, popup_carregando, popup_aviso, popup_erro, popup_confirmar_exclusao } from "../../scripts/popup.js"
+import { popup, popup_carregando, popup_aviso, popup_erro, popup_confirmar } from "../../scripts/popup.js"
 import buscarDados from "../../scripts/buscarDados.js"
 import { carregarDadosNaTabela } from "../../scripts/carregarDadosNaTabela.js"
 
 export default async function excluir_contato(dado, callbackFunction, ...param) {
-    let confirmacao = await popup_confirmar_exclusao(`Tem certeza que deseja excluir o contato ${dado['id_contato']} - ${dado['razao_social']}?`)
+    let confirmacao = await popup_confirmar(`Tem certeza que deseja excluir o contato ${dado['id_contato']} - ${dado['razao_social']}?`)
 
     if (confirmacao) {
         popup_carregando()

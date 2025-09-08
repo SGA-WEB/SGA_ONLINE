@@ -53,26 +53,21 @@ function dataAtual() {
     }
 }
 
-function formatarData(data, formatoUSA = false) {
-    if (data) {
-        let data_cadastro = data.split("T")[0] // Retira o horário
-        const [ano, mes, dia] = data_cadastro.split('-'); // Separa o ano, mes e dia
-        data_cadastro = `${dia}-${mes}-${ano}`; // Formata a data
-        if (formatoUSA) {
-            data_cadastro = `${ano}-${mes}-${dia}`; // Formata a data para o formato USA
-        }
-        return data_cadastro
-    }
+function formatarData(data) {
+    let data_cadastro = data.split("T")[0] // Retira o horário
+    const [ano, mes, dia] = data_cadastro.split('-'); // Separa o ano, mes e dia
+    data_cadastro = `${dia}-${mes}-${ano}`; // Formata a data
+    return data_cadastro
 }
 
 // Função que muda o placeholder do input de pesquisa de acordo com a opção do select
-function mudarPesquisa(input_pesquisa, select = ".campo_select") {
-    input_pesquisa.placeholder = "Pesquisar por " + $(select)
+function mudarPesquisa(input_pesquisa) {
+    input_pesquisa.placeholder = "Pesquisar por " + $('.campo_select')
         .find(':selected')
         .text() // Adiciona o texto do select no placeholder
 
     // Adiciona evento de mudança de seleção no select2
-    $(select).on('select2:select', function (e) {
+    $('.campo_select').on('select2:select', function (e) {
         // Sempre que o select for alterado muda o placeholder
         input_pesquisa.placeholder = "Pesquisar por " + e.params.data.text
         mudarPlaceholder() // Chama a funcao de mudar o placeholder sempre que o select for alterado
