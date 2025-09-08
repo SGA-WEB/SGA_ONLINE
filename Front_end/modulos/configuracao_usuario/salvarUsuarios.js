@@ -1,5 +1,7 @@
+import { popup_aviso } from "../../scripts/popup.js";
+import { mudarLogoParaPadrao } from "../../scripts/javaScript.js";
+
 export default function salvarUsuario(dado) {
-    console.log(dado);
     'use strict';
     dado = dado[0];
 
@@ -23,7 +25,9 @@ export default function salvarUsuario(dado) {
             senha: senha
         };
 
-        console.log(novoObjeto);
+        if (document.querySelector("#logo_usuario_config").children.length === 0) {
+            mudarLogoParaPadrao(nome)
+        }
 
         // Envia os dados atualizados para o backend
         try {
@@ -36,7 +40,8 @@ export default function salvarUsuario(dado) {
             });
 
             if (response.ok) {
-                alert('Usuário atualizado com sucesso!');
+                document.querySelector("#nome_usuario").textContent = nome; // Atualiza o nome do usuário na tela principal
+                popup_aviso('Usuário atualizado com sucesso!');
             } else {
                 const errorData = await response.json();
                 alert(`Erro ao atualizar: ${errorData.error}`);

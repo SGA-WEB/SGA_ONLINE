@@ -111,7 +111,7 @@
     transition: .1s;
 }
 
-.btn img {
+.brightness0 {
     filter: brightness(0);
 }
 
