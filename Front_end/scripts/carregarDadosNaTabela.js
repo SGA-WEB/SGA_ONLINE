@@ -4,11 +4,14 @@
 import crudLayout from "./crudLayout.js" // Importa a função que cria os botões de editar, visualizar e excluir (CRUD)
 import { formatarData } from "./funcionalidades.js"
 
-function carregarDadosNaTabela (dados, colunasExibir) {
+let handlersPorTabela = new Map() // Variável que armazena o handler da tabela, para evitar múltiplos handlers na mesma tabela;
+
+function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySelector(".tbody"), ativarCrud = true, addListener = true, removerLinhasTabela = true) {
     // ColunasExibir: Array com os nomes das colunas do banco de dados que serão exibidas na tabela
-    let tabela = document.querySelector(".tbody") // Tabela onde os dados serão exibidos
     let [...tr_tabela] = document.querySelectorAll(".table_tr")
-    tr_tabela.map(e => e.remove(e)) // Remove todos os elementos da tabela
+    if (removerLinhasTabela) { // Se removerLinhasTabela for true, remove as linhas da tabela
+       tr_tabela.map(e => e.remove(e)) // Remove todos os elementos da tabela
+    }
     let td_info = document.querySelector(".td_nenhum_dado") // Pega o parágrafo de informação de que não há dados (Se existir)
 
     if (dados.length !== 0 ) { // Se houver dados
@@ -17,20 +20,38 @@ function carregarDadosNaTabela (dados, colunasExibir) {
         const firstDataKey = Object.keys(dados[0])[0]; // Pega a primeira chave do primeiro objeto do array de dados, que no caso é o id
         dados.sort((a, b) => a[firstDataKey] - b[firstDataKey]) // Ordena os dados pelo id
 
-
         dados.map(objDado => { // Para cada objeto no array de dados
             let objDadoCompleto = objDado
-            objDado = Object.entries(objDado) // Pega os campos até o limite de dados
-            objDado = objDado.filter(e => {
-                for (let coluna of colunasExibir) {
-                    if (e[0] === coluna) {
-                        return e // Se o campo estiver no array de colunas a serem exibidas, retorna true
-                    }
-                }
-            })
+
+            let sortedObjDado = {}; // Objeto com os dados ordenados comforme as colunas a serem exibidas
+            colunasExibir.forEach(coluna => {
+                sortedObjDado[coluna] = objDado[coluna];
+            });
+            objDado = sortedObjDado;
+
+            objDado = Object.entries(objDado) // Converte o objeto em um array de pares chave-valor
+
+            objDado = objDado.filter(([chave]) => colunasExibir.includes(chave)); // Filtra o array para incluir apenas as chaves que estão no array colunasExibir
+
             objDado = Object.fromEntries(objDado) // Converte o array em um objeto
+
             let tr = document.createElement('tr') // Cria uma linha
             tr.setAttribute('class','table_tr')
+            tr.setAttribute('id', 'tr_' + objDado[firstDataKey]) // Define o id da linha como tr_id
+
+
+            let checkbox = document.createElement('input') // Cria um checkbox
+            let td = document.createElement('td') // Cria uma célula
+            if (addListener) {
+                td.setAttribute("class", "selecionar_linha")
+                checkbox.setAttribute('type', 'checkbox') // Define o tipo do input como checkbox
+                checkbox.setAttribute('id', 'checkbox_' + objDado[firstDataKey]) // Define o id da célula como checkbox_id
+                checkbox.setAttribute('class', 'checkbox_selecionar_linha') // Define a classe do checkbox
+                td.appendChild(checkbox) // Adiciona o checkbox na célula
+                tr.appendChild(td) // Adiciona a célula na linha
+            }
+
+
             for (let e in objDado) { // Para cada campo no objeto
                 if (e === "data_cadastro") {
                     continue
@@ -40,6 +61,7 @@ function carregarDadosNaTabela (dados, colunasExibir) {
                 }
                 let td = document.createElement('td')
                 td.setAttribute('class','dado_tabela')
+                td.classList.add('td_' + e) // Adiciona a classe da célula como td_nomeDoCampo
                 td.setAttribute('id', e + "_" + objDado[e]) // nome do campo + valor do campo
                 if (typeof(objDado[e]) == 'boolean') {
                     // Se o campo for booleano, exibe "S" ou "N"
@@ -57,8 +79,21 @@ function carregarDadosNaTabela (dados, colunasExibir) {
             }
 
             // CRUD:
-            crudLayout(objDadoCompleto, tr) // Adiciona os botões de editar, visualizar e excluir na linha
+            if (ativarCrud) {
+                crudLayout(objDadoCompleto, tr, addListener) // Adiciona os botões de editar, visualizar e excluir na linha
+            }
 
+            if (addListener) {
+                checkbox.addEventListener("change", (e) => {
+                    // Adiciona o evento de mudança no checkbox
+                    let tr = e.target.parentElement.parentElement // Pega a linha da célula do checkbox
+                    if (e.target.checked) { // Se o checkbox estiver marcado
+                        tr.classList.add("linha_selecionada") // Adiciona a classe "selecionado" na linha
+                    } else { // Se o checkbox estiver desmarcado
+                        tr.classList.remove("linha_selecionada") // Remove a classe "selecionado" da linha
+                    }
+                })
+            }
             tabela.appendChild(tr) // Adiciona a linha na tabela
         })
     } else { // Se não houver dados
@@ -71,13 +106,55 @@ function carregarDadosNaTabela (dados, colunasExibir) {
             tabela.appendChild(td_info)
         }
     }
+
+    // Primeiro remove (caso já exista)
+    if (handlersPorTabela.has(tabela)) {
+        tabela.removeEventListener("click", handlersPorTabela.get(tabela));
+    }
+
+    const novoHandler = (e) => {
+        selecionarChekboxAoClicarNaLinha(e, tabela)
+    }
+
+    // Depois adiciona
+    if (addListener) {
+        tabela.addEventListener("click", novoHandler);
+        handlersPorTabela.set(tabela, novoHandler); // Armazena o handler da tabela para evitar múltiplos handlers na mesma tabela
+    }
+
+    let selecionar_todos = tabela.parentElement.querySelector("#selecionar_todos");
+    if (selecionar_todos) {
+        selecionar_todos.addEventListener("change", (e) => {
+            const checkboxes = tabela.querySelectorAll(".checkbox_selecionar_linha");
+            checkboxes.forEach(cb => {
+                cb.checked = e.target.checked;
+                cb.closest("tr").classList.toggle("linha_selecionada", cb.checked);
+            });
+        });
+    }
 }
 
-function pesquisar(dados, colunasExibir) {
+function selecionarChekboxAoClicarNaLinha(e, tabela) {
+    const tr = e.target.closest("tr");
+    if (!tr || (e.target.type === "checkbox")) {
+        return;
+    }
+
+    const tr_id = tr.id.replace("tr_", "");
+    const checkbox = tabela.querySelector("#checkbox_" + tr_id);
+    if (!checkbox) return;
+
+    checkbox.checked = !checkbox.checked;
+    tr.classList.toggle("linha_selecionada", checkbox.checked);
+}
+
+
+
+function pesquisar(dados, colunasExibir, tabela = document.querySelector(".tbody"), ativarCrud = true) {
     // Função que pesquisa e manda os dados filtrados para a função carregarDadosNaTabela
 
     const btn_pesquisar = document.querySelector('.btn_pesquisar') // Botão de pesquisar
-    const campo_select = document.querySelector('.campo_select') // Select que contém os campos da tabela
+    const campo_select = document.querySelector('.select_coluna') // Select que contém os campos da tabela
     const btn_limpar = document.querySelector('.btn_limpar_pesquisa') // Botão de fechar
     const input_pesquisar = document.querySelector('.input_pesquisa') // Input de pesquisa
 
@@ -87,7 +164,7 @@ function pesquisar(dados, colunasExibir) {
         input_pesquisar.value = "" // Limpa o input
         handlePesquisar() // Chama a função de pesquisa
     })
-    $('.campo_select').on('change', () => {
+    $('#select_coluna').on('change', () => {
         input_pesquisar.value = "" // Limpa o input
         handlePesquisar()
     }) // Quando o select for alterado
@@ -167,7 +244,7 @@ function pesquisar(dados, colunasExibir) {
         if (value_input_pesquisa == "") { // Se o input estiver vazio
             newData = dados // Exibe todos os dados
         }
-        carregarDadosNaTabela(newData, colunasExibir) // Manda os novos dados filtrados para a função carregarDadosNaTabela
+        carregarDadosNaTabela(newData, colunasExibir, tabela, ativarCrud) // Manda os novos dados filtrados para a função carregarDadosNaTabela
     }
 }
 

@@ -1,18 +1,17 @@
- <section class="modulo">
+ <section class="modulo" id="entrada_de_produto">
     <h1 class="titulo1">Entrada de produtos</h1>
     <div class="header">
         <div class="container_select">
-            <p>Coluna:</p>
-            <select id="select_coluna" class="campo_select">
+            <p>Selecione a coluna que deseja pesquisar:</p>
+            <select id="select_coluna" class="campo_select select_coluna">
                 <option value="id_entrada_produto">Código</option>
                 <option value="tipo_entrada">Tipo de Entrada</option>
                 <option value="numero_nf">Número NF</option>
                 <option value="data_recebimento">Data recebimento</option>
                 <option value="fornecedor_razao_social">Fornecedor</option>
                 <option value="valor_total">Valor total</option>
-                <option value="desconto">Desconto</option>
-                <option value="total">Total</option>
                 <option value="status">Status</option>
+                <option value="desconto">Desconto</option>
             </select>
         </div>
         <div class="container_campo_pesquisa_btn">
@@ -35,6 +34,9 @@
         <table class="tabela" id="tabela_produtos">
             <thead>
                 <tr>
+                    <th class="th_selecionar_todos">
+                        <input type="checkbox" name="selecionar_todos" id="selecionar_todos">
+                    </th>
                     <th id="tabela_codigo">Código</th>
                     <th id="tabela_tipo_de_entrada">Tipo de Entrada</th>
                     <th id="tabela_numero_nf">Número NF</th>
@@ -42,7 +44,6 @@
                     <th id="tabela_fornecedor">Fornecedor</th>
                     <th id="tabela_valor_total">Valor total</th>
                     <th id="tabela_desconto">Desconto</th>
-                    <th id="tabela_total">Total</th>
                     <th id="tabela_status">Status</th>
                 </tr>
             </thead>

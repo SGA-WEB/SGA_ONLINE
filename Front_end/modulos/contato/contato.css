@@ -27,14 +27,14 @@
     display: flex;
     gap: 0.5rem;
     align-items: center;
-    flex-wrap: wrap;
+    /* flex-wrap: wrap; */
 }
 
 #seta_select {
     position: relative;
     right: 1.7rem;
     overflow: auto;
-} 
+}
 
 .header .select2-selection {
     border: none !important;
@@ -58,7 +58,7 @@
     margin: 0 0 .5rem auto;
     gap: 0.5rem;
     width: 10rem;
-    min-width: 10rem;
+    min-width: fit-content;
     background-color: var(--azul-1);
     padding: .25rem .7rem;
     border-radius: 5px;

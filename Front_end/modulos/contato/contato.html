@@ -1,9 +1,9 @@
-<section class="modulo" id="section_contatos">  
+<section class="modulo" id="contato">
     <header class="header">
         <h1 class="titulo1">Contatos</h1>
         <div class="container_select">
             <p>Selecione a coluna que deseja pesquisar:</p>
-            <select id="select_coluna" class="campo_select">
+            <select id="select_coluna" class="campo_select select_coluna">
                 <option value="id_contato">Código</option>
                 <option value="razao_social">Razão Social</option>
                 <option value="nome_fantasia">Nome Fantasia</option>
@@ -31,6 +31,9 @@
         <table class="tabela" id="tabela_contatos">
             <thead>
                 <tr>
+                    <th class="th_selecionar_todos">
+                        <input type="checkbox" name="selecionar_todos" id="selecionar_todos">
+                    </th>
                     <th id="tabela_codigo">Código</th>
                     <th id="tabela_razao">Razão Social</th>
                     <th id="tabela_nome">Nome Fantasia</th>
@@ -39,7 +42,7 @@
                 </tr>
             </thead>
             <tbody class="tbody">
-                
+
             </tbody>
         </table>
     </div>

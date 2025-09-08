@@ -10,8 +10,7 @@ export default async function entrada_de_produtos() {
     mudarPesquisa(document.querySelector("#input_pesquisa_tabela"))
 
     let dados = await buscarDados("entrada_produto")
-    console.log(dados)
-    let colunasExibir = ["id_entrada_produto", "tipo_entrada", "numero_nf", "data_recebimento", "fornecedor_razao_social", "valor_total", "desconto", "total", "status" ]
+    let colunasExibir = ["id_entrada_produto", "tipo_entrada", "numero_nf", "data_recebimento", "fornecedor_razao_social", "valor_total", "desconto", "status"]
 
     carregarDadosNaTabela(dados, colunasExibir)
     pesquisar(dados, colunasExibir)

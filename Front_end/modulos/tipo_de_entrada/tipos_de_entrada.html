@@ -1,36 +1,39 @@
-<section class="modulo">
+<section class="modulo" id="tipo_de_entrada">
     <h1 class="titulo1">Tipos de Entrada</h1>
     <div class="header">
     <div class="container_select">
-        <p>Selecione a coluna desejada:</p>
-        <select id="campo_select_centro_estoque" class="campo_select">
-            <option value="">Código</option>
-            <option value="">Descrição</option>
-            <option value="">CFOP(Dentro)</option>
-            <option value="">CPOP(Fora)</option>
-            <option value="">Ativo</option>
+        <p>Selecione a coluna que deseja pesquisar:</p>
+        <select id="campo_select_tipo_entrada" class="campo_select select_coluna">
+            <option value="id_tipo_de_entrada">Código</option>
+            <option value="descricao">Descrição</option>
+            <option value="cfop_dentro">CFOP(Dentro)</option>
+            <option value="cfop_fora">CPOP(Fora)</option>
+            <option value="ativo">Ativo</option>
         </select>
     </div>
     <div class="container_campo_pesquisa_btn">
-        <div class="campo_pesquisa" id="campo_pesquisa_centro_estoque">
+        <div class="campo_pesquisa" id="campo_pesquisa_tipo_entrada">
             <input id="input_pesquisa_tabela" type="text" placeholder="Pesquisar por Código" class="input_pesquisa">
-            <button class="btn_limpar_pesquisa hide center" id="btn_limpar_pesquisa_centro_estoque">
+            <button class="btn_limpar_pesquisa hide center" id="btn_limpar_pesquisa_tipo_entrada">
                 <img id="icone_fechar" src="../imagens/icone_fechar.svg" alt="icone_fechar">
             </button>
-            <button class="btn_pesquisar center" id="btn_pesquisar_centro_estoque">
+            <button class="btn_pesquisar center" id="btn_pesquisar_tipo_entrada">
                 <img id="icone_pesquisa" src="../imagens/icone_pesquisa.png" alt="icone_pesquisa">
             </button>
         </div>
-    </div>   
+    </div>
     </div>
     <button class="btn_add" id="btn_adicionar_tipos_de_entrada">
         <img src="..//..//imagens/btn_add.svg" alt="Icone Adicionar">
-        <span>Adicionar Centro de Estoque</span>
+        <span>Adicionar Tipo de Entrada</span>
     </button>
     <div class="container_tabela">
     <table class="tabela" id="tabela_tipo_entrada">
         <thead>
             <tr>
+                <th>
+                    <input type="checkbox" name="selecionar_todos" id="selecionar_todos">
+                </th>
                 <th id="">Código</th>
                 <th id="">Descrição</th>
                 <th id="">CFOP(Dentro)</th>
@@ -39,7 +42,7 @@
             </tr>
         </thead>
         <tbody class="tbody">
-           
+
         </tbody>
     </table>
     </div>

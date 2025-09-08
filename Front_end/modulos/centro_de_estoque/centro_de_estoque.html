@@ -1,9 +1,9 @@
-<section class="modulo">
+<section class="modulo" id="centro_de_estoque">
     <h1 class="titulo1">Centro de estoque</h1>
      <div class="header">
         <div class="container_select">
-            <p>Selecione a coluna desejada:</p>
-            <select id="campo_select_centro_estoque" class="campo_select">
+            <p>Selecione a coluna que deseja pesquisar:</p>
+            <select id="campo_select_centro_estoque" class="campo_select select_coluna">
                 <option value="id_centro_estoque">Código</option>
                 <option value="nome_centro_estoque">Nome</option>
                 <option value="localizacao_centro_estoque">Localização</option>
@@ -30,6 +30,9 @@
     <table class="tabela" id="tabela_centro_estoque">
         <thead>
             <tr>
+                <th class="th_selecionar_todos">
+                    <input type="checkbox" name="selecionar_todos" id="selecionar_todos">
+                </th>
                 <th id="tabela_codigo">Código</th>
                 <th id="tabela_descricao">Nome</th>
                 <th id="tabela_localizacao">Localização</th>
