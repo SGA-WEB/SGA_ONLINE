@@ -1,5 +1,9 @@
 /* Configurações gerais */
 
+.invert80 {
+    filter: invert(0.8) !important;
+}
+
 .rodar {
     transform: rotate(180deg);
     transition: .2s;
@@ -107,7 +111,7 @@
     transition: .1s;
 }
 
-.btn img {
+.brightness0 {
     filter: brightness(0);
 }
 

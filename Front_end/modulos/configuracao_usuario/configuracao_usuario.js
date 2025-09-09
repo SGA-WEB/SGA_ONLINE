@@ -1,10 +1,17 @@
+import buscarDados from "../../scripts/buscarDados.js";
 import { visibilidadeSenha, alterarImgPerfil } from "../../scripts/funcionalidades.js";
 import { carregarConteudo, mudarLogoParaPadrao } from "../../scripts/javaScript.js";
-import { popup, popup_aviso, popup_carregando, popup_confirmar_exclusao, popup_erro } from "../../scripts/popup.js";
+import { popup, popup_aviso, popup_carregando, popup_confirmar, popup_erro } from "../../scripts/popup.js";
+import salvarUsuario from "./salvarUsuarios.js";
 
 export default async function configuracao_usuario( data ) {
+    popup_carregando(false, "Carregando configurações do usuário...");
+    const usuario = await buscarDados("usuarios")
     const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
     const dado = await response.json();
+
+    salvarUsuario(usuario);
+
     if (dado.error) {
         mudarLogoParaPadrao()
     } else {
@@ -210,4 +217,5 @@ export default async function configuracao_usuario( data ) {
             }
         }
     })
+    popup_carregando(true)
 }

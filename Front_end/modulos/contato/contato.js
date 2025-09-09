@@ -1,7 +1,7 @@
 // Função que minimiza o menu lateral:
 import { btnMenuLateral, carregarConteudo, fecharMenu } from "../../scripts/javaScript.js"
 import buscarDados from "../../scripts/buscarDados.js"
-import { mudarPesquisa } from "../../scripts/funcionalidades.js"
+import { dataAtual, mudarPesquisa } from "../../scripts/funcionalidades.js"
 import select2 from "../../scripts/select.js"
 import cadastro_contato from "./cadastro_contato/cadastro_contato.js"
 import { carregarDadosNaTabela, pesquisar } from "../../scripts/carregarDadosNaTabela.js"
@@ -20,6 +20,7 @@ export default async function contato() {
     select2("140px")
     // Botão pesquisar:
     mudarPesquisa(input_pesquisa)
+    dataAtual()
 
     // Botão criar contato:
     let btn_criar_contato = document.querySelector("#btn_criar_contato")

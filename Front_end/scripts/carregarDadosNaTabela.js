@@ -39,16 +39,18 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
             tr.setAttribute('class','table_tr')
             tr.setAttribute('id', 'tr_' + objDado[firstDataKey]) // Define o id da linha como tr_id
 
-            let td = document.createElement('td') // Cria uma célula
-            td.setAttribute("class", "selecionar_linha")
 
             let checkbox = document.createElement('input') // Cria um checkbox
-            checkbox.setAttribute('type', 'checkbox') // Define o tipo do input como checkbox
-            checkbox.setAttribute('id', 'checkbox_' + objDado[firstDataKey]) // Define o id da célula como checkbox_id
-            checkbox.setAttribute('class', 'checkbox_selecionar_linha') // Define a classe do checkbox
+            let td = document.createElement('td') // Cria uma célula
+            if (addListener) {
+                td.setAttribute("class", "selecionar_linha")
+                checkbox.setAttribute('type', 'checkbox') // Define o tipo do input como checkbox
+                checkbox.setAttribute('id', 'checkbox_' + objDado[firstDataKey]) // Define o id da célula como checkbox_id
+                checkbox.setAttribute('class', 'checkbox_selecionar_linha') // Define a classe do checkbox
+                td.appendChild(checkbox) // Adiciona o checkbox na célula
+                tr.appendChild(td) // Adiciona a célula na linha
+            }
 
-            td.appendChild(checkbox) // Adiciona o checkbox na célula
-            tr.appendChild(td) // Adiciona a célula na linha
 
             for (let e in objDado) { // Para cada campo no objeto
                 if (e === "data_cadastro") {
@@ -81,16 +83,17 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
                 crudLayout(objDadoCompleto, tr, addListener) // Adiciona os botões de editar, visualizar e excluir na linha
             }
 
-            checkbox.addEventListener("change", (e) => {
-                // Adiciona o evento de mudança no checkbox
-                let tr = e.target.parentElement.parentElement // Pega a linha da célula do checkbox
-                if (e.target.checked) { // Se o checkbox estiver marcado
-                    tr.classList.add("linha_selecionada") // Adiciona a classe "selecionado" na linha
-                } else { // Se o checkbox estiver desmarcado
-                    tr.classList.remove("linha_selecionada") // Remove a classe "selecionado" da linha
-                }
-            })
-
+            if (addListener) {
+                checkbox.addEventListener("change", (e) => {
+                    // Adiciona o evento de mudança no checkbox
+                    let tr = e.target.parentElement.parentElement // Pega a linha da célula do checkbox
+                    if (e.target.checked) { // Se o checkbox estiver marcado
+                        tr.classList.add("linha_selecionada") // Adiciona a classe "selecionado" na linha
+                    } else { // Se o checkbox estiver desmarcado
+                        tr.classList.remove("linha_selecionada") // Remove a classe "selecionado" da linha
+                    }
+                })
+            }
             tabela.appendChild(tr) // Adiciona a linha na tabela
         })
     } else { // Se não houver dados
@@ -114,15 +117,16 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
     }
 
     // Depois adiciona
-    tabela.addEventListener("click", novoHandler);
-    handlersPorTabela.set(tabela, novoHandler); // Armazena o handler da tabela para evitar múltiplos handlers na mesma tabela
+    if (addListener) {
+        tabela.addEventListener("click", novoHandler);
+        handlersPorTabela.set(tabela, novoHandler); // Armazena o handler da tabela para evitar múltiplos handlers na mesma tabela
+    }
 
     let selecionar_todos = tabela.parentElement.querySelector("#selecionar_todos");
     if (selecionar_todos) {
         selecionar_todos.addEventListener("change", (e) => {
             const checkboxes = tabela.querySelectorAll(".checkbox_selecionar_linha");
             checkboxes.forEach(cb => {
-                console.log(cb);
                 cb.checked = e.target.checked;
                 cb.closest("tr").classList.toggle("linha_selecionada", cb.checked);
             });
@@ -132,7 +136,9 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
 
 function selecionarChekboxAoClicarNaLinha(e, tabela) {
     const tr = e.target.closest("tr");
-    if (!tr) return;
+    if (!tr || (e.target.type === "checkbox")) {
+        return;
+    }
 
     const tr_id = tr.id.replace("tr_", "");
     const checkbox = tabela.querySelector("#checkbox_" + tr_id);
@@ -144,11 +150,11 @@ function selecionarChekboxAoClicarNaLinha(e, tabela) {
 
 
 
-function pesquisar(dados, colunasExibir, tabela = document.querySelector("#tabela"), ativarCrud = true) {
+function pesquisar(dados, colunasExibir, tabela = document.querySelector(".tbody"), ativarCrud = true) {
     // Função que pesquisa e manda os dados filtrados para a função carregarDadosNaTabela
 
     const btn_pesquisar = document.querySelector('.btn_pesquisar') // Botão de pesquisar
-    const campo_select = document.querySelector('#select_coluna') // Select que contém os campos da tabela
+    const campo_select = document.querySelector('.select_coluna') // Select que contém os campos da tabela
     const btn_limpar = document.querySelector('.btn_limpar_pesquisa') // Botão de fechar
     const input_pesquisar = document.querySelector('.input_pesquisa') // Input de pesquisa
 
