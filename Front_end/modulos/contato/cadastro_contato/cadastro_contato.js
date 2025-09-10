@@ -12,7 +12,6 @@ export default async function cadastro_contato() {
     popup_carregando()
 
     async function chamarFuncoes() {
-        await criarDados()
         dataAtual()
         btnsProximoEVoltar()
         addListenerBtns()
@@ -63,9 +62,10 @@ export default async function cadastro_contato() {
     }
 
     function mudarDeAba(link) {
-        inserirDadosNaTela("Cadastro de contato")
+        criarDados()
         switch (link) {
             case "link_contato":
+                inserirDadosNaTela("Cadastro de contato")
                 arrCategorias = [] // Zera o array para que não haja duplicidade de categorias
                 carregarConteudo("contato/cadastro_contato/criar_contato/criar_contato.html", document.querySelector(".modulo"), false, chamarFuncoes); // É passada a função chamarFuncoes para que os botões sejam ativados e os dados sejam inseridos novamente
                 break;
@@ -77,12 +77,6 @@ export default async function cadastro_contato() {
 
     async function criarDados() {
         console.log(dados)
-        let contatos = await buscarDados('contato');
-        let contatosComMaiorId = contatos.reduce((prev, curr) => {
-            return prev.id_contato > curr.id_contato ? prev : curr;
-        })
-        dados.id_contato = contatosComMaiorId.id_contato + 1;
-
         let form = document.querySelector("form")
         let dadosFomr = Object.fromEntries(new FormData(form))
         let elementCategorias = document.getElementsByName("categorias")
@@ -109,7 +103,7 @@ export default async function cadastro_contato() {
         })
     }
 
-    function inserirDadosNaTela(tituloTela) {
+    async function inserirDadosNaTela(tituloTela) {
         if (document.querySelector(".h2_titulo").textContent == tituloTela) { // Verifica se a tela é de visualização
             if (dados.tipo_pessoa === "JURÍDICA") {
                 document.querySelector("#contato_juridico").checked = true
@@ -123,7 +117,7 @@ export default async function cadastro_contato() {
                 document.querySelector("#inativo").checked = true
             }
 
-            let categorias = dados.categorias
+            let categorias = dados.categorias || 0
             for (let i = 0; i < categorias.length; i++) {
                 if (categorias[i] === "CLIENTE") {
                     document.querySelector("#cliente").checked = true
@@ -136,6 +130,13 @@ export default async function cadastro_contato() {
                 }
             }
             let data = new Date()
+
+            let contatos = await buscarDados('contato');
+            let contatosComMaiorId = contatos.reduce((prev, curr) => {
+                return prev.id_contato > curr.id_contato ? prev : curr;
+            })
+            dados.id_contato = contatosComMaiorId.id_contato + 1;
+
             document.querySelector(".codigo_id").textContent = dados.id_contato
             document.querySelector(".data_cadastro").textContent = formatarData(data.toISOString())
             document.querySelector("#nome_razao_social").value = dados.nome_razao_social
@@ -151,6 +152,7 @@ export default async function cadastro_contato() {
             document.querySelector("#perfil_tributario").value = dados.perfil_tributario
             document.querySelector("#tipo_consumidor").value = dados.tipo_consumidor
             document.querySelector("#observacao").value = dados.observacao
+            console.log(document.querySelector("#perfil_tributario"))
         }
         else if (document.querySelector(".h2_titulo").textContent.includes("Endereço")) {
             document.querySelector("#caixa_postal").value = dados.caixa_postal || ""
