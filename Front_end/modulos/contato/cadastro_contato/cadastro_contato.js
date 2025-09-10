@@ -1,9 +1,8 @@
 import { carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
 import { dataAtual, formatarData } from "../../../scripts/funcionalidades.js";
 import select2 from "../../../scripts/select.js";
-import { inserirDadoDoLocalStorageNaTela, salvarNovosDadosDaTelaNoLocalStorage } from "../localStorage.js";
 import buscarDados from "../../../scripts/buscarDados.js";
-import { popup_carregando } from "../../../scripts/popup.js";
+import { popup_carregando, popup_aviso, popup_erro } from "../../../scripts/popup.js";
 
 export default async function cadastro_contato() {
     let dados = {}
@@ -43,6 +42,8 @@ export default async function cadastro_contato() {
             e.preventDefault()
             carregarConteudo('contato/contato.html', document.querySelector('.principal'), false)
         })
+        setTimeout(() => {
+        },500);
         document.querySelector("form").addEventListener("submit", salvarDadosNoBanco)
     }
 
@@ -76,7 +77,6 @@ export default async function cadastro_contato() {
     }
 
     async function criarDados() {
-        console.log(dados)
         let form = document.querySelector("form")
         let dadosFomr = Object.fromEntries(new FormData(form))
         let elementCategorias = document.getElementsByName("categorias")
@@ -104,6 +104,7 @@ export default async function cadastro_contato() {
     }
 
     async function inserirDadosNaTela(tituloTela) {
+        popup_carregando()
         if (document.querySelector(".h2_titulo").textContent == tituloTela) { // Verifica se a tela é de visualização
             if (dados.tipo_pessoa === "JURÍDICA") {
                 document.querySelector("#contato_juridico").checked = true
@@ -139,20 +140,19 @@ export default async function cadastro_contato() {
 
             document.querySelector(".codigo_id").textContent = dados.id_contato
             document.querySelector(".data_cadastro").textContent = formatarData(data.toISOString())
-            document.querySelector("#nome_razao_social").value = dados.nome_razao_social
-            document.querySelector("#nome_fantasia").value = dados.nome_fantasia
-            document.querySelector("#fone1").value = dados.fone1
-            document.querySelector("#fone2").value = dados.fone2
-            document.getElementsByName("tipo_pessoa").value = dados.tipo_pessoa
-            document.querySelector("#insc_municipal").value = dados.insc_municipal
-            document.querySelector("#insc_estadual").value = dados.insc_estadual
-            document.querySelector("#cnpj").value = dados.cnpj
-            document.querySelector("#cpf").value = dados.cpf
-            document.querySelector("#email_padrao").value = dados.email_padrao
-            document.querySelector("#perfil_tributario").value = dados.perfil_tributario
-            document.querySelector("#tipo_consumidor").value = dados.tipo_consumidor
-            document.querySelector("#observacao").value = dados.observacao
-            console.log(document.querySelector("#perfil_tributario"))
+            document.querySelector("#nome_razao_social").value = dados.nome_razao_social || ""
+            document.querySelector("#nome_fantasia").value = dados.nome_fantasia || ""
+            document.querySelector("#fone1").value = dados.fone1 || ""
+            document.querySelector("#fone2").value = dados.fone2 || ""
+            document.getElementsByName("tipo_pessoa").value = dados.tipo_pessoa || ""
+            document.querySelector("#insc_municipal").value = dados.insc_municipal || ""
+            document.querySelector("#insc_estadual").value = dados.insc_estadual || ""
+            document.querySelector("#cnpj").value = dados.cnpj || ""
+            document.querySelector("#cpf").value = dados.cpf || ""
+            document.querySelector("#email_padrao").value = dados.email_padrao || ""
+            $('#perfil_tributario').val(dados.perfil_tributario).trigger('change');
+            $('#tipo_consumidor').val(dados.tipo_consumidor).trigger('change');
+            document.querySelector("#observacao").value = dados.observacao || ""
         }
         else if (document.querySelector(".h2_titulo").textContent.includes("Endereço")) {
             document.querySelector("#caixa_postal").value = dados.caixa_postal || ""
@@ -163,44 +163,18 @@ export default async function cadastro_contato() {
             document.querySelector("#referencia").value = dados.referencia || ""
             document.querySelector("#setor").value = dados.setor || ""
         }
+        popup_carregando(true)
     }
 
     async function salvarDadosNoBanco(e) {
         e.preventDefault() // Evita o envio padrão do formulário
         // Validação básica
-        console.log(dados)
-        if (!dados.razao_social || !dados.fone1 || dados.categorias[0] == "") {
+        criarDados()
+        console.log(dados);
+        if (!dados.nome_razao_social || !dados.fone1 || dados.categorias[0] == "") {
             // Se algum campo obrigatório estiver vazio, adiciona a classe de erro e foca no campo
             if (document.querySelector(".h2_titulo").textContent != "Editar contato") {
                 estilo_nav(document.querySelector("#link_contato"))
-            }
-            let nome_razao_social = document.querySelector("#nome_razao_social")
-            let fone1 = document.querySelector("#fone1")
-            setTimeout(() => {
-                console.log(document.querySelector("form"))
-            }, 200);
-            if (dados.categorias[0] == "") {
-                let container_checkbox = document.querySelector(".container_checkbox")
-                container_checkbox.classList.add("border_red")
-                container_checkbox.addEventListener("click", () => {
-                    container_checkbox.classList.remove("border_red")
-                })
-            }
-
-            if (!dados.fone1) {
-                fone1.focus()
-                fone1.classList.add("border_red")
-                fone1.addEventListener("input", () => {
-                    fone1.classList.remove("border_red")
-                })
-            }
-
-            if (!dados.razao_social) {
-                nome_razao_social.focus()
-                nome_razao_social.classList.add("border_red")
-                nome_razao_social.addEventListener("input", () => {
-                    nome_razao_social.classList.remove("border_red")
-                })
             }
 
             popup_erro("Campos obrigatórios faltando.");
@@ -210,8 +184,8 @@ export default async function cadastro_contato() {
         // Inserir os dados no banco de dados:
         try {
             popup_carregando()
-            const response = await fetch(`http://localhost:3000/api/contato/${id_contato}`, {
-                method: 'PUT',
+            const response = await fetch(`http://localhost:3000/api/contatos`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },

@@ -1168,7 +1168,6 @@ app.post('/produtos', async (req, res) => {
 // Rota para criar um novo contato, incluindo seu endereço e categorias, usando uma transação.
 app.post('/api/contatos', async (req, res) => {
     const client = await pool.connect();
-
     try {
         const {
             razao_social,
