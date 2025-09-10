@@ -7,7 +7,7 @@ import { formatarData, alterarOptionsSelect } from "../../../scripts/funcionalid
 import buscarDados from "../../../scripts/buscarDados.js"
 
 export default async function visualizar_produto (dado) {
-    select2("10rem")
+    select2("100%")
 
     let centros_de_estoque = await buscarDados("centro_estoque")
     alterarOptionsSelect(

@@ -6,11 +6,11 @@
         </button>
         <div class="container_btns space_between">
             <button class="btn_editar btn btn2">
-                <img src="..//..//../imagens/icone_editar.svg" alt="icone_editar" >
+                <img src="..//..//../imagens/icone_editar.svg" alt="icone_editar">
                 <p>Editar</p>
             </button>
             <button class="btn_excluir btn btn5">
-                <img src="..//..//../imagens/icone_excluir.svg" alt="icone_editar" >
+                <img src="..//..//../imagens/icone_excluir.svg" alt="icone_editar">
                 <p>Excluir</p>
             </button>
         </div>
@@ -23,14 +23,14 @@
                 <p class="p_data_cadastro">Data de cadastro:</p>
                 <p class="data_cadastro"></p>
             </div>
-        </div>  
+        </div>
     </div>
     <div class="modulo_main">
         <div class="campo_contato normal_width">
             <label for="nome_produto">Nome do Produto:</label>
             <input disabled type="text" name="nome_produto" id="nome_produto" class="campo_input">
         </div>
-        <div class="container_small_width" id="container_radios"> 
+        <div class="container_small_width" id="container_radios">
             <div class="campo_contato small_width">
                 <label for="valor_varejo">Valor Varejo:</label>
                 <input disabled type="number" name="valor_varejo" id="valor_varejo" class="campo_input">
@@ -43,7 +43,8 @@
         <div class="container_small_width">
             <div class="campo_contato small_width">
                 <label for="quantidade_em_estoque">Quantidade em Estoque:</label>
-                <input disabled type="number" name="quantidade_em_estoque" id="quantidade_em_estoque" class="campo_input">
+                <input disabled type="number" name="quantidade_em_estoque" id="quantidade_em_estoque"
+                    class="campo_input">
             </div>
             <div class="campo_contato small_width select_conainer">
                 <p>Centro de Estoque:</p>
@@ -51,10 +52,20 @@
                 </select>
             </div>
         </div>
+        <div class="container_small_width">
+            <div class="campo_contato small_width">
+                <label for="corredor">Corredor:</label>
+                <input type="text" name="corredor" id="corredor" class="campo_input">
+            </div>
+            <div class="campo_contato smal_width">
+                <label for="prateleira">Prateleira:</label>
+                <input type="text" name="prateleira" id="prateleira" class="campo_input">
+            </div>
+        </div>
         <div class="campo_contato normal_width">
             <label for="descricao">Descrição:</label>
             <textarea disabled name="descricao" id="descricao" class="textarea" rows="4"></textarea>
-        </div>   
+        </div>
     </div>
 </section>
 <!-- POP-UP ALERTA -->
@@ -64,12 +75,14 @@
             <img src="..//..//imagens/icone_alerta.svg" alt="icone_alerta">
             <h1>Confirme a exclusão</h1>
             <button class="btn_fechar_popup" id="btn_fechar_popup_excluir_produto">
-                <img src="../imagens/icone_fechar.svg" alt="botão fechar popup" id="btn_fechar_popup_excluir_produto" class="icone_fechar">
+                <img src="../imagens/icone_fechar.svg" alt="botão fechar popup" id="btn_fechar_popup_excluir_produto"
+                    class="icone_fechar">
             </button>
         </header>
         <main>
             <p>
-                Você tem certeza que deseja excluir o produto: <span class="codigo_popup_excluir"></span> - <span class="item_popup_excluir"></span>
+                Você tem certeza que deseja excluir o produto: <span class="codigo_popup_excluir"></span> - <span
+                    class="item_popup_excluir"></span>
             </p>
             <div class="btns_container">
                 <button class="btn" id="btn_popup_excluir_cancelar">Cancelar</button>

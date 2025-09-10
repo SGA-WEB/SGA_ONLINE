@@ -10,7 +10,7 @@ export default async function editar_produto (dado, telaAnteriorVisualizar) {
     let caminho = "produto/produto.html"
     let funcao = produto
 
-    select2("10rem")
+    select2("100%")
     dataAtual()
 
     let centros_de_estoque = await buscarDados("centro_estoque")
