@@ -42,8 +42,6 @@ export default async function cadastro_contato() {
             e.preventDefault()
             carregarConteudo('contato/contato.html', document.querySelector('.principal'), false)
         })
-        setTimeout(() => {
-        },500);
         document.querySelector("form").addEventListener("submit", salvarDadosNoBanco)
     }
 
