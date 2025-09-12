@@ -25,13 +25,11 @@ export default async function contato() {
     // Botão criar contato:
     let btn_criar_contato = document.querySelector("#btn_criar_contato")
     btn_criar_contato.addEventListener("click", async ()=>{
-        await carregarConteudo("contato/cadastro_contato/nav_contato.html", document.querySelector(".principal")) // carrega o menu de navegação superior do cadastro de contato
-
         carregarConteudo(
-            "contato/cadastro_contato/criar_contato/criar_contato.html",
+            "contato/cadastro_contato/cadastro_contato.html",
             document.querySelector(".modulo"),
             false,
-            cadastro_contato,
+            // cadastro_contato,
         )
     })
     const dadosContato = await buscarDados("contato"); // Busca os dados da tabela
