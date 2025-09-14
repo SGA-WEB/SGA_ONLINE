@@ -7,7 +7,7 @@ import produto from "../produto.js";
 
 export default async function cadastro_produto() {
     dataAtual() // Pega a data atual e adiciona ao input
-    select2("100%") // Inicializa o select2 como 100% da largura
+    select2("100%") // Inicializa o select2
 
     // Busca os centros de estoque e adiciona ao select
     let centros_de_estoque = await buscarDados("centro_estoque")
