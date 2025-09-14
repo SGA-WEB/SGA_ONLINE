@@ -5,7 +5,7 @@
     </button>
     <button class="btn_nav" id="btn_link_endereco">
         <p class="btn_proximo">Proximo</a>
-            <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_direita">
+        <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_direita">
     </button>
 </div>
 <div class="modulo_header header_cadastro">
@@ -22,121 +22,125 @@
         </button>
     </div>
 </div>
-<form>
-    <div class="modulo_main">
-        <div class="container_small_width" id="container_radios">
-            <div class="campo_contato radio_contato">
-                <p>Tipo Pessoa:</p>
-                <div class="container_radios small_width">
-                    <div class="container_radio">
-                        <input type="radio" name="tipo_pessoa" id="contato_juridico" value="JURÍDICA">
-                        <label for="contato_juridico">Jurídica</label>
-                    </div>
-                    <div class="container_radio">
-                        <input type="radio" name="tipo_pessoa" id="contato_fisico" value="FÍSICA">
-                        <label for="contato_fisico">Física</label>
-                    </div>
+<div class="modulo_main">
+    <div class="container_small_width" id="container_radios"> 
+        <div class="campo_contato radio_contato">
+            <p>Tipo Pessoa:</p>
+            <div class="container_radios small_width">
+                <div class="container_radio">
+                    <input type="radio" name="tipo_pessoa" id="contato_juridico" value="JURÍDICA">
+                    <label for="contato_juridico">Jurídica</label>
                 </div>
-            </div>
-            <div class="campo_contato radio_contato">
-                <p>Situação:</p>
-                <div class="container_radios small_width">
-                    <div class="container_radio">
-                        <input type="radio" name="situacao" id="ativo" value="ATIVO">
-                        <label for="ativo">Ativo</label>
-                    </div>
-                    <div class="container_radio">
-                        <input type="radio" name="situacao" id="inativo" value="INATIVO">
-                        <label for="inativo">Inativo</label>
-                    </div>
+                <div class="container_radio">
+                    <input type="radio" name="tipo_pessoa" id="contato_fisico" value="FÍSICA">
+                    <label for="contato_fisico">Física</label>
                 </div>
             </div>
         </div>
-        <div class="campo_contato normal_width">
-            <label for="nome_razao_social">Nome (Razão Social):<span class="campo_obrigatorio">*</span></label>
-            <input type="text" name="nome_razao_social" id="nome_razao_social" class="campo_input">
-        </div>
-        <div class="campo_contato normal_width">
-            <label for="nome_fantasia">Nome Fantasia:</label>
-            <input type="text" name="nome_fantasia" id="nome_fantasia" class="campo_input">
-        </div>
-        <div class="campo_contato normal_width">
-            <p>Classificação do contato:<span class="campo_obrigatorio">*</span></p>
-            <div class="container_checkbox">
-                <div class="campo_checkbox">
-                    <input type="checkbox" name="categoria" class="categoria_contato" id="cliente" value="CLIENTE">
-                    <label for="cliente">Cliente</label>
+        <div class="campo_contato radio_contato">
+            <p>Situação:</p>
+            <div class="container_radios small_width">
+                <div class="container_radio">
+                    <input type="radio" name="situacao" id="ativo" value="ATIVO">
+                    <label for="ativo">Ativo</label>
                 </div>
-                <div class="campo_checkbox">
-                    <input type="checkbox" name="categoria" class="categoria_contato" id="fornecedor"
-                        value="FORNECEDOR">
-                    <label for="fornecedor">Fornecedor</label>
-                </div>
-                <div class="campo_checkbox">
-                    <input type="checkbox" name="categoria" class="categoria_contato" id="funcionario"
-                        value="FUNCIONÁRIO">
-                    <label for="funcionario">Funcionário</label>
+                <div class="container_radio">
+                    <input type="radio" name="situacao" id="inativo" value="INATIVO">
+                    <label for="inativo">Inativo</label>
                 </div>
             </div>
-        </div>
-        <div class="container_small_width">
-            <div class="campo_contato small_width">
-                <label for="fone1">Fone 1:<span class="campo_obrigatorio">*</span></label>
-                <input type="tel" name="fone1" id="fone1" class="campo_input">
-            </div>
-            <div class="campo_contato small_width">
-                <label for="fone2">Fone 2:</label>
-                <input type="tel" name="fone2" id="fone2" class="campo_input">
-            </div>
-        </div>
-        <div class="campo_contato normal_width">
-            <label for="insc_municipal">Insc. Municipal:</label>
-            <input type="text" name="insc_municipal" id="insc_municipal" class="campo_input">
-        </div>
-        <div class="campo_contato normal_width">
-            <label for="insc_estadual">Insc. Estadual:</label>
-            <input type="text" name="insc_estadual" id="insc_estadual" class="campo_input">
-        </div>
-
-        <div class="campo_contato container_small_width">
-            <div class="small_width">
-                <label for="cnpj">CNPJ:</label>
-                <input type="text" name="cnpj" id="cnpj" class="campo_input" maxlength="18">
-            </div>
-            <div class="small_width">
-                <label for="cpf">CPF:</label>
-                <input type="text" name="cpf" id="cpf" class="campo_input" maxlength="14">
-            </div>
-        </div>
-        <div class="campo_contato normal_width">
-            <label for="email_padrao">E-mail Padrão:</label>
-            <input type="email" name="email_padrao" id="email_padrao" class="campo_input">
-        </div>
-
-        <div class="container_small_width">
-            <div class="campo_contato small_width select_conainer">
-                <p>Perfil Tributário:</p>
-                <select id="perfil_tributario" class="campo_select">
-                    <option value="CONSUMIDOR FINAL">CONSUMIDOR FINAL</option>
-                    <option value="LUCRO PRESUMIDO">LUCRO PRESUMIDO</option>
-                    <option value="SIMPLES NACIONAL">SIMPLES NACIONAL</option>
-                    <option value="LUCRO REAL">LUCRO REAL</option>
-                </select>
-            </div>
-            <div class="campo_contato small_width select_conainer">
-                <p>Tipo consumidor:</p>
-                <select id="tipo_consumidor" class="campo_select">
-                    <option value="CONSUMIDOR FINAL">CONSUMIDOR FINAL</option>
-                    <option value="CONTRIBUINTE">CONTRIBUINTE</option>
-                </select>
-            </div>
-        </div>
-        <div class="campo_contato normal_width">
-            <label for="observacao">Observação:</label>
-            <textarea name="observacao" id="observacao" class="textarea" rows="4"></textarea>
         </div>
     </div>
-</form>
+
+    <div class="campo_contato normal_width">
+        <label for="nome_razao_social">Nome (Razão Social):<span class="campo_obrigatorio">*</span></label>
+        <input type="text" name="nome_razao_social" id="nome_razao_social" class="campo_input">
+    </div>
+
+    <div class="campo_contato normal_width">
+        <label for="nome_fantasia">Nome Fantasia:</label>
+        <input type="text" name="nome_fantasia" id="nome_fantasia" class="campo_input">
+    </div>
+
+    <div class="campo_contato normal_width">
+        <p>Classificação do contato:<span class="campo_obrigatorio">*</span></p>
+        <div class="container_checkbox">
+            <div class="campo_checkbox">
+                <input type="checkbox" name="categoria" class="categoria_contato" id="cliente" value="CLIENTE">
+                <label for="cliente">Cliente</label>
+            </div>
+            <div class="campo_checkbox">
+                <input type="checkbox" name="categoria" class="categoria_contato" id="fornecedor" value="FORNECEDOR">
+                <label for="fornecedor">Fornecedor</label>
+            </div>
+            <div class="campo_checkbox">
+                <input type="checkbox" name="categoria" class="categoria_contato" id="funcionario" value="FUNCIONÁRIO">
+                <label for="funcionario">Funcionário</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="container_small_width">
+        <div class="campo_contato small_width">
+            <label for="fone1">Fone 1:<span class="campo_obrigatorio">*</span></label>
+            <input type="tel" name="fone1" id="fone1" class="campo_input">
+        </div>
+        <div class="campo_contato small_width">
+            <label for="fone2">Fone 2:</label>
+            <input type="tel" name="fone2" id="fone2" class="campo_input">
+        </div>
+    </div>
+
+    <div class="campo_contato normal_width">
+        <label for="insc_municipal">Insc. Municipal:</label>
+        <input type="text" name="insc_municipal" id="insc_municipal" class="campo_input">
+    </div>
+
+    <div class="campo_contato normal_width">
+        <label for="insc_estadual">Insc. Estadual:</label>
+        <input type="text" name="insc_estadual" id="insc_estadual" class="campo_input">
+    </div>
+    
+    <div class="campo_contato container_small_width">
+        <div class="small_width">
+            <label for="cnpj">CNPJ:</label>
+            <input type="text" name="cnpj" id="cnpj" class="campo_input" maxlength="18">
+        </div>
+        <div class="small_width">
+            <label for="cpf">CPF:</label>
+            <input type="text" name="cpf" id="cpf" class="campo_input" maxlength="14">
+        </div>
+    </div>
+
+    <div class="campo_contato normal_width">
+        <label for="email_padrao">E-mail Padrão:</label>
+        <input type="email" name="email_padrao" id="email_padrao" class="campo_input">
+    </div>
+    
+    <div class="container_small_width">
+        <div class="campo_contato small_width select_conainer">
+            <p>Perfil Tributário:</p>
+            <select id="perfil_tributario" class="campo_select">
+                <option value="CONSUMIDOR FINAL">CONSUMIDOR FINAL</option>
+                <option value="LUCRO PRESUMIDO">LUCRO PRESUMIDO</option>
+                <option value="SIMPLES NACIONAL">SIMPLES NACIONAL</option>
+                <option value="LUCRO REAL">LUCRO REAL</option>
+            </select>
+        </div>
+        <div class="campo_contato small_width select_conainer">
+            <p>Tipo consumidor:</p>
+            <select id="tipo_consumidor" class="campo_select">
+                <option value="CONSUMIDOR FINAL">CONSUMIDOR FINAL</option>
+                <option value="CONTRIBUINTE">CONTRIBUINTE</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="campo_contato normal_width">
+        <label for="observacao">Observação:</label>
+        <textarea name="observacao" id="observacao" class="textarea" rows="4"></textarea>
+    </div>
+</div>
 <div class="start">
     <button class="btn btn2 btn_cancelar">
         <img src="..//..//../imagens/icone_fechar.svg" alt="Icone Salvar">

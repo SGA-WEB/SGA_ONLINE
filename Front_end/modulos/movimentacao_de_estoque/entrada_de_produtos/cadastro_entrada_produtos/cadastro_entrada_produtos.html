@@ -15,64 +15,34 @@
     </div>
     <form id="form_entrada_produto">
         <div class="modulo_main">
-            <div class="container_normal_width" id="container_chave_nfe" style="max-width: 500px;">
-                <div class="campo_contato">
-                    <label for="chave_nfe">Chave NF-e:<span class="campo_obrigatorio">*</span></label>
-                    <input
-                        type="text"
-                        inputmode="numeric"
-                        name="chave_nfe"
-                        id="chave_nfe"
-                        class="campo_input"
-                        required
-                        maxlength="44"
-                        pattern="[0-9]{1,44}"
-                        oninvalid="this.setCustomValidity('Série deve ser um número de 44 dígitos')"
-                        oninput="this.setCustomValidity('')"
-                    >
-                </div>
-            </div>
             <div class="container_small_width" id="container_radios">
                 <div class="campo_contato small_width">
-                    <label for="numero_nf">Número N.F:<span class="campo_obrigatorio">*</span></label>
-                    <input type="text" name="numero_nf" id="numero_nf" class="campo_input" maxlength="20" required>
+                    <label for="chave_nfe">Chave NF-e:</label>
+                    <input type="number" name="chave_nfe" id="chave_nfe" class="campo_input">
                 </div>
-                <div class="campo_contato small_width select_conainer">
-                    <p>Fornecedor:<span class="campo_obrigatorio">*</span></p>
-                    <select id="fornecedor" class="campo_select" name="fornecedor" required>
-                        <option value=""></option>
+                <div class="campo_contato small_width">
+                    <label for="numero_nf">Número N.F</label>
+                    <input type="number" name="numero_nf" id="numero_nf" class="campo_input">
+                </div>
+            </div>
+            <div class="container_small_width">
+                <div class="campo_contato small_width">
+                    <label for="modelo">Modelo Fiscal</label>
+                    <input type="text" name="modelo" id="modelo" class="campo_input">
+                </div>
+                <div class="campo_contato small_width">
+                    <label for="tipo_entrada">Tipo de entrada</label>
+                    <select id="tipo_entrada" class="campo_select" name="tipo_entrada">
+                        <option value="COMPRA">Compra</option>
+                        <option value="DEVOLUÇÂO">Devolução</option>
+                        <option value="INVENTÁRIO">Inventário</option>
                     </select>
                 </div>
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width">
-                    <label for="modelo">Modelo Fiscal:<span class="campo_obrigatorio">*</span></label>
-                    <input type="text" name="modelo" id="modelo" class="campo_input" maxlength="2" required>
-                </div>
-                <div class="campo_contato small_width select_conainer">
-                    <p>Tipo de entrada:<span class="campo_obrigatorio">*</span></p>
-                    <select id="tipo_entrada" class="campo_select" name="tipo_entrada" required>
-                        <option value=""></option>
-                        <option value="COMPRA">COMPRA</option>
-                        <option value="DEVOLUÇÃO">DEVOLUÇÃO</option>
-                        <option value="INVENTÁRIO">INVENTÁRIO</option>
-                    </select>
-                </div>
-            </div>
-            <div class="container_small_width">
-                <div class="campo_contato small_width">
-                    <label for="serie">Série:</label>
-                    <input
-                        type="text"
-                        inputmode="numeric"
-                        name="serie"
-                        id="serie"
-                        class="campo_input"
-                        maxlength="3"
-                        pattern="[0-9]{1,3}"
-                        oninvalid="this.setCustomValidity('Série deve ser um número de 1 a 3 dígitos')"
-                        oninput="this.setCustomValidity('')"
-                    >
+                    <label for="serie">Série</label>
+                    <input type="number" name="serie" id="serie" class="campo_input">
                 </div>
                 <div class="campo_contato small_width">
                     <label for="sub_serie">Sub-Série</label>
@@ -81,46 +51,30 @@
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width">
-                    <label for="data_emissao">Data de Emissão:<span class="campo_obrigatorio">*</span></label>
-                    <input type="date" name="data_emissao" id="data_emissao" class="campo_input" required>
+                    <label for="data_emissão">Data de Emissão</label>
+                    <input type="date" name="data_emissão" id="data_emissão" class="campo_input">
                 </div>
                 <div class="campo_contato small_width">
-                    <label for="data_recebimento">Data de Recebimento:<span class="campo_obrigatorio">*</span></label>
-                    <input type="date" name="data_recebimento" id="data_recebimento" class="campo_input" required>
+                    <label for="data_recebimento">Data de Recebimento</label>
+                    <input type="date" name="data_recebimento" id="data_recebimento" class="campo_input">
                 </div>
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width select_conainer">
-                    <p>Status:<span class="campo_obrigatorio">*</span></p>
-                    <select id="status" class="campo_select" name="status" required>
-                        <option value=""></option>
-                        <option value="FINALIZADO">FINALIZADO</option>
-                        <option value="PENDENTE">PENDENTE</option>
-                        <option value="CONCLUÍDO">CONCLUÍDO</option>
+                    <p>Fornecedor:</p>
+                    <select id="fornecedor" class="campo_select" name="fornecedor">
+
+                    </select>
+                </div>
+                <div class="campo_contato small_width select_conainer">
+                    <p>Status:</p>
+                    <select id="status" class="campo_select" name="status">
+                        <option value="FINALIZADO">Finalizado</option>
+                        <option value="PENDENTE">Pendente</option>
+                        <option value="CONCLUÍDO">Concluído</option>
                     </select>
                 </div>
             </div>
-        </div>
-        <h3 class="h3_titulo">Produtos relacionados:<span class="campo_obrigatorio">*</span></h3>
-        <button type="button" class="btn_add" id="btn_adicionar_relacao">
-            <img src="../imagens/btn_add.svg" alt="Icone Adicionar">
-            <span>Adicionar relação</span>
-        </button>
-        <div class="container_tabela">
-            <table class="tabela" id="tabela_produtos">
-                <thead>
-                    <tr>
-                        <th id="tabela_codigo">Código</th>
-                        <th id="tabela_produto">Produto</th>
-                        <th id="tabela_quantidade">Qtde.</th>
-                        <th id="tabela_preco_varejo">Valor Unitario</th>
-                        <th id="tabela_preco_atacado">Desconto</th>
-                        <th id="tabela_preco_atacado">Valor Total</th>
-                    </tr>
-                </thead>
-                <tbody class="tbody">
-                </tbody>
-            </table>
         </div>
         <button type="submit" class="btn btn_salvar">
             <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
