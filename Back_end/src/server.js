@@ -668,21 +668,249 @@ app.post('/entrada_produto', async (req, res) => {
         modelo_documento_fiscal, serie, subserie, data_emissao
       ) VALUES (
         $1, $2, $3, $4, $5,
-        $6, $7, $8, CURRENT_TIMESTAMP,
-        $9, $10, $11, $12
-      ) RETURNING *`,
-      [
-        tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
-        desconto, total, status,
-        modelo_documento_fiscal, serie, subserie, data_emissao
-      ]
-    );
+        $6, $7, CURRENT_TIMESTAMP,
+        $8, $9, $10, $11, $12
+      ) RETURNING id_entrada_produto`,
+            [
+                tipo_entrada,
+                numero_nf,
+                data_recebimento,
+                fornecedor,
+                valor_total || 0,
+                desconto || 0,
+                status,
+                modelo,
+                serie,
+                sub_serie,
+                data_emissao,
+                chave_nfe
+            ]
+        );
 
-    res.status(201).json({ sucesso: true, entrada: result.rows[0] });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ sucesso: false, erro: 'Erro ao inserir entrada de produto.' });
-  }
+        const entradaId = entradaResult.rows[0].id_entrada_produto;
+
+        // 5. Inserir os itens da entrada
+        for (const item of itens) {
+            await client.query(
+                `INSERT INTO sga.entrada_produto_itens (
+          entrada_id, produto_id, quantidade, valor_unitario,
+          desconto_item
+        ) VALUES (
+          $1, $2, $3, $4, $5
+        )`,
+                [
+                    entradaId,
+                    item.id_produto,
+                    item.quantidade,
+                    item.valor_unitario,
+                    item.desconto || 0
+                ]
+            );
+        }
+
+        await client.query('COMMIT');
+
+        res.status(201).json({
+            sucesso: true,
+            entrada_id: entradaId,
+            message: 'Entrada de produto e itens cadastrados com sucesso'
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+
+        console.error('Erro detalhado:', {
+            message: error.message,
+            stack: error.stack,
+            code: error.code,
+            detail: error.detail,
+            query: error.query
+        });
+
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao processar entrada de produto',
+            detalhes: error.message,
+            codigo_erro: error.code,
+            query_erro: error.query
+        });
+    } finally {
+        client.release();
+    }
+});
+
+// Rota para buscar todos os itens de uma entrada de produto específica
+// Exemplo: GET /entrada_produto/1/itens
+app.get('/api/entrada_produto/:id/itens', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const query = `
+      SELECT
+        epi.id_item,
+        epi.entrada_id,
+        epi.produto_id,
+        p.produto AS nome_produto,
+        epi.quantidade,
+        epi.valor_unitario,
+        epi.desconto_item,
+        epi.valor_total_item
+      FROM sga.entrada_produto_itens epi
+      JOIN sga.produto p ON epi.produto_id = p.id_produto
+      WHERE epi.entrada_id = $1
+      ORDER BY epi.id_item
+    `;
+
+        const result = await pool.query(query, [id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Nenhum item encontrado para esta entrada ou entrada não existe'
+            });
+        }
+
+        res.status(200).json({
+            sucesso: true,
+            quantidade_itens: result.rows.length,
+            itens: result.rows
+        });
+
+    } catch (error) {
+        console.error('Erro ao buscar itens da entrada:', error);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao buscar itens da entrada',
+            detalhes: error.message
+        });
+    }
+});
+
+app.put('/entrada_produto/:id', async (req, res) => {
+    const { id } = req.params;
+    const {
+        tipo_entrada,
+        numero_nf,
+        data_recebimento,
+        fornecedor,
+        valor_total,
+        desconto,
+        status,
+        modelo,
+        serie,
+        sub_serie,
+        data_emissao,
+        chave_nfe,
+        itens
+    } = req.body;
+
+    const client = await pool.connect();
+
+    try {
+        await client.query('BEGIN');
+
+        // 1. Atualizar o cabeçalho da entrada
+        const updateEntradaQuery = `
+      UPDATE sga.entrada_produto
+      SET
+        tipo_entrada = $1,
+        numero_nf = $2,
+        data_recebimento = $3,
+        fornecedor_id = $4,
+        valor_total = $5,
+        desconto = $6,
+        status = $7,
+        modelo_documento_fiscal = $8,
+        serie = $9,
+        subserie = $10,
+        data_emissao = $11,
+        chave_nfe = $12
+      WHERE id_entrada_produto = $13
+      RETURNING *;
+    `;
+
+        const entradaResult = await client.query(updateEntradaQuery, [
+            tipo_entrada,
+            numero_nf,
+            data_recebimento,
+            fornecedor,
+            valor_total,
+            desconto,
+            status,
+            modelo,
+            serie,
+            sub_serie,
+            data_emissao,
+            chave_nfe,
+            id
+        ]);
+
+        if (entradaResult.rowCount === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Entrada de produto não encontrada'
+            });
+        }
+
+        // 2. Remover todos os itens existentes (opcional - pode ser substituído por atualização individual)
+        await client.query(
+            'DELETE FROM sga.entrada_produto_itens WHERE entrada_id = $1',
+            [id]
+        );
+
+        // 3. Inserir os novos itens da entrada
+        for (const item of itens) {
+            await client.query(
+                `INSERT INTO sga.entrada_produto_itens (
+          entrada_id, produto_id, quantidade, valor_unitario,
+          desconto_item
+        ) VALUES (
+          $1, $2, $3, $4, $5
+        )`,
+                [
+                    id,
+                    item.id_produto,
+                    item.quantidade,
+                    item.valor_unitario,
+                    item.desconto || 0,
+                ]
+            );
+        }
+
+        await client.query('COMMIT');
+
+        // 4. Obter os dados atualizados completos para retornar
+        const entradaCompleta = await client.query(
+            `SELECT * FROM sga.entrada_produto WHERE id_entrada_produto = $1`,
+            [id]
+        );
+
+        const itensAtualizados = await client.query(
+            `SELECT * FROM sga.entrada_produto_itens WHERE entrada_id = $1`,
+            [id]
+        );
+
+        res.status(200).json({
+            sucesso: true,
+            mensagem: 'Entrada de produto atualizada com sucesso',
+            entrada: entradaCompleta.rows[0],
+            itens: itensAtualizados.rows
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Erro ao atualizar entrada:', error);
+
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao atualizar entrada de produto',
+            detalhes: error.message,
+            codigo_erro: error.code
+        });
+    } finally {
+        client.release();
+    }
 });
 
 // Rota para upload da imagem
@@ -893,6 +1121,130 @@ app.post('/produtos', async (req, res) => {
     }
 });
 
+// POST /api/contatos
+// Rota para criar um novo contato, incluindo seu endereço e categorias, usando uma transação.
+app.post('/api/contatos', async (req, res) => {
+    const client = await pool.connect();
+    try {
+        const {
+            razao_social,
+            nome_fantasia,
+            fone1,
+            fone2,
+            insc_municipal,
+            insc_estadual,
+            cnpj,
+            cpf,
+            email_padrao,
+            perfil_tributario,
+            tipo_consumidor,
+            observacao,
+            tipo_pessoa,
+            situacao,
+            inativo,
+            endereco, // Objeto aninhado com os dados do endereço
+            categorias, // Array de IDs de categoria, ex: [1, 3, 5]
+        } = req.body;
+
+        // 2. Validações principais
+        if (!razao_social || !fone1 || !tipo_pessoa) {
+            return res.status(400).json({ error: 'Campos obrigatórios do contato estão faltando (razao_social, fone1, tipo_pessoa).' });
+        }
+        if (tipo_pessoa === 'Jurídica' && !cnpj) {
+            return res.status(400).json({ error: 'CNPJ é obrigatório para pessoa jurídica.' });
+        }
+        if (tipo_pessoa === 'Física' && !cpf) {
+            return res.status(400).json({ error: 'CPF é obrigatório para pessoa física.' });
+        }
+        // Validação do endereço aninhado
+        if (!endereco || !endereco.cep || !endereco.municipio || !endereco.estado || !endereco.endereco) {
+            return res.status(400).json({ error: 'O objeto de endereço e seus campos obrigatórios (cep, municipio, estado, endereco) são necessários.' });
+        }
+
+        // =================================================================
+        // INÍCIO DA TRANSAÇÃO
+        // =================================================================
+        await client.query('BEGIN');
+
+        // 3. Insere o endereço primeiro para obter o 'id_endereco'.
+        const enderecoQuery = `
+            INSERT INTO sga.endereco (cep, municipio, estado, pais, ponto_referencia, setor, endereco)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING id_endereco;
+        `;
+        const enderecoValues = [
+            endereco.cep,
+            endereco.municipio,
+            endereco.estado,
+            endereco.pais || 'Brasil',
+            endereco.ponto_referencia || null,
+            endereco.setor || null,
+            endereco.endereco
+        ];
+        const enderecoResult = await client.query(enderecoQuery, enderecoValues);
+        const novoEnderecoId = enderecoResult.rows[0].id_endereco;
+
+        // 4. Insere o contato, usando o 'id_endereco' que acabamos de criar.
+        const contatoQuery = `
+            INSERT INTO sga.contato (
+                razao_social, nome_fantasia, fone1, fone2, insc_municipal, insc_estadual,
+                cnpj, cpf, email_padrao, perfil_tributario, tipo_consumidor,
+                observacao, tipo_pessoa, situacao, inativo, fk_id_endereco
+            ) VALUES (
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
+            ) RETURNING *;
+        `;
+        const contatoValues = [
+            razao_social, nome_fantasia || null, fone1, fone2 || null, insc_municipal || null, insc_estadual || null,
+            cnpj || null, cpf || null, email_padrao || null, perfil_tributario || null, tipo_consumidor || null,
+            observacao || null, tipo_pessoa, situacao || 'Ativo', inativo || false, novoEnderecoId
+        ];
+        const contatoResult = await client.query(contatoQuery, contatoValues);
+        const novoContato = contatoResult.rows[0];
+
+        // 5. Insere as categorias na tabela de junção 'contato_categoria'.
+        if (categorias && Array.isArray(categorias) && categorias.length > 0) {
+            const valuesPlaceholder = categorias.map((_, index) =>
+                `($1, $${index + 2})`
+            ).join(', ');
+
+            const categoriaQuery = `
+                INSERT INTO sga.contato_categoria (id_contato, id_categoria)
+                VALUES ${valuesPlaceholder};
+            `;
+            // O primeiro valor é sempre o id_contato, seguido pelos ids das categorias
+            const categoriaValues = [novoContato.id_contato, ...categorias];
+            await client.query(categoriaQuery, categoriaValues);
+        }
+
+        // =================================================================
+        // FIM DA TRANSAÇÃO
+        // =================================================================
+        await client.query('COMMIT');
+
+        // 6. Retorna o contato recém-criado com status 201 (Created).
+        res.status(201).json(novoContato);
+
+    } catch (err) {
+        // Se qualquer um dos comandos acima falhar, desfaz todas as alterações.
+        await client.query('ROLLBACK');
+        console.error('Erro na transação de inserção de contato:', err);
+
+        // Tratamento de erros específicos do PostgreSQL (similar ao seu código)
+        if (err.code === '23505') { // Violação de chave única
+            return res.status(409).json({ error: `Já existe um registro com este valor. Detalhe: ${err.detail}` });
+        }
+        if (err.code === '23503') { // Violação de chave estrangeira
+            return res.status(400).json({ error: 'Uma ou mais categorias fornecidas não existem.' });
+        }
+
+        res.status(500).json({ error: 'Erro interno do servidor ao cadastrar contato.' });
+    } finally {
+        // Libera o 'client' de volta para o pool, independentemente do resultado.
+        client.release();
+    }
+});
+
 // Rota GET para listar todos os tipos_entrada
 app.get('/api/tipos_entrada', async (req, res) => {
     try {
@@ -982,6 +1334,144 @@ app.delete('/tipos_entrada/:id', async (req, res) => {
         res.status(200).json({ message: 'Tipo de entrada excluído com sucesso!' });
     } catch (err) {
         res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
+
+app.delete('/api/remove-foto/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const fileName = `${userId}.webp`; // Padrão de nomeação
+
+        // 1. Verifica se o arquivo existe
+        const { data: fileList } = await supabase.storage
+            .from('fotos-usuarios')
+            .list('', {
+                search: fileName
+            });
+
+        if (!fileList || fileList.length === 0) {
+            return res.status(404).json({ error: 'Foto não encontrada' });
+        }
+
+        // 2. Remove o arquivo
+        const { error } = await supabase.storage
+            .from('fotos-usuarios')
+            .remove([fileName]);
+
+        if (error) throw error;
+
+        res.json({
+            success: true,
+            message: 'Foto removida com sucesso'
+        });
+
+    } catch (error) {
+        console.error('Erro ao remover foto:', error);
+        res.status(500).json({
+            error: 'Erro ao remover foto',
+            details: error.message
+        });
+    }
+});
+
+// Endpoint para inativar tabalas (DELETE)
+app.delete('/centro_estoque/:id_centro_estoque', async (req, res) => {
+    const { id_centro_estoque } = req.params;
+    try {
+        await pool.query(`
+            UPDATE sga.centro_estoque
+            SET inativo = TRUE
+            WHERE id_centro_estoque = $1
+        `, [id_centro_estoque]);
+        res.status(200).json({ message: 'Centro de estoque excluído com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
+
+app.delete('/produto/:id_produto', async (req, res) => {
+    const { id_produto } = req.params;
+    try {
+        await pool.query(`
+            UPDATE sga.produto
+            SET inativo = TRUE
+            WHERE id_produto = $1
+        `, [id_produto]);
+        res.status(200).json({ message: 'Produto excluído com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
+
+app.delete('/contato/:id_contato', async (req, res) => {
+    const { id_contato } = req.params;
+    try {
+        await pool.query(`
+            UPDATE sga.contato
+            SET inativo = TRUE
+            WHERE id_contato = $1
+        `, [id_contato]);
+        res.status(200).json({ message: 'Centro de estoque excluído com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
+
+// Endpoint para inativar entrada de produto (DELETE)
+app.delete('/entrada_produto/:id_entrada', async (req, res) => {
+    const { id_entrada } = req.params;
+
+    const client = await pool.connect();
+
+    try {
+        await client.query('BEGIN');
+
+        // 1. Verificar se a entrada existe
+        const entradaExistente = await client.query(
+            'SELECT 1 FROM sga.entrada_produto WHERE id_entrada_produto = $1 AND inativo = FALSE',
+            [id_entrada]
+        );
+
+        if (entradaExistente.rowCount === 0) {
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Entrada não encontrada ou já inativada'
+            });
+        }
+
+        // 2. Inativar a entrada principal
+        await client.query(`
+            UPDATE sga.entrada_produto
+            SET inativo = TRUE
+            WHERE id_entrada_produto = $1
+        `, [id_entrada]);
+
+        // 3. Opcional: Inativar também os itens relacionados
+        await client.query(`
+            UPDATE sga.entrada_produto_itens
+            SET inativo = TRUE
+            WHERE entrada_id = $1
+        `, [id_entrada]);
+
+        await client.query('COMMIT');
+
+        res.status(200).json({
+            sucesso: true,
+            mensagem: 'Entrada de produto inativada com sucesso!',
+            id_entrada: id_entrada
+        });
+
+    } catch (err) {
+        await client.query('ROLLBACK');
+        console.error('Erro ao inativar entrada:', err);
+
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao inativar entrada de produto',
+            detalhes: err.message
+        });
+    } finally {
+        client.release();
     }
 });
 
