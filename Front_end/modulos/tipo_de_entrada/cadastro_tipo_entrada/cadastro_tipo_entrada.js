@@ -7,8 +7,11 @@ export default function cadastro_tipo_entrada() {
         carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, null, null);
         // Botão que volta para a tela de tipos de entrada
     })
-    let btn_salvar = document.querySelector("#btn_salvar")
-    btn_salvar.addEventListener("click", async () => {
+
+    let btn_salvar = document.querySelector("form")
+    btn_salvar.addEventListener("submit", async (e) => {
+        e.preventDefault()
+        popup_carregando(false, "Salvando tipo de entrada...");
         const data = {
             id_tipo_de_entrada: parseInt(document.getElementById('codigo').value),
             descricao: document.getElementById('descricao').value,

@@ -583,49 +583,6 @@ app.put('/api/endereco/:id_endereco', async (req, res) => {
     }
 });
 
-// Endpoint para inativar tabalas (DELETE)
-app.delete('/centro_estoque/:id_centro_estoque', async (req, res) => {
-    const { id_centro_estoque } = req.params;
-    try {
-        await pool.query(`
-            UPDATE sga.centro_estoque
-            SET inativo = TRUE
-            WHERE id_centro_estoque = $1
-        `, [id_centro_estoque]);
-        res.status(200).json({ message: 'Centro de estoque excluído com sucesso!' });
-    } catch (err) {
-        res.status(500).json({ error: 'Erro ao excluir' });
-    }
-});
-
-app.delete('/produto/:id_produto', async (req, res) => {
-    const { id_produto } = req.params;
-    try {
-        await pool.query(`
-            UPDATE sga.produto
-            SET inativo = TRUE
-            WHERE id_produto = $1
-        `, [id_produto]);
-        res.status(200).json({ message: 'Produto excluído com sucesso!' });
-    } catch (err) {
-        res.status(500).json({ error: 'Erro ao excluir' });
-    }
-});
-
-app.delete('/contato/:id_contato', async (req, res) => {
-    const { id_contato } = req.params;
-    try {
-        await pool.query(`
-            UPDATE sga.contato
-            SET inativo = TRUE
-            WHERE id_contato = $1
-        `, [id_contato]);
-        res.status(200).json({ message: 'Centro de estoque excluído com sucesso!' });
-    } catch (err) {
-        res.status(500).json({ error: 'Erro ao excluir' });
-    }
-});
-
 // Rota para cadastrar usuário (POST)
 app.post('/usuarios', async (req, res) => {
     const { nome, email, celular, senha } = req.body;
@@ -798,43 +755,6 @@ app.get('/api/imagem/:id', async (req, res) => {
     });
 });
 
-app.delete('/api/remove-foto/:userId', async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const fileName = `${userId}.webp`; // Padrão de nomeação
-
-        // 1. Verifica se o arquivo existe
-        const { data: fileList } = await supabase.storage
-            .from('fotos-usuarios')
-            .list('', {
-                search: fileName
-            });
-
-        if (!fileList || fileList.length === 0) {
-            return res.status(404).json({ error: 'Foto não encontrada' });
-        }
-
-        // 2. Remove o arquivo
-        const { error } = await supabase.storage
-            .from('fotos-usuarios')
-            .remove([fileName]);
-
-        if (error) throw error;
-
-        res.json({
-            success: true,
-            message: 'Foto removida com sucesso'
-        });
-
-    } catch (error) {
-        console.error('Erro ao remover foto:', error);
-        res.status(500).json({
-            error: 'Erro ao remover foto',
-            details: error.message
-        });
-    }
-});
-
 // Rota POST para inserir novo tipo_entrada
 app.post('/tipos_entrada', async (req, res) => {
     const {
@@ -869,6 +789,110 @@ app.post('/tipos_entrada', async (req, res) => {
     }
 });
 
+app.post('/centros-estoque', async (req, res) => {
+    // Extrai os dados do corpo da requisição
+    const {
+        descricao_centro_estoque,
+        localizacao_centro_estoque,
+        padrao_centro_estoque,
+        nome_centro_estoque, // Opcional, pois tem DEFAULT
+        inativo // Opcional, pois tem DEFAULT
+    } = req.body;
+
+    // Validação básica dos campos obrigatórios
+    if (!descricao_centro_estoque || !localizacao_centro_estoque || typeof padrao_centro_estoque !== 'boolean') {
+        return res.status(400).json({
+            error: 'Campos obrigatórios estão faltando ou são inválidos: descricao_centro_estoque, localizacao_centro_estoque, padrao_centro_estoque (boolean).'
+        });
+    }
+
+    try {
+        const insertQuery = `
+      INSERT INTO sga.centro_estoque
+        (descricao_centro_estoque, localizacao_centro_estoque, padrao_centro_estoque, nome_centro_estoque, inativo)
+      VALUES
+        ($1, $2, $3, $4, $5)
+      RETURNING *;
+    `;
+
+        // O valor de 'inativo' será false se não for enviado.
+        const inativoValue = typeof inativo === 'boolean' ? inativo : false;
+
+        // O valor de 'nome_centro_estoque' usará o DEFAULT do banco se for null/undefined
+        const values = [
+            descricao_centro_estoque,
+            localizacao_centro_estoque,
+            padrao_centro_estoque,
+            nome_centro_estoque, // Se for null, o DEFAULT 'Padrão' será usado pelo banco
+            inativoValue
+        ];
+
+        const result = await pool.query(insertQuery, values);
+
+        // Retorna o registro recém-criado com status 201 (Created)
+        res.status(201).json(result.rows[0]);
+
+    } catch (error) {
+        console.error('Erro ao inserir no banco de dados:', error);
+        res.status(500).json({ error: 'Erro interno do servidor.' });
+    }
+});
+
+// Rota para criar um novo produto.
+app.post('/produtos', async (req, res) => {
+    // 1. Extrai os dados do corpo da requisição.
+    const {
+        produto,          // Obrigatório
+        quantidade,       // Obrigatório
+        preco_varejo,     // Obrigatório
+        preco_atacado,    // Obrigatório
+        descricao,        // Opcional
+        inativo,          // Opcional (padrão: false)
+        id_centro_estoque // Opcional (padrão: 1)
+    } = req.body;
+
+    // 2. Validação dos campos obrigatórios e seus tipos.
+    if (!produto || typeof quantidade !== 'number' || typeof preco_varejo !== 'number' || typeof preco_atacado !== 'number') {
+        return res.status(400).json({
+            error: 'Campos obrigatórios estão faltando ou com tipos inválidos. Campos requeridos: produto(string), quantidade(number), preco_varejo(number), preco_atacado(number).'
+        });
+    }
+
+    // 3. Bloco try...catch para lidar com possíveis erros do banco de dados.
+    try {
+        // 4. Comando SQL parametrizado para evitar SQL Injection.
+        const insertQuery = `
+      INSERT INTO sga.produto
+        (produto, quantidade, preco_varejo, preco_atacado, descricao, inativo, id_centro_estoque)
+      VALUES
+        ($1, $2, $3, $4, $5, $6, $7)
+      RETURNING *;
+    `;
+
+        // 5. Monta o array de valores, tratando os campos opcionais.
+        const values = [
+            produto,
+            quantidade,
+            preco_varejo,
+            preco_atacado,
+            descricao || null, // Se a descrição não for enviada, insere NULL no banco.
+            typeof inativo === 'boolean' ? inativo : false, // Se 'inativo' não for um booleano, assume 'false'.
+            id_centro_estoque || 1 // Se 'id_centro_estoque' não for enviado, assume '1'.
+        ];
+
+        // 6. Executa a query no banco de dados.
+        const result = await pool.query(insertQuery, values);
+
+        // 7. Retorna o registro recém-criado com status 201 (Created).
+        res.status(201).json(result.rows[0]);
+
+    } catch (error) {
+        // 8. Em caso de erro, loga no console e retorna uma mensagem genérica.
+        console.error('Erro ao inserir produto:', error);
+        res.status(500).json({ error: 'Erro interno do servidor ao tentar cadastrar o produto.' });
+    }
+});
+
 // Rota GET para listar todos os tipos_entrada
 app.get('/api/tipos_entrada', async (req, res) => {
     try {
@@ -877,6 +901,87 @@ app.get('/api/tipos_entrada', async (req, res) => {
     } catch (err) {
         console.error('Erro ao buscar tipos_entrada:', err);
         res.status(500).json({ message: 'Erro ao buscar tipos_entrada', error: err.message });
+    }
+});
+app.put('/tipos_entrada/:id', async (req, res) => {
+    const { id } = req.params;
+    const {
+        descricao,
+        cfop_dentro,
+        cfop_fora,
+        ativo,
+        movimenta_estoque,
+        hab_agrupamento,
+        hab_movimento,
+        habilita_nf,
+        atualiza_produto,
+        padrao
+    } = req.body;
+
+    try {
+        const query = `
+            UPDATE sga.tipos_entrada
+            SET
+                descricao = $1,
+                cfop_dentro = $2,
+                cfop_fora = $3,
+                ativo = $4,
+                movimenta_estoque = $5,
+                hab_agrupamento = $6,
+                hab_movimento = $7,
+                habilita_nf = $8,
+                atualiza_produto = $9,
+                padrao = $10
+            WHERE id_tipo_de_entrada = $11
+            RETURNING *;
+        `;
+
+        const values = [
+            descricao,
+            cfop_dentro,
+            cfop_fora,
+            ativo,
+            movimenta_estoque,
+            hab_agrupamento,
+            hab_movimento,
+            habilita_nf,
+            atualiza_produto,
+            padrao,
+            id
+        ];
+
+        const result = await pool.query(query, values);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Tipo de entrada não encontrado.' });
+        }
+
+        res.status(200).json({
+            message: 'Tipo de entrada atualizado com sucesso.',
+            tipo_entrada: result.rows[0]
+        });
+
+    } catch (err) {
+        console.error('Erro ao atualizar tipo de entrada:', err);
+        res.status(500).json({ message: 'Erro ao atualizar tipo de entrada', error: err.message });
+    }
+});
+
+
+app.delete('/tipos_entrada/:id', async (req, res) => {
+    const { id } = req.params;
+    console.log(id)
+    try {
+        await pool.query(
+            `
+                DELETE FROM sga.tipos_entrada
+                WHERE id_tipo_de_entrada = $1
+                RETURNING *;
+            `
+            , [id]);
+        res.status(200).json({ message: 'Tipo de entrada excluído com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir' });
     }
 });
 

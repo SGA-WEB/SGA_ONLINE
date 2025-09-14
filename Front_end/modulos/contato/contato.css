@@ -77,6 +77,23 @@
     width: 1.2rem;
 }
 
+/* Esconde todos os painéis de conteúdo das abas por padrão */
+.aba-conteudo {
+    display: none;
+}
+
+/* Mostra apenas o painel que também tiver a classe "ativa" */
+.aba-conteudo.ativa {
+    display: block;
+}
+
+/* Estilo opcional para o botão da aba ativa, para dar um feedback visual */
+.aba-botao.ativo {
+    background-color: #007bff;
+    color: white;
+    border-bottom: 2px solid transparent;
+}
+
 @media (max-width: 980px) {
     .modulo {
         padding: 0.5rem;
