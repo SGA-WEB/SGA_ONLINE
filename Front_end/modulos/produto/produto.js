@@ -43,8 +43,8 @@ export default async function produto () {
     select2("9em")
 
     let dados = await buscarDados("produto")
-    carregarDadosNaTabela(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado","corredor","prateleira"])
-    pesquisar(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado", "corredor", "prateleira"])
+    carregarDadosNaTabela(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"])
+    pesquisar(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"])
 
     fecharMenu(document.querySelector(".tabela").offsetWidth,480)
     window.addEventListener('resize', (e) => {

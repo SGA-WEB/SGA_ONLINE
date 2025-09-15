@@ -6,7 +6,7 @@ import { popup } from "../../../scripts/popup.js"
 import { formatarData, alterarOptionsSelect } from "../../../scripts/funcionalidades.js"
 import buscarDados from "../../../scripts/buscarDados.js"
 
-export default async function visualizar_produto(dado) {
+export default async function visualizar_produto (dado) {
     select2("100%")
 
     let centros_de_estoque = await buscarDados("centro_estoque")
@@ -23,9 +23,6 @@ export default async function visualizar_produto(dado) {
     let quantidade_em_estoque = document.querySelector('#quantidade_em_estoque')
     let data_cadastro = document.querySelector('.data_cadastro')
     let descricao = document.querySelector('#descricao')
-    let corredor = document.querySelector('#corredor')
-    let prateleira = document.querySelector('#prateleira')
-
 
     data_cadastro.textContent = formatarData(dado.data_cadastro)
     codigo_produto.textContent = dado.id_produto
@@ -34,8 +31,6 @@ export default async function visualizar_produto(dado) {
     nome_produto.value = dado.produto
     quantidade_em_estoque.value = dado.quantidade
     descricao.value = dado.descricao
-    corredor.value = dado.corredor
-    prateleira.value = dado.prateleira
 
     let btnVoltar = document.querySelector('.btn_voltar')
     btnVoltar.addEventListener('click', () => {
@@ -52,7 +47,7 @@ export default async function visualizar_produto(dado) {
     })
 
     let btn_excluir = document.querySelector(".btn_excluir")
-    btn_excluir.addEventListener("click", () => {
+    btn_excluir.addEventListener("click",() => {
         excluir_produto(dado, carregarConteudo, "produto/produto.html", document.querySelector(".principal"))
     })
 }
