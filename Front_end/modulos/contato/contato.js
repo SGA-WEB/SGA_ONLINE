@@ -29,7 +29,7 @@ export default async function contato() {
             "contato/cadastro_contato/cadastro_contato.html",
             document.querySelector(".modulo"),
             false,
-            // cadastro_contato,
+            cadastro_contato,
         )
     })
     const dadosContato = await buscarDados("contato"); // Busca os dados da tabela

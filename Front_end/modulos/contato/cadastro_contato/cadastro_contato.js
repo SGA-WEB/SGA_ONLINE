@@ -5,30 +5,9 @@ import buscarDados from "../../../scripts/buscarDados.js";
 import { popup_carregando, popup_aviso, popup_erro } from "../../../scripts/popup.js";
 
 export default async function cadastro_contato() {
-    let dados = {}
-    let arrCategorias = []
-
-    popup_carregando()
-
-    async function chamarFuncoes() {
-        dataAtual()
-        btnsProximoEVoltar()
-        addListenerBtns()
-        select2("100%")
-        inserirDadosNaTela("Cadastro de contato")
-    }
-
-    carregarConteudo("contato/cadastro_contato/criar_contato/criar_contato.html", document.querySelector(".modulo"), false, chamarFuncoes); // É passada a função chamarFuncoes para que os botões sejam ativados e os dados sejam inseridos novamente
-
-    // Mudar de tela ao clicar no menu superior da tela de contato:
-    let links_nav = document.querySelectorAll(".link_nav") // seleciona todos os links do menu superior
-    links_nav[0].classList.add("link_nav_selecionado") // Adiciona a classe ao primeiro link assim que o modulo for carregado
-
-    document.querySelectorAll('.link_nav').forEach(link => { // Seleciona todos os links
-        link.addEventListener("click", (e) => {
-            estilo_nav(e.target);
-        });
-    });
+    console.log("Cadastro de contato carregado")
+    select2("100%")
+    dataAtual()
 
     fecharMenu(document.querySelector(".modulo").offsetWidth, 584)
     window.addEventListener('resize', (e) => {
@@ -37,138 +16,33 @@ export default async function cadastro_contato() {
         }
     })
 
-    function addListenerBtns() {
-        document.querySelector(".btn_cancelar").addEventListener("click", (e) => {
-            e.preventDefault()
-            carregarConteudo('contato/contato.html', document.querySelector('.principal'), false)
-        })
-        document.querySelector("form").addEventListener("submit", salvarDadosNoBanco)
-    }
+    document.querySelector(".btn_cancelar").addEventListener("click", (e) => {
+        e.preventDefault()
+        carregarConteudo('contato/contato.html', document.querySelector('.principal'), false)
+    })
+    document.querySelector("form").addEventListener("submit", salvarDadosNoBanco)
 
-    function estilo_nav(e) {
-        let link = e
-        if (e == "voltar_contatos") {
-            carregarConteudo('contato/contato.html', document.querySelector('.principal'), false)
-            return
-        }
-        let links_nav = document.querySelectorAll(".link_nav") // Seleciona todos os links do nav
-        links_nav.forEach(e => {
-            e.classList.remove("link_nav_selecionado") // desmarca todos
-        })
+    // --- LÓGICA PARA CONTROLAR A NAVEGAÇÃO DAS ABAS ---
+    const botoesAba = document.querySelectorAll('.aba_botao');
+    const conteudosAba = document.querySelectorAll('.aba_conteudo');
 
-        e.classList.add("link_nav_selecionado") // Adiciona a classe ao link clicado
-        mudarDeAba(link.id)
-    }
+    botoesAba.forEach(botao => {
+        botao.addEventListener('click', () => {
+            // Remove a classe 'ativo' de todos
+            botoesAba.forEach(b => b.classList.remove('ativo'));
+            conteudosAba.forEach(c => c.classList.remove('ativa'));
 
-    function mudarDeAba(link) {
-        criarDados()
-        switch (link) {
-            case "link_contato":
-                inserirDadosNaTela("Cadastro de contato")
-                arrCategorias = [] // Zera o array para que não haja duplicidade de categorias
-                carregarConteudo("contato/cadastro_contato/criar_contato/criar_contato.html", document.querySelector(".modulo"), false, chamarFuncoes); // É passada a função chamarFuncoes para que os botões sejam ativados e os dados sejam inseridos novamente
-                break;
-            case "link_endereco":
-                carregarConteudo("contato/cadastro_contato/endereco_contato/endereco_contato.html", document.querySelector(".modulo"), false, chamarFuncoes);
-                break;
-        }
-    }
-
-    async function criarDados() {
-        let form = document.querySelector("form")
-        let dadosFomr = Object.fromEntries(new FormData(form))
-        let elementCategorias = document.getElementsByName("categorias")
-        for (let categoria in elementCategorias) {
-            if (elementCategorias[categoria].checked) {
-                arrCategorias.push(elementCategorias[categoria].value)
-            }
-        }
-        dados = { ...dados, ...dadosFomr }
-        dados.categorias = arrCategorias
-    }
-
-    function btnsProximoEVoltar() {
-        let btn_nav = document.querySelectorAll(".btn_nav")
-        btn_nav.forEach(e => {
-            e.addEventListener("click", (e) => {
-                let btn = e.target.closest(".btn_nav").id.slice(4) // Pega o id do botão que foi clicado e retira o "btn_"
-                let link_nav = document.getElementById(btn)
-                if (link_nav == null) {
-                    link_nav = "voltar_contatos"
-                }
-                estilo_nav(link_nav)
-            })
-        })
-    }
-
-    async function inserirDadosNaTela(tituloTela) {
-        popup_carregando()
-        if (document.querySelector(".h2_titulo").textContent == tituloTela) { // Verifica se a tela é de visualização
-            if (dados.tipo_pessoa === "JURÍDICA") {
-                document.querySelector("#contato_juridico").checked = true
-            } else if (dados.tipo_pessoa === "FÍSICA") {
-                document.querySelector("#contato_fisico").checked = true
-            }
-
-            if (dados.situacao === "ATIVO") {
-                document.querySelector("#ativo").checked = true
-            } else if (dados.situacao === "INATIVO") {
-                document.querySelector("#inativo").checked = true
-            }
-
-            let categorias = dados.categorias || 0
-            for (let i = 0; i < categorias.length; i++) {
-                if (categorias[i] === "CLIENTE") {
-                    document.querySelector("#cliente").checked = true
-                }
-                if (categorias[i] === "FORNECEDOR") {
-                    document.querySelector("#fornecedor").checked = true
-                }
-                if (categorias[i] === "FUNCIONÁRIO") {
-                    document.querySelector("#funcionario").checked = true
-                }
-            }
-            let data = new Date()
-
-            let contatos = await buscarDados('contato');
-            let contatosComMaiorId = contatos.reduce((prev, curr) => {
-                return prev.id_contato > curr.id_contato ? prev : curr;
-            })
-            dados.id_contato = contatosComMaiorId.id_contato + 1;
-
-            document.querySelector(".codigo_id").textContent = dados.id_contato
-            document.querySelector(".data_cadastro").textContent = formatarData(data.toISOString())
-            document.querySelector("#nome_razao_social").value = dados.nome_razao_social || ""
-            document.querySelector("#nome_fantasia").value = dados.nome_fantasia || ""
-            document.querySelector("#fone1").value = dados.fone1 || ""
-            document.querySelector("#fone2").value = dados.fone2 || ""
-            document.getElementsByName("tipo_pessoa").value = dados.tipo_pessoa || ""
-            document.querySelector("#insc_municipal").value = dados.insc_municipal || ""
-            document.querySelector("#insc_estadual").value = dados.insc_estadual || ""
-            document.querySelector("#cnpj").value = dados.cnpj || ""
-            document.querySelector("#cpf").value = dados.cpf || ""
-            document.querySelector("#email_padrao").value = dados.email_padrao || ""
-            $('#perfil_tributario').val(dados.perfil_tributario).trigger('change');
-            $('#tipo_consumidor').val(dados.tipo_consumidor).trigger('change');
-            document.querySelector("#observacao").value = dados.observacao || ""
-        }
-        else if (document.querySelector(".h2_titulo").textContent.includes("Endereço")) {
-            document.querySelector("#caixa_postal").value = dados.caixa_postal || ""
-            document.querySelector("#pais").value = dados.pais || ""
-            document.querySelector("#estado").value = dados.estado || ""
-            document.querySelector("#municipio").value = dados.municipio || ""
-            document.querySelector("#endereco").value = dados.endereco || ""
-            document.querySelector("#referencia").value = dados.referencia || ""
-            document.querySelector("#setor").value = dados.setor || ""
-        }
-        popup_carregando(true)
-    }
+            // Adiciona a classe 'ativo' apenas ao clicado e seu conteúdo
+            const idAlvo = botao.dataset.aba;
+            botao.classList.add('ativo');
+            document.getElementById(idAlvo).classList.add('ativa');
+        });
+    });
 
     async function salvarDadosNoBanco(e) {
         e.preventDefault() // Evita o envio padrão do formulário
         // Validação básica
-        criarDados()
-        console.log(dados);
+
         if (!dados.nome_razao_social || !dados.fone1 || dados.categorias[0] == "") {
             // Se algum campo obrigatório estiver vazio, adiciona a classe de erro e foca no campo
             if (document.querySelector(".h2_titulo").textContent != "Editar contato") {
