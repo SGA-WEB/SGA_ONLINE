@@ -167,5 +167,5 @@
 }
 
 .aba_botao.ativo {
-    border-bottom: 2px solid transparent;
+    background-color: var(--principal);
 }

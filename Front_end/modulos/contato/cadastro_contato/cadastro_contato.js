@@ -2,12 +2,15 @@ import { carregarConteudo, fecharMenu } from "../../../scripts/javaScript.js"
 import { dataAtual, formatarData } from "../../../scripts/funcionalidades.js";
 import select2 from "../../../scripts/select.js";
 import buscarDados from "../../../scripts/buscarDados.js";
-import { popup_carregando, popup_aviso, popup_erro } from "../../../scripts/popup.js";
+import { popup_carregando, popup_aviso, popup_erro, popup_confirmar } from "../../../scripts/popup.js";
 
 export default async function cadastro_contato() {
-    console.log("Cadastro de contato carregado")
     select2("100%")
     dataAtual()
+
+    let contatos = await buscarDados('contato')
+    let idProximoContato = contatos.length > 0 ? Math.max(...contatos.map(c => c.id_contato)) + 1 : 1;
+    document.querySelector(".codigo_id").textContent = idProximoContato
 
     fecharMenu(document.querySelector(".modulo").offsetWidth, 584)
     window.addEventListener('resize', (e) => {
@@ -20,7 +23,53 @@ export default async function cadastro_contato() {
         e.preventDefault()
         carregarConteudo('contato/contato.html', document.querySelector('.principal'), false)
     })
-    document.querySelector("form").addEventListener("submit", salvarDadosNoBanco)
+
+    document.querySelector("#btn_voltar").addEventListener("click", (e) => {
+        let abaAtiva = document.querySelector('.aba_conteudo.ativa').id;
+        if (abaAtiva === 'aba_contato') {
+            console.log(confirmarSaida())
+            // carregarConteudo('contato/contato.html', document.querySelector('.principal'), false)
+        } else {
+            document.getElementById('link_contato').click();
+        }
+    })
+
+    document.querySelector(".btn_proximo").addEventListener("click", (e) => {
+        document.getElementById('link_endereco').click();
+    })
+
+    document.querySelector(".btn_salvar").addEventListener("click", (e) => {
+        e.preventDefault()
+        form.requestSubmit()
+    })
+
+    let form = document.querySelector("form")
+    form.addEventListener("submit", salvarDadosNoBanco)
+
+    function confirmarSaida() {
+        let dados = Object.fromEntries(new FormData(form))
+
+        let dadosPreenchidos = 0
+        for (let chave in dados) {
+            if (dados[chave] !== "") {
+                dadosPreenchidos++
+            }
+        }
+
+        if (dadosPreenchidos > 4) {
+            let confirmar = popup_confirmar("Existem dados preenchidos. Tem certeza que deseja sair sem salvar?", "Sim")
+            console.log(confirmar)
+            confirmar.then((confirmado) => {
+                if (confirmado) {
+                    return true
+                } else {
+                    return false
+                }
+            })
+        } else {
+            return true
+        }
+    }
 
     // --- LÓGICA PARA CONTROLAR A NAVEGAÇÃO DAS ABAS ---
     const botoesAba = document.querySelectorAll('.aba_botao');
@@ -36,122 +85,87 @@ export default async function cadastro_contato() {
             const idAlvo = botao.dataset.aba;
             botao.classList.add('ativo');
             document.getElementById(idAlvo).classList.add('ativa');
+
+            let btnProximo = document.querySelector('.btn_proximo');
+            if (idAlvo === 'aba_endereco') {
+                btnProximo.style.display = 'none';
+            } else {
+                btnProximo.style.display = 'block'; // ou 'inline-block', 'flex', etc.
+            }
         });
     });
 
     async function salvarDadosNoBanco(e) {
-        e.preventDefault() // Evita o envio padrão do formulário
-        // Validação básica
+        e.preventDefault(); // Previne o recarregamento da página
 
-        if (!dados.nome_razao_social || !dados.fone1 || dados.categorias[0] == "") {
-            // Se algum campo obrigatório estiver vazio, adiciona a classe de erro e foca no campo
-            if (document.querySelector(".h2_titulo").textContent != "Editar contato") {
-                estilo_nav(document.querySelector("#link_contato"))
-            }
-
-            popup_erro("Campos obrigatórios faltando.");
-            return;
-        }
-
-        // Inserir os dados no banco de dados:
         try {
-            popup_carregando()
-            const response = await fetch(`http://localhost:3000/api/contatos`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
+            // --- 1. COLETA E FORMATAÇÃO DOS DADOS ---
+            const formData = new FormData(form);
+
+            // O método getAll é crucial para pegar múltiplos checkboxes com o mesmo nome.
+            const todasCategorias = formData.getAll('categorias').map(Number);
+
+            // Monta o payload exatamente como o back-end espera.
+            const payload = {
+                razao_social: formData.get('razao_social'),
+                nome_fantasia: formData.get('nome_fantasia') || null,
+                fone1: formData.get('fone1'),
+                fone2: formData.get('fone2') || null,
+                insc_municipal: formData.get('insc_municipal') || null,
+                insc_estadual: formData.get('insc_estadual') || null,
+                cnpj: formData.get('cnpj') || null,
+                cpf: formData.get('cpf') || null,
+                email_padrao: formData.get('email_padrao') || null,
+                perfil_tributario: formData.get('perfil_tributario'),
+                tipo_consumidor: formData.get('tipo_consumidor'),
+                observacao: formData.get('observacao') || null,
+                tipo_pessoa: formData.get('tipo_pessoa'),
+                situacao: formData.get('situacao') || 'Ativo',
+                inativo: formData.get('inativo') === 'true', // Converte para booleano
+
+                // Objeto aninhado para o endereço
+                endereco: {
+                    cep: formData.get('cep'),
+                    pais: formData.get('pais') || 'Brasil',
+                    estado: formData.get('estado'),
+                    municipio: formData.get('municipio'),
+                    endereco: formData.get('endereco'),
+                    ponto_referencia: formData.get('ponto_referencia') || null,
+                    setor: formData.get('setor') || null
                 },
-                body: JSON.stringify(dados)
+
+                // Array com os IDs das categorias
+                categorias: todasCategorias
+            };
+
+            console.log('Dados prontos para enviar para a API:', payload);
+
+            // --- 2. ENVIO PARA A API ---
+            popup_carregando();
+            const response = await fetch('http://localhost:3000/api/contatos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
             });
 
             const resultado = await response.json();
 
             if (!response.ok) {
-                popup_erro(`Erro: ${resultado.error}`);
-                return;
+                // Joga um erro para ser capturado pelo bloco catch, usando a mensagem da API.
+                throw new Error(resultado.error || `HTTP error! status: ${response.status}`);
             }
+
+            popup_carregando(true);
+            popup_aviso("Contato criado com sucesso!");
+            form.reset();
+
+            // Adicione aqui a sua lógica para voltar para a tela de listagem
+            // Ex: carregarConteudo('contato/contato.html', document.querySelector('.principal'));
 
         } catch (error) {
-            console.error('Erro:', error);
-            popup_erro('Erro ao atualizar contato.');
+            popup_carregando(true);
+            popup_erro(error.message);
+            console.error("Falha ao salvar contato:", error);
         }
-
-        // Atualizar as categorias do contato:
-        dados.categorias = dados.categorias.map((categoria) => {
-            // A API espera receber somente o ID da categoria
-            // Então, convertemos o nome da categoria para o ID correspondente no banco de dados
-            if (categoria === "CLIENTE") {
-                return 1
-            } else if (categoria === "FORNECEDOR") {
-                return 2
-            } else if (categoria === "FUNCIONÁRIO") {
-                return 3
-            }
-        })
-
-        try {
-            const response = await fetch(`http://localhost:3000/api/contato/${id_contato}/categorias`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    categorias: dados.categorias
-                })
-            });
-            if (!response.ok) {
-                popup_erro('Erro ao salvar categorias.');
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Erro ao salvar categorias');
-            }
-
-            const result = await response.json();
-        } catch (error) {
-            popup_erro('Erro ao salvar contato.');
-            console.error('Erro ao salvar:', error);
-        }
-
-        // Atualizar o endereço do contato:
-        const idEndereco = dado.fk_id_endereco; // ID do endereço a ser atualizado
-
-        const dadosEndereco = {
-            cep: localStorage.getItem("cep"),
-            endereco: localStorage.getItem("endereco"),
-            municipio: localStorage.getItem("municipio"),
-            estado: localStorage.getItem("estado"),
-            pais: localStorage.getItem("pais"),
-            ponto_referencia: localStorage.getItem("ponto_referencia"),
-            setor: localStorage.getItem("setor")
-        };
-
-        try {
-            const response = await fetch(`http://localhost:3000/api/endereco/${idEndereco}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(dadosEndereco)
-            });
-            const data = await response.json();
-
-            if (!response.ok) {
-                popup_erro('Erro ao atualizar endereço.');
-            }
-
-            let links_nav = document.querySelectorAll(".link_nav") // Seleciona todos os links do nav
-            links_nav.forEach(e => {
-                e.classList.remove("link_nav_selecionado") // desmarca todos
-            })
-            popup_carregando(true)
-            popup_aviso("Contato atualizado com sucesso!")
-            carregarConteudo(caminho, elementoPai, false, funcao, dadosCompletos)
-            localStorage.clear()
-            return data.endereco;
-        } catch (error) {
-            console.error('Erro:', error);
-            throw error;
-        }
-    }
-
-    popup_carregando(true)
+    };
 }
