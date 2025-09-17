@@ -161,6 +161,7 @@ export default async function cadastro_contato() {
 
             popup_carregando(true);
             popup_aviso("Contato criado com sucesso!");
+            carregarConteudo('contato/contato.html', document.querySelector('.principal'), false);
             form.reset();
 
             // Adicione aqui a sua lógica para voltar para a tela de listagem
