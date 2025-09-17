@@ -31,6 +31,9 @@ export default async function editar_produto (dado, telaAnteriorVisualizar) {
     let nome_produto = document.querySelector('#nome_produto')
     let quantidade_em_estoque = document.querySelector('#quantidade_em_estoque')
     let descricao = document.querySelector('#descricao')
+    let corredor = document.querySelector('#corredor')
+    let prateleira = document.querySelector('#prateleira')
+
 
     codigo_produto.textContent = dado.id_produto
     valor_varejo.value = dado.preco_varejo
@@ -38,6 +41,8 @@ export default async function editar_produto (dado, telaAnteriorVisualizar) {
     nome_produto.value = dado.produto
     quantidade_em_estoque.value = dado.quantidade
     descricao.value = dado.descricao
+    corredor.value = dado.corredor
+    prateleira.value = dado.prateleira
     
 
     let btnVoltar = document.querySelector('.btn_voltar')
@@ -63,6 +68,8 @@ export default async function editar_produto (dado, telaAnteriorVisualizar) {
         const descricao = document.querySelector("#descricao").value;
         const id_centro_estoque = document.querySelector("#selecionar_centro_de_estoque").value
         const data_cadastro = dado.data_cadastro
+        const corredor = document.querySelector("#corredor").value
+        const prateleira = document.querySelector("#prateleira").value
 
         popup_carregando();
         try {
@@ -71,7 +78,7 @@ export default async function editar_produto (dado, telaAnteriorVisualizar) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ produto, quantidade, preco_varejo, preco_atacado, descricao, id_centro_estoque })
+                body: JSON.stringify({ produto, quantidade, preco_varejo, preco_atacado, descricao, id_centro_estoque, corredor, prateleira })
             });
     
             const data = await response.json();
@@ -85,7 +92,9 @@ export default async function editar_produto (dado, telaAnteriorVisualizar) {
                     preco_atacado: preco_atacado,
                     descricao: descricao,
                     fk_id_centro_estoque: id_centro_estoque,
-                    data_cadastro: data_cadastro
+                    data_cadastro: data_cadastro,
+                    corredor: corredor,
+                   prateleira: prateleira
                 };
                 popup_carregando(true);
                 carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, novoDado);
