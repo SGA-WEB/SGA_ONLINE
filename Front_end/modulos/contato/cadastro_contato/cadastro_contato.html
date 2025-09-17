@@ -102,13 +102,13 @@
                 <label for="insc_estadual">Insc. Estadual:</label>
                 <input type="text" name="insc_estadual" id="insc_estadual" class="campo_input">
                 </div>
-            <div class="campo_contato container_small_width">
+            <div class="campo_contato container_small_width" id="container_tipo_pessoa">
                 <div class="small_width">
-                    <label for="cnpj">CNPJ:</label>
+                    <label for="cnpj" id="label_cnpj">CNPJ:<span class="campo_obrigatorio">*</span></label>
                     <input type="text" name="cnpj" id="cnpj" class="campo_input">
                     </div>
                 <div class="small_width">
-                    <label for="cpf">CPF:</label>
+                    <label for="cpf" id="label_cpf">CPF:<span class="campo_obrigatorio">*</span></label>
                     <input type="text" name="cpf" id="cpf" class="campo_input">
                     </div>
                 </div>
@@ -182,9 +182,8 @@
         <button type="button" class="btn btn2 btn_cancelar"> <img src="../imagens/icone_fechar.svg" alt="Icone Fechar">
             <p>Cancelar</p>
         </button>
-        <button type="submit" class="btn_salvar btn"> <img src="../imagens/icone_salvar.png" alt="Icone Salvar">
+        <button type="button" class="btn_salvar btn"> <img src="../imagens/icone_salvar.png" alt="Icone Salvar">
             <p>Salvar</p>
         </button>
     </div>
-
 </form>
