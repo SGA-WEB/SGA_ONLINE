@@ -57,6 +57,15 @@ export default async function cadastro_contato() {
         return confirmado;
     }
 
+    function destaqueCategorias() {
+        let container_checkbox = document.querySelector(".container_checkbox")
+        container_checkbox.classList.add("border_red")
+        document.querySelector("#link_contato").click()
+        setInterval(()=>{
+            container_checkbox.classList.remove("border_red")
+        },5000)
+    }
+
     async function salvarDadosNoBanco(e) {
         e.preventDefault();
 
@@ -64,6 +73,12 @@ export default async function cadastro_contato() {
             try {
                 const formData = new FormData(form);
                 const todasCategorias = formData.getAll('categorias').map(Number);
+
+                if (todasCategorias.length === 0) {
+                    destaqueCategorias()
+                    throw new Error("Defina pelo menos uma categoria para o contato");
+                }
+
                 const payload = {
                     razao_social: formData.get('razao_social'),
                     nome_fantasia: formData.get('nome_fantasia') || null,
@@ -92,7 +107,6 @@ export default async function cadastro_contato() {
                     categorias: todasCategorias
                 };
 
-                console.log('Enviando payload:', payload);
                 popup_carregando();
                 const response = await fetch('http://localhost:3000/api/contatos', {
                     method: 'POST',
