@@ -24,11 +24,13 @@ export default async function cadastro_contato() {
         carregarConteudo('contato/contato.html', document.querySelector('.principal'), false)
     })
 
-    document.querySelector("#btn_voltar").addEventListener("click", (e) => {
+    document.querySelector("#btn_voltar").addEventListener("click", async (e) => {
         let abaAtiva = document.querySelector('.aba_conteudo.ativa').id;
         if (abaAtiva === 'aba_contato') {
-            console.log(confirmarSaida())
-            // carregarConteudo('contato/contato.html', document.querySelector('.principal'), false)
+            let confirmar = await confirmarSaida();
+            if (confirmar) {
+                carregarConteudo('contato/contato.html', document.querySelector('.principal'), false)
+            }
         } else {
             document.getElementById('link_contato').click();
         }
@@ -46,29 +48,31 @@ export default async function cadastro_contato() {
     let form = document.querySelector("form")
     form.addEventListener("submit", salvarDadosNoBanco)
 
-    function confirmarSaida() {
-        let dados = Object.fromEntries(new FormData(form))
+    async function confirmarSaida() {
+        const form = document.querySelector("form");
+        const dados = Object.fromEntries(new FormData(form));
 
-        let dadosPreenchidos = 0
+        let dadosPreenchidos = 0;
         for (let chave in dados) {
-            if (dados[chave] !== "") {
-                dadosPreenchidos++
+            if (dados[chave] !== "" && dados[chave] !== null) {
+                dadosPreenchidos++;
             }
         }
 
-        if (dadosPreenchidos > 4) {
-            let confirmar = popup_confirmar("Existem dados preenchidos. Tem certeza que deseja sair sem salvar?", "Sim")
-            console.log(confirmar)
-            confirmar.then((confirmado) => {
-                if (confirmado) {
-                    return true
-                } else {
-                    return false
-                }
-            })
-        } else {
-            return true
+        // Se houver poucos dados preenchidos, não precisa confirmar.
+        if (dadosPreenchidos <= 4) {
+            return true;
         }
+
+        // Se houver dados, AWAIT (espere) o resultado do popup.
+        // A variável 'confirmado' receberá 'true' ou 'false' diretamente.
+        const confirmado = await popup_confirmar(
+            "Existem dados preenchidos. Tem certeza que deseja sair sem salvar?",
+            "Sim"
+        );
+
+        // Agora, retorne o resultado obtido do await.
+        return confirmado;
     }
 
     // --- LÓGICA PARA CONTROLAR A NAVEGAÇÃO DAS ABAS ---
