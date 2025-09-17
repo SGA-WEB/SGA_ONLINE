@@ -6,18 +6,24 @@
     <div class="modulo_header header_cadastro">
         <h2 class="h2_titulo">Cadastro de Produto</h2>
         <div class="container_codigo_data">
-            <p class="p_codigo_id">Codigo: <span class="codigo_id">16</span></p>
+            <p class="p_codigo_id">Codigo: <span class="codigo_id"></span></p>
             <div class="div_data_cadastro">
                 <p class="p_data_cadastro">Data de cadastro:</p>
                 <p class="data_cadastro"></p>
             </div>
         </div>
     </div>
-    <div class="modulo_main">
-        <div class="container_small_width" id="container_radios">
-            <div class="campo_contato small_width">
-                <label for="valor_varejo">Valor Varejo:</label>
-                <input type="number" name="valor_varejo" id="valor_varejo" class="campo_input">
+    <form>
+        <div class="modulo_main">
+            <div class="container_small_width" id="container_radios">
+                <div class="campo_contato small_width">
+                    <label for="preco_varejo">Valor Varejo:<span class="campo_obrigatorio">*</span></label>
+                    <input type="number" name="preco_varejo" id="preco_varejo" class="campo_input" required>
+                </div>
+                <div class="campo_contato small_width">
+                    <label for="preco_atacado">Valor Atacado:<span class="campo_obrigatorio">*</span></label>
+                    <input type="number" name="preco_atacado" id="preco_atacado" class="campo_input" required>
+                </div>
             </div>
             <div class="campo_contato normal_width">
                 <label for="produto">Nome do Produto:<span class="campo_obrigatorio">*</span></label>
@@ -49,9 +55,9 @@
                 <textarea name="descricao" id="descricao" class="textarea" rows="4"></textarea>
             </div>
         </div>
+        <button class="btn btn_salvar">
+            <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
+            <p>Salvar</p>
+        </button>
     </form>
-    <button class="btn btn_salvar">
-        <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
-        <p>Salvar</p>
-    </button>
 </section>

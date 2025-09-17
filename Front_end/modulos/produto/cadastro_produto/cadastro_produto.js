@@ -11,6 +11,7 @@ export default async function cadastro_produto() {
 
     // Busca os centros de estoque e adiciona ao select
     let centros_de_estoque = await buscarDados("centro_estoque")
+    console.log(centros_de_estoque)
     alterarOptionsSelect(
         document.querySelector("#id_centro_estoque"),
         centros_de_estoque,
