@@ -195,6 +195,8 @@ app.get('/api/produto', async (req, res) => {
             p.preco_atacado,
             p.descricao,
             p.data_cadastro,
+            p.corredor,
+            p.prateleira,
             ce.nome_centro_estoque,
             ce.id_centro_estoque AS fk_id_centro_estoque
             FROM sga.produto p
@@ -331,7 +333,7 @@ app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {
 
 app.put('/produto/:id_produto', async (req, res) => {
     const { id_produto } = req.params;
-    const { produto, quantidade, preco_varejo, preco_atacado, descricao, id_centro_estoque } = req.body;
+    const { produto, quantidade, preco_varejo, preco_atacado, descricao, id_centro_estoque, corredor, prateleira } = req.body;
     try {
         const query = `
             UPDATE sga.produto
@@ -341,11 +343,13 @@ app.put('/produto/:id_produto', async (req, res) => {
                 preco_varejo = $3,
                 preco_atacado = $4,
                 descricao = $5,
-                id_centro_estoque = $6
-            WHERE id_produto = $7
+                id_centro_estoque = $6,
+                corredor = $7,
+                prateleira = $8
+            WHERE id_produto = $9
             RETURNING *;
         `;
-        const values = [produto, quantidade, preco_varejo, preco_atacado, descricao, id_centro_estoque, id_produto];
+        const values = [produto, quantidade, preco_varejo, preco_atacado, descricao, id_centro_estoque, corredor, prateleira, id_produto];
         const result = await pool.query(query, values);
 
         if (result.rows.length === 0) {
