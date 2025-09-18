@@ -19,7 +19,7 @@ export default async function excluir_produto(dado, callbackFunction, ...param) 
                     callbackFunction(...param) // Chama a função de callback, se existir
                 }
                 let dados = await buscarDados('produto'); // Busca os dados da tabela, exibe na tela e permite pesquisar
-                carregarDadosNaTabela(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado"])
+                carregarDadosNaTabela(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado","corredor", "prateleira"])
             } else {
                 popup_erro(`Erro ao excluir produto 1: ${data.error}`)
             }

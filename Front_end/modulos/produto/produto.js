@@ -26,6 +26,7 @@ export default async function produto() {
     select2("9em")
 
     let dados = await buscarDados("produto")
+    console.log(dados)
     carregarDadosNaTabela(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado","corredor", "prateleira"])
     pesquisar(dados, ["id_produto", "produto", "quantidade","preco_varejo", "preco_atacado","corredor", "prateleira"])
 

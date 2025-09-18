@@ -40,7 +40,7 @@ export default async function cadastro_produto() {
         if (sucesso) {
             popup_aviso("Produto cadastrado com sucesso!")
             form.reset()
-            carregarConteudo("produto/produto.html", document.querySelector(".principal"), false, produto)
+            // carregarConteudo("produto/produto.html", document.querySelector(".principal"), false, produto)
         } else {
             popup_erro("Erro ao cadastrar produto. Tente novamente.")
         }
@@ -53,6 +53,7 @@ export default async function cadastro_produto() {
         dados.preco_atacado = +dados.preco_atacado;
         dados.quantidade = +dados.quantidade;
         dados.id_centro_estoque = +dados.id_centro_estoque;
+        console.log(dados)
         try {
             const response = await fetch('http://localhost:3000/produtos', {
                 method: 'POST',

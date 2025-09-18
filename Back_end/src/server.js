@@ -1123,7 +1123,9 @@ app.post('/produtos', async (req, res) => {
         preco_atacado,    // Obrigatório
         descricao,        // Opcional
         inativo,          // Opcional (padrão: false)
-        id_centro_estoque // Opcional (padrão: 1)
+        id_centro_estoque,
+        corredor,
+        prateleira // Opcional (padrão: 1)
     } = req.body;
 
     // 2. Validação dos campos obrigatórios e seus tipos.
@@ -1138,9 +1140,9 @@ app.post('/produtos', async (req, res) => {
         // 4. Comando SQL parametrizado para evitar SQL Injection.
         const insertQuery = `
       INSERT INTO sga.produto
-        (produto, quantidade, preco_varejo, preco_atacado, descricao, inativo, id_centro_estoque)
+        (produto, quantidade, preco_varejo, preco_atacado, descricao, corredor, prateleira, inativo, id_centro_estoque)
       VALUES
-        ($1, $2, $3, $4, $5, $6, $7)
+        ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *;
     `;
 
@@ -1150,7 +1152,9 @@ app.post('/produtos', async (req, res) => {
             quantidade,
             preco_varejo,
             preco_atacado,
-            descricao || null, // Se a descrição não for enviada, insere NULL no banco.
+            descricao || null,
+            corredor,
+            prateleira,
             typeof inativo === 'boolean' ? inativo : false, // Se 'inativo' não for um booleano, assume 'false'.
             id_centro_estoque || 1 // Se 'id_centro_estoque' não for enviado, assume '1'.
         ];
