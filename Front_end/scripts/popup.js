@@ -132,7 +132,6 @@ function popup_carregando(fecharPopup = false,mensagem = "Salvando alterações.
 
     p_mensagem.textContent = mensagem;
     popup.classList.remove('hide_popup');
-
     if (fecharPopup) {
         popup.classList.add('hide_popup');
     }
