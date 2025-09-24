@@ -475,6 +475,13 @@ btn_tipos_de_entrada.addEventListener("click", () => {
     carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada)
 })
 
+let btn_balanco = document.querySelector("#tela_balanco")
+btn_balanco.addEventListener("click", () => {
+    btn_movimentacao_de_estoque.classList.add("sub_menu_fechado")
+    btn_balanco.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
+    carregarConteudo("tela_balanco/tela_balanco.html", document.querySelector(".principal"), false)
+})
+
 
 
 export { carregarConteudo, btnMenuLateral, click_btn_menu, fecharMenu, mudarLogoParaPadrao }
