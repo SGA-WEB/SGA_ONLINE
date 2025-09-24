@@ -1,15 +1,17 @@
 <section class="modulo">
-    <h1 class="titulo1">Lista de Saída</h1>
+    <h1 class="titulo1">Saida de rodutos</h1>
     <div class="header">
         <div class="container_select">
             <p>Coluna:</p>
             <select id="select_coluna" class="campo_select">
-                <option value="id_de_saida">ID de Saída</option>
-                <option value="tipo_de_saida">Tipo de Saída</option>
-                <option value="data">Data</option>
-                <option value="cliente">Cliente</option>
-                <option value="valor_total">Valor Total</option>
-                <option value="status_da_saida">Status da Saída</option>
+                <option value="id_saida_produto">Código</option>
+                <option value="tipo_saida">Tipo de Saida</option>
+                <option value="numero_nf">Número NF</option>
+                <option value="data_recebimento">Data recebimento</option>
+                <option value="fornecedor_razao_social">Destinatário</option>
+                <option value="valor_total">Valor total</option>
+                <option value="status">Status</option>
+                <option value="desconto">Desconto</option>
             </select>
         </div>
         <div class="container_campo_pesquisa_btn">
@@ -32,16 +34,20 @@
         <table class="tabela" id="tabela_produtos">
             <thead>
                 <tr>
-                    <th id="tabela_id_de_saida">ID de Saída</th>
-                    <th id="tabela_cliente">Cliente</th>
-                    <th id="tabela_data">Data</th>
-                    <th id="tabela_tipo_de_saida">Tipo de Saída</th>
-                    <th id="tabela_status_de_saida">Status de Saida</th>
-                    <th id="tabela_valor_total">Valor Total</th>
+                    <th class="th_selecionar_todos">
+                        <input type="checkbox" name="selecionar_todos" id="selecionar_todos">
+                    </th>
+                    <th id="tabela_codigo">Código</th>
+                    <th id="tabela_tipo_de_saida">Tipo de Saida</th>
+                    <th id="tabela_numero_nf">Número NF</th>
+                    <th id="tabela_data_recebimento">Data recebimento</th>
+                    <th id="tabela_destinatario">Destinatário</th>
+                    <th id="tabela_valor_total">Valor total</th>
+                    <th id="tabela_desconto">Desconto</th>
+                    <th id="tabela_status">Status</th>
                 </tr>
             </thead>
             <tbody class="tbody">
-                
             </tbody>
         </table>
     </div>
