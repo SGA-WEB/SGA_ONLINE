@@ -6,7 +6,7 @@ import { popup_carregando, popup_aviso, popup_erro, popup_confirmar } from "../.
 
 export default async function cadastro_contato() {
     // =================================================================
-    // PASSO 1: INICIALIZAÇÃO GERAL (SETUP INICIAL)
+    // INICIALIZAÇÃO GERAL (SETUP INICIAL)
     // =================================================================
     popup_carregando();
 
@@ -21,7 +21,59 @@ export default async function cadastro_contato() {
     fecharMenu(document.querySelector(".modulo").offsetWidth, 584);
 
     // =================================================================
-    // PASSO 2: PEGAR REFERÊNCIAS DOS ELEMENTOS PRINCIPAIS
+    // VALIDAÇÕES E MÁSCARAS DE INPUT
+    // =================================================================
+
+    const fone1Input = document.getElementById('fone1');
+    const fone2Input = document.getElementById('fone2');
+
+    // Defina as máscaras para telefone fixo e celular no Brasil
+    const mascaraTelefone = {
+        mask: [
+            {
+                mask: '(00) 0000-0000',
+                // lazy: false // Descomente se quiser que a máscara apareça imediatamente
+            },
+            {
+                mask: '(00) 00000-0000'
+            }
+        ]
+    };
+
+    // Aplique as máscaras aos elementos
+    if (fone1Input) {
+        const fone1Mask = IMask(fone1Input, mascaraTelefone);
+    }
+    if (fone2Input) {
+        const fone2Mask = IMask(fone2Input, mascaraTelefone);
+    }
+
+    // 2. Máscara para CNPJ
+    const cnpjInput = document.getElementById('cnpj');
+    if (cnpjInput) {
+        IMask(cnpjInput, {
+            mask: '00.000.000/0000-00'
+        });
+    }
+
+    // 3. Máscara para CPF
+    const cpfInput = document.getElementById('cpf');
+    if (cpfInput) {
+        IMask(cpfInput, {
+            mask: '000.000.000-00'
+        });
+    }
+
+    // 4. Máscara para CEP
+    const cepInput = document.getElementById('cep'); // Certifique-se que o ID do seu input de CEP é 'cep'
+    if (cepInput) {
+        IMask(cepInput, {
+            mask: '00000-000'
+        });
+    }
+
+    // =================================================================
+    // PEGAR REFERÊNCIAS DOS ELEMENTOS PRINCIPAIS
     // =================================================================
     // Pegamos a referência do formulário UMA ÚNICA VEZ e guardamos
     const form = document.getElementById('form_cadastro_contato'); // Usar ID é mais seguro!
@@ -37,7 +89,7 @@ export default async function cadastro_contato() {
     const conteudosAba = document.querySelectorAll('.aba_conteudo');
 
     // =================================================================
-    // PASSO 3: DEFINIÇÃO DAS FUNÇÕES
+    // DEFINIÇÃO DAS FUNÇÕES
     // =================================================================
 
     async function confirmarSaida() {
@@ -61,9 +113,9 @@ export default async function cadastro_contato() {
         let container_checkbox = document.querySelector(".container_checkbox")
         container_checkbox.classList.add("border_red")
         document.querySelector("#link_contato").click()
-        setInterval(()=>{
+        setInterval(() => {
             container_checkbox.classList.remove("border_red")
-        },5000)
+        }, 5000)
     }
 
     async function salvarDadosNoBanco(e) {
@@ -141,7 +193,7 @@ export default async function cadastro_contato() {
     }
 
     // =================================================================
-    // PASSO 4: ADICIONAR OS EVENT LISTENERS
+    // ADICIONAR OS EVENT LISTENERS
     // =================================================================
 
     // Listener do formulário principal

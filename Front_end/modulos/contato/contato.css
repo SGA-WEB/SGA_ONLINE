@@ -109,7 +109,7 @@
         padding: 0.3rem 0.3rem;
     }
     .nav_contato {
-        top: -30px !important;
+        top: -35px !important;
     }
 }
 
@@ -145,7 +145,7 @@
 
 .nav_contato {
     position: relative;
-    top: -2.7rem;
+    top: -44px;
     margin: 0;
     display: flex;
     align-items: center;
@@ -164,7 +164,7 @@
 }
 
 .aba_botao {
-    padding: .5rem 1rem 0rem;
+    padding: .3rem 1rem .35rem 1rem;
     border-radius: 5px 5px 0 0;
     background-color: var(--cinza2);
 }
