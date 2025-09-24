@@ -108,6 +108,9 @@
     #tabela_contatos td, #tabela_contatos th {
         padding: 0.3rem 0.3rem;
     }
+    .nav_contato {
+        top: -30px !important;
+    }
 }
 
 @media (max-width: 640px) {
