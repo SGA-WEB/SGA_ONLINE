@@ -18,6 +18,9 @@
     width: 100%;
     justify-content: end;
 }
+.container_btns {
+    gap: 1rem;
+} 
 
 .titulo {
     width: 100%;
