@@ -6,8 +6,6 @@ import excluir_contato from "../excluir_contato.js";
 import { popup } from "../../../scripts/popup.js";
 
 export default async function visualizar_contato(dado) {
-    console.log(dado)
-
     select2("100%")
 
     const botoesAba = document.querySelectorAll('.aba_botao');
@@ -94,7 +92,19 @@ export default async function visualizar_contato(dado) {
     document.querySelector("#perfil_tributario").value = dado.perfil_tributario
     document.querySelector("#tipo_consumidor").value = dado.tipo_consumidor
     document.querySelector("#observacao").value = dado.observacao
-    
+
+    dado.categorias.forEach((categoria) => {
+        if (categoria.nome === "CLIENTE") {
+            document.querySelector("#cliente").checked = true
+        }
+        if (categoria.nome === "FORNECEDOR") {
+            document.querySelector("#fornecedor").checked = true
+        }
+        if (categoria.nome === "FUNCIONÁRIO") {
+            document.querySelector("#funcionario").checked = true
+        }
+    })
+
     const response = await fetch(`http://localhost:3000/api/endereco/${dado.fk_id_endereco}`);
     const endereco = await response.json();
     document.querySelector("#caixa_postal_principal").value = endereco.cep
