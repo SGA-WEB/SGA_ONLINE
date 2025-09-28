@@ -297,6 +297,44 @@ app.get('/api/entrada_produto', async (req, res) => {
     }
 });
 
+app.get('/api/saida_produto', async (req, res) => {
+    try {
+        // A consulta foi adaptada para seguir o padrão do seu endpoint de entrada.
+        // Ela junta a saída com o contato (destinatário) e com os itens da saída.
+        const result = await pool.query(`
+            SELECT
+                sp.id_saida_produto,
+                sp.tipo_saida,
+                sp.numero_nf,
+                sp.data_saida,
+                sp.valor_total,
+                sp.status,
+                sp.desconto,
+                c.razao_social AS destinatario_razao_social,
+                c.cnpj AS destinatario_cnpj,
+                COUNT(spi.id_item) AS total_itens,
+                SUM(spi.quantidade) AS total_quantidade,
+                SUM(spi.valor_total_item) AS valor_total_calculado
+            FROM
+                sga.saida_produto sp
+            INNER JOIN
+                sga.contato c ON sp.destinatario_id = c.id_contato
+            LEFT JOIN
+                sga.saida_produto_itens spi ON sp.id_saida_produto = spi.saida_id
+            WHERE
+                sp.inativo = FALSE
+            GROUP BY
+                sp.id_saida_produto, c.razao_social, c.cnpj
+            ORDER BY
+                sp.id_saida_produto DESC;
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Erro ao buscar saídas de produto:', err);
+        res.status(500).json({ error: 'Erro interno do servidor ao buscar saídas de produto' });
+    }
+});
+
 // Endpoint para atualizar um centro de estoque (PUT)
 app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {
     const { id_centro_estoque } = req.params;
