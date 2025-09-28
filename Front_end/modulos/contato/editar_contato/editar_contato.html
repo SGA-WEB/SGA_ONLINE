@@ -15,7 +15,7 @@
 </div>
 
 <div class="modulo_header header_cadastro">
-    <h2 class="h2_titulo">Cadastro de Contato</h2>
+    <h2 class="h2_titulo">Editar Contato</h2>
     <div class="container_codigo_data">
         <p class="p_codigo_id">Código: <span class="codigo_id"></span></p>
         <div class="div_data_cadastro">
@@ -25,7 +25,7 @@
     </div>
 </div>
 
-<form id="form_cadastro_contato">
+<form id="form_editar_contato">
     <div id="aba_contato" class="aba_conteudo ativa">
         <div class="modulo_main">
             <div class="container_small_width" id="container_radios">
@@ -122,17 +122,17 @@
                     <p>Perfil Tributário:</p>
                     <select id="perfil_tributario" class="campo_select" name="perfil_tributario">
                         <option value="PADRÃO">PADRÃO</option>
-                        <option value="COMSUMIDOR FINAL">COMSUMIDOR FINAL</option>
-                        <option value="COMTRIBUINTE">COMTRIBUINTE</option>
+                        <option value="CONSUMIDOR FINAL">CONSUMIDOR FINAL</option>
                         <option value="LUCRO REAL">LUCRO REAL</option>
+                        <option value="SIMPLES NACIONAL">SIMPLES NACIONAL</option>
                     </select>
                 </div>
                 <div class="campo_contato small_width select_conainer">
                     <p>Tipo consumidor:</p>
                     <select id="tipo_consumidor" class="campo_select" name="tipo_consumidor">
-                        <option value="padrão">Padrão</option>
-                        <option value="tipo1">Tipo 1</option>
-                        <option value="tipo2">Tipo 2</option>
+                        <option value="PADRÃO">PADRÃO</option>
+                        <option value="CONSUMIDOR FINAL">CONSUMIDOR FINAL</option>
+                        <option value="CONTRIBUINTE">CONTRIBUINTE</option>
                     </select>
                 </div>
             </div>
@@ -147,7 +147,7 @@
         <div class="modulo_main">
             <div class="container_small_width">
                 <div class="campo_contato small_width">
-                    <label for="caixa_postal">Caixa Postal (CEP):<span class="campo_obrigatorio">*</span></label>
+                    <label for="cep">Caixa Postal (CEP):<span class="campo_obrigatorio">*</span></label>
                     <input type="text" id="cep" name="cep" class="campo_input" required maxlength="9">
                 </div>
                 <div class="campo_contato small_width">
@@ -156,38 +156,40 @@
                 </div>
             </div>
             <div class="container_small_width">
-                <div class="campo_contato small_width select_conainer">
-                    <p>Estado:</p>
-                    <select id="estado" class="campo_select" name="estado">
-                        <option value="AC">AC</option>
-                        <option value="AL">AL</option>
-                        <option value="AP">AP</option>
-                        <option value="AM">AM</option>
-                        <option value="BA">BA</option>
-                        <option value="CE">CE</option>
-                        <option value="DF">DF</option>
-                        <option value="ES">ES</option>
-                        <option value="GO">GO</option>
-                        <option value="MA">MA</option>
-                        <option value="MT">MT</option>
-                        <option value="MS">MS</option>
-                        <option value="MG">MG</option>
-                        <option value="PA">PA</option>
-                        <option value="PB">PB</option>
-                        <option value="PR">PR</option>
-                        <option value="PE">PE</option>
-                        <option value="PI">PI</option>
-                        <option value="RJ">RJ</option>
-                        <option value="RN">RN</option>
-                        <option value="RS">RS</option>
-                        <option value="RO">RO</option>
-                        <option value="RR">RR</option>
-                        <option value="SC">SC</option>
-                        <option value="SP">SP</option>
-                        <option value="SE">SE</option>
-                        <option value="TO">TO</option>
-                        <option value="EXTERIOR">EXTERIOR</option>
-                    </select>
+                <div class="campo_contato small_width">
+                    <div class="campo_contato small_width select_conainer">
+                        <p>Estado:</p>
+                        <select id="estado" class="campo_select" name="estado">
+                            <option value="AC">AC</option>
+                            <option value="AL">AL</option>
+                            <option value="AP">AP</option>
+                            <option value="AM">AM</option>
+                            <option value="BA">BA</option>
+                            <option value="CE">CE</option>
+                            <option value="DF">DF</option>
+                            <option value="ES">ES</option>
+                            <option value="GO">GO</option>
+                            <option value="MA">MA</option>
+                            <option value="MT">MT</option>
+                            <option value="MS">MS</option>
+                            <option value="MG">MG</option>
+                            <option value="PA">PA</option>
+                            <option value="PB">PB</option>
+                            <option value="PR">PR</option>
+                            <option value="PE">PE</option>
+                            <option value="PI">PI</option>
+                            <option value="RJ">RJ</option>
+                            <option value="RN">RN</option>
+                            <option value="RS">RS</option>
+                            <option value="RO">RO</option>
+                            <option value="RR">RR</option>
+                            <option value="SC">SC</option>
+                            <option value="SP">SP</option>
+                            <option value="SE">SE</option>
+                            <option value="TO">TO</option>
+                            <option value="EXTERIOR">EXTERIOR</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="campo_contato small_width">
                     <label for="municipio">Município:<span class="campo_obrigatorio">*</span></label>
@@ -213,7 +215,7 @@
         <button type="button" class="btn btn2 btn_cancelar"> <img src="../imagens/icone_fechar.svg" alt="Icone Fechar">
             <p>Cancelar</p>
         </button>
-        <button type="button" class="btn_salvar btn"> <img src="../imagens/icone_salvar.png" alt="Icone Salvar">
+        <button type="submit" class="btn_salvar btn"> <img src="../imagens/icone_salvar.png" alt="Icone Salvar">
             <p>Salvar</p>
         </button>
     </div>
