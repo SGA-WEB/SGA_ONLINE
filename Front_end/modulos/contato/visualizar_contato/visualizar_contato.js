@@ -50,18 +50,7 @@ export default async function visualizar_contato(dado) {
     }
 
     document.querySelector(".btn_editar").addEventListener("click", async () => {
-        await carregarConteudo(
-            `contato/editar_contato/nav_contato.html`,
-            document.querySelector('.principal')
-        )
-        carregarConteudo(
-            `contato/editar_contato/criar_contato/editar_contato.html`,
-            document.querySelector('.modulo'),
-            false,
-            editar_contato,
-            dado,
-            true
-        );
+        carregarConteudo("contato/editar_contato/editar_contato.html", document.querySelector(".modulo"), false, editar_contato, dado, true)
     })
 
     let btn_excluir = document.querySelector(".btn_excluir")
@@ -104,6 +93,20 @@ export default async function visualizar_contato(dado) {
             document.querySelector("#funcionario").checked = true
         }
     })
+
+    if (dado.tipo_pessoa === "FÍSICA") {
+        document.querySelector("#contato_fisico").checked = true
+    }
+    if (dado.tipo_pessoa === "JURÍDICA") {
+        document.querySelector("#contato_juridico").checked = true
+    }
+
+    if (dado.situacao === "ATIVO") {
+        document.querySelector("#ativo").checked = true
+    }
+    if (dado.situacao === "INATIVO") {
+        document.querySelector("#inativo").checked = true
+    }
 
     const response = await fetch(`http://localhost:3000/api/endereco/${dado.fk_id_endereco}`);
     const endereco = await response.json();

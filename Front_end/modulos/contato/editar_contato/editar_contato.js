@@ -8,10 +8,9 @@ import { popup_aviso, popup_carregando, popup_erro } from "../../../scripts/popu
 export default async function editar_contato(dado, telaAnteriorVisualizar) {
     select2("100%")
 
-    console.log(dado)
-
     const botoesAba = document.querySelectorAll('.aba_botao');
     const conteudosAba = document.querySelectorAll('.aba_conteudo');
+    const btnProximo = document.querySelector('.btn_proximo');
 
     // Listeners dos botões de navegação e abas
     botoesAba.forEach(botao => {
@@ -21,29 +20,12 @@ export default async function editar_contato(dado, telaAnteriorVisualizar) {
             const idAlvo = botao.dataset.aba;
             botao.classList.add('ativo');
             document.getElementById(idAlvo).classList.add('ativa');
-
-            let btnProximo = document.querySelector('.btn_proximo');
             if (btnProximo) { // Adiciona verificação para evitar erro se o botão não existir
                 btnProximo.style.display = (idAlvo === 'aba_endereco') ? 'none' : 'block';
             }
         });
     });
 
-    // Os botões abaixo são opcionais dependendo da sua tela
-    const btnVoltar = document.querySelector("#btn_voltar");
-    if (btnVoltar) {
-        btnVoltar.addEventListener("click", async (e) => {
-            let abaAtiva = document.querySelector('.aba_conteudo.ativa').id;
-            if (abaAtiva === 'aba_contato') {
-                carregarConteudo('contato/contato.html', document.querySelector('.principal'), false);
-            } else {
-                const linkContato = document.querySelector('[data-aba="aba_contato"]');
-                if (linkContato) linkContato.click();
-            }
-        });
-    }
-
-    const btnProximo = document.querySelector(".btn_proximo");
     if (btnProximo) {
         btnProximo.addEventListener("click", (e) => {
             const linkEndereco = document.querySelector('[data-aba="aba_endereco"]');
@@ -51,12 +33,63 @@ export default async function editar_contato(dado, telaAnteriorVisualizar) {
         });
     }
 
+    // Os botões abaixo são opcionais dependendo da sua tela
+    const btnVoltar = document.querySelector("#btn_voltar");
+    if (btnVoltar) {
+        btnVoltar.addEventListener("click", async (e) => {
+            let abaAtiva = document.querySelector('.aba_conteudo.ativa').id;
+            if (abaAtiva === 'aba_contato') {
+                if (telaAnteriorVisualizar) {
+                    carregarConteudo(
+                        "contato/visualizar_contato/visualizar_contato.html",
+                        document.querySelector(".modulo"),
+                        false,
+                        visualizar_contato,
+                        dado
+                    );
+                } else {
+                    carregarConteudo('contato/contato.html', document.querySelector('.principal'), false);
+                }
+            } else {
+                const linkContato = document.querySelector('[data-aba="aba_contato"]');
+                if (linkContato) linkContato.click();
+            }
+        });
+    }
+
+    const btn_cancelar = document.querySelector(".btn_cancelar")
+    if (btn_cancelar) {
+        btn_cancelar.addEventListener("click", async (e) => {
+            if (telaAnteriorVisualizar) {
+                carregarConteudo(
+                    "contato/visualizar_contato/visualizar_contato.html",
+                    document.querySelector(".modulo"),
+                    false,
+                    visualizar_contato,
+                    dado
+                );
+            } else {
+                carregarConteudo('contato/contato.html', document.querySelector('.principal'), false);
+            }
+        });
+    }
+
+
     fecharMenu(document.querySelector(".modulo").offsetWidth, 584)
     window.addEventListener('resize', (e) => {
         if (document.querySelector(".modulo") != null) {
             fecharMenu(document.querySelector(".modulo").offsetWidth, 421)
         }
     })
+
+    function destaqueCategorias() {
+        let container_checkbox = document.querySelector(".container_checkbox")
+        container_checkbox.classList.add("border_red")
+        document.querySelector("#link_contato").click()
+        setInterval(() => {
+            container_checkbox.classList.remove("border_red")
+        }, 5000)
+    }
 
     // Preenchendo os dados do contato
     document.querySelector(".codigo_id").textContent = dado.id_contato
@@ -87,6 +120,21 @@ export default async function editar_contato(dado, telaAnteriorVisualizar) {
         }
     })
 
+    if (dado.tipo_pessoa === "FÍSICA") {
+        document.querySelector("#contato_fisico").checked = true
+    }
+    if (dado.tipo_pessoa === "JURÍDICA") {
+        document.querySelector("#contato_juridico").checked = true
+    }
+
+    if (dado.situacao === "ATIVO") {
+        document.querySelector("#ativo").checked = true
+    }
+    if (dado.situacao === "INATIVO") {
+        document.querySelector("#inativo").checked = true
+    }
+
+
     const response = await fetch(`http://localhost:3000/api/endereco/${dado.fk_id_endereco}`);
     const endereco = await response.json();
     document.querySelector("#cep").value = endereco.cep
@@ -100,13 +148,9 @@ export default async function editar_contato(dado, telaAnteriorVisualizar) {
 
     document.querySelector("#form_editar_contato").addEventListener("submit", async (e) => {
         e.preventDefault();
+        const form = document.querySelector("#form_editar_contato");
         const formData = new FormData(form);
         const todasCategorias = formData.getAll('categorias').map(Number);
-
-        if (todasCategorias.length === 0) {
-            destaqueCategorias()
-            throw new Error("Defina pelo menos uma categoria para o contato");
-        }
 
         const payload = {
             razao_social: formData.get('razao_social'),
@@ -124,6 +168,7 @@ export default async function editar_contato(dado, telaAnteriorVisualizar) {
             tipo_pessoa: formData.get('tipo_pessoa'),
             situacao: formData.get('situacao') || 'Ativo',
             inativo: formData.get('inativo') === 'true',
+            fk_id_endereco: dado.fk_id_endereco,
             endereco: {
                 cep: formData.get('cep'),
                 pais: formData.get('pais') || 'Brasil',
@@ -139,6 +184,10 @@ export default async function editar_contato(dado, telaAnteriorVisualizar) {
         // Inserir os dados no banco de dados:
         try {
             popup_carregando()
+            if (todasCategorias.length === 0) {
+                destaqueCategorias()
+                throw new Error("Defina pelo menos uma categoria para o contato");
+            }
             const response = await fetch(`http://localhost:3000/api/contato/${dado.id_contato}`, {
                 method: 'PUT',
                 headers: {
@@ -156,7 +205,8 @@ export default async function editar_contato(dado, telaAnteriorVisualizar) {
 
         } catch (error) {
             console.error('Erro:', error);
-            popup_erro('Erro ao atualizar contato.');
+            popup_carregando(true)
+            popup_erro('Erro ao atualizar contato. ' + error.message);
         }
 
         try {
@@ -204,7 +254,18 @@ export default async function editar_contato(dado, telaAnteriorVisualizar) {
             })
             popup_carregando(true)
             popup_aviso("Contato atualizado com sucesso!")
-            carregarConteudo('contato/contato.html', document.querySelector('.principal'), false)
+
+            if (telaAnteriorVisualizar) {
+                carregarConteudo(
+                    "contato/visualizar_contato/visualizar_contato.html",
+                    document.querySelector(".modulo"),
+                    false,
+                    visualizar_contato,
+                    payload
+                );
+            } else {
+                carregarConteudo('contato/contato.html', document.querySelector('.principal'), false)
+            }
             return data.endereco;
         } catch (error) {
             console.error('Erro:', error);
