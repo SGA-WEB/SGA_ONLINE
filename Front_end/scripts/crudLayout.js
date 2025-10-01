@@ -127,10 +127,6 @@ export default function crudLayout (obj, tr, addListener = true) {
                 if (acao == 'excluir') {
                     funcoes[`excluir_contato`](obj)
                 } else {
-                //    await carregarConteudo(
-                //         `contato/${acao}_contato/nav_contato.html`,
-                //         document.querySelector('.principal')
-                //     );
                     carregarConteudo(
                         `contato/${acao}_contato/${acao}_contato.html`,
                         document.querySelector('.modulo'),
