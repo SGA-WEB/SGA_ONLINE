@@ -1,20 +1,55 @@
-<section class="modulo" id="modulo_cadastro_entrada_produto">
-    <button class="btn_nav" id="btn_voltar_entrada_produtos">
-        <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
-        <p class="btn_voltar">Voltar</p>
-    </button>
-    <div class="modulo_header header_cadastro">
-        <h2 class="h2_titulo">Cadastro de entrada de produtos</h2>
-        <div class="container_codigo_data">
-            <p class="p_codigo_id">Codigo: <span class="codigo_id"></span></p>
-            <div class="div_data_cadastro">
-                <p class="p_data_cadastro">Data de cadastro:</p>
-                <p class="data_cadastro"></p>
+<section class="modulo" id="modulo_cadastro_saida_produto">
+        <button class="btn_nav" id="btn_voltar_saida_produtos">
+            <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
+            <p class="btn_voltar">Voltar</p>
+        </button>
+        <div class="modulo_header header_cadastro">
+            <h2 class="h2_titulo">Cadastro de saída de produtos</h2>
+            <div class="container_codigo_data">
+                <p class="p_codigo_id">Código: <span class="codigo_id"></span></p>
+                <div class="div_data_cadastro">
+                    <p class="p_data_cadastro">Data da saída:</p>
+                    <p class="data_cadastro"></p>
+                </div>
             </div>
         </div>
-    </div>
-    <form id="form_entrada_produto">
-        <div class="modulo_main">
+        <form id="form_saida_produto">
+            <div class="modulo_main">
+                </div>
+                <div class="container_small_width">
+                    <div class="campo_contato small_width select_conainer">
+                        <p>Tipo de saída:<span class="campo_obrigatorio">*</span></p>
+                        <select id="tipo_de_saida" class="campo_select" name="tipo_de_saida" required>
+                            <option value=""></option>
+                            <option value="TRANSFERÊNCIA">TRANSFERÊNCIA ENTRE ESTOQUES / FILIAIS</option>
+                            <option value="AJUSTE">AJUSTE DE ESTOQUE</option>
+                            <option value="AJUSTE">CONSUMO INTERNO</option>
+                            <option value="DESCARTE">DESCARTE</option>
+                            <option value="REMESSA">REMESSA PARA CONSERTO</option>
+                        </select>
+                    </div>
+                    <div class="campo_contato small_width">
+                        <label for="data_saida">Data da saída:<span class="campo_obrigatorio">*</span></label>
+                        <input type="date" name="data_saida" id="data_saida" class="campo_input" required>
+                    </div>
+                </div>
+                <div class="container_small_width">
+                    <div class="campo_contato small_width select_conainer">
+                        <p>Status da saída:<span class="campo_obrigatorio">*</span></p>
+                        <select id="status_da_saida" class="campo_select" name="status_da_saida" required>
+                            <option value=""></option>
+                            <option value="FINALIZADO">FINALIZADO</option>
+                            <option value="PENDENTE">PENDENTE</option>
+                            <option value="CANCELADO">CANCELADO</option>
+                        </select>
+                    </div>
+                    <div class="campo_contato small_width">
+                        <label for="valor_total">Valor Total:<span class="campo_obrigatorio">*</span></label>
+                        <input type="number" name="valor_total" id="valor_total" class="campo_input" required step="0.01" min="0">
+                    </div>
+                </div>
+            </div>
+            <div class="modulo_main">
             <div class="container_normal_width" id="container_chave_nfe" style="max-width: 500px;">
                 <div class="campo_contato">
                     <label for="chave_nfe">Chave NF-e:<span class="campo_obrigatorio">*</span></label>
@@ -38,7 +73,7 @@
                     <input type="text" name="numero_nf" id="numero_nf" class="campo_input" maxlength="20" required>
                 </div>
                 <div class="campo_contato small_width select_conainer">
-                    <p>Fornecedor:<span class="campo_obrigatorio">*</span></p>
+                    <p>Destinatário:<span class="campo_obrigatorio">*</span></p>
                     <select id="fornecedor" class="campo_select" name="fornecedor" required>
                         <option value=""></option>
                     </select>
@@ -49,14 +84,6 @@
                     <label for="modelo">Modelo Fiscal:<span class="campo_obrigatorio">*</span></label>
                     <input type="text" name="modelo" id="modelo" class="campo_input" maxlength="2" required>
                 </div>
-                <div class="campo_contato small_width select_conainer">
-                    <p>Tipo de entrada:<span class="campo_obrigatorio">*</span></p>
-                    <select id="tipo_entrada" class="campo_select" name="tipo_entrada" required>
-                        <option value=""></option>
-                        <option value="COMPRA">COMPRA</option>
-                        <option value="DEVOLUÇÃO">DEVOLUÇÃO</option>
-                        <option value="INVENTÁRIO">INVENTÁRIO</option>
-                    </select>
                 </div>
             </div>
             <div class="container_small_width">
@@ -89,26 +116,6 @@
                     >
                 </div>
             </div>
-            <div class="container_small_width">
-                <div class="campo_contato small_width">
-                    <label for="data_emissao">Data de Emissão:<span class="campo_obrigatorio">*</span></label>
-                    <input type="date" name="data_emissao" id="data_emissao" class="campo_input" required>
-                </div>
-                <div class="campo_contato small_width">
-                    <label for="data_recebimento">Data de Recebimento:<span class="campo_obrigatorio">*</span></label>
-                    <input type="date" name="data_recebimento" id="data_recebimento" class="campo_input" required>
-                </div>
-            </div>
-            <div class="container_small_width">
-                <div class="campo_contato small_width select_conainer">
-                    <p>Status:<span class="campo_obrigatorio">*</span></p>
-                    <select id="status" class="campo_select" name="status" required>
-                        <option value=""></option>
-                        <option value="FINALIZADO">FINALIZADO</option>
-                        <option value="PENDENTE">PENDENTE</option>
-                        <option value="CONCLUÍDO">CONCLUÍDO</option>
-                    </select>
-                </div>
             </div>
         </div>
         <h3 class="h3_titulo">Produtos relacionados:<span class="campo_obrigatorio">*</span></h3>
@@ -136,13 +143,14 @@
             <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
             <p>Salvar</p>
         </button>
-    </form>
+        </form>
+    </section>
     <div class="container_popup popup_relacao">
         <div class="popup">
             <button class="btn_fechar_popup">
                 <img src="../imagens/icone_fechar.svg" alt="Icone Fechar">
             </button>
-            <h2 class="h2_titulo">Selecione os produtos para relacionar a entrada</h2>
+            <h2 class="h2_titulo">Selecione os produtos para relacionar a saida</h2>
             <div class="header">
                 <div class="container_select">
                     <p>Coluna:</p>
@@ -184,7 +192,7 @@
                     </tbody>
                 </table>
             </div>
-            <button class="btn margin_left_auto btn_selecionar_relacao" id="btn_selecionar_relacao_entrada">
+            <button class="btn margin_left_auto btn_selecionar_relacao" id="btn_selecionar_relacao_saida">
                 <img src="../imagens/btn_add.svg" alt="Icone Adicionar" class="brightness0">
                 <span>Adicionar Relação</span>
             </button>

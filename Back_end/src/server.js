@@ -297,6 +297,44 @@ app.get('/api/entrada_produto', async (req, res) => {
     }
 });
 
+app.get('/api/saida_produto', async (req, res) => {
+    try {
+        // A consulta foi adaptada para seguir o padrão do seu endpoint de entrada.
+        // Ela junta a saída com o contato (destinatário) e com os itens da saída.
+        const result = await pool.query(`
+            SELECT
+                sp.id_saida_produto,
+                sp.tipo_saida,
+                sp.numero_nf,
+                sp.data_saida,
+                sp.valor_total,
+                sp.status,
+                sp.desconto,
+                c.razao_social AS destinatario_razao_social,
+                c.cnpj AS destinatario_cnpj,
+                COUNT(spi.id_item) AS total_itens,
+                SUM(spi.quantidade) AS total_quantidade,
+                SUM(spi.valor_total_item) AS valor_total_calculado
+            FROM
+                sga.saida_produto sp
+            INNER JOIN
+                sga.contato c ON sp.destinatario_id = c.id_contato
+            LEFT JOIN
+                sga.saida_produto_itens spi ON sp.id_saida_produto = spi.saida_id
+            WHERE
+                sp.inativo = FALSE
+            GROUP BY
+                sp.id_saida_produto, c.razao_social, c.cnpj
+            ORDER BY
+                sp.id_saida_produto DESC;
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Erro ao buscar saídas de produto:', err);
+        res.status(500).json({ error: 'Erro interno do servidor ao buscar saídas de produto' });
+    }
+});
+
 // Endpoint para atualizar um centro de estoque (PUT)
 app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {
     const { id_centro_estoque } = req.params;
@@ -587,49 +625,6 @@ app.put('/api/endereco/:id_endereco', async (req, res) => {
                 error: 'Erro ao atualizar endereço'
             });
         }
-    }
-});
-
-// Endpoint para inativar tabalas (DELETE)
-app.delete('/centro_estoque/:id_centro_estoque', async (req, res) => {
-    const { id_centro_estoque } = req.params;
-    try {
-        await pool.query(`
-            UPDATE sga.centro_estoque
-            SET inativo = TRUE
-            WHERE id_centro_estoque = $1
-        `, [id_centro_estoque]);
-        res.status(200).json({ message: 'Centro de estoque excluído com sucesso!' });
-    } catch (err) {
-        res.status(500).json({ error: 'Erro ao excluir' });
-    }
-});
-
-app.delete('/produto/:id_produto', async (req, res) => {
-    const { id_produto } = req.params;
-    try {
-        await pool.query(`
-            UPDATE sga.produto
-            SET inativo = TRUE
-            WHERE id_produto = $1
-        `, [id_produto]);
-        res.status(200).json({ message: 'Produto excluído com sucesso!' });
-    } catch (err) {
-        res.status(500).json({ error: 'Erro ao excluir' });
-    }
-});
-
-app.delete('/contato/:id_contato', async (req, res) => {
-    const { id_contato } = req.params;
-    try {
-        await pool.query(`
-            UPDATE sga.contato
-            SET inativo = TRUE
-            WHERE id_contato = $1
-        `, [id_contato]);
-        res.status(200).json({ message: 'Centro de estoque excluído com sucesso!' });
-    } catch (err) {
-        res.status(500).json({ error: 'Erro ao excluir' });
     }
 });
 
@@ -999,64 +994,6 @@ app.put('/entrada_produto/:id', async (req, res) => {
     }
 });
 
-// Endpoint para inativar entrada de produto (DELETE)
-app.delete('/entrada_produto/:id_entrada', async (req, res) => {
-    const { id_entrada } = req.params;
-
-    const client = await pool.connect();
-
-    try {
-        await client.query('BEGIN');
-
-        // 1. Verificar se a entrada existe
-        const entradaExistente = await client.query(
-            'SELECT 1 FROM sga.entrada_produto WHERE id_entrada_produto = $1 AND inativo = FALSE',
-            [id_entrada]
-        );
-
-        if (entradaExistente.rowCount === 0) {
-            return res.status(404).json({
-                sucesso: false,
-                mensagem: 'Entrada não encontrada ou já inativada'
-            });
-        }
-
-        // 2. Inativar a entrada principal
-        await client.query(`
-            UPDATE sga.entrada_produto
-            SET inativo = TRUE
-            WHERE id_entrada_produto = $1
-        `, [id_entrada]);
-
-        // 3. Opcional: Inativar também os itens relacionados
-        await client.query(`
-            UPDATE sga.entrada_produto_itens
-            SET inativo = TRUE
-            WHERE entrada_id = $1
-        `, [id_entrada]);
-
-        await client.query('COMMIT');
-
-        res.status(200).json({
-            sucesso: true,
-            mensagem: 'Entrada de produto inativada com sucesso!',
-            id_entrada: id_entrada
-        });
-
-    } catch (err) {
-        await client.query('ROLLBACK');
-        console.error('Erro ao inativar entrada:', err);
-
-        res.status(500).json({
-            sucesso: false,
-            erro: 'Erro ao inativar entrada de produto',
-            detalhes: err.message
-        });
-    } finally {
-        client.release();
-    }
-});
-
 // Rota para upload da imagem
 app.post('/upload-avatar', upload.single('avatar'), async (req, res) => {
     try {
@@ -1125,43 +1062,6 @@ app.get('/api/imagem/:id', async (req, res) => {
         exists: true, // ✅ Novo campo
         imageUrl: publicUrl
     });
-});
-
-app.delete('/api/remove-foto/:userId', async (req, res) => {
-    try {
-        const { userId } = req.params;
-        const fileName = `${userId}.webp`; // Padrão de nomeação
-
-        // 1. Verifica se o arquivo existe
-        const { data: fileList } = await supabase.storage
-            .from('fotos-usuarios')
-            .list('', {
-                search: fileName
-            });
-
-        if (!fileList || fileList.length === 0) {
-            return res.status(404).json({ error: 'Foto não encontrada' });
-        }
-
-        // 2. Remove o arquivo
-        const { error } = await supabase.storage
-            .from('fotos-usuarios')
-            .remove([fileName]);
-
-        if (error) throw error;
-
-        res.json({
-            success: true,
-            message: 'Foto removida com sucesso'
-        });
-
-    } catch (error) {
-        console.error('Erro ao remover foto:', error);
-        res.status(500).json({
-            error: 'Erro ao remover foto',
-            details: error.message
-        });
-    }
 });
 
 // Rota POST para inserir novo tipo_entrada
@@ -1302,6 +1202,130 @@ app.post('/produtos', async (req, res) => {
     }
 });
 
+// POST /api/contatos
+// Rota para criar um novo contato, incluindo seu endereço e categorias, usando uma transação.
+app.post('/api/contatos', async (req, res) => {
+    const client = await pool.connect();
+    try {
+        const {
+            razao_social,
+            nome_fantasia,
+            fone1,
+            fone2,
+            insc_municipal,
+            insc_estadual,
+            cnpj,
+            cpf,
+            email_padrao,
+            perfil_tributario,
+            tipo_consumidor,
+            observacao,
+            tipo_pessoa,
+            situacao,
+            inativo,
+            endereco, // Objeto aninhado com os dados do endereço
+            categorias, // Array de IDs de categoria, ex: [1, 3, 5]
+        } = req.body;
+
+        // 2. Validações principais
+        if (!razao_social || !fone1 || !tipo_pessoa) {
+            return res.status(400).json({ error: 'Campos obrigatórios do contato estão faltando (razao_social, fone1, tipo_pessoa).' });
+        }
+        if (tipo_pessoa === 'Jurídica' && !cnpj) {
+            return res.status(400).json({ error: 'CNPJ é obrigatório para pessoa jurídica.' });
+        }
+        if (tipo_pessoa === 'Física' && !cpf) {
+            return res.status(400).json({ error: 'CPF é obrigatório para pessoa física.' });
+        }
+        // Validação do endereço aninhado
+        if (!endereco || !endereco.cep || !endereco.municipio || !endereco.estado || !endereco.endereco) {
+            return res.status(400).json({ error: 'O objeto de endereço e seus campos obrigatórios (cep, municipio, estado, endereco) são necessários.' });
+        }
+
+        // =================================================================
+        // INÍCIO DA TRANSAÇÃO
+        // =================================================================
+        await client.query('BEGIN');
+
+        // 3. Insere o endereço primeiro para obter o 'id_endereco'.
+        const enderecoQuery = `
+            INSERT INTO sga.endereco (cep, municipio, estado, pais, ponto_referencia, setor, endereco)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING id_endereco;
+        `;
+        const enderecoValues = [
+            endereco.cep,
+            endereco.municipio,
+            endereco.estado,
+            endereco.pais || 'Brasil',
+            endereco.ponto_referencia || null,
+            endereco.setor || null,
+            endereco.endereco
+        ];
+        const enderecoResult = await client.query(enderecoQuery, enderecoValues);
+        const novoEnderecoId = enderecoResult.rows[0].id_endereco;
+
+        // 4. Insere o contato, usando o 'id_endereco' que acabamos de criar.
+        const contatoQuery = `
+            INSERT INTO sga.contato (
+                razao_social, nome_fantasia, fone1, fone2, insc_municipal, insc_estadual,
+                cnpj, cpf, email_padrao, perfil_tributario, tipo_consumidor,
+                observacao, tipo_pessoa, situacao, inativo, fk_id_endereco
+            ) VALUES (
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
+            ) RETURNING *;
+        `;
+        const contatoValues = [
+            razao_social, nome_fantasia || null, fone1, fone2 || null, insc_municipal || null, insc_estadual || null,
+            cnpj || null, cpf || null, email_padrao || null, perfil_tributario || null, tipo_consumidor || null,
+            observacao || null, tipo_pessoa, situacao || 'Ativo', inativo || false, novoEnderecoId
+        ];
+        const contatoResult = await client.query(contatoQuery, contatoValues);
+        const novoContato = contatoResult.rows[0];
+
+        // 5. Insere as categorias na tabela de junção 'contato_categoria'.
+        if (categorias && Array.isArray(categorias) && categorias.length > 0) {
+            const valuesPlaceholder = categorias.map((_, index) =>
+                `($1, $${index + 2})`
+            ).join(', ');
+
+            const categoriaQuery = `
+                INSERT INTO sga.contato_categoria (id_contato, id_categoria)
+                VALUES ${valuesPlaceholder};
+            `;
+            // O primeiro valor é sempre o id_contato, seguido pelos ids das categorias
+            const categoriaValues = [novoContato.id_contato, ...categorias];
+            await client.query(categoriaQuery, categoriaValues);
+        }
+
+        // =================================================================
+        // FIM DA TRANSAÇÃO
+        // =================================================================
+        await client.query('COMMIT');
+
+        // 6. Retorna o contato recém-criado com status 201 (Created).
+        res.status(201).json(novoContato);
+
+    } catch (err) {
+        // Se qualquer um dos comandos acima falhar, desfaz todas as alterações.
+        await client.query('ROLLBACK');
+        console.error('Erro na transação de inserção de contato:', err);
+
+        // Tratamento de erros específicos do PostgreSQL (similar ao seu código)
+        if (err.code === '23505') { // Violação de chave única
+            return res.status(409).json({ error: `Já existe um registro com este valor. Detalhe: ${err.detail}` });
+        }
+        if (err.code === '23503') { // Violação de chave estrangeira
+            return res.status(400).json({ error: 'Uma ou mais categorias fornecidas não existem.' });
+        }
+
+        res.status(500).json({ error: 'Erro interno do servidor ao cadastrar contato.' });
+    } finally {
+        // Libera o 'client' de volta para o pool, independentemente do resultado.
+        client.release();
+    }
+});
+
 // Rota GET para listar todos os tipos_entrada
 app.get('/api/tipos_entrada', async (req, res) => {
     try {
@@ -1391,6 +1415,144 @@ app.delete('/tipos_entrada/:id', async (req, res) => {
         res.status(200).json({ message: 'Tipo de entrada excluído com sucesso!' });
     } catch (err) {
         res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
+
+app.delete('/api/remove-foto/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const fileName = `${userId}.webp`; // Padrão de nomeação
+
+        // 1. Verifica se o arquivo existe
+        const { data: fileList } = await supabase.storage
+            .from('fotos-usuarios')
+            .list('', {
+                search: fileName
+            });
+
+        if (!fileList || fileList.length === 0) {
+            return res.status(404).json({ error: 'Foto não encontrada' });
+        }
+
+        // 2. Remove o arquivo
+        const { error } = await supabase.storage
+            .from('fotos-usuarios')
+            .remove([fileName]);
+
+        if (error) throw error;
+
+        res.json({
+            success: true,
+            message: 'Foto removida com sucesso'
+        });
+
+    } catch (error) {
+        console.error('Erro ao remover foto:', error);
+        res.status(500).json({
+            error: 'Erro ao remover foto',
+            details: error.message
+        });
+    }
+});
+
+// Endpoint para inativar tabalas (DELETE)
+app.delete('/centro_estoque/:id_centro_estoque', async (req, res) => {
+    const { id_centro_estoque } = req.params;
+    try {
+        await pool.query(`
+            UPDATE sga.centro_estoque
+            SET inativo = TRUE
+            WHERE id_centro_estoque = $1
+        `, [id_centro_estoque]);
+        res.status(200).json({ message: 'Centro de estoque excluído com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
+
+app.delete('/produto/:id_produto', async (req, res) => {
+    const { id_produto } = req.params;
+    try {
+        await pool.query(`
+            UPDATE sga.produto
+            SET inativo = TRUE
+            WHERE id_produto = $1
+        `, [id_produto]);
+        res.status(200).json({ message: 'Produto excluído com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
+
+app.delete('/contato/:id_contato', async (req, res) => {
+    const { id_contato } = req.params;
+    try {
+        await pool.query(`
+            UPDATE sga.contato
+            SET inativo = TRUE
+            WHERE id_contato = $1
+        `, [id_contato]);
+        res.status(200).json({ message: 'Centro de estoque excluído com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
+
+// Endpoint para inativar entrada de produto (DELETE)
+app.delete('/entrada_produto/:id_entrada', async (req, res) => {
+    const { id_entrada } = req.params;
+
+    const client = await pool.connect();
+
+    try {
+        await client.query('BEGIN');
+
+        // 1. Verificar se a entrada existe
+        const entradaExistente = await client.query(
+            'SELECT 1 FROM sga.entrada_produto WHERE id_entrada_produto = $1 AND inativo = FALSE',
+            [id_entrada]
+        );
+
+        if (entradaExistente.rowCount === 0) {
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Entrada não encontrada ou já inativada'
+            });
+        }
+
+        // 2. Inativar a entrada principal
+        await client.query(`
+            UPDATE sga.entrada_produto
+            SET inativo = TRUE
+            WHERE id_entrada_produto = $1
+        `, [id_entrada]);
+
+        // 3. Opcional: Inativar também os itens relacionados
+        await client.query(`
+            UPDATE sga.entrada_produto_itens
+            SET inativo = TRUE
+            WHERE entrada_id = $1
+        `, [id_entrada]);
+
+        await client.query('COMMIT');
+
+        res.status(200).json({
+            sucesso: true,
+            mensagem: 'Entrada de produto inativada com sucesso!',
+            id_entrada: id_entrada
+        });
+
+    } catch (err) {
+        await client.query('ROLLBACK');
+        console.error('Erro ao inativar entrada:', err);
+
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao inativar entrada de produto',
+            detalhes: err.message
+        });
+    } finally {
+        client.release();
     }
 });
 

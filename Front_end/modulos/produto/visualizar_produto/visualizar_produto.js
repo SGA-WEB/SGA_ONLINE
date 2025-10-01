@@ -7,7 +7,7 @@ import { formatarData, alterarOptionsSelect } from "../../../scripts/funcionalid
 import buscarDados from "../../../scripts/buscarDados.js"
 
 export default async function visualizar_produto (dado) {
-    select2("10rem")
+    select2("100%")
 
     let centros_de_estoque = await buscarDados("centro_estoque")
     alterarOptionsSelect(
@@ -23,6 +23,8 @@ export default async function visualizar_produto (dado) {
     let quantidade_em_estoque = document.querySelector('#quantidade_em_estoque')
     let data_cadastro = document.querySelector('.data_cadastro')
     let descricao = document.querySelector('#descricao')
+    let corredor = document.querySelector('#corredor')
+    let prateleira = document.querySelector('#prateleira')
 
     data_cadastro.textContent = formatarData(dado.data_cadastro)
     codigo_produto.textContent = dado.id_produto
@@ -31,6 +33,8 @@ export default async function visualizar_produto (dado) {
     nome_produto.value = dado.produto
     quantidade_em_estoque.value = dado.quantidade
     descricao.value = dado.descricao
+    corredor.value = dado.corredor
+    prateleira.value = dado.prateleira
 
     let btnVoltar = document.querySelector('.btn_voltar')
     btnVoltar.addEventListener('click', () => {

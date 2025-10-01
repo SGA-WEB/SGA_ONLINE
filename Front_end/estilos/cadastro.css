@@ -238,8 +238,8 @@ a.link_nav_selecionado {
     html {
         font-size: 14px;
     }
-    .nav_contato {
-        margin-left: 0.5rem;
+    #contato .nav_contato {
+        top: -29px !important;
     }
     .link_nav {
         padding: .2rem .4rem;

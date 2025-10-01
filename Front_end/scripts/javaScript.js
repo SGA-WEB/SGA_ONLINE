@@ -24,6 +24,8 @@ import { popup_carregando } from "./popup.js";
 import tipos_de_entrada from "../modulos/tipo_de_entrada/tipos_de_entrada.js";
 import entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.js";
 import buscarDados from "../scripts/buscarDados.js";
+import tela_balanco from "../modulos/tela_balanco/tela_balanco.js";
+import saida_de_produto from "../modulos/movimentacao_de_estoque/saida_de_produto/saida_de_produtos.js";
 
 function mudarLogoParaPadrao(nome) { // Muda a logo do usuário de acordo com o nome de
     let div_logo_usuario = document.querySelectorAll(".logo_usuario");
@@ -119,7 +121,7 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
         }
 
 
-        let inputs = document.querySelectorAll("input:not([type='email']),input:not([type='password']), textarea") // Seleciona todos os inputs e textareas que não são do tipo email
+        let inputs = document.querySelectorAll("input:not([type='email']):not([type='password']), textarea") // Seleciona todos os inputs que não são do tipo email e password
         inputs.forEach(e => {
             e.addEventListener("input", (input) => {
                 input.target.value = input.target.value.toUpperCase()
@@ -446,6 +448,15 @@ btn_entrada_produto.addEventListener("click", () => {
     carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
 })
 
+
+let btn_saida_produtos = document.querySelector("#btn_saida_produtos")
+btn_saida_produtos.addEventListener("click", () => {
+    btn_cadastro_auxiliares.classList.add("sub_menu_fechado") // Fecha o menu dropdown de cadastros auxiliares
+    btn_saida_produtos.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
+    btn_movimentacao_de_estoque.classList.add("item_menu_selecionado")
+    carregarConteudo("movimentacao_de_estoque/saida_de_produto/saida_de_produtos.html", document.querySelector(".principal"), false, saida_de_produto)
+})
+
 // Menu dropdown - cadastros auxiliares:
 
 let btn_cadastro_auxiliares = document.querySelector("#btn_cadastro_auxiliares")
@@ -473,6 +484,13 @@ btn_tipos_de_entrada.addEventListener("click", () => {
     btn_tipos_de_entrada.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
     btn_cadastro_auxiliares.classList.add("item_menu_selecionado")
     carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada)
+})
+
+let btn_balanco = document.querySelector("#tela_balanco")
+btn_balanco.addEventListener("click", () => {
+    btn_movimentacao_de_estoque.classList.add("sub_menu_fechado")
+    btn_balanco.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
+    carregarConteudo("tela_balanco/tela_balanco.html", document.querySelector(".principal"), false, tela_balanco)
 })
 
 
