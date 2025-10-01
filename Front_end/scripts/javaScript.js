@@ -24,6 +24,7 @@ import { popup_carregando } from "./popup.js";
 import tipos_de_entrada from "../modulos/tipo_de_entrada/tipos_de_entrada.js";
 import entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.js";
 import buscarDados from "../scripts/buscarDados.js";
+import tela_balanco from "../modulos/tela_balanco/tela_balanco.js";
 
 function mudarLogoParaPadrao(nome) { // Muda a logo do usuário de acordo com o nome de
     let div_logo_usuario = document.querySelectorAll(".logo_usuario");
@@ -479,7 +480,7 @@ let btn_balanco = document.querySelector("#tela_balanco")
 btn_balanco.addEventListener("click", () => {
     btn_movimentacao_de_estoque.classList.add("sub_menu_fechado")
     btn_balanco.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
-    carregarConteudo("tela_balanco/tela_balanco.html", document.querySelector(".principal"), false)
+    carregarConteudo("tela_balanco/tela_balanco.html", document.querySelector(".principal"), false, tela_balanco)
 })
 
 

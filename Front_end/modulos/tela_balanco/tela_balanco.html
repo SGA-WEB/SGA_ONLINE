@@ -1,55 +1,149 @@
 <section class="modulo">
     <h1 class="titulo1">Balanço</h1>
     <div class="header">
-        <div class="container_select">
-            <p>Coluna:</p>
-            <select id="select_coluna" class="campo_select">
-                <option value="id_produto">ID Produto</option>
-                <option value="nome_do_produto">Nome do Produto</option>
-                <option value="quantidade">Quantidade</option>
-                <option value="contagem_1">Contagem 1</option>
-                <option value="contagem_2">Contagem 2</option>
-            </select>
-        </div>
-        <div class="container_campo_pesquisa_btn">
-            <div class="campo_pesquisa" id="campo_pesquisa_produto">
-                <input id="input_pesquisa_tabela" type="text" placeholder="Pesquisar por Saída" class="input_pesquisa">
-                <button class="btn_limpar_pesquisa hide center" id="btn_limpar_pesquisa_saida">
-                    <img id="icone_fechar" src="../imagens/icone_fechar.svg" alt="icone_fechar">
-                </button>
-                <button class="btn_pesquisar center" id="btn_pesquisar_produto">
-                    <img id="icone_pesquisa" src="../imagens/icone_pesquisa.png" alt="icone_pesquisa">
-                </button>
-            </div>
-        </div>      
+          </div>
+    <div class="item_dashboard" id="div_distribuicao_produtos_estoque" style="grid-area: distribuicao_produtos_estoque">
+        <h2>Distribuição dos produtos nos estoques</h2>
+        <canvas id="grafico_distribuicao_produtos_estoque"></canvas>
+        <div class="container_card_info_porcentagem" id="container_card_info_porcentagem_distribuicao"></div>
     </div>
-    <button class="btn_add" id="btn_adicionar">
-        <img src="../imagens/btn_add.svg" alt="Icone Adicionar">
-        <span>Adicionar Saída</span>
-    </button>
-    <div class="container_tabela">
-        <table class="tabela" id="tabela_produtos">
-            <thead>
-                <tr>
-                    <th colspan="2">ID Balanço:</th>
-                    <th>Centro de Estoque: </th>
-                    <th>Tipo de Balanço: </th>
-                    <th>Data do Balanço: </th>
-                    <th>Data Referência: </th>
-                </tr>
-                <tr>
-                    <th id="tabela_id_produto">ID Produto</th>
-                    <th id="tabela_nome_produto">Nome do Produto</th>
-                    <th id="tabela_quantidade">Quantidade</th>
-                    <th id="tabela_contagem_1">Contagem 1</th>
-                    <th id="tabela_contagem_2">Contagem 2</th>
-                    <th></th> 
-                </tr>
-            </thead>
-            <tbody class="tbody">
-                
-            </tbody>
-        </table>
+    <div class="item_dashboard" id="div_valor_total_estoque_por_centro_estoque" style="grid-area: valor_total_estoque_por_centro_estoque">
+        <h2>Valor total de produtos por centro de estoque (varejo)</h2>
+        <div class="container_info_valores_estoques" id="container_info_valores_estoques"></div>
+    </div>
+    <div class="item_dashboard" id="div_contatos" style="grid-area: contatos">
+        <h2>Contatos</h2>
+        <div class="container_grafico_card">
+            <canvas id="grafico_contatos"></canvas>
+            <div class="container_card_info_porcentagem" id="container_card_info_porcentagem_contatos">
+                <div class="card_info_porcentagem card_info_porcentagem_contato">
+                    <div class="container_porcentagem_estoque">
+                        <span class="porcentagem_card" id="porcentagem_card_cliente">
+                            60%
+                        </span>
+                        <p>Cliente</p>
+                    </div>
+                    <span class="quantidade_card" id="quantidade_card_cliente">
+                        52
+                    </span>
+                </div>
+                <div class="card_info_porcentagem card_info_porcentagem_contato">
+                    <div class="container_porcentagem_estoque">
+                        <span class="porcentagem_card" id="porcentagem_card_funcionario">
+                            40%
+                        </span>
+                        <p>Funcionário</p>
+                    </div>
+                    <span class="quantidade_card" id="quantidade_card_funcionario">
+                        37
+                    </span>
+                </div>
+                <div class="card_info_porcentagem card_info_porcentagem_contato">
+                    <div class="container_porcentagem_estoque">
+                        <span class="porcentagem_card" id="porcentagem_card_fornecedor">
+                            20%
+                        </span>
+                        <p>Fornecedor</p>
+                    </div>
+                    <span class="quantidade_card" id="quantidade_card_fornecedor">
+                        14
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="item_dashboard" id="div_produtos_mais_vendidos" style="grid-area: produtos_mais_vendidos">
+        <div class="header_grafico">
+            <h2>Produtos mais vendidos</h2>
+            <div class="filtro_grafico">
+                <div class="filtro">
+                    <span>Data de inicio:</span>
+                    <input type="date" class="input_date" value="2020-01-01">
+                </div>
+                <div class="filtro">
+                    <span>Data do final:</span>
+                    <input type="date" class="input_date" value="2023-01-01">
+                </div>
+            </div>
+        </div>
+        <div class="main_grafico">
+            <table class="tabela" id="tabela_dashboard">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th class="text_right">Quantidade</th>
+                    </tr>
+                </thead>
+                <tbody >
+                    <tr>
+                        <td>Filtro de Oleo</td>
+                        <td>679</td>
+                    </tr>
+                    <tr>
+                        <td>Pastilha de freio</td>
+                        <td>545</td>
+                    </tr>
+                    <tr>
+                        <td>Vela de ignição</td>
+                        <td>521</td>
+                    </tr>
+                    <tr>
+                        <td>Bateria de carro</td>
+                        <td>499</td>
+                    </tr>
+                    <tr>
+                        <td>Amortecedor</td>
+                        <td>364</td>
+                    </tr>
+                    <tr>
+                        <td>Correa dentada</td>
+                        <td>265</td>
+                    </tr>
+                    <tr>
+                        <td>Parafuso de roda 24</td>
+                        <td>255</td>
+                    </tr>
+                    <tr>
+                        <td>Disco de freio</td>
+                        <td>231</td>
+                    </tr>
+                    <tr>
+                        <td>Amortecedor</td>
+                        <td>212</td>
+                    </tr>
+                    <tr>
+                        <td>Correa dentada</td>
+                        <td>142</td>
+                    </tr>
+                    <tr>
+                        <td>Parafuso de roda 24</td>
+                        <td>122</td>
+                    </tr>
+                    <tr>
+                        <td>Disco de freio</td>
+                        <td>99</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="item_dashboard" id="div_produtos_maior_quantidade" style="grid-area: div_produtos_maior_quantidade">
+        <div class="header_grafico">
+            <h2>Produtos com maior quantidade</h2>
+        </div>
+        <div class="main_grafico">
+            <table class="tabela" id="tabela_dashboard">
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th class="text_right">Quantidade</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody_prdutos_maior_quantidade">
+
+                </tbody>
+            </table>
+        </div>
     </div>
 </section>
 <section class="container_popup " id="container_popup_excluir_produto">
