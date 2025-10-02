@@ -25,7 +25,6 @@ import tipos_de_entrada from "../modulos/tipo_de_entrada/tipos_de_entrada.js";
 import entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.js";
 import buscarDados from "../scripts/buscarDados.js";
 import tela_balanco from "../modulos/tela_balanco/tela_balanco.js";
-import saida_de_produto from "../modulos/movimentacao_de_estoque/saida_de_produto/saida_de_produtos.js";
 import tipo_de_saida from "../modulos/tipo_de_saida/tipo_de_saida.js";
 import saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_de_produtos/saida_de_produtos.js";
 
