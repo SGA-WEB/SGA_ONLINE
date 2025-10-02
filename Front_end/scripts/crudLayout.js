@@ -24,7 +24,7 @@ import excluir_entrada_de_produtos from "../modulos/movimentacao_de_estoque/entr
 
 import visualizar_saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_de_produtos/visualizar_saida_de_produtos/visualizar_saida_de_produtos.js";
 
-export default function crudLayout(obj, tr, addListener = true) {
+export default function crudLayout(dadosTabela, tr, addListener = true) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
     acoes.setAttribute('class', 'acoes_tabela')
 
@@ -103,66 +103,66 @@ export default function crudLayout(obj, tr, addListener = true) {
         switch (nomeTabelaAtual) { // Carrega a página do CRUD de acordo com a tabela atual
             case "centro_de_estoque":
                 if (acao == 'excluir') {
-                    funcoes[`excluir_centro_de_estoque`](obj)
+                    funcoes[`excluir_centro_de_estoque`](dadosTabela)
                 } else {
                     carregarConteudo(
                         `centro_de_estoque/${acao}_centro_de_estoque/${acao}_centro_de_estoque.html`,
                         document.querySelector('.principal'),
                         false,
                         funcoes[`${acao}_centro_de_estoque`], // Chama a função de acordo com a ação
-                        obj
+                        dadosTabela
                     );
                 }
                 break;
             case "produto":
                 if (acao == 'excluir') {
-                    funcoes[`excluir_produto`](obj)
+                    funcoes[`excluir_produto`](dadosTabela)
                 } else {
                     carregarConteudo(
                         `produto/${acao}_produto/${acao}_produto.html`,
                         document.querySelector('.principal'),
                         false,
                         funcoes[`${acao}_produto`], // Chama a função de acordo com a ação
-                        obj
+                        dadosTabela
                     );
                 }
                 break;
             case "contato":
                 if (acao == 'excluir') {
-                    funcoes[`excluir_contato`](obj)
+                    funcoes[`excluir_contato`](dadosTabela)
                 } else {
                     carregarConteudo(
                         `contato/${acao}_contato/${acao}_contato.html`,
                         document.querySelector('.modulo'),
                         true,
                         funcoes[`${acao}_contato`],
-                        obj,
+                        dadosTabela,
                     );
                 }
                 break;
             case "tipo_de_entrada":
                 if (acao == "excluir") {
-                    funcoes[`excluir_tipo_de_entrada`](obj)
+                    funcoes[`excluir_tipo_de_entrada`](dadosTabela)
                 } else {
                     carregarConteudo(
                         `tipo_de_entrada/${acao}_tipos_de_entrada/${acao}_tipo_de_entrada.html`,
                         document.querySelector('.principal'),
                         false,
                         funcoes[`${acao}_tipo_de_entrada`],
-                        obj
+                        dadosTabela
                     )
                 }
                 break;
             case "entrada_de_produto":
                 if (acao == "excluir") {
-                    funcoes[`excluir_entrada_de_produtos`](obj)
+                    funcoes[`excluir_entrada_de_produtos`](dadosTabela)
                 } else {
                     carregarConteudo(
                         `movimentacao_de_estoque/entrada_de_produtos/${acao}_entrada_de_produtos/${acao}_entrada_de_produtos.html`,
                         document.querySelector('.principal'),
                         false,
                         funcoes[`${acao}_entrada_de_produto`],
-                        obj
+                        dadosTabela
                     )
                 }
                 break;
@@ -175,7 +175,7 @@ export default function crudLayout(obj, tr, addListener = true) {
                         document.querySelector('.principal'),
                         false,
                         funcoes[`${acao}_saida_de_produtos`],
-                        obj
+                        dadosTabela
                     )
                 }
             default:

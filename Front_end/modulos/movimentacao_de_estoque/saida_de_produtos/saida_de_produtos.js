@@ -8,7 +8,7 @@ import  buscarDados from "../../../scripts/buscarDados.js";
 import { carregarDadosNaTabela, pesquisar } from "../../../scripts/carregarDadosNaTabela.js";
 
 
-export default async function saida_de_produtos(s) {
+export default async function saida_de_produtos() {
     select2("10rem")
     mudarPesquisa(document.querySelector("#input_pesquisa_tabela"))
 
