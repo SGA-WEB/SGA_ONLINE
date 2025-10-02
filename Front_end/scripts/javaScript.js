@@ -25,7 +25,7 @@ import tipos_de_entrada from "../modulos/tipo_de_entrada/tipos_de_entrada.js";
 import entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.js";
 import buscarDados from "../scripts/buscarDados.js";
 import tela_balanco from "../modulos/tela_balanco/tela_balanco.js";
-import saida_de_produto from "../modulos/movimentacao_de_estoque/saida_de_produto/saida_de_produtos.js";
+import saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_de_produtos/saida_de_produtos.js";
 
 function mudarLogoParaPadrao(nome) { // Muda a logo do usuário de acordo com o nome de
     let div_logo_usuario = document.querySelectorAll(".logo_usuario");
@@ -454,7 +454,7 @@ btn_saida_produtos.addEventListener("click", () => {
     btn_cadastro_auxiliares.classList.add("sub_menu_fechado") // Fecha o menu dropdown de cadastros auxiliares
     btn_saida_produtos.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
     btn_movimentacao_de_estoque.classList.add("item_menu_selecionado")
-    carregarConteudo("movimentacao_de_estoque/saida_de_produto/saida_de_produtos.html", document.querySelector(".principal"), false, saida_de_produto)
+    carregarConteudo("movimentacao_de_estoque/saida_de_produtos/saida_de_produtos.html", document.querySelector(".principal"), false, saida_de_produtos)
 })
 
 // Menu dropdown - cadastros auxiliares:

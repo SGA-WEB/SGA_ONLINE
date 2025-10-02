@@ -16,7 +16,7 @@
     <form id="form_saida_produto">
         <div class="modulo_main">
             <div class="container_normal_width" id="container_chave_nfe" style="max-width: 500px;">
-                <div class="campo_contato">
+                <div class="campo_contato normal_width">
                     <label for="chave_nfe">Chave NF-e:<span class="campo_obrigatorio">*</span></label>
                     <input type="text" inputmode="numeric" name="chave_nfe" id="chave_nfe" class="campo_input" required
                         maxlength="44" pattern="[0-9]{1,44}"
@@ -34,12 +34,6 @@
                     <select id="fornecedor" class="campo_select" name="fornecedor" required>
                         <option value=""></option>
                     </select>
-                </div>
-            </div>
-            <div class="container_small_width">
-                <div class="campo_contato small_width">
-                    <label for="modelo">Modelo Fiscal:<span class="campo_obrigatorio">*</span></label>
-                    <input type="text" name="modelo" id="modelo" class="campo_input" maxlength="2" required>
                 </div>
             </div>
             <div class="container_small_width">
@@ -82,13 +76,19 @@
                         pattern="[0-9]{1,3}"
                         oninvalid="this.setCustomValidity('Série deve ser um número de 1 a 3 dígitos')"
                         oninput="this.setCustomValidity('')">
-                </div>
-                <div class="campo_contato small_width">
-                    <label for="sub_serie">Sub-Série</label>
+                    </div>
+                    <div class="campo_contato small_width">
+                        <label for="sub_serie">Sub-Série</label>
                     <input type="text" inputmode="numeric" name="sub_serie" id="sub_serie" class="campo_input"
                         maxlength="2" pattern="[0-9]{1,3}"
                         oninvalid="this.setCustomValidity('Série deve ser um número de 1 a 3 dígitos')"
                         oninput="this.setCustomValidity('')">
+                </div>
+            </div>
+            <div class="container_small_width">
+                <div class="campo_contato small_width">
+                    <label for="modelo">Modelo Fiscal:<span class="campo_obrigatorio">*</span></label>
+                    <input type="text" name="modelo" id="modelo" class="campo_input" maxlength="2" required>
                 </div>
             </div>
         </div>
