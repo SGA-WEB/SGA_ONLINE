@@ -193,6 +193,8 @@ app.get('/api/produto', async (req, res) => {
             p.quantidade,
             p.preco_varejo,
             p.preco_atacado,
+            p.corredor,
+            p.prateleira,
             p.descricao,
             p.data_cadastro,
             ce.nome_centro_estoque,
@@ -372,7 +374,7 @@ app.put('/centro_estoque/:id_centro_estoque', async (req, res) => {
 
 app.put('/produto/:id_produto', async (req, res) => {
     const { id_produto } = req.params;
-    const { produto, quantidade, preco_varejo, preco_atacado, descricao, id_centro_estoque } = req.body;
+    const { produto, quantidade, preco_varejo, preco_atacado, corredor, prateleira, descricao, id_centro_estoque } = req.body;
     try {
         const query = `
             UPDATE sga.produto
@@ -381,12 +383,14 @@ app.put('/produto/:id_produto', async (req, res) => {
                 quantidade = $2,
                 preco_varejo = $3,
                 preco_atacado = $4,
-                descricao = $5,
-                id_centro_estoque = $6
-            WHERE id_produto = $7
+                corredor = $5,
+                prateleira = $6,
+                descricao = $7,
+                id_centro_estoque = $8
+            WHERE id_produto = $9
             RETURNING *;
         `;
-        const values = [produto, quantidade, preco_varejo, preco_atacado, descricao, id_centro_estoque, id_produto];
+        const values = [produto, quantidade, preco_varejo, preco_atacado, corredor, prateleira, descricao, id_centro_estoque, id_produto];
         const result = await pool.query(query, values);
 
         if (result.rows.length === 0) {
@@ -1159,6 +1163,8 @@ app.post('/produtos', async (req, res) => {
         preco_varejo,     // Obrigatório
         preco_atacado,    // Obrigatório
         descricao,        // Opcional
+        corredor,         // Opcional
+        prateleira,       // Opcional
         inativo,          // Opcional (padrão: false)
         id_centro_estoque // Opcional (padrão: 1)
     } = req.body;
@@ -1175,9 +1181,9 @@ app.post('/produtos', async (req, res) => {
         // 4. Comando SQL parametrizado para evitar SQL Injection.
         const insertQuery = `
       INSERT INTO sga.produto
-        (produto, quantidade, preco_varejo, preco_atacado, descricao, inativo, id_centro_estoque)
+        (produto, quantidade, preco_varejo, preco_atacado, corredor, prateleira descricao, inativo, id_centro_estoque)
       VALUES
-        ($1, $2, $3, $4, $5, $6, $7)
+        ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *;
     `;
 
@@ -1187,6 +1193,8 @@ app.post('/produtos', async (req, res) => {
             quantidade,
             preco_varejo,
             preco_atacado,
+            corredor,
+            prateleira,
             descricao || null, // Se a descrição não for enviada, insere NULL no banco.
             typeof inativo === 'boolean' ? inativo : false, // Se 'inativo' não for um booleano, assume 'false'.
             id_centro_estoque || 1 // Se 'id_centro_estoque' não for enviado, assume '1'.
