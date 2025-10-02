@@ -22,36 +22,38 @@ import visualizar_entrada_de_produto from "../modulos/movimentacao_de_estoque/en
 import editar_entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/editar_entrada_de_produtos/editar_entrada_de_produtos.js";
 import excluir_entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/excluir_entrada_de_produtos.js";
 
-export default function crudLayout (obj, tr, addListener = true) {
+import visualizar_saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_de_produtos/visualizar_saida_de_produtos/visualizar_saida_de_produtos.js";
+
+export default function crudLayout(obj, tr, addListener = true) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
-    acoes.setAttribute('class','acoes_tabela')
+    acoes.setAttribute('class', 'acoes_tabela')
 
     let nomeTabelaAtual = document.querySelector(".modulo").id;
 
     let btn_visualizar = document.createElement('button') // Cria o botão de visualizar
-    btn_visualizar.setAttribute('class','btn_visualizar')
-    btn_visualizar.setAttribute('title',`Visualizar ${nomeTabelaAtual}`)
-    btn_visualizar.setAttribute('type','button')
+    btn_visualizar.setAttribute('class', 'btn_visualizar')
+    btn_visualizar.setAttribute('title', `Visualizar ${nomeTabelaAtual}`)
+    btn_visualizar.setAttribute('type', 'button')
     let img_visualizar = document.createElement('img') // Cria a imagem do botão de visualizar
-    img_visualizar.setAttribute('src','../imagens/visibility_on.png')
+    img_visualizar.setAttribute('src', '../imagens/visibility_on.png')
     btn_visualizar.appendChild(img_visualizar) // Adiciona a imagem no botão
 
     let btn_editar = document.createElement('button') // Cria o botão de editar
-    btn_editar.setAttribute('class','btn_editar')
-    btn_editar.setAttribute('title',`Editar ${nomeTabelaAtual}`)
-    btn_editar.setAttribute('type','button')
+    btn_editar.setAttribute('class', 'btn_editar')
+    btn_editar.setAttribute('title', `Editar ${nomeTabelaAtual}`)
+    btn_editar.setAttribute('type', 'button')
 
     let img_editar = document.createElement('img') // Cria a imagem do botão de editar
-    img_editar.setAttribute('src','../imagens/icone_editar.svg')
+    img_editar.setAttribute('src', '../imagens/icone_editar.svg')
     btn_editar.appendChild(img_editar) // Adiciona a imagem no botão
 
     let btn_excluir = document.createElement('button') // Cria o botão de excluir
-    btn_excluir.setAttribute('class','btn_excluir')
-    btn_excluir.setAttribute('title',`Excluir ${nomeTabelaAtual}`)
-    btn_excluir.setAttribute('type','button')
+    btn_excluir.setAttribute('class', 'btn_excluir')
+    btn_excluir.setAttribute('title', `Excluir ${nomeTabelaAtual}`)
+    btn_excluir.setAttribute('type', 'button')
 
     let img_excluir = document.createElement('img') // Cria a imagem do botão de excluir
-    img_excluir.setAttribute('src','../imagens/icone_excluir.svg')
+    img_excluir.setAttribute('src', '../imagens/icone_excluir.svg')
     btn_excluir.appendChild(img_excluir) // Adiciona a imagem no botão
 
     acoes.appendChild(btn_visualizar) // Adiciona o botão de visualizar nas ações
@@ -59,15 +61,15 @@ export default function crudLayout (obj, tr, addListener = true) {
     acoes.appendChild(btn_excluir) // Adiciona o botão de excluir nas ações
 
     if (addListener) {
-        btn_visualizar.addEventListener('click',() => {
+        btn_visualizar.addEventListener('click', () => {
             executarAcao('visualizar')
         })
 
-        btn_editar.addEventListener('click',() => {
-           executarAcao('editar')
+        btn_editar.addEventListener('click', () => {
+            executarAcao('editar')
         })
 
-        btn_excluir.addEventListener('click',() => {
+        btn_excluir.addEventListener('click', () => {
             executarAcao('excluir')
         })
     }
@@ -94,7 +96,9 @@ export default function crudLayout (obj, tr, addListener = true) {
 
             visualizar_entrada_de_produto: visualizar_entrada_de_produto,
             editar_entrada_de_produto: editar_entrada_de_produtos,
-            excluir_entrada_de_produtos: excluir_entrada_de_produtos
+            excluir_entrada_de_produtos: excluir_entrada_de_produtos,
+
+            visualizar_saida_de_produtos: visualizar_saida_de_produtos,
         }
         switch (nomeTabelaAtual) { // Carrega a página do CRUD de acordo com a tabela atual
             case "centro_de_estoque":
@@ -109,7 +113,7 @@ export default function crudLayout (obj, tr, addListener = true) {
                         obj
                     );
                 }
-            break;
+                break;
             case "produto":
                 if (acao == 'excluir') {
                     funcoes[`excluir_produto`](obj)
@@ -122,7 +126,7 @@ export default function crudLayout (obj, tr, addListener = true) {
                         obj
                     );
                 }
-            break;
+                break;
             case "contato":
                 if (acao == 'excluir') {
                     funcoes[`excluir_contato`](obj)
@@ -135,7 +139,7 @@ export default function crudLayout (obj, tr, addListener = true) {
                         obj,
                     );
                 }
-            break;
+                break;
             case "tipo_de_entrada":
                 if (acao == "excluir") {
                     funcoes[`excluir_tipo_de_entrada`](obj)
@@ -148,7 +152,7 @@ export default function crudLayout (obj, tr, addListener = true) {
                         obj
                     )
                 }
-            break;
+                break;
             case "entrada_de_produto":
                 if (acao == "excluir") {
                     funcoes[`excluir_entrada_de_produtos`](obj)
@@ -161,10 +165,22 @@ export default function crudLayout (obj, tr, addListener = true) {
                         obj
                     )
                 }
-            break;
+                break;
+            case "saida_de_produtos":
+                if (acao == "excluir") {
+
+                } else {
+                    carregarConteudo(
+                        `movimentacao_de_estoque/saida_de_produtos/${acao}_saida_de_produtos/${acao}_saida_de_produtos.html`,
+                        document.querySelector('.principal'),
+                        false,
+                        funcoes[`${acao}_saida_de_produtos`],
+                        obj
+                    )
+                }
             default:
                 console.warn(`Nenhuma ação definida para ${nomeTabelaAtual}`);
-            break;
+                break;
         }
     }
 

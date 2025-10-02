@@ -2,6 +2,7 @@
     z-index: 2;
     padding: 1.25rem;
 }
+
 .nav_contato {
     margin-left: 35px;
 }
@@ -49,6 +50,7 @@ a.link_nav_selecionado {
 .h3_titulo {
     margin-bottom: 1.5rem;
 }
+
 .container_codigo_data {
     display: flex;
     flex-wrap: wrap;
@@ -84,6 +86,7 @@ a.link_nav_selecionado {
     gap: 16px;
     width: 100%;
     padding: .5rem;
+    margin-bottom: 2rem;
 }
 
 .campo_contato {
@@ -91,6 +94,7 @@ a.link_nav_selecionado {
     flex-direction: column;
     margin: 0 1rem 2rem 0;
 }
+
 .campo_contato label {
     white-space: nowrap;
 }
@@ -123,6 +127,7 @@ a.link_nav_selecionado {
     width: 100%;
     max-width: 500px;
     min-width: 300px;
+    margin: 0;
 }
 
 .radio_contato {
@@ -141,7 +146,8 @@ a.link_nav_selecionado {
     flex-wrap: wrap;
 }
 
-.campo_contato label, .campo_contato p {
+.campo_contato label,
+.campo_contato p {
     margin: 0 0 .3rem .625rem;
 }
 
@@ -153,7 +159,8 @@ a.link_nav_selecionado {
     font-size: 1rem;
 }
 
-.container_radios, .container_checkbox {
+.container_radios,
+.container_checkbox {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -163,13 +170,15 @@ a.link_nav_selecionado {
     border-radius: 5px;
 }
 
-.container_radio, .campo_checkbox {
+.container_radio,
+.campo_checkbox {
     display: flex;
     align-items: center;
     gap: .3rem;
 }
 
-.container_radio label, .campo_checkbox label {
+.container_radio label,
+.campo_checkbox label {
     margin: 0;
 }
 
@@ -190,6 +199,7 @@ a.link_nav_selecionado {
     min-width: 153px !important;
     flex: 1 1 0 !important;
 }
+
 .select_conainer .select2-selection__arrow {
     display: flex !important;
     align-items: center !important;
@@ -201,7 +211,7 @@ a.link_nav_selecionado {
     justify-content: end;
 }
 
-.btn_nav{
+.btn_nav {
     display: flex;
     align-items: center;
     margin: .3em 0 1rem .3rem;
@@ -211,6 +221,7 @@ a.link_nav_selecionado {
     .modulo {
         padding: 0.5rem;
     }
+
     .modulo_main {
         padding: 0.5rem;
     }
@@ -220,15 +231,19 @@ a.link_nav_selecionado {
     .normal_width {
         min-width: 0;
     }
+
     .modulo_main {
         grid-template-columns: repeat(auto-fit, minmax(247px, 1fr));
     }
+
     .container_small_width {
         min-width: 0;
     }
+
     .campo_contato {
         margin-bottom: 0.5rem;
     }
+
     .small_width {
         max-width: 100%;
     }
@@ -238,15 +253,19 @@ a.link_nav_selecionado {
     html {
         font-size: 14px;
     }
+
     #contato .nav_contato {
         top: -29px !important;
     }
+
     .link_nav {
         padding: .2rem .4rem;
     }
+
     .modulo_main {
         grid-template-columns: repeat(auto-fit, minmax(137px, 1fr));
     }
+
     .radio_contato {
         max-width: none;
     }

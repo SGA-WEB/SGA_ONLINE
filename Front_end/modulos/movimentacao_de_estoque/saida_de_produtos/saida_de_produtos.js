@@ -8,7 +8,7 @@ import  buscarDados from "../../../scripts/buscarDados.js";
 import { carregarDadosNaTabela, pesquisar } from "../../../scripts/carregarDadosNaTabela.js";
 
 
-export default async function saida_de_produto() {
+export default async function saida_de_produtos(s) {
     select2("10rem")
     mudarPesquisa(document.querySelector("#input_pesquisa_tabela"))
 
@@ -30,7 +30,7 @@ export default async function saida_de_produto() {
     btn_adicionar.addEventListener("click", () => {
         console.log("clicou")
         carregarConteudo(
-            "movimentacao_de_estoque/saida_de_produto/cadastro_saida_produtos/cadastro_saida_produtos.html",
+            "movimentacao_de_estoque/saida_de_produtos/cadastro_saida_produtos/cadastro_saida_produtos.html",
             document.querySelector(".principal"),
             false,
             cadastro_saida_produtos,
