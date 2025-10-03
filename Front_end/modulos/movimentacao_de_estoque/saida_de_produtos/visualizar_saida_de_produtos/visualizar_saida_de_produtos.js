@@ -8,7 +8,6 @@ import { carregarDadosNaTabela } from "../../../../scripts/carregarDadosNaTabela
 // import excluir_saida_de_produtos from "../excluir_saida_de_produtos.js";
 
 export default async function visualizar_saida_de_produtos(saida) {
-    console.log(saida)
     select2("100%")
     document.querySelector(".codigo_id").textContent = saida.id_saida_produto
     document.querySelector(".data_cadastro").textContent = formatarData(saida.data_saida)
