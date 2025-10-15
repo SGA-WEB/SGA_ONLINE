@@ -1615,6 +1615,117 @@ app.delete('/entrada_produto/:id_entrada', async (req, res) => {
     }
 });
 
+
+// Rota GET para listar todos os tipos_de_saida
+app.get('/api/tipos_de_saida', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM sga.tipos_de_saida ORDER BY id_tipo_de_saida');
+        res.status(200).json(result.rows);
+    } catch (err) {
+        console.error('Erro ao buscar tipos_de_saida:', err);
+        res.status(500).json({ message: 'Erro ao buscar tipos_de_saida', error: err.message });
+    }
+});
+
+app.put('/tipo_de_saida/:id', async (req, res) => {
+    const { id } = req.params;
+    const {
+        descricao,
+        cfop_dentro,
+        cfop_fora,
+        ativo,
+        movimenta_estoque,
+        hab_agrupamento,
+        hab_movimento,
+        habilita_nf,
+        atualiza_produto,
+        padrao
+    } = req.body;
+
+    try {
+        const query = `
+            UPDATE sga.tipos_de_saida
+            SET
+                descricao = $1,
+                cfop_dentro = $2,
+                cfop_fora = $3,
+                ativo = $4,
+                movimenta_estoque = $5,
+                hab_agrupamento = $6,
+                hab_movimento = $7,
+                habilita_nf = $8,
+                atualiza_produto = $9,
+                padrao = $10
+            WHERE id_tipo_de_entrada = $11
+            RETURNING *;
+        `;
+
+        const values = [
+            descricao,
+            cfop_dentro,
+            cfop_fora,
+            ativo,
+            movimenta_estoque,
+            hab_agrupamento,
+            hab_movimento,
+            habilita_nf,
+            atualiza_produto,
+            padrao,
+            id
+        ];
+
+        const result = await pool.query(query, values);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Tipo de saida não encontrado.' });
+        }
+
+        res.status(200).json({
+            message: 'Tipo de saida atualizado com sucesso.',
+            tipo_entrada: result.rows[0]
+        });
+
+    } catch (err) {
+        console.error('Erro ao atualizar tipo de saida:', err);
+        res.status(500).json({ message: 'Erro ao atualizar tipo de saida', error: err.message });
+    }
+});
+
+// Rota POST para inserir novo tipo de saida
+app.post('/tipo_de_saida', async (req, res) => {
+    const {
+        id_tipo_de_entrada,
+        descricao,
+        cfop_dentro,
+        cfop_fora,
+        ativo,
+        movimenta_estoque,
+        hab_agrupamento,
+        hab_movimento,
+        habilita_nf,
+        atualiza_produto,
+        padrao
+    } = req.body;
+
+    try {
+        const query = `
+            INSERT INTO sga.tipos_de_saida
+            (id_tipo_de_entrada, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            RETURNING *;
+        `;
+        const values = [id_tipo_de_entrada, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao];
+
+        const result = await pool.query(query, values);
+
+        res.status(201).json({ message: 'Tipo de saida criado com sucesso!', tipo_de_saida: result.rows[0] });
+    } catch (err) {
+        console.error('Erro ao inserir tipo de saida:', err);
+        res.status(500).json({ message: 'Erro ao inserir tipo de saida', error: err.message });
+    }
+});
+
+
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
