@@ -1619,7 +1619,7 @@ app.delete('/entrada_produto/:id_entrada', async (req, res) => {
 // Rota GET para listar todos os tipos_de_saida
 app.get('/api/tipos_de_saida', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM sga.tipos_de_saida ORDER BY id_tipo_de_saida');
+        const result = await pool.query('SELECT * FROM sga.tipos_de_saida ORDER BY id_tipos_de_saida');
         res.status(200).json(result.rows);
     } catch (err) {
         console.error('Erro ao buscar tipos_de_saida:', err);
