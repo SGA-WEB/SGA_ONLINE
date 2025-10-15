@@ -15,15 +15,14 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
     document.querySelector(".data_cadastro").textContent = formatarData(saida.data_saida)
     document.querySelector("#chave_nfe").value = saida.chave_nfe
     document.querySelector("#numero_nf").value = saida.numero_nf
-    document.querySelector("#modelo").value = saida.modelo_documento_fiscal
-    document.querySelector("#tipo_de_saida").value = saida.tipo_saida
+    document.querySelector("#modelo_documento_fiscal").value = saida.modelo_documento_fiscal
+    document.querySelector("#tipo_saida").value = saida.tipo_saida
     document.querySelector("#serie").value = saida.serie
-    document.querySelector("#sub_serie").value = saida.subserie
+    document.querySelector("#subserie").value = saida.subserie
     document.querySelector("#data_saida").value = formatarData(saida.data_saida, true)
-    document.querySelector("#status_da_saida").value = saida.status
-    document.querySelector("#destinatario").value = saida.destinatario_razao_social
+    document.querySelector("#status").value = saida.status
+    document.querySelector("#destinatario_id").value = saida.destinatario_razao_social
     document.querySelector("#valor_total").value = saida.valor_total
-    document.querySelector("#modelo").value = saida.modelo_documento_fiscal
     select2("100%")
 
     let caminho = "movimentacao_de_estoque/saida_de_produtos/saida_de_produtos.html"
@@ -63,32 +62,31 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         })
     })
 
-    carregarDadosNaTabela(produtosRelacionados, ["id_item", "nome_produto", "quantidade", "valor_unitario", "desconto_item", "valor_total_item"], document.querySelector(".tbody"), false, false)
+    carregarDadosNaTabela(produtosRelacionados, ["id_produto", "produto", "quantidade", "preco_varejo", "desconto", "valor_total"], document.querySelector(".tbody"), false, false)
 
     criarInputsQuantidadeDesconto();
     addListenerExcluirProdutos();
 
-    let fornecedores = []
+    let clientes = []
 
-    contatos.forEach(contato => { // Para cada contato, verifica se ele é um fornecedor e, se sim, adiciona-o ao array fornecedores
+    contatos.forEach(contato => { // Para cada contato, verifica se ele é um fornecedor e, se sim, adiciona-o ao array clientes
         contato.categorias.forEach(categoria => {
-            if (categoria.nome === "FORNECEDOR") {
-                fornecedores.push(contato)
+            if (categoria.nome === "CLIENTE") {
+                clientes.push(contato)
             }
         })
     })
-
-    let selectfornecedor = document.querySelector("#fornecedor");
-    fornecedores.forEach((fornecedor) => {
+    
+    let selectCliente= document.querySelector("#destinatario_id");
+    clientes.forEach((Cliente) => {
         let option = document.createElement("option");
-        option.value = fornecedor.id_contato;
-        option.text = fornecedor.razao_social;
-        selectfornecedor.appendChild(option);
+        option.value = Cliente.razao_social;
+        option.text = Cliente.razao_social;
+        selectCliente.appendChild(option);
     })
 
-    selectfornecedor.value = saida.fornecedor_id
+    selectCliente.value = saida.destinatario_razao_social
 
-    // Ordena os fornecedores pelo id
     produtos = produtos.sort((a, b) => a.id_produto - b.id_produto);
 
     // Adiciona o campo valor_total e o desconto em cada produto
