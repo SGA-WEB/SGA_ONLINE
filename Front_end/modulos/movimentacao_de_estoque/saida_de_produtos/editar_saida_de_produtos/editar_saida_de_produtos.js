@@ -271,7 +271,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         let data = Object.fromEntries(formData);
 
         data.desconto = descontoTotal;
-        data.total = valorTotalTodosProdutos;
+        data.valor_total = valorTotalTodosProdutos;
         data.itens = produtosRelacionados;
         data.itens.forEach(item => {
             item.valor_unitario = item.preco_varejo;

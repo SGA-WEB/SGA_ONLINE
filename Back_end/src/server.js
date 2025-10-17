@@ -1052,19 +1052,19 @@ app.put('/entrada_produto/:id', async (req, res) => {
 app.put('/saida_produto/:id', async (req, res) => {
     const { id } = req.params;
     const camposParaAtualizar = req.body;
-
+    console.log(camposParaAtualizar)
     // Validação para garantir que pelo menos um campo foi enviado para atualização
     if (Object.keys(camposParaAtualizar).length === 0) {
-        return res.status(400).json({ 
-            sucesso: false, 
-            erro: 'Nenhum dado fornecido para atualização.' 
+        return res.status(400).json({
+            sucesso: false,
+            erro: 'Nenhum dado fornecido para atualização.'
         });
     }
 
     try {
         // --- Montagem da Query de Atualização Dinâmica ---
         // Isso permite que você envie apenas os campos que deseja alterar.
-        
+
         const campos = Object.keys(camposParaAtualizar); // Ex: ['status', 'valor_total']
         const valores = Object.values(camposParaAtualizar); // Ex: ['Entregue', 150.75]
 
@@ -1082,14 +1082,14 @@ app.put('/saida_produto/:id', async (req, res) => {
             WHERE id_saida_produto = $${idParamIndex}
             RETURNING *;
         `;
-        
+
         const { rows } = await pool.query(query, [...valores, id]);
 
         // Verifica se a saída com o ID fornecido foi encontrada e atualizada
         if (rows.length === 0) {
-            return res.status(404).json({ 
-                sucesso: false, 
-                erro: 'Saída de produto não encontrada.' 
+            return res.status(404).json({
+                sucesso: false,
+                erro: 'Saída de produto não encontrada.'
             });
         }
 
@@ -1102,7 +1102,7 @@ app.put('/saida_produto/:id', async (req, res) => {
 
     } catch (error) {
         console.error(`Erro ao atualizar saída de produto com ID ${id}:`, error);
-        res.status(500).json({ 
+        res.status(500).json({
             sucesso: false,
             erro: 'Erro interno do servidor ao tentar atualizar a saída de produto.',
             detalhes: error.message
