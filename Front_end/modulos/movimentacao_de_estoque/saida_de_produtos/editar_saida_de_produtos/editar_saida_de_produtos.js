@@ -40,6 +40,10 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
     let itemsRelacionados = await buscarDados(`saida_produto/${saida.id_saida_produto}/itens`)
     let produtos = await buscarDados("produto")
     let contatos = await buscarDados("contato");
+    // let tipos_de_saida = await buscarDados("tipo_de_saida");
+
+    console.log("sadfjalksd")
+    console.log(tipos_de_saida)
     itemsRelacionados = itemsRelacionados.itens;
 
     // Adiciona no array produtosRelacionados os produtos que estão relacionados com a saida de produtos
@@ -50,7 +54,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
                 if (!produtosRelacionados.some(p => p.id_item === item.id_item)) {
                     produtosRelacionados.push({
                         // adicionas as chaves que já são usadas na tabela de produtos
-                        id_produto: item.produto_id,
+                        produto_id: item.produto_id,
                         produto: produto.produto,
                         quantidade: item.quantidade,
                         preco_varejo: item.valor_unitario,
@@ -62,14 +66,14 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         })
     })
 
-    carregarDadosNaTabela(produtosRelacionados, ["id_produto", "produto", "quantidade", "preco_varejo", "desconto", "valor_total"], document.querySelector(".tbody"), false, false)
+    carregarDadosNaTabela(produtosRelacionados, ["produto_id", "produto", "quantidade", "preco_varejo", "desconto", "valor_total"], document.querySelector(".tbody"), false, false)
 
     criarInputsQuantidadeDesconto();
     addListenerExcluirProdutos();
 
     let clientes = []
 
-    contatos.forEach(contato => { // Para cada contato, verifica se ele é um fornecedor e, se sim, adiciona-o ao array clientes
+    contatos.forEach(contato => { // Para cada contato, verifica se ele é um cliente e, se sim, adiciona-o ao array clientes
         contato.categorias.forEach(categoria => {
             if (categoria.nome === "CLIENTE") {
                 clientes.push(contato)
@@ -80,14 +84,14 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
     let selectCliente= document.querySelector("#destinatario_id");
     clientes.forEach((Cliente) => {
         let option = document.createElement("option");
-        option.value = Cliente.razao_social;
+        option.value = Cliente.id_contato;
         option.text = Cliente.razao_social;
         selectCliente.appendChild(option);
     })
 
-    selectCliente.value = saida.destinatario_razao_social
+    selectCliente.value = saida.destinatario_id
 
-    produtos = produtos.sort((a, b) => a.id_produto - b.id_produto);
+    produtos = produtos.sort((a, b) => a.produto_id - b.produto_id);
 
     // Adiciona o campo valor_total e o desconto em cada produto
     produtos.map(produto => {
@@ -105,7 +109,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         popup("abrir", 0, btn_adicionar_relacao)
         carregarDadosNaTabela(
             produtos,
-            ["id_produto", "produto", "quantidade", "preco_varejo"],
+            ["produto_id", "produto", "quantidade", "preco_varejo"],
             document.querySelector("#tabela_selecionar_produtos"),
             false,
             true,
@@ -113,7 +117,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         )
         pesquisar(
             produtos,
-            ["id_produto", "produto", "quantidade", "preco_varejo"],
+            ["produto_id", "produto", "quantidade", "preco_varejo"],
             document.querySelector("#tabela_selecionar_produtos"),
             false
         )
@@ -150,20 +154,20 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
 
         let novosDados = produtos.filter(produto => {
             // Filtra os produtos que foram selecionados
-            return idProdutosSelecionados.includes(produto.id_produto.toString())
+            return idProdutosSelecionados.includes(produto.produto_id.toString())
         })
 
         novosDados.forEach(produto => {
             // Adiciona o produto selecionado na lista de produtos relacionados
             produtosRelacionados.push({
-                id_produto: produto.id_produto,
+                produto_id: produto.produto_id,
                 quantidade: 1,
                 valor_unitario: produto.preco_varejo,
                 desconto: 0,
             });
         })
 
-        carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade", "preco_varejo", "desconto", "valor_total"], document.querySelector("#tabela_produtos"), true, false, false)
+        carregarDadosNaTabela(novosDados, ["produto_id", "produto", "quantidade", "preco_varejo", "desconto", "valor_total"], document.querySelector("#tabela_produtos"), true, false, false)
 
         popup("fechar", 0, btn_selecionar_relacao)
 
@@ -176,7 +180,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
                 tr.remove(tr)
 
                 idProdutosSelecionados = idProdutosSelecionados.filter(id => id !== id_tr);
-                produtosRelacionados = produtosRelacionados.filter(produto => produto.id_produto !== parseInt(id_tr));
+                produtosRelacionados = produtosRelacionados.filter(produto => produto.produto_id !== parseInt(id_tr));
                 calcularValorTotal();
             });
         });
@@ -279,6 +283,8 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         });
 
         let id_saida = document.querySelector(".codigo_id").textContent;
+
+        console.log(data);
 
         if (data.itens.length === 0) {
             popup_erro('É necessário selecionar pelo menos um produto para salvar a saida.');

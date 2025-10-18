@@ -316,6 +316,7 @@ app.get('/api/saida_produto', async (req, res) => {
                 sp.modelo_documento_fiscal,
                 sp.subserie,
                 sp.chave_nfe,
+                sp.destinatario_id, 
                 c.razao_social AS destinatario_razao_social,
                 c.cnpj AS destinatario_cnpj,
                 COUNT(spi.id_item) AS total_itens,
@@ -338,6 +339,47 @@ app.get('/api/saida_produto', async (req, res) => {
     } catch (err) {
         console.error('Erro ao buscar saídas de produto:', err);
         res.status(500).json({ error: 'Erro interno do servidor ao buscar saídas de produto' });
+    }
+});
+
+app.get('/api/tipos_de_saida/:id', async (req, res) => {
+    // Extrai o ID dos parâmetros da URL.
+    const { id } = req.params;
+
+    try {
+        // Query para selecionar todas as colunas da tabela 'tipos_de_saida'
+        // onde o ID corresponde ao parâmetro fornecido.
+        const query = `
+            SELECT * FROM sga.tipos_de_saida
+            WHERE id_tipos_de_saida = $1;
+        `;
+
+        // Executa a query no banco de dados.
+        const { rows } = await pool.query(query, [id]);
+
+        // Se nenhum registro for encontrado (array 'rows' está vazio),
+        // retorna um erro 404 (Not Found).
+        if (rows.length === 0) {
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Tipo de saída não encontrado.'
+            });
+        }
+
+        // Se o registro for encontrado, retorna os dados com status 200 (OK).
+        res.status(200).json({
+            sucesso: true,
+            tipo_saida: rows[0]
+        });
+
+    } catch (error) {
+        // Em caso de erro no banco ou no servidor, loga o erro e retorna um status 500.
+        console.error(`Erro ao buscar tipo de saída com ID ${id}:`, error);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro interno do servidor ao buscar o tipo de saída.',
+            detalhes: error.message
+        });
     }
 });
 
@@ -1051,62 +1093,118 @@ app.put('/entrada_produto/:id', async (req, res) => {
 
 app.put('/saida_produto/:id', async (req, res) => {
     const { id } = req.params;
-    const camposParaAtualizar = req.body;
-    console.log(camposParaAtualizar)
-    // Validação para garantir que pelo menos um campo foi enviado para atualização
-    if (Object.keys(camposParaAtualizar).length === 0) {
-        return res.status(400).json({
-            sucesso: false,
-            erro: 'Nenhum dado fornecido para atualização.'
-        });
-    }
+    const {
+        tipo_saida,
+        numero_nf,
+        data_saida,
+        destinatario_id,
+        valor_total,
+        desconto,
+        status,
+        modelo_documento_fiscal,
+        serie,
+        subserie,
+        data_emissao,
+        chave_nfe,
+        itens // Array de objetos de itens
+    } = req.body;
+
+    // Conecta ao banco para usar o mesmo cliente na transação
+    const client = await pool.connect();
 
     try {
-        // --- Montagem da Query de Atualização Dinâmica ---
-        // Isso permite que você envie apenas os campos que deseja alterar.
+        // Inicia a transação
+        await client.query('BEGIN');
 
-        const campos = Object.keys(camposParaAtualizar); // Ex: ['status', 'valor_total']
-        const valores = Object.values(camposParaAtualizar); // Ex: ['Entregue', 150.75]
-
-        // Cria a parte SET da query: "status" = $1, "valor_total" = $2
-        const setClause = campos
-            .map((campo, index) => `"${campo}" = $${index + 1}`)
-            .join(', ');
-
-        // O ID da saída será o último parâmetro na query
-        const idParamIndex = valores.length + 1;
-
-        const query = `
+        // 1. Atualizar o cabeçalho da saída de produto
+        const updateSaidaQuery = `
             UPDATE sga.saida_produto
-            SET ${setClause}
-            WHERE id_saida_produto = $${idParamIndex}
+            SET
+                tipo_saida = $1,
+                numero_nf = $2,
+                data_saida = $3,
+                destinatario_id = $4,
+                valor_total = $5,
+                desconto = $6,
+                status = $7,
+                modelo_documento_fiscal = $8,
+                serie = $9,
+                subserie = $10,
+                data_emissao = $11,
+                chave_nfe = $12
+            WHERE id_saida_produto = $13
             RETURNING *;
         `;
+        const saidaResult = await client.query(updateSaidaQuery, [
+            tipo_saida, numero_nf, data_saida, destinatario_id, valor_total,
+            desconto, status, modelo_documento_fiscal, serie, subserie,
+            data_emissao, chave_nfe, id
+        ]);
 
-        const { rows } = await pool.query(query, [...valores, id]);
-
-        // Verifica se a saída com o ID fornecido foi encontrada e atualizada
-        if (rows.length === 0) {
+        if (saidaResult.rowCount === 0) {
+            await client.query('ROLLBACK');
             return res.status(404).json({
                 sucesso: false,
-                erro: 'Saída de produto não encontrada.'
+                mensagem: 'Saída de produto não encontrada'
             });
         }
 
-        // Retorna o registro completo da saída de produto após a atualização
+        // 2. Remover todos os itens existentes para esta saída
+        await client.query(
+            'DELETE FROM sga.saida_produto_itens WHERE saida_id = $1',
+            [id]
+        );
+
+        // 3. Inserir os novos itens da saída, se houver
+        if (itens && Array.isArray(itens) && itens.length > 0) {
+            for (const item of itens) {
+                await client.query(
+                    `INSERT INTO sga.saida_produto_itens (
+                        saida_id, produto_id, quantidade, valor_unitario, desconto_item
+                    ) VALUES ($1, $2, $3, $4, $5)`,
+                    [
+                        id,
+                        item.produto_id, // Garanta que o front-end envie 'produto_id'
+                        item.quantidade,
+                        item.valor_unitario,
+                        item.desconto_item || 0
+                    ]
+                );
+            }
+        }
+
+        // Confirma a transação
+        await client.query('COMMIT');
+
+        // 4. Obter os dados atualizados completos para retornar
+        const saidaCompleta = await client.query(
+            `SELECT * FROM sga.saida_produto WHERE id_saida_produto = $1`,
+            [id]
+        );
+        const itensAtualizados = await client.query(
+            `SELECT * FROM sga.saida_produto_itens WHERE saida_id = $1`,
+            [id]
+        );
+
         res.status(200).json({
             sucesso: true,
-            mensagem: 'Saída de produto atualizada com sucesso!',
-            saidaProduto: rows[0]
+            mensagem: 'Saída de produto atualizada com sucesso',
+            saida: saidaCompleta.rows[0],
+            itens: itensAtualizados.rows
         });
 
     } catch (error) {
-        console.error(`Erro ao atualizar saída de produto com ID ${id}:`, error);
+        // Em caso de erro, desfaz a transação
+        await client.query('ROLLBACK');
+        console.error('Erro ao atualizar saída:', error);
         res.status(500).json({
             sucesso: false,
-            erro: 'Erro interno do servidor ao tentar atualizar a saída de produto.',
+            erro: 'Erro ao atualizar saída de produto',
             detalhes: error.message
         });
+    } finally {
+        // Libera o cliente de volta para o pool
+        client.release();
     }
 });
 
