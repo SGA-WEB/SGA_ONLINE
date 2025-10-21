@@ -40,33 +40,33 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
     let itemsRelacionados = await buscarDados(`saida_produto/${saida.id_saida_produto}/itens`)
     let produtos = await buscarDados("produto")
     let contatos = await buscarDados("contato");
-    // let tipos_de_saida = await buscarDados("tipo_de_saida");
-
-    console.log("sadfjalksd")
+    let tipos_de_saida = await buscarDados("tipos_de_saida/" + 1);
     console.log(tipos_de_saida)
+
     itemsRelacionados = itemsRelacionados.itens;
 
     // Adiciona no array produtosRelacionados os produtos que estão relacionados com a saida de produtos
     produtos.forEach(produto => {
         itemsRelacionados.forEach(item => {
-            if (produto.id_produto === item.produto_id) {
+            if (produto.id_produto === item.id_produto) {
                 // Se o produto já estiver na lista de produtos relacionados, não adiciona novamente
                 if (!produtosRelacionados.some(p => p.id_item === item.id_item)) {
                     produtosRelacionados.push({
                         // adicionas as chaves que já são usadas na tabela de produtos
-                        produto_id: item.produto_id,
+                        id_produto: item.id_produto,
                         produto: produto.produto,
                         quantidade: item.quantidade,
-                        preco_varejo: item.valor_unitario,
+                        valor_unitario: item.valor_unitario,
                         desconto: item.desconto_item,
                         valor_total: item.valor_total_item
                     });
+                    idProdutosSelecionados.push(item.id_produto.toString());
                 }
             }
         })
     })
 
-    carregarDadosNaTabela(produtosRelacionados, ["produto_id", "produto", "quantidade", "preco_varejo", "desconto", "valor_total"], document.querySelector(".tbody"), false, false)
+    carregarDadosNaTabela(produtosRelacionados, ["id_produto", "produto", "quantidade", "valor_unitario", "desconto", "valor_total"], document.querySelector(".tbody"), false, false)
 
     criarInputsQuantidadeDesconto();
     addListenerExcluirProdutos();
@@ -91,7 +91,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
 
     selectCliente.value = saida.destinatario_id
 
-    produtos = produtos.sort((a, b) => a.produto_id - b.produto_id);
+    produtos = produtos.sort((a, b) => a.id_produto - b.id_produto);
 
     // Adiciona o campo valor_total e o desconto em cada produto
     produtos.map(produto => {
@@ -106,29 +106,32 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         // Quando o botão de adicionar relação for clicado
         // Abre um popup para selecionar os produtos
         // Carrega os produtos na tabela de seleção
+
+        let tabela = document.querySelector("#tabela_selecionar_produtos")
+        tabela.innerHTML = ""
         popup("abrir", 0, btn_adicionar_relacao)
         carregarDadosNaTabela(
             produtos,
-            ["produto_id", "produto", "quantidade", "preco_varejo"],
-            document.querySelector("#tabela_selecionar_produtos"),
+            ["id_produto", "produto", "quantidade", "preco_varejo"],
+            tabela,
             false,
             true,
             false
         )
         pesquisar(
             produtos,
-            ["produto_id", "produto", "quantidade", "preco_varejo"],
-            document.querySelector("#tabela_selecionar_produtos"),
+            ["id_produto", "produto", "quantidade", "preco_varejo"],
+            tabela,
             false
         )
         mudarPesquisa(document.querySelector(".input_pesquisa"), "#select_coluna")
         select2("200px")
 
-        document.querySelectorAll(".table_tr").forEach(tr => {
+        document.querySelectorAll("#tabela_selecionar_produtos .table_tr").forEach(tr => {
             // Seleciona os tr's da tabela de produtos selecionados anteriormente
             let tr_id = tr.id.replace("tr_", "");
-            idProdutosSelecionados.forEach(idProduto => {
-                if (tr_id === idProduto) {
+            produtosRelacionados.forEach(produto => {
+                if (tr_id === produto.id_produto.toString()) {
                     tr.querySelector(".checkbox_selecionar_linha").checked = true;
                     tr.classList.add("linha_selecionada");
                 }
@@ -145,6 +148,15 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         // Quando o botão de selecionar relação for clicado
         // Seleciona os produtos que foram marcados na tabela de seleção
         let checkboxProdutoSelecionados = document.querySelectorAll("#tabela_selecionar_produtos .checkbox_selecionar_linha:checked");
+
+        checkboxProdutoSelecionados.forEach(() => { // Remove os produtos que já estão selecionados da lista
+            checkboxProdutoSelecionados = Array.from(checkboxProdutoSelecionados).filter(cb => {
+                const id = cb.id.replace("checkbox_", "");
+                return !idProdutosSelecionados.includes(id);
+            });
+            return;
+        })
+
         idProdutosSelecionados = []
         checkboxProdutoSelecionados.forEach(checkbox => {
             idProdutosSelecionados.push(
@@ -154,20 +166,24 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
 
         let novosDados = produtos.filter(produto => {
             // Filtra os produtos que foram selecionados
-            return idProdutosSelecionados.includes(produto.produto_id.toString())
+            return idProdutosSelecionados.includes(produto.id_produto.toString())
         })
 
         novosDados.forEach(produto => {
             // Adiciona o produto selecionado na lista de produtos relacionados
             produtosRelacionados.push({
-                produto_id: produto.produto_id,
+                id_produto: produto.id_produto,
                 quantidade: 1,
                 valor_unitario: produto.preco_varejo,
                 desconto: 0,
             });
         })
+        if (novosDados.length === 0) {
+            popup("fechar", 0, btn_selecionar_relacao)
+            return;
+        }
 
-        carregarDadosNaTabela(novosDados, ["produto_id", "produto", "quantidade", "preco_varejo", "desconto", "valor_total"], document.querySelector("#tabela_produtos"), true, false, false)
+        carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade", "preco_varejo", "desconto", "valor_total"], document.querySelector("#tabela_produtos"), true, false, false)
 
         popup("fechar", 0, btn_selecionar_relacao)
 
@@ -180,7 +196,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
                 tr.remove(tr)
 
                 idProdutosSelecionados = idProdutosSelecionados.filter(id => id !== id_tr);
-                produtosRelacionados = produtosRelacionados.filter(produto => produto.produto_id !== parseInt(id_tr));
+                produtosRelacionados = produtosRelacionados.filter(produto => produto.id_produto !== parseInt(id_tr));
                 calcularValorTotal();
             });
         });
@@ -193,19 +209,19 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         let tabela = document.querySelector("#tabela_produtos")
         let inputsQuantidade = tabela.querySelectorAll(".input_quantidade");
         let inputsDesconto = tabela.querySelectorAll(".input_desconto");
-        let inputsPrecoVarejo = tabela.querySelectorAll(".td_preco_varejo");
+        let inputsValorUnitario = tabela.querySelectorAll(".td_valor_unitario");
         let inputsValorTotal = tabela.querySelectorAll(".td_valor_total");
         valorTotalTodosProdutos = 0; // Reseta o valor total antes de calcular
         descontoTotal = 0; // Reseta o desconto total antes de calcular
 
         inputsQuantidade.forEach((input, index) => {
             // Para cada input de quantidade e desconto, calcula o valor total
-            let precoVarejo = inputsPrecoVarejo[index].textContent;
+            let precoVarejo = inputsValorUnitario[index].textContent;
             let quantidade = input.value;
             let desconto = inputsDesconto[index].value;
             let valorTotal = (precoVarejo * quantidade) - desconto;
 
-            inputsPrecoVarejo[index].value = precoVarejo;
+            inputsValorUnitario[index].value = precoVarejo;
             inputsQuantidade[index].value = quantidade;
             inputsDesconto[index].value = desconto;
             inputsValorTotal[index].textContent = valorTotal.toFixed(2)
@@ -220,7 +236,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
     }
 
     function criarInputsQuantidadeDesconto() {
-        document.querySelectorAll(".td_quantidade").forEach(td => {
+        document.querySelectorAll(".td_quantidade:not(.td_container_input)").forEach(td => {
             // Adiciona um input de quantidade em cada célula de quantidade
             td.classList.add("td_container_input")
             let inputQuantidade = document.createElement("input");
@@ -236,7 +252,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
             td.appendChild(inputQuantidade);
         })
 
-        document.querySelectorAll(".td_desconto").forEach(td => {
+        document.querySelectorAll(".td_desconto:not(.td_container_input)").forEach(td => {
             td.classList.add("td_container_input")
             let inputDesconto = document.createElement("input");
             inputDesconto.type = "number";
@@ -277,14 +293,9 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         data.desconto = descontoTotal;
         data.valor_total = valorTotalTodosProdutos;
         data.itens = produtosRelacionados;
-        data.itens.forEach(item => {
-            item.valor_unitario = item.preco_varejo;
-            delete item.preco_varejo;
-        });
 
         let id_saida = document.querySelector(".codigo_id").textContent;
 
-        console.log(data);
 
         if (data.itens.length === 0) {
             popup_erro('É necessário selecionar pelo menos um produto para salvar a saida.');

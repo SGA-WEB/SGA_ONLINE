@@ -925,14 +925,14 @@ app.get('/api/saida_produto/:id/itens', async (req, res) => {
             SELECT
                 spi.id_item,
                 spi.saida_id,
-                spi.produto_id,
+                spi.id_produto,
                 p.produto AS nome_produto,
                 spi.quantidade,
                 spi.valor_unitario,
                 spi.desconto_item,
                 spi.valor_total_item
             FROM sga.saida_produto_itens spi
-            JOIN sga.produto p ON spi.produto_id = p.id_produto
+            JOIN sga.produto p ON spi.id_produto = p.id_produto
             WHERE spi.saida_id = $1
             ORDER BY spi.id_item
         `;
@@ -959,6 +959,47 @@ app.get('/api/saida_produto/:id/itens', async (req, res) => {
         res.status(500).json({
             sucesso: false,
             erro: 'Erro ao buscar itens da saída',
+            detalhes: error.message
+        });
+    }
+});
+
+app.get('/api/tipos_de_saida/:id', async (req, res) => {
+    // Extrai o ID dos parâmetros da URL.
+    const { id } = req.params;
+
+    try {
+        // Query para selecionar todas as colunas da tabela 'tipos_de_saida'
+        // onde o ID corresponde ao parâmetro fornecido.
+        const query = `
+            SELECT * FROM sga.tipos_de_saida
+            WHERE id_tipos_de_saida = $1;
+        `;
+
+        // Executa a query no banco de dados.
+        const { rows } = await pool.query(query, [id]);
+
+        // Se nenhum registro for encontrado (array 'rows' está vazio),
+        // retorna um erro 404 (Not Found).
+        if (rows.length === 0) {
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Tipo de saída não encontrado.'
+            });
+        }
+
+        // Se o registro for encontrado, retorna os dados com status 200 (OK).
+        res.status(200).json({
+            sucesso: true,
+            tipo_saida: rows[0]
+        });
+
+    } catch (error) {
+        // Em caso de erro no banco ou no servidor, loga o erro e retorna um status 500.
+        console.error(`Erro ao buscar tipo de saída com ID ${id}:`, error);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro interno do servidor ao buscar o tipo de saída.',
             detalhes: error.message
         });
     }
@@ -1160,11 +1201,11 @@ app.put('/saida_produto/:id', async (req, res) => {
             for (const item of itens) {
                 await client.query(
                     `INSERT INTO sga.saida_produto_itens (
-                        saida_id, produto_id, quantidade, valor_unitario, desconto_item
+                        saida_id, id_produto, quantidade, valor_unitario, desconto_item
                     ) VALUES ($1, $2, $3, $4, $5)`,
                     [
                         id,
-                        item.produto_id, // Garanta que o front-end envie 'produto_id'
+                        item.id_produto, // Garanta que o front-end envie 'id_produto'
                         item.quantidade,
                         item.valor_unitario,
                         item.desconto_item || 0
