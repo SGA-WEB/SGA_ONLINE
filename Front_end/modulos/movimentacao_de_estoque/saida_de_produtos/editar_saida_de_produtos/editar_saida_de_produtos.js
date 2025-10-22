@@ -41,7 +41,6 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
     let produtos = await buscarDados("produto")
     let contatos = await buscarDados("contato");
     let tipos_de_saida = await buscarDados("tipos_de_saida/" + 1);
-    console.log(tipos_de_saida)
 
     itemsRelacionados = itemsRelacionados.itens;
 
