@@ -28,7 +28,6 @@ export default async function saida_de_produtos() {
     pesquisar(dados, colunasExibir)
     let btn_adicionar = document.querySelector("#btn_adicionar")
     btn_adicionar.addEventListener("click", () => {
-        console.log("clicou")
         carregarConteudo(
             "movimentacao_de_estoque/saida_de_produtos/cadastro_saida_produtos/cadastro_saida_produtos.html",
             document.querySelector(".principal"),

@@ -12,25 +12,25 @@ export default async function cadastro_saida_produtos(dados) {
     let produtos = await buscarDados("produto")
     let contatos = await buscarDados("contato");
 
-    let fornecedores = []
+    let clientes = []
 
-    contatos.forEach(contato => { // Para cada contato, verifica se ele é um fornecedor e, se sim, adiciona-o ao array fornecedores
+    contatos.forEach(contato => { // Para cada contato, verifica se ele é um cliente e, se sim, adiciona-o ao array clientes
         contato.categorias.forEach(categoria => {
-            if (categoria.nome === "FORNECEDOR") {
-                fornecedores.push(contato)
+            if (categoria.nome === "CLIENTE") {
+                clientes.push(contato)
             }
         })
     })
 
-    let selectfornecedor = document.querySelector("#fornecedor");
-    fornecedores.forEach((fornecedor) => {
+    let selectCliente = document.querySelector("#cliente");
+    clientes.forEach((cliente) => {
         let option = document.createElement("option");
-        option.value = fornecedor.id_contato;
-        option.text = fornecedor.razao_social;
-        selectfornecedor.appendChild(option);
+        option.value = cliente.id_contato;
+        option.text = cliente.razao_social;
+        selectCliente.appendChild(option);
     })
 
-    // Ordena os fornecedores pelo id
+    // Ordena os clientes pelo id
     produtos = produtos.sort((a, b) => a.id_produto - b.id_produto);
 
     // Adiciona o campo valor_total e o desconto em cada produto
@@ -38,7 +38,7 @@ export default async function cadastro_saida_produtos(dados) {
         produto.valor_total = produto.preco_varejo * produto.quantidade;
         produto.desconto = 0; // Inicializa o desconto como 0
     })
-    
+
 
     let btn_adicionar_relacao = document.querySelector("#btn_adicionar_relacao");
     btn_adicionar_relacao.addEventListener("click", async () => {
