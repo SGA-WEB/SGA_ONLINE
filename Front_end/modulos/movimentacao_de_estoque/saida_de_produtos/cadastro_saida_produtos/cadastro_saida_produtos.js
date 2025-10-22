@@ -241,12 +241,12 @@ export default async function cadastro_saida_produtos(dados) {
         }
         if (idProdutosSelecionados.length > 0 || dadosPreenchidos) {
             if (await popup_confirmar("Tem certeza que deseja voltar? Todos os dados inseridos serão perdidos.")) {
-                carregarConteudo("movimentacao_de_estoque/saida_de_produto/saida_de_produtos.html", document.querySelector(".principal"), false, saida_de_produtos)
+                carregarConteudo("movimentacao_de_estoque/saida_de_produtos/saida_de_produtos.html", document.querySelector(".principal"), false, saida_de_produtos)
             } else {
                 return;
             }
         }else {
-            carregarConteudo("movimentacao_de_estoque/saida_de_produto/saida_de_produtos.html", document.querySelector(".principal"), false, saida_de_produtos)
+            carregarConteudo("movimentacao_de_estoque/saida_de_produtos/saida_de_produtos.html", document.querySelector(".principal"), false, saida_de_produtos)
         }
     })
 }
