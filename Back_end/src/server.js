@@ -316,6 +316,7 @@ app.get('/api/saida_produto', async (req, res) => {
                 sp.modelo_documento_fiscal,
                 sp.subserie,
                 sp.chave_nfe,
+                sp.destinatario_id, 
                 c.razao_social AS destinatario_razao_social,
                 c.cnpj AS destinatario_cnpj,
                 COUNT(spi.id_item) AS total_itens,
@@ -338,6 +339,47 @@ app.get('/api/saida_produto', async (req, res) => {
     } catch (err) {
         console.error('Erro ao buscar saídas de produto:', err);
         res.status(500).json({ error: 'Erro interno do servidor ao buscar saídas de produto' });
+    }
+});
+
+app.get('/api/tipos_de_saida/:id', async (req, res) => {
+    // Extrai o ID dos parâmetros da URL.
+    const { id } = req.params;
+
+    try {
+        // Query para selecionar todas as colunas da tabela 'tipos_de_saida'
+        // onde o ID corresponde ao parâmetro fornecido.
+        const query = `
+            SELECT * FROM sga.tipos_de_saida
+            WHERE id_tipos_de_saida = $1;
+        `;
+
+        // Executa a query no banco de dados.
+        const { rows } = await pool.query(query, [id]);
+
+        // Se nenhum registro for encontrado (array 'rows' está vazio),
+        // retorna um erro 404 (Not Found).
+        if (rows.length === 0) {
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Tipo de saída não encontrado.'
+            });
+        }
+
+        // Se o registro for encontrado, retorna os dados com status 200 (OK).
+        res.status(200).json({
+            sucesso: true,
+            tipo_saida: rows[0]
+        });
+
+    } catch (error) {
+        // Em caso de erro no banco ou no servidor, loga o erro e retorna um status 500.
+        console.error(`Erro ao buscar tipo de saída com ID ${id}:`, error);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro interno do servidor ao buscar o tipo de saída.',
+            detalhes: error.message
+        });
     }
 });
 
@@ -883,14 +925,14 @@ app.get('/api/saida_produto/:id/itens', async (req, res) => {
             SELECT
                 spi.id_item,
                 spi.saida_id,
-                spi.produto_id,
+                spi.id_produto,
                 p.produto AS nome_produto,
                 spi.quantidade,
                 spi.valor_unitario,
                 spi.desconto_item,
                 spi.valor_total_item
             FROM sga.saida_produto_itens spi
-            JOIN sga.produto p ON spi.produto_id = p.id_produto
+            JOIN sga.produto p ON spi.id_produto = p.id_produto
             WHERE spi.saida_id = $1
             ORDER BY spi.id_item
         `;
@@ -917,6 +959,47 @@ app.get('/api/saida_produto/:id/itens', async (req, res) => {
         res.status(500).json({
             sucesso: false,
             erro: 'Erro ao buscar itens da saída',
+            detalhes: error.message
+        });
+    }
+});
+
+app.get('/api/tipos_de_saida/:id', async (req, res) => {
+    // Extrai o ID dos parâmetros da URL.
+    const { id } = req.params;
+
+    try {
+        // Query para selecionar todas as colunas da tabela 'tipos_de_saida'
+        // onde o ID corresponde ao parâmetro fornecido.
+        const query = `
+            SELECT * FROM sga.tipos_de_saida
+            WHERE id_tipos_de_saida = $1;
+        `;
+
+        // Executa a query no banco de dados.
+        const { rows } = await pool.query(query, [id]);
+
+        // Se nenhum registro for encontrado (array 'rows' está vazio),
+        // retorna um erro 404 (Not Found).
+        if (rows.length === 0) {
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Tipo de saída não encontrado.'
+            });
+        }
+
+        // Se o registro for encontrado, retorna os dados com status 200 (OK).
+        res.status(200).json({
+            sucesso: true,
+            tipo_saida: rows[0]
+        });
+
+    } catch (error) {
+        // Em caso de erro no banco ou no servidor, loga o erro e retorna um status 500.
+        console.error(`Erro ao buscar tipo de saída com ID ${id}:`, error);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro interno do servidor ao buscar o tipo de saída.',
             detalhes: error.message
         });
     }
@@ -1045,6 +1128,123 @@ app.put('/entrada_produto/:id', async (req, res) => {
             codigo_erro: error.code
         });
     } finally {
+        client.release();
+    }
+});
+
+app.put('/saida_produto/:id', async (req, res) => {
+    const { id } = req.params;
+    const {
+        tipo_saida,
+        numero_nf,
+        data_saida,
+        destinatario_id,
+        valor_total,
+        desconto,
+        status,
+        modelo_documento_fiscal,
+        serie,
+        subserie,
+        data_emissao,
+        chave_nfe,
+        itens // Array de objetos de itens
+    } = req.body;
+
+    // Conecta ao banco para usar o mesmo cliente na transação
+    const client = await pool.connect();
+
+    try {
+        // Inicia a transação
+        await client.query('BEGIN');
+
+        // 1. Atualizar o cabeçalho da saída de produto
+        const updateSaidaQuery = `
+            UPDATE sga.saida_produto
+            SET
+                tipo_saida = $1,
+                numero_nf = $2,
+                data_saida = $3,
+                destinatario_id = $4,
+                valor_total = $5,
+                desconto = $6,
+                status = $7,
+                modelo_documento_fiscal = $8,
+                serie = $9,
+                subserie = $10,
+                data_emissao = $11,
+                chave_nfe = $12
+            WHERE id_saida_produto = $13
+            RETURNING *;
+        `;
+        const saidaResult = await client.query(updateSaidaQuery, [
+            tipo_saida, numero_nf, data_saida, destinatario_id, valor_total,
+            desconto, status, modelo_documento_fiscal, serie, subserie,
+            data_emissao, chave_nfe, id
+        ]);
+
+        if (saidaResult.rowCount === 0) {
+            await client.query('ROLLBACK');
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Saída de produto não encontrada'
+            });
+        }
+
+        // 2. Remover todos os itens existentes para esta saída
+        await client.query(
+            'DELETE FROM sga.saida_produto_itens WHERE saida_id = $1',
+            [id]
+        );
+
+        // 3. Inserir os novos itens da saída, se houver
+        if (itens && Array.isArray(itens) && itens.length > 0) {
+            for (const item of itens) {
+                await client.query(
+                    `INSERT INTO sga.saida_produto_itens (
+                        saida_id, id_produto, quantidade, valor_unitario, desconto_item
+                    ) VALUES ($1, $2, $3, $4, $5)`,
+                    [
+                        id,
+                        item.id_produto, // Garanta que o front-end envie 'id_produto'
+                        item.quantidade,
+                        item.valor_unitario,
+                        item.desconto_item || 0
+                    ]
+                );
+            }
+        }
+
+        // Confirma a transação
+        await client.query('COMMIT');
+
+        // 4. Obter os dados atualizados completos para retornar
+        const saidaCompleta = await client.query(
+            `SELECT * FROM sga.saida_produto WHERE id_saida_produto = $1`,
+            [id]
+        );
+        const itensAtualizados = await client.query(
+            `SELECT * FROM sga.saida_produto_itens WHERE saida_id = $1`,
+            [id]
+        );
+
+        res.status(200).json({
+            sucesso: true,
+            mensagem: 'Saída de produto atualizada com sucesso',
+            saida: saidaCompleta.rows[0],
+            itens: itensAtualizados.rows
+        });
+
+    } catch (error) {
+        // Em caso de erro, desfaz a transação
+        await client.query('ROLLBACK');
+        console.error('Erro ao atualizar saída:', error);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao atualizar saída de produto',
+            detalhes: error.message
+        });
+    } finally {
+        // Libera o cliente de volta para o pool
         client.release();
     }
 });
@@ -1614,6 +1814,117 @@ app.delete('/entrada_produto/:id_entrada', async (req, res) => {
         client.release();
     }
 });
+
+
+// Rota GET para listar todos os tipos_de_saida
+app.get('/api/tipos_de_saida', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM sga.tipos_de_saida ORDER BY id_tipos_de_saida');
+        res.status(200).json(result.rows);
+    } catch (err) {
+        console.error('Erro ao buscar tipos_de_saida:', err);
+        res.status(500).json({ message: 'Erro ao buscar tipos_de_saida', error: err.message });
+    }
+});
+
+app.put('/tipo_de_saida/:id', async (req, res) => {
+    const { id } = req.params;
+    const {
+        descricao,
+        cfop_dentro,
+        cfop_fora,
+        ativo,
+        movimenta_estoque,
+        hab_agrupamento,
+        hab_movimento,
+        habilita_nf,
+        atualiza_produto,
+        padrao
+    } = req.body;
+
+    try {
+        const query = `
+            UPDATE sga.tipos_de_saida
+            SET
+                descricao = $1,
+                cfop_dentro = $2,
+                cfop_fora = $3,
+                ativo = $4,
+                movimenta_estoque = $5,
+                hab_agrupamento = $6,
+                hab_movimento = $7,
+                habilita_nf = $8,
+                atualiza_produto = $9,
+                padrao = $10
+            WHERE id_tipo_de_entrada = $11
+            RETURNING *;
+        `;
+
+        const values = [
+            descricao,
+            cfop_dentro,
+            cfop_fora,
+            ativo,
+            movimenta_estoque,
+            hab_agrupamento,
+            hab_movimento,
+            habilita_nf,
+            atualiza_produto,
+            padrao,
+            id
+        ];
+
+        const result = await pool.query(query, values);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Tipo de saida não encontrado.' });
+        }
+
+        res.status(200).json({
+            message: 'Tipo de saida atualizado com sucesso.',
+            tipo_entrada: result.rows[0]
+        });
+
+    } catch (err) {
+        console.error('Erro ao atualizar tipo de saida:', err);
+        res.status(500).json({ message: 'Erro ao atualizar tipo de saida', error: err.message });
+    }
+});
+
+// Rota POST para inserir novo tipo de saida
+app.post('/tipo_de_saida', async (req, res) => {
+    const {
+        id_tipo_de_entrada,
+        descricao,
+        cfop_dentro,
+        cfop_fora,
+        ativo,
+        movimenta_estoque,
+        hab_agrupamento,
+        hab_movimento,
+        habilita_nf,
+        atualiza_produto,
+        padrao
+    } = req.body;
+
+    try {
+        const query = `
+            INSERT INTO sga.tipos_de_saida
+            (id_tipo_de_entrada, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            RETURNING *;
+        `;
+        const values = [id_tipo_de_entrada, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao];
+
+        const result = await pool.query(query, values);
+
+        res.status(201).json({ message: 'Tipo de saida criado com sucesso!', tipo_de_saida: result.rows[0] });
+    } catch (err) {
+        console.error('Erro ao inserir tipo de saida:', err);
+        res.status(500).json({ message: 'Erro ao inserir tipo de saida', error: err.message });
+    }
+});
+
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
