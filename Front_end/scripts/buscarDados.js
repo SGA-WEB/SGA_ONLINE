@@ -15,6 +15,7 @@ export default async function buscarDados(query) {
     try {
         const response = await fetch(`http://localhost:3000/api/${query}`); // Faz a requisição para o servidor
         const result = await response.json(); // Converte a resposta para JSON
+        console.log(result)
         if (result) {
             return result
         } else {
