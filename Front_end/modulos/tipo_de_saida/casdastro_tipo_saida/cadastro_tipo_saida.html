@@ -1,0 +1,81 @@
+<section class="modulo" id="modulo_cadastro_tipo_saida">
+    <button class="btn_nav" id="btn_voltar_tipos_de_saida">
+        <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
+        <p class="btn_voltar">Voltar</p>
+    </button>
+    <div class="modulo_header header_cadastro">
+        <h2 class="h2_titulo">Cadastro de Tipos de Saida</h2> 
+    </div>
+    <form>
+    <div class="container_btns">
+        <!-- <button class="Cancelar btn"> -->
+            <!-- <img src="../imagens/icone_fechar.svg" alt="Icone Cancelar">
+            <p>Canc.</p>
+        </button>
+        <button class="Editar btn">
+            <img src="../imagens/icone_editar.svg" alt="Icone Editar">
+            <p>Editar</p>
+        </button>
+        <button class="excluir btn">
+            <img src="../imagens/icone_excluir.svg" alt="Icone Excluir">
+            <p>Excluir</p>
+        </button> -->
+        <button class="btn btn_salvar" id="btn_salvar">
+            <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
+            <p>Salvar</p>
+        </button>
+    </div>
+    <div class="modulo_main">
+        <div class="container_small_width" id="container_radios"> 
+            <div class="campo_contato small_width">
+                <label for="codigo_entrada">Código:</label>
+                <input type="number" name="codigo_entrada" id="codigo" class="campo_input">
+            </div>
+        </div>   
+        <div class="campo_contato small_width">
+            <label for="descricao">Descrição:</label>
+            <input type="text" name="descricao" id="descricao" class="campo_input">
+        </div>
+        <div class="campo_contato small_width">
+            <label for="CFOP">CFOP(Dentro):</label>
+            <input type="text" name="cpopD" id="cfop_dentro" class="campo_input">
+        </div>
+        <div class="campo_contato small_width">
+            <label for="CFOP">CFOP(Fora):</label>
+            <input type="text" name="cpopF" id="cfop_fora" class="campo_input">
+        </div>
+        <div class="campo_contato small_width select_conainer">
+            <p>Ativo:</p>
+            <select id="ativo" class="campo_select">
+                <option value="true">Sim</option>
+                <option value="false">Não</option>
+            </select>
+        </div>
+    </div>
+    <label for="devolução_de_compra">
+        <input type="checkbox" nome="Devolução de Compra" value="Devolução de Compra" id="devolução_compra">
+         Devolução de Compra
+    </label><br>
+
+    <label for="Remessa_conserto">
+        <input type="checkbox" nome="Remessa para Conserto" value="Remessa para Conserto" id="remessa_conserto">
+        Remessa para Conserto
+    </label><br>
+
+    <label for="trans_filiais">
+        <input type="checkbox" nome="Transferência entre Filiais"  value="Transferência entre Filiais" id="trans.filiias">
+        Transferência entre Filiais
+    </label><br>
+
+     <label for="baixa_perda_quebra">
+        <input type="checkbox" nome="Baixa por Perda/Quebra"  value="Baixa por Perda/Quebra" id="baixa_perda_quebra">
+        Baixa por Perda/Quebra
+    </label><br>
+
+    <label for="saida_uso_consumo">
+        <input type="checkbox" nome= "Saida para Uso ou Consumo" value="Saída para Uso ou Consumo" id="saida_uso_consumo">
+        Saída para Uso ou Consumo
+    </label><br>
+    </form>
+
+</section>
