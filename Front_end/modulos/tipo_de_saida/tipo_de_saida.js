@@ -19,7 +19,7 @@ export default async function tipo_de_saida() {
     mudarPesquisa(document.querySelector("#input_pesquisa_tabela"))
 
     document.querySelector("#btn_adicionar_tipos_de_saida").addEventListener("click", () => {
-        carregarConteudo("tipo_de_saida/cadastro_tipo_saida/cadastro_tipo_saida.html", document.querySelector(".principal"), false, cadastro_tipo_saida, dados)
+        carregarConteudo("tipo_de_saida/casdastro_tipo_saida/cadastro_tipo_saida.html", document.querySelector(".principal"), false, cadastro_tipo_saida, dados);
     })
     popup_carregando(true)
 }

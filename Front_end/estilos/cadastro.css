@@ -217,6 +217,11 @@ a.link_nav_selecionado {
     margin: .3em 0 1rem .3rem;
 }
 
+.chekboxes {
+    display: flex;
+    flex-direction: column;
+}
+
 @media (max-width: 900px) {
     .modulo {
         padding: 0.5rem;
