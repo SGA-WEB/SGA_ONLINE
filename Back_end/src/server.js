@@ -964,6 +964,52 @@ app.get('/api/saida_produto/:id/itens', async (req, res) => {
     }
 });
 
+app.get('/api/saida_produto_itens', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const query = `
+            SELECT
+                spi.id_item,
+                spi.saida_id,
+                spi.id_produto,
+                p.produto AS nome_produto,
+                spi.quantidade,
+                spi.valor_unitario,
+                spi.desconto_item,
+                spi.valor_total_item
+            FROM sga.saida_produto_itens spi
+            JOIN sga.produto p ON spi.id_produto = p.id_produto
+            ORDER BY spi.id_item
+        `;
+
+        const result = await pool.query(query);
+
+        // A verificação `result.rows.length === 0` é importante para o caso de uma
+        // saída que foi criada mas ainda não tem itens adicionados.
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Nenhum item encontrado para esta saída ou saída não existe'
+            });
+        }
+
+        res.status(200).json({
+            sucesso: true,
+            quantidade_itens: result.rows.length,
+            itens: result.rows
+        });
+
+    } catch (error) {
+        console.error('Erro ao buscar itens da saída:', error);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao buscar itens da saída',
+            detalhes: error.message
+        });
+    }
+});
+
 app.get('/api/tipos_de_saida/:id', async (req, res) => {
     // Extrai o ID dos parâmetros da URL.
     const { id } = req.params;

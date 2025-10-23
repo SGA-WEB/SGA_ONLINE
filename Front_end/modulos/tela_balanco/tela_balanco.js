@@ -10,10 +10,16 @@ export default async function tela_balanco() {
   let azul_1 = "#E9F0FF";
   let vermelho = "rgba(255, 0, 0, 0.15)";
 
+
   let dadosProduto = await buscarDados("produto").then((e) => {
     // Pega os dados do servidor
     return e;
   });
+  let saidaProdutoItens = await buscarDados("saida_produto_itens").then((e) => {
+    // Pega os dados do servidor
+    return e;
+  }); 
+  console.log(produtoSaida)
   let dadosCentroEstoque = await buscarDados("centro_estoque").then((e) => {
     // Pega os dados do servidor
     return e;
