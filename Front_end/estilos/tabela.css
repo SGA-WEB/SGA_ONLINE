@@ -97,3 +97,15 @@
 .td_container_input {
     max-width: 7rem;
 }
+
+/* Deixar somente o botão de excluir da tabela */
+
+.apenas_crud_excluir .acoes_tabela .btn_visualizar {
+    display: none;
+}
+.apenas_crud_excluir .acoes_tabela .btn_editar {
+    display: none;
+}
+.apenas_crud_excluir .table_tr td:not(.acoes_tabela):last-of-type {
+    padding-right: 3.25rem !important;
+}
