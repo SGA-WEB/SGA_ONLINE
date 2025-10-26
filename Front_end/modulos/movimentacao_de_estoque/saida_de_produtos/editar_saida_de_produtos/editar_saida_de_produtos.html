@@ -20,7 +20,7 @@
             <div class="container_normal_width" id="container_chave_nfe" style="max-width: 500px;">
                 <div class="campo_contato normal_width">
                     <label for="chave_nfe">Chave NF-e:</label>
-                    <input type="text" inputmode="numeric" name="chave_nfe" id="chave_nfe" class="campo_input"
+                    <input required type="text" inputmode="numeric" name="chave_nfe" id="chave_nfe" class="campo_input"
                         maxlength="44" pattern="[0-9]{1,44}"
                         oninvalid="this.setCustomValidity('Série deve ser um número de 44 dígitos')"
                         oninput="this.setCustomValidity('')">
@@ -29,27 +29,27 @@
             <div class="container_small_width" id="container_radios">
                 <div class="campo_contato small_width">
                     <label for="numero_nf">Número N.F:</label>
-                    <input type="text" name="numero_nf" id="numero_nf" class="campo_input" maxlength="20">
+                    <input required type="text" name="numero_nf" id="numero_nf" class="campo_input" maxlength="20">
                 </div>
                 <div class="campo_contato small_width select_conainer">
                     <p>Destinatário:</p>
-                    <select name="destinatario_id" id="destinatario_id" class="campo_select"></select>
+                    <select required name="destinatario_id" id="destinatario_id" class="campo_select"></select>
                 </div>
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width select_conainer">
                     <p>Tipo de saída:</p>
-                    <input type="text" id="tipo_saida" class="campo_input" name="tipo_saida">
+                    <input required type="text" id="tipo_saida" class="campo_input" name="tipo_saida">
                 </div>
                 <div class="campo_contato small_width">
                     <label for="data_saida">Data da saída:</label>
-                    <input type="date" name="data_saida" id="data_saida" class="campo_input">
+                    <input required type="date" name="data_saida" id="data_saida" class="campo_input">
                 </div>
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width select_conainer">
                     <label for="status">Status da saída:</label>
-                    <select name="status" id="status" class="campo_select">
+                    <select required name="status" id="status" class="campo_select">
                         <option value="ENTREGUE">ENTREGUE</option>
                         <option value="FATURADO">FATURADO</option>
                         <option value="EM TRÂNSITO">EM TRÂNSITO</option>
@@ -60,13 +60,13 @@
                 </div>
                 <div class="campo_contato small_width">
                     <label for="valor_total">Valor Total:</label>
-                    <input type="number" name="valor_total" id="valor_total" class="campo_input" step="0.01" min="0">
+                    <input required type="number" name="valor_total" id="valor_total" class="campo_input" step="0.01" min="0">
                 </div>
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width">
                     <label for="serie">Série:</label>
-                    <input type="text" inputmode="numeric" name="serie" id="serie" class="campo_input" maxlength="3"
+                    <input required type="text" inputmode="numeric" name="serie" id="serie" class="campo_input" maxlength="3"
                         pattern="[0-9]{1,3}"
                         oninvalid="this.setCustomValidity('Série deve ser um número de 1 a 3 dígitos')"
                         oninput="this.setCustomValidity('')">
@@ -82,7 +82,7 @@
             <div class="container_small_width">
                 <div class="campo_contato small_width">
                     <label for="modelo_documento_fiscal">Fiscal:</label>
-                    <input type="text" name="modelo_documento_fiscal" id="modelo_documento_fiscal" class="campo_input"
+                    <input required type="text" name="modelo_documento_fiscal" id="modelo_documento_fiscal" class="campo_input"
                         maxlength="2">
                 </div>
             </div>

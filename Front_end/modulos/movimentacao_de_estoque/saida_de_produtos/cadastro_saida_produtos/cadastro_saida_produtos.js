@@ -22,7 +22,7 @@ export default async function cadastro_saida_produtos(dados) {
         })
     })
 
-    let selectCliente = document.querySelector("#cliente");
+    let selectCliente = document.querySelector("#destinatario_id");
     clientes.forEach((cliente) => {
         let option = document.createElement("option");
         option.value = cliente.id_contato;
@@ -36,7 +36,7 @@ export default async function cadastro_saida_produtos(dados) {
     // Adiciona o campo valor_total e o desconto em cada produto
     produtos.map(produto => {
         produto.valor_total = produto.preco_varejo * produto.quantidade;
-        produto.desconto = 0; // Inicializa o desconto como 0
+        produto.desconto_item = 0; // Inicializa o desconto como 0
     })
 
 
@@ -101,11 +101,11 @@ export default async function cadastro_saida_produtos(dados) {
                 id_produto: produto.id_produto,
                 quantidade: 1,
                 valor_unitario: produto.preco_varejo,
-                desconto: 0,
+                desconto_item: 0,
             });
         })
 
-        carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade","preco_varejo", "desconto", "valor_total"], document.querySelector("#tabela_produtos"), true, false)
+        carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade","preco_varejo", "desconto_item", "valor_total"], document.querySelector("#tabela_produtos"), true, false)
 
         popup("fechar", 0, btn_selecionar_relacao)
 
@@ -139,7 +139,7 @@ export default async function cadastro_saida_produtos(dados) {
             td.appendChild(inputQuantidade);
         })
 
-        document.querySelectorAll(".td_desconto").forEach(td => {
+        document.querySelectorAll(".td_desconto_item").forEach(td => {
             td.classList.add("td_container_input")
             let inputDesconto = document.createElement("input");
             inputDesconto.type = "number";
@@ -180,7 +180,7 @@ export default async function cadastro_saida_produtos(dados) {
 
             // Atualiza o objeto produtosRelacionados com os valores atualizados
             produtosRelacionados[index].quantidade = quantidade;
-            produtosRelacionados[index].desconto = desconto;
+            produtosRelacionados[index].desconto_item = desconto;
         });
     }
 
@@ -190,7 +190,7 @@ export default async function cadastro_saida_produtos(dados) {
         let formData = new FormData(formsaidaProduto);
         let data = Object.fromEntries(formData);
 
-        data.desconto = descontoTotal;
+        data.desconto_item = descontoTotal;
         data.total = valorTotalTodosProdutos;
         data.itens = produtosRelacionados;
 

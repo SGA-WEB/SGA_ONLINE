@@ -66,10 +66,10 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
     })
 
     carregarDadosNaTabela(
-        produtosRelacionados, 
-        ["id_produto", "produto", "quantidade", "valor_unitario", "desconto", "valor_total"], 
-        document.querySelector(".tbody"), 
-        true, 
+        produtosRelacionados,
+        ["id_produto", "produto", "quantidade", "valor_unitario", "desconto", "valor_total"],
+        document.querySelector(".tbody"),
+        true,
         false
     )
 
@@ -85,7 +85,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
             }
         })
     })
-    
+
     let selectCliente= document.querySelector("#destinatario_id");
     clientes.forEach((Cliente) => {
         let option = document.createElement("option");
@@ -195,8 +195,8 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         }
 
         carregarDadosNaTabela(
-            novosDados, 
-            ["id_produto", "produto", "quantidade", "valor_unitario", "desconto", "valor_total"], 
+            novosDados,
+            ["id_produto", "produto", "quantidade", "valor_unitario", "desconto", "valor_total"],
             document.querySelector("#tabela_produtos tbody"),
             true,
             false,
@@ -249,7 +249,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
 
             // Atualiza o objeto produtosRelacionados com os valores atualizados
             produtosRelacionados[index].quantidade = quantidade;
-            produtosRelacionados[index].desconto = desconto;
+            produtosRelacionados[index].desconto_item = desconto;
         });
     }
 

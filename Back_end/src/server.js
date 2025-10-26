@@ -316,7 +316,7 @@ app.get('/api/saida_produto', async (req, res) => {
                 sp.modelo_documento_fiscal,
                 sp.subserie,
                 sp.chave_nfe,
-                sp.destinatario_id, 
+                sp.destinatario_id,
                 c.razao_social AS destinatario_razao_social,
                 c.cnpj AS destinatario_cnpj,
                 COUNT(spi.id_item) AS total_itens,
@@ -869,6 +869,142 @@ app.post('/entrada_produto', async (req, res) => {
         client.release();
     }
 });
+
+/**
+ * @route   POST /api/saidas-produto
+ * @desc    Cria uma nova saída de produto, incluindo seus itens, usando uma transação.
+ * @access  Public
+ */
+app.post('/saida_produto', async (req, res) => {
+    // É crucial usar um 'client' do pool para garantir que todos os comandos
+    // executem na mesma conexão dentro da transação.
+    const client = await pool.connect();
+
+    try {
+        // 1. Extrai os dados do cabeçalho e o array de itens do corpo da requisição.
+        const {
+            tipo_saida,
+            numero_nf,
+            data_saida,
+            destinatario_id,
+            valor_total,
+            desconto,
+            status,
+            modelo_documento_fiscal,
+            serie,
+            subserie,
+            data_emissao,
+            chave_nfe,
+            inativo,
+            itens // Array de objetos, ex: [{ produto_id: 1, quantidade: 10, valor_unitario: 5.50, desconto_item: 1.00 }, ...]
+        } = req.body;
+
+        // 2. Validações principais
+        if (!tipo_saida || !numero_nf || !data_saida || !destinatario_id) {
+            return res.status(400).json({
+                sucesso: false,
+                erro: 'Campos obrigatórios do cabeçalho da saída estão faltando (tipo_saida, numero_nf, data_saida, destinatario_id).'
+            });
+        }
+        if (!Array.isArray(itens) || itens.length === 0) {
+             return res.status(400).json({
+                sucesso: false,
+                erro: 'É necessário fornecer pelo menos um item para a saída.'
+            });
+        }
+        // Validação básica de cada item
+        for (const item of itens) {
+            if (!item.id_produto || !item.quantidade || !item.valor_unitario) {
+                return res.status(400).json({
+                    sucesso: false,
+                    erro: 'Cada item deve conter id_produto, quantidade e valor_unitario.'
+                });
+            }
+        }
+
+        // =================================================================
+        // INÍCIO DA TRANSAÇÃO
+        // =================================================================
+        await client.query('BEGIN');
+
+        // 3. Insere o cabeçalho da saída para obter o 'id_saida_produto'.
+        const saidaQuery = `
+            INSERT INTO sga.saida_produto (
+                tipo_saida, numero_nf, data_saida, destinatario_id, valor_total,
+                desconto, status, modelo_documento_fiscal, serie, subserie,
+                data_emissao, chave_nfe, inativo
+            ) VALUES (
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+            ) RETURNING *;
+        `;
+        const saidaValues = [
+            tipo_saida, numero_nf, data_saida, destinatario_id, valor_total || null,
+            desconto || 0, status || 'Pendente', modelo_documento_fiscal || null, serie || null, subserie || null,
+            data_emissao || null, chave_nfe || null, inativo || false
+        ];
+        const saidaResult = await client.query(saidaQuery, saidaValues);
+        const novaSaida = saidaResult.rows[0];
+        const novaSaidaId = novaSaida.id_saida_produto;
+
+        // 4. Insere os itens na tabela 'saida_produto_itens'.
+        const itensInseridos = [];
+        for (const item of itens) {
+            const itemQuery = `
+                INSERT INTO sga.saida_produto_itens (
+                    saida_id, id_produto, quantidade, valor_unitario, desconto_item, inativo
+                ) VALUES (
+                    $1, $2, $3, $4, $5, $6
+                ) RETURNING *;
+            `;
+            const itemValues = [
+                novaSaidaId,
+                item.id_produto,
+                item.quantidade,
+                item.valor_unitario,
+                item.desconto_item || 0,
+                item.inativo || false
+            ];
+            const itemResult = await client.query(itemQuery, itemValues);
+            itensInseridos.push(itemResult.rows[0]);
+        }
+
+        // =================================================================
+        // FIM DA TRANSAÇÃO
+        // =================================================================
+        await client.query('COMMIT');
+
+        // 5. Retorna a saída recém-criada e seus itens com status 201 (Created).
+        res.status(201).json({
+            sucesso: true,
+            mensagem: 'Saída de produto criada com sucesso!',
+            saida: novaSaida,
+            itens: itensInseridos
+        });
+
+    } catch (err) {
+        // Se qualquer um dos comandos acima falhar, desfaz todas as alterações.
+        await client.query('ROLLBACK');
+        console.error('Erro na transação de inserção de saída de produto:', err);
+
+        // Tratamento de erros específicos do PostgreSQL
+        if (err.code === '23505') { // Violação de chave única (ex: numero_nf duplicado?)
+            return res.status(409).json({ sucesso: false, erro: `Já existe um registro com este valor. Detalhe: ${err.detail || err.message}` });
+        }
+        if (err.code === '23503') { // Violação de chave estrangeira (ex: destinatario_id ou id_produto não existe)
+            return res.status(400).json({ sucesso: false, erro: 'ID do destinatário ou de algum produto não encontrado.' });
+        }
+
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro interno do servidor ao cadastrar saída de produto.',
+            detalhes: err.message
+        });
+    } finally {
+        // Libera o 'client' de volta para o pool, independentemente do resultado.
+        client.release();
+    }
+});
+
 
 // Rota para buscar todos os itens de uma entrada de produto específica
 // Exemplo: GET /entrada_produto/1/itens
