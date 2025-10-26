@@ -1951,6 +1951,72 @@ app.delete('/entrada_produto/:id_entrada', async (req, res) => {
     }
 });
 
+app.delete('/saida_produto/:id', async (req, res) => {
+    // Extrai o ID da saída dos parâmetros da URL
+    const { id } = req.params;
+
+    // Obtém um cliente do pool para a transação
+    const client = await pool.connect();
+
+    try {
+        // Inicia a transação
+        await client.query('BEGIN');
+
+        // 1. Verifica se a saída existe e ainda está ativa
+        const saidaExistente = await client.query(
+            'SELECT 1 FROM sga.saida_produto WHERE id_saida_produto = $1 AND inativo = FALSE',
+            [id]
+        );
+
+        // Se não encontrar (rowCount === 0), retorna erro 404
+        if (saidaExistente.rowCount === 0) {
+            await client.query('ROLLBACK'); // Desfaz a transação iniciada
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Saída de produto não encontrada ou já inativada.'
+            });
+        }
+
+        // 2. Marca o registro principal da saída como inativo
+        await client.query(`
+            UPDATE sga.saida_produto
+            SET inativo = TRUE
+            WHERE id_saida_produto = $1
+        `, [id]);
+
+        // 3. Marca os itens relacionados na tabela 'saida_produto_itens' como inativos
+        await client.query(`
+            UPDATE sga.saida_produto_itens
+            SET inativo = TRUE
+            WHERE saida_id = $1
+        `, [id]);
+
+        // Confirma a transação
+        await client.query('COMMIT');
+
+        // Retorna sucesso
+        res.status(200).json({
+            sucesso: true,
+            mensagem: 'Saída de produto inativada com sucesso!',
+            id_saida_produto: id
+        });
+
+    } catch (err) {
+        // Em caso de erro, desfaz a transação
+        await client.query('ROLLBACK');
+        console.error(`Erro ao inativar saída de produto com ID ${id}:`, err);
+
+        // Retorna erro genérico 500
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao inativar saída de produto.',
+            detalhes: err.message
+        });
+    } finally {
+        // Libera o cliente de volta para o pool
+        client.release();
+    }
+});
 
 // Rota GET para listar todos os tipos_de_saida
 app.get('/api/tipos_de_saida', async (req, res) => {
