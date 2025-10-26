@@ -49,19 +49,25 @@
             <div class="container_small_width">
                 <div class="campo_contato small_width select_conainer">
                     <label for="status">Status da saída:</label>
-                    <input type="text" id="status" class="campo_input" name="status">
+                    <select name="status" id="status" class="campo_select">
+                        <option value="ENTREGUE">ENTREGUE</option>
+                        <option value="FATURADO">FATURADO</option>
+                        <option value="EM TRÂNSITO">EM TRÂNSITO</option>
+                        <option value="CONCLUÍDO">CONCLUÍDO</option>
+                        <option value="PENDENTE">PENDENTE</option>
+                    </select>
+
                 </div>
                 <div class="campo_contato small_width">
                     <label for="valor_total">Valor Total:</label>
-                    <input type="number" name="valor_total" id="valor_total" class="campo_input" step="0.01"
-                        min="0">
+                    <input type="number" name="valor_total" id="valor_total" class="campo_input" step="0.01" min="0">
                 </div>
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width">
                     <label for="serie">Série:</label>
-                    <input type="text" inputmode="numeric" name="serie" id="serie" class="campo_input"
-                        maxlength="3" pattern="[0-9]{1,3}"
+                    <input type="text" inputmode="numeric" name="serie" id="serie" class="campo_input" maxlength="3"
+                        pattern="[0-9]{1,3}"
                         oninvalid="this.setCustomValidity('Série deve ser um número de 1 a 3 dígitos')"
                         oninput="this.setCustomValidity('')">
                 </div>
@@ -76,7 +82,8 @@
             <div class="container_small_width">
                 <div class="campo_contato small_width">
                     <label for="modelo_documento_fiscal">Fiscal:</label>
-                    <input type="text" name="modelo_documento_fiscal" id="modelo_documento_fiscal" class="campo_input" maxlength="2">
+                    <input type="text" name="modelo_documento_fiscal" id="modelo_documento_fiscal" class="campo_input"
+                        maxlength="2">
                 </div>
             </div>
         </div>
