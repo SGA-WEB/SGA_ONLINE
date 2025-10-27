@@ -337,7 +337,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
             popup_carregando(true)
             if (response.ok) {
                 popup_aviso('saida salva com sucesso!');
-                carregarConteudo("movimentacao_de_estoque/saida_de_produtos/saida_de_produtos.html", document.querySelector(".principal"), false, saida_de_produtos);
+                carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, saida);
             } else {
                 popup_erro('Erro: ' + result.erro);
             }
