@@ -6,19 +6,28 @@ import { formatarData } from "./funcionalidades.js"
 
 let handlersPorTabela = new Map() // Variável que armazena o handler da tabela, para evitar múltiplos handlers na mesma tabela;
 
-function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySelector(".tbody"), ativarCrud = true, addListener = true, removerLinhasTabela = true) {
+function carregarDadosNaTabela(
+    dados,
+    colunasExibir,
+    tabela = document.querySelector(".tbody"),
+    ativarCrud = true,
+    addListener = true,
+    removerLinhasTabela = true
+) {
     // ColunasExibir: Array com os nomes das colunas do banco de dados que serão exibidas na tabela
     let [...tr_tabela] = document.querySelectorAll(".table_tr")
     if (removerLinhasTabela) { // Se removerLinhasTabela for true, remove as linhas da tabela
-       tr_tabela.map(e => e.remove(e)) // Remove todos os elementos da tabela
+        tr_tabela.map(e => e.remove(e)) // Remove todos os elementos da tabela
     }
     let td_info = document.querySelector(".td_nenhum_dado") // Pega o parágrafo de informação de que não há dados (Se existir)
 
-    if (dados.length !== 0 ) { // Se houver dados
-        td_info ? td_info.remove() : null // Se houver o parágrafo de informação, ele é removido
+    let exibirIdColuna = true;
+    const hasIdField = Object.keys(dados[0]).some(key => key.startsWith("id_"));
+    // Se não existir campo com prefixo "id_", desativa exibirIdColuna para evitar erros posteriores
+    if (!hasIdField) exibirIdColuna = false;
 
-        const firstDataKey = Object.keys(dados[0])[0]; // Pega a primeira chave do primeiro objeto do array de dados, que no caso é o id
-        dados.sort((a, b) => a[firstDataKey] - b[firstDataKey]) // Ordena os dados pelo id
+    if (dados.length !== 0) { // Se houver dados
+        td_info ? td_info.remove() : null // Se houver o parágrafo de informação, ele é removido
 
         dados.map(objDado => { // Para cada objeto no array de dados
             let objDadoCompleto = objDado
@@ -36,8 +45,12 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
             objDado = Object.fromEntries(objDado) // Converte o array em um objeto
 
             let tr = document.createElement('tr') // Cria uma linha
-            tr.setAttribute('class','table_tr')
-            tr.setAttribute('id', 'tr_' + objDado[firstDataKey]) // Define o id da linha como tr_id
+            tr.setAttribute('class', 'table_tr')
+            if (exibirIdColuna) {
+                const firstDataKey = Object.keys(dados[0])[0]; // Pega a primeira chave do primeiro objeto do array de dados, que no caso é o id
+                dados.sort((a, b) => a[firstDataKey] - b[firstDataKey]) // Ordena os dados pelo id
+                tr.setAttribute('id', 'tr_' + objDado[firstDataKey]) // Define o id da linha como tr_id
+            }
 
 
             let checkbox = document.createElement('input') // Cria um checkbox
@@ -45,8 +58,11 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
             if (addListener) {
                 td.setAttribute("class", "selecionar_linha")
                 checkbox.setAttribute('type', 'checkbox') // Define o tipo do input como checkbox
-                checkbox.setAttribute('id', 'checkbox_' + objDado[firstDataKey]) // Define o id da célula como checkbox_id
                 checkbox.setAttribute('class', 'checkbox_selecionar_linha') // Define a classe do checkbox
+
+                if (exibirIdColuna)
+                    checkbox.setAttribute('id', 'checkbox_' + objDado[firstDataKey]) // Define o id da célula como checkbox_id
+
                 td.appendChild(checkbox) // Adiciona o checkbox na célula
                 tr.appendChild(td) // Adiciona a célula na linha
             }
@@ -60,10 +76,10 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
                     objDado[e] = formatarData(objDado[e])
                 }
                 let td = document.createElement('td')
-                td.setAttribute('class','dado_tabela')
+                td.setAttribute('class', 'dado_tabela')
                 td.classList.add('td_' + e) // Adiciona a classe da célula como td_nomeDoCampo
                 td.setAttribute('id', e + "_" + objDado[e]) // nome do campo + valor do campo
-                if (typeof(objDado[e]) == 'boolean') {
+                if (typeof (objDado[e]) == 'boolean') {
                     // Se o campo for booleano, exibe "S" ou "N"
                     if (objDado[e]) {
                         td.textContent = "S"
@@ -100,8 +116,8 @@ function carregarDadosNaTabela (dados, colunasExibir, tabela = document.querySel
         if (!td_info) { // Se o parágrafo de informação não existir
             // Cria o parágrafo com a informação de que não há dados
             td_info = document.createElement('td')
-            td_info.setAttribute('class','td_nenhum_dado')
-            td_info.setAttribute('colspan','5')
+            td_info.setAttribute('class', 'td_nenhum_dado')
+            td_info.setAttribute('colspan', '5')
             td_info.textContent = "Nenhum dado encontrado"
             tabela.appendChild(td_info)
         }
@@ -169,7 +185,7 @@ function pesquisar(dados, colunasExibir, tabela = document.querySelector(".tbody
         handlePesquisar()
     }) // Quando o select for alterado
 
-    function handlePesquisar () {
+    function handlePesquisar() {
         let value_input_pesquisa = document.querySelector('.input_pesquisa').value // Valor do input de pesquisa
 
         if (value_input_pesquisa == "") { // Se o input estiver vazio
@@ -180,14 +196,14 @@ function pesquisar(dados, colunasExibir, tabela = document.querySelector(".tbody
 
         dados = dados.map(e => {
             // Converte os campos booleanos para "s" ou "n"
-            if (typeof(e.padrao_centro_estoque) === 'boolean') {
+            if (typeof (e.padrao_centro_estoque) === 'boolean') {
                 e.padrao_centro_estoque = e.padrao_centro_estoque ? "s" : "n"
             }
             return e
         })
 
         let threshold // Define a tolerância da pesquisa
-        if (campo_select.value == "padrao_centro_estoque"){
+        if (campo_select.value == "padrao_centro_estoque") {
             // Se o campo selecionado for o "padrão", a pesquisa será feita com mais tolerância a variação de valores
             threshold = 0.7
         } else if (campo_select.value == "localizacao_centro_estoque") {

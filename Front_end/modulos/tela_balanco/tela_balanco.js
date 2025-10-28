@@ -1,4 +1,5 @@
 import buscarDados from "../../scripts/buscarDados.js";
+import { carregarDadosNaTabela } from "../../scripts/carregarDadosNaTabela.js";
 import { popup_carregando } from "../../scripts/popup.js";
 import produto from "../produto/produto.js";
 
@@ -15,11 +16,10 @@ export default async function tela_balanco() {
     // Pega os dados do servidor
     return e;
   });
-  let saidaProdutoItens = await buscarDados("saida_produto_itens").then((e) => {
+  let produtoSaidaItens = await buscarDados("saida_produto_itens").then((e) => {
     // Pega os dados do servidor
     return e;
-  }); 
-  console.log(produtoSaida)
+  });
   let dadosCentroEstoque = await buscarDados("centro_estoque").then((e) => {
     // Pega os dados do servidor
     return e;
@@ -35,7 +35,7 @@ export default async function tela_balanco() {
 
     // Filtra os dados com base na data_cadastro
     const dadosFiltrados = dadosProduto.filter((item) => {
-      const dataCadastro = new Date(item.data_cadastro); 
+      const dataCadastro = new Date(item.data_cadastro);
       return dataCadastro >= dataSelecionada;
     });
 
@@ -49,7 +49,7 @@ export default async function tela_balanco() {
 
     // Filtra os dados com base na data_cadastro
     const dadosFiltrados = dadosProduto.filter((item) => {
-      const dataCadastro = new Date(item.data_cadastro); 
+      const dataCadastro = new Date(item.data_cadastro);
       return dataCadastro <= dataSelecionada;
     });
 
@@ -512,6 +512,34 @@ export default async function tela_balanco() {
         break;
     }
   });
+
+  const contagemDeProdutos = produtoSaidaItens.itens.reduce((acumulador, item) => {
+    const nome = item.nome_produto;
+
+    acumulador[nome] = (acumulador[nome] || 0) + 1;
+
+    return acumulador;
+  }, {});
+
+  const produtosAgregados = Object.keys(contagemDeProdutos).map(nome => {
+    return {
+      produto: nome,
+      quantidade: contagemDeProdutos[nome]
+    };
+  });
+  console.log(produtosAgregados);
+
+  produtosAgregados.sort((a, b) => b.quantidade - a.quantidade);
+
+  carregarDadosNaTabela(
+    produtosAgregados,
+    ['produto', 'quantidade'],
+    document.querySelector('#tbody_produtos_mais_vendidos'),
+    false,
+    false,
+    false,
+  );
+
 
   popup_carregando(true);
 }
