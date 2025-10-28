@@ -1,6 +1,7 @@
 import buscarDados from "../../scripts/buscarDados.js";
 import { carregarDadosNaTabela } from "../../scripts/carregarDadosNaTabela.js";
 import { popup_carregando } from "../../scripts/popup.js";
+import saida_de_produtos from "../movimentacao_de_estoque/saida_de_produtos/saida_de_produtos.js";
 import produto from "../produto/produto.js";
 
 export default async function tela_balanco() {
@@ -306,7 +307,7 @@ export default async function tela_balanco() {
     (a, b) => b.quantidade - a.quantidade
   );
   // 2. Selecionar apenas os 4 primeiros itens
-  const top4Produtos = produtosOrdenados.slice(0, 4);
+  const top4Produtos = produtosOrdenados.slice(0, 5);
 
   top4Produtos.forEach((produto) => {
     let tr = document.createElement("tr");
@@ -527,10 +528,9 @@ export default async function tela_balanco() {
       quantidade: contagemDeProdutos[nome]
     };
   });
-  console.log(produtosAgregados);
 
   produtosAgregados.sort((a, b) => b.quantidade - a.quantidade);
-
+  produtosAgregados.splice(5); // Mantém apenas os 5 primeiros itens
   carregarDadosNaTabela(
     produtosAgregados,
     ['produto', 'quantidade'],
@@ -539,7 +539,7 @@ export default async function tela_balanco() {
     false,
     false,
   );
-
+console.log(produtoSaidaItens);
 
   popup_carregando(true);
 }

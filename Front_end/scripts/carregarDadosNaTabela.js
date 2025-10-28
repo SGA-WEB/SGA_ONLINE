@@ -22,6 +22,7 @@ function carregarDadosNaTabela(
     let td_info = document.querySelector(".td_nenhum_dado") // Pega o parágrafo de informação de que não há dados (Se existir)
 
     let exibirIdColuna = true;
+    const firstDataKey = Object.keys(dados[0])[0]; // Pega a primeira chave do primeiro objeto do array de dados, que no caso é o id
     const hasIdField = Object.keys(dados[0]).some(key => key.startsWith("id_"));
     // Se não existir campo com prefixo "id_", desativa exibirIdColuna para evitar erros posteriores
     if (!hasIdField) exibirIdColuna = false;
@@ -47,7 +48,6 @@ function carregarDadosNaTabela(
             let tr = document.createElement('tr') // Cria uma linha
             tr.setAttribute('class', 'table_tr')
             if (exibirIdColuna) {
-                const firstDataKey = Object.keys(dados[0])[0]; // Pega a primeira chave do primeiro objeto do array de dados, que no caso é o id
                 dados.sort((a, b) => a[firstDataKey] - b[firstDataKey]) // Ordena os dados pelo id
                 tr.setAttribute('id', 'tr_' + objDado[firstDataKey]) // Define o id da linha como tr_id
             }
@@ -60,8 +60,9 @@ function carregarDadosNaTabela(
                 checkbox.setAttribute('type', 'checkbox') // Define o tipo do input como checkbox
                 checkbox.setAttribute('class', 'checkbox_selecionar_linha') // Define a classe do checkbox
 
-                if (exibirIdColuna)
+                if (exibirIdColuna) {
                     checkbox.setAttribute('id', 'checkbox_' + objDado[firstDataKey]) // Define o id da célula como checkbox_id
+                }
 
                 td.appendChild(checkbox) // Adiciona o checkbox na célula
                 tr.appendChild(td) // Adiciona a célula na linha
