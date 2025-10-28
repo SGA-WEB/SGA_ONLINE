@@ -157,6 +157,102 @@ app.get('/api/testar-sessao', (req, res) => {
     }
 });
 
+app.get('/api/proximo_id_centro_estoque', async (req, res) => {
+    try {
+        // Busca o próximo valor da sequence correspondente
+        const { rows } = await pool.query(`SELECT last_value + 1 AS proximo_id FROM sga.centro_estqoue_id_centro_estqoue_seq`);
+
+        // Verifica se a sequence retornou um valor
+        if (rows.length === 0 || rows[0].proximo_id === null) {
+            // Tenta buscar o MAX ID da tabela como fallback (se a sequence estiver vazia/nova)
+            const maxIdResult = await pool.query(`SELECT COALESCE(MAX(id_centro_estoque), 0) + 1 AS proximo_id FROM sga.centro_estoque`);
+            return res.json(maxIdResult.rows[0]);
+        }
+
+        res.json(rows[0]);
+
+    } catch (err) {
+        console.error('Erro ao buscar próximo ID de centro_estoque:', err);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao buscar próximo ID de centro_estoque',
+            detalhes: err.message
+        });
+    }
+});
+
+app.get('/api/proximo_id_produto', async (req, res) => {
+    try {
+        // Busca o próximo valor da sequence correspondente
+        const { rows } = await pool.query(`SELECT last_value + 1 AS proximo_id FROM sga.produto_id_produto_seq`);
+
+        // Verifica se a sequence retornou um valor
+        if (rows.length === 0 || rows[0].proximo_id === null) {
+            // Tenta buscar o MAX ID da tabela como fallback (se a sequence estiver vazia/nova)
+            const maxIdResult = await pool.query(`SELECT COALESCE(MAX(id_produto), 0) + 1 AS proximo_id FROM sga.produto`);
+            return res.json(maxIdResult.rows[0]);
+        }
+
+        res.json(rows[0]);
+
+    } catch (err) {
+        console.error('Erro ao buscar próximo ID de produto:', err);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao buscar próximo ID de produto',
+            detalhes: err.message
+        });
+    }
+});
+
+app.get('/api/proximo_id_entrada_produto', async (req, res) => {
+    try {
+        // Busca o próximo valor da sequence correspondente
+        const { rows } = await pool.query(`SELECT last_value + 1 AS proximo_id FROM sga.entrada_produto_id_seq`);
+
+        // Verifica se a sequence retornou um valor
+        if (rows.length === 0 || rows[0].proximo_id === null) {
+            // Tenta buscar o MAX ID da tabela como fallback (se a sequence estiver vazia/nova)
+            const maxIdResult = await pool.query(`SELECT COALESCE(MAX(id_entrada_produto), 0) + 1 AS proximo_id FROM sga.entrada_produto`);
+            return res.json(maxIdResult.rows[0]);
+        }
+
+        res.json(rows[0]);
+
+    } catch (err) {
+        console.error('Erro ao buscar próximo ID de entrada_produto:', err);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao buscar próximo ID de entrada_produto',
+            detalhes: err.message
+        });
+    }
+});
+
+app.get('/api/proximo_id_saida_produto', async (req, res) => {
+    try {
+        // Busca o próximo valor da sequence correspondente
+        const { rows } = await pool.query(`SELECT last_value + 1 AS proximo_id FROM sga.saida_produto_id_seq`);
+
+        // Verifica se a sequence retornou um valor
+        if (rows.length === 0 || rows[0].proximo_id === null) {
+            // Tenta buscar o MAX ID da tabela como fallback (se a sequence estiver vazia/nova)
+            const maxIdResult = await pool.query(`SELECT COALESCE(MAX(id_saida_produto), 0) + 1 AS proximo_id FROM sga.saida_produto`);
+            return res.json(maxIdResult.rows[0]);
+        }
+
+        res.json(rows[0]);
+
+    } catch (err) {
+        console.error('Erro ao buscar próximo ID de saida_produto:', err);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao buscar próximo ID de saida_produto',
+            detalhes: err.message
+        });
+    }
+});
+
 app.get('/api/centro_estoque', async (req, res) => {
     try {
         const { rows } = await pool.query(`SELECT
@@ -907,7 +1003,7 @@ app.post('/saida_produto', async (req, res) => {
             });
         }
         if (!Array.isArray(itens) || itens.length === 0) {
-             return res.status(400).json({
+            return res.status(400).json({
                 sucesso: false,
                 erro: 'É necessário fornecer pelo menos um item para a saída.'
             });
