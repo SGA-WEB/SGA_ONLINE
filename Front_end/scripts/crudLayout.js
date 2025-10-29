@@ -20,7 +20,7 @@ import editar_tipo_de_entrada from "../modulos/tipo_de_entrada/editar_tipos_de_e
 
 import visualizar_tipo_saida from "../modulos/tipo_de_saida/visualizar_tipo_saida/visualizar_tipo_saida.js"
 import editar_tipo_saida from "../modulos/tipo_de_saida/editar_tipo_saida/editar_tipo_saida.js"
-import excluir_tipo_saida from "../modulos/tipo_de_saida/excluir_tipo_saida/excluir_tipo_saida.js";
+import excluir_tipo_saida from "../modulos/tipo_de_saida/excluir_tipo_saida.js";
 
 import visualizar_entrada_de_produto from "../modulos/movimentacao_de_estoque/entrada_de_produtos/visualizar_entrada_de_produtos/visualizar_entrada_de_produtos.js";
 import editar_entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/editar_entrada_de_produtos/editar_entrada_de_produtos.js";
