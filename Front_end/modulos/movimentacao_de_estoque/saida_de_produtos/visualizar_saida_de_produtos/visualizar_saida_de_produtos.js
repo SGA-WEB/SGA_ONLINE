@@ -10,7 +10,7 @@ import excluir_saida_de_produtos from "../excluir_saida_de_produtos.js";
 export default async function visualizar_saida_de_produtos(saida) {
     select2("100%")
     document.querySelector(".codigo_id").textContent = saida.id_saida_produto
-    document.querySelector(".data_cadastro").textContent = formatarData(saida.data_saida)
+    document.querySelector(".data_cadastro").textContent = formatarData(saida.data_criacao)
     document.querySelector("#chave_nfe").value = saida.chave_nfe
     document.querySelector("#numero_nf").value = saida.numero_nf
     document.querySelector("#modelo").value = saida.modelo_documento_fiscal

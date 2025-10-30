@@ -413,6 +413,7 @@ app.get('/api/saida_produto', async (req, res) => {
                 sp.subserie,
                 sp.chave_nfe,
                 sp.destinatario_id,
+                sp.data_criacao,
                 c.razao_social AS destinatario_razao_social,
                 c.cnpj AS destinatario_cnpj,
                 COUNT(spi.id_item) AS total_itens,

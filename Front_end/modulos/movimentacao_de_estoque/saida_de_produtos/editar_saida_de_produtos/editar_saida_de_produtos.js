@@ -12,7 +12,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
     popup_carregando(false, 'Carregando dados da saida de produtos...');
 
     document.querySelector(".codigo_id").textContent = saida.id_saida_produto
-    document.querySelector(".data_cadastro").textContent = formatarData(saida.data_saida)
+    document.querySelector(".data_cadastro").textContent = formatarData(saida.data_criacao)
     document.querySelector("#chave_nfe").value = saida.chave_nfe
     document.querySelector("#numero_nf").value = saida.numero_nf
     document.querySelector("#modelo_documento_fiscal").value = saida.modelo_documento_fiscal
