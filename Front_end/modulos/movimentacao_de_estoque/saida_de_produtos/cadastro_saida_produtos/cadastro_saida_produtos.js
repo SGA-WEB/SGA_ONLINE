@@ -107,7 +107,13 @@ export default async function cadastro_saida_produtos(dados) {
             });
         })
 
-        carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade","preco_varejo", "desconto_item", "valor_total"], document.querySelector("#tabela_produtos"), true, false)
+        carregarDadosNaTabela(
+            novosDados, 
+            ["id_produto", "produto", "quantidade","preco_varejo", "desconto_item", "valor_total"], 
+            document.querySelector("#tabela_produtos tbody"), 
+            true,
+            false
+        )
 
         popup("fechar", 0, btn_selecionar_relacao)
 
