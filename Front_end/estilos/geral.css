@@ -167,6 +167,16 @@
     transition: .2s;
 }
 
+.btn6 {
+    background-color: var(--azul-1) !important;
+    transition: .2s;
+}
+
+.btn6:hover {
+    background-color: var(--azul-1) !important;
+    transition: .2s;
+}
+
 .img_perfil {
     width: 100%;
     height: 100%;
