@@ -12,7 +12,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
     popup_carregando(false, 'Carregando dados da saida de produtos...');
 
     document.querySelector(".codigo_id").textContent = saida.id_saida_produto
-    document.querySelector(".data_cadastro").textContent = formatarData(saida.data_saida)
+    document.querySelector(".data_cadastro").textContent = formatarData(saida.data_criacao)
     document.querySelector("#chave_nfe").value = saida.chave_nfe
     document.querySelector("#numero_nf").value = saida.numero_nf
     document.querySelector("#modelo_documento_fiscal").value = saida.modelo_documento_fiscal
@@ -41,7 +41,6 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
     let produtos = await buscarDados("produto")
     let contatos = await buscarDados("contato");
     let tipos_de_saida = await buscarDados("tipos_de_saida/" + 1);
-    console.log(tipos_de_saida)
 
     itemsRelacionados = itemsRelacionados.itens;
 
@@ -66,7 +65,13 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         })
     })
 
-    carregarDadosNaTabela(produtosRelacionados, ["id_produto", "produto", "quantidade", "valor_unitario", "desconto", "valor_total"], document.querySelector(".tbody"), false, false)
+    carregarDadosNaTabela(
+        produtosRelacionados,
+        ["id_produto", "produto", "quantidade", "valor_unitario", "desconto", "valor_total"],
+        document.querySelector(".tbody"),
+        true,
+        false
+    )
 
     criarInputsQuantidadeDesconto();
     addListenerExcluirProdutos();
@@ -80,7 +85,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
             }
         })
     })
-    
+
     let selectCliente= document.querySelector("#destinatario_id");
     clientes.forEach((Cliente) => {
         let option = document.createElement("option");
@@ -97,7 +102,10 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
     produtos.map(produto => {
         produto.valor_total = produto.preco_varejo * produto.quantidade;
         produto.desconto = 0; // Inicializa o desconto como 0
+        produto.valor_unitario = produto.preco_varejo;
+        delete produto.preco_varejo;
     })
+    console.log(produtos);
 
     popup_carregando(true)
 
@@ -107,12 +115,12 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         // Abre um popup para selecionar os produtos
         // Carrega os produtos na tabela de seleção
 
-        let tabela = document.querySelector("#tabela_selecionar_produtos")
+        let tabela = document.querySelector("#tabela_selecionar_produtos tbody");
         tabela.innerHTML = ""
         popup("abrir", 0, btn_adicionar_relacao)
         carregarDadosNaTabela(
             produtos,
-            ["id_produto", "produto", "quantidade", "preco_varejo"],
+            ["id_produto", "produto", "quantidade", "valor_unitario"],
             tabela,
             false,
             true,
@@ -120,7 +128,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         )
         pesquisar(
             produtos,
-            ["id_produto", "produto", "quantidade", "preco_varejo"],
+            ["id_produto", "produto", "quantidade", "valor_unitario"],
             tabela,
             false
         )
@@ -130,8 +138,8 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         document.querySelectorAll("#tabela_selecionar_produtos .table_tr").forEach(tr => {
             // Seleciona os tr's da tabela de produtos selecionados anteriormente
             let tr_id = tr.id.replace("tr_", "");
-            produtosRelacionados.forEach(produto => {
-                if (tr_id === produto.id_produto.toString()) {
+            idProdutosSelecionados.forEach(produto => {
+                if (tr_id === produto) {
                     tr.querySelector(".checkbox_selecionar_linha").checked = true;
                     tr.classList.add("linha_selecionada");
                 }
@@ -148,6 +156,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         // Quando o botão de selecionar relação for clicado
         // Seleciona os produtos que foram marcados na tabela de seleção
         let checkboxProdutoSelecionados = document.querySelectorAll("#tabela_selecionar_produtos .checkbox_selecionar_linha:checked");
+        let idCheckboxSelecionadosAtual = []
 
         checkboxProdutoSelecionados.forEach(() => { // Remove os produtos que já estão selecionados da lista
             checkboxProdutoSelecionados = Array.from(checkboxProdutoSelecionados).filter(cb => {
@@ -157,8 +166,10 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
             return;
         })
 
-        idProdutosSelecionados = []
         checkboxProdutoSelecionados.forEach(checkbox => {
+            idCheckboxSelecionadosAtual.push(
+                checkbox.id.replace("checkbox_", "")
+            )
             idProdutosSelecionados.push(
                 checkbox.id.replace("checkbox_", "")
             )
@@ -166,7 +177,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
 
         let novosDados = produtos.filter(produto => {
             // Filtra os produtos que foram selecionados
-            return idProdutosSelecionados.includes(produto.id_produto.toString())
+            return idCheckboxSelecionadosAtual.includes(produto.id_produto.toString())
         })
 
         novosDados.forEach(produto => {
@@ -174,7 +185,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
             produtosRelacionados.push({
                 id_produto: produto.id_produto,
                 quantidade: 1,
-                valor_unitario: produto.preco_varejo,
+                valor_unitario: produto.valor_unitario,
                 desconto: 0,
             });
         })
@@ -183,7 +194,14 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
             return;
         }
 
-        carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade", "preco_varejo", "desconto", "valor_total"], document.querySelector("#tabela_produtos"), true, false, false)
+        carregarDadosNaTabela(
+            novosDados,
+            ["id_produto", "produto", "quantidade", "valor_unitario", "desconto", "valor_total"],
+            document.querySelector("#tabela_produtos tbody"),
+            true,
+            false,
+            false
+        )
 
         popup("fechar", 0, btn_selecionar_relacao)
 
@@ -231,7 +249,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
 
             // Atualiza o objeto produtosRelacionados com os valores atualizados
             produtosRelacionados[index].quantidade = quantidade;
-            produtosRelacionados[index].desconto = desconto;
+            produtosRelacionados[index].desconto_item = desconto;
         });
     }
 
@@ -277,7 +295,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
                 tr.remove(tr)
                 idProdutosSelecionados = idProdutosSelecionados.filter(id => id !== id_tr);
                 produtosRelacionados = produtosRelacionados.filter(produto => {
-                    return produto.id_item !== parseInt(id_tr);
+                    return produto.id_produto !== parseInt(id_tr);
                 })
                 calcularValorTotal();
             });
@@ -319,7 +337,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
             popup_carregando(true)
             if (response.ok) {
                 popup_aviso('saida salva com sucesso!');
-                carregarConteudo("movimentacao_de_estoque/saida_de_produtos/saida_de_produtos.html", document.querySelector(".principal"), false, saida_de_produtos);
+                carregarConteudo(caminho, document.querySelector(".principal"), false, funcao, saida);
             } else {
                 popup_erro('Erro: ' + result.erro);
             }
