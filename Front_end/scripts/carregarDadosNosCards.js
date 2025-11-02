@@ -1,19 +1,20 @@
+import crudLayout from "./crudLayout.js";
 import { formatarData } from "./funcionalidades.js";
 
-export default function carregarDadosNosCards(dados, colunas, container = document.querySelector(".container_tabela")) {
+export default function carregarDadosNosCards(dados, colunasBancoDeDados, colunasExibir, container = document.querySelector(".container_tabela")) {
     container.innerHTML = ""
     dados.map(objDado => { // Para cada objeto no array de dados
         let objDadoCompleto = objDado
 
         let sortedObjDado = {}; // Objeto com os dados ordenados comforme as colunas a serem exibidas
-        colunas.forEach(coluna => {
+        colunasBancoDeDados.forEach(coluna => {
             sortedObjDado[coluna] = objDado[coluna];
         });
         objDado = sortedObjDado;
 
         objDado = Object.entries(objDado) // Converte o objeto em um array de pares chave-valor
 
-        objDado = objDado.filter(([chave]) => colunas.includes(chave)); // Filtra o array para incluir apenas as chaves que está no array colunas
+        objDado = objDado.filter(([chave]) => colunasBancoDeDados.includes(chave)); // Filtra o array para incluir apenas as chaves que está no array colunas
 
         objDado = Object.fromEntries(objDado) // Converte o array em um objeto
 
@@ -30,30 +31,58 @@ export default function carregarDadosNosCards(dados, colunas, container = docume
         card.appendChild(cardHeader)
         card.appendChild(cardBody)
 
+        let indice = 0
         for(let dado in objDado) {
-            if (dado.includes("nome_")){
+            if (dado.includes("id_")){
+                let cardId = document.createElement('p')
+                cardId.setAttribute('class', 'card_id')
+                cardId.textContent = "Código: " + objDado[dado]
+                cardHeader.appendChild(cardId)
+                indice++
+            } else if (dado.includes("nome_")){
                 let cardTitle = document.createElement('h2')
                 cardTitle.setAttribute('class', 'card_title')
                 cardTitle.textContent = objDado[dado]
                 cardHeader.appendChild(cardTitle)
-            } else if (dado.includes("id_")){
-                let cardId = document.createElement('p')
-                cardId.setAttribute('class', 'card_id')
-                cardId.textContent = objDado[dado]
-                cardHeader.appendChild(cardId)
-            } else if (dado.includes("data_")){
-                let cardData = document.createElement('p')
+                indice++
+            }else if (dado.includes("data_")){
+                let cardData = document.createElement('div')
                 cardData.setAttribute('class', 'card_data')
-                cardData.textContent = formatarData(objDado[dado])
-                cardBody.appendChild(cardData)
-            }else {
-                let cardInfo = document.createElement('p')
-                cardInfo.setAttribute('class', 'card_info')
-                cardInfo.textContent = objDado[dado]
-                cardBody.appendChild(cardInfo)
-            }
 
+                let cardChave = document.createElement('p')
+                cardChave.setAttribute('class', 'card_chave')
+                cardChave.textContent = colunasExibir[indice]
+                cardData.appendChild(cardChave)
+
+                let cardValor = document.createElement('p')
+                cardValor.setAttribute('class', 'card_valor')
+                cardValor.textContent = formatarData(objDado[dado])
+                cardData.appendChild(cardValor)
+
+                cardBody.appendChild(cardData)
+                indice++
+            }else {
+                let cardInfo = document.createElement('div')
+                cardInfo.setAttribute('class', 'card_info')
+
+                let cardChave = document.createElement('p')
+                cardChave.setAttribute('class', 'card_chave')
+                cardChave.textContent = colunasExibir[indice]
+                cardInfo.appendChild(cardChave)
+
+                let cardValor = document.createElement('p')
+                cardValor.setAttribute('class', 'card_valor')
+                cardValor.textContent = objDado[dado]
+                cardInfo.appendChild(cardValor)
+
+                cardBody.appendChild(cardInfo)
+                indice++
+            }
         }
+        let conainerCRUD = document.createElement('div')
+        conainerCRUD.setAttribute('class', 'container_CRUD')
+        card.appendChild(conainerCRUD)
+        crudLayout(objDado, conainerCRUD)
 
         container.appendChild(card)
     })

@@ -8,6 +8,7 @@ import excluir_centro_de_estoque from "../excluir_centro_de_estoque.js";
 
 export default function visualizar_centro_de_estoque(dado) {
     select2("100%")
+    document.querySelector(".codigo_id").textContent = dado.id_centro_estoque
     document.querySelector("#nome_centro_de_estoque").value = dado.nome_centro_estoque
     document.querySelector("#localizacao").value = dado.localizacao_centro_estoque
     document.querySelector("#padrao_centro_de_estoque").value = dado.padrao_centro_estoque ? "Sim" : "Não"
