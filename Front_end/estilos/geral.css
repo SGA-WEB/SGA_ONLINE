@@ -11,7 +11,6 @@
 
 .space_between {
     display: flex;
-    padding: .5rem;
     justify-content: space-between;
 }
 
@@ -46,6 +45,10 @@
 .flex_direction_column {
     display: flex !important;
     flex-direction: column;
+}
+
+.margin_bottom_05rem {
+    margin-bottom: .5rem;
 }
 
 .menu_btns {
@@ -126,7 +129,6 @@
 
 .btn2 {
     background-color: var(--azul-1);
-    color: var(--azul);
     transition: .1s;
 }
 .btn2:hover {
@@ -168,7 +170,7 @@
 }
 
 .btn6 {
-    background-color: var(--azul-1) !important;
+    background-color: var(--azul1) !important;
     transition: .2s;
 }
 
