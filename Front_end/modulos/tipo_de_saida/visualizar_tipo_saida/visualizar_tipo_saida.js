@@ -3,7 +3,7 @@ import select2 from "../../../scripts/select.js"
 import { formatarData } from "../../../scripts/funcionalidades.js"
 import { carregarConteudo } from "../../../scripts/javaScript.js"
 import tipo_de_saida from "../tipo_de_saida.js"
-
+import editar_tipo_de_saida from "../editar_tipo_saida/editar_tipo_saida.js"
 export default async function visualizar_tipo_saida (dado) {
     
     select2("100%")

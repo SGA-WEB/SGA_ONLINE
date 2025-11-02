@@ -2126,7 +2126,7 @@ app.get('/api/tipos_de_saida', async (req, res) => {
     }
 });
 
-app.put('tipos_de_saida/:id', async (req, res) => { 
+app.put('/tipos_de_saida/:id', async (req, res) => { 
     const { id } = req.params;
     const {
         descricao,
@@ -2190,7 +2190,7 @@ app.put('tipos_de_saida/:id', async (req, res) => {
 
 
 // Rota POST para inserir novo tipo de saida
-app.post('tipos_de_saida', async (req, res) => { 
+app.post('/tipos_de_saida', async (req, res) => { 
     const {
         descricao,
         cfop_dentro,
@@ -2224,7 +2224,7 @@ app.post('tipos_de_saida', async (req, res) => {
 });
 
 // Rota DELETE para excluir um tipo de saida por ID
-app.delete('tipos_de_saida/:id', async (req, res) => {
+app.delete('/tipos_de_saida/:id', async (req, res) => {
     const { id } = req.params;
 
     try {

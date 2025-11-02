@@ -89,6 +89,13 @@ a.link_nav_selecionado {
     margin-bottom: 2rem;
 }
 
+ #modulo_cadastro_tipo_saida .modulo_main {
+    display: flex;
+    flex-wrap: wrap;
+ }
+
+
+
 .campo_contato {
     display: flex;
     flex-direction: column;

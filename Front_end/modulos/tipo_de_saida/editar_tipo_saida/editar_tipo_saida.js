@@ -1,13 +1,13 @@
 import { formatarData } from "../../../scripts/funcionalidades.js"
 import { carregarConteudo } from "../../../scripts/javaScript.js"
-import { popup_carregando } from "../../../scripts/popup.js"
+import { popup_carregando,popup_aviso } from "../../../scripts/popup.js"
 import select2 from "../../../scripts/select.js"
 import tipo_de_saida from "../tipo_de_saida.js"
 
 export default function editar_tipo_saida(dado, telaAnteriorVisualizar) {
     select2("100%")
     document.querySelector("#btn_voltar_tipos_de_saida").addEventListener("click", () => {
-        carregarConteudo("tipo_de_saida/tipos_de_saida.html", document.querySelector(".principal"),false, tipos_de_saida)
+        carregarConteudo("tipo_de_saida/tipo_de_saida.html", document.querySelector(".principal"),false, tipo_de_saida)
     })
     console.log(dado)
     document.querySelector(".data_cadastro").innerHTML = formatarData(dado.data_criacao)
@@ -22,7 +22,8 @@ export default function editar_tipo_saida(dado, telaAnteriorVisualizar) {
     document.querySelector("#baixa_perda_quebra").checked = dado.baixa_perda_quebra
     document.querySelector("#saida_uso_consumo").checked = dado.saida_uso_consumo
 
-    document.querySelector(".btn_salvar").addEventListener("click", async () => {
+    document.querySelector(".btn_salvar").addEventListener("click", async (e) => {  
+        e.preventDefault()
         salvarEdicao(dado.id_tipos_de_saida)
         async function salvarEdicao(id_tipos_de_saida) {
             const descricao = document.querySelector("#descricao").value
@@ -60,9 +61,10 @@ export default function editar_tipo_saida(dado, telaAnteriorVisualizar) {
                         saida_uso_consumo: saida_uso_consumo
                     }
                     console.log(novoDado)
-                    popup_carregando(true)
-                    carregarConteudo("tipo_de_saida/visualizar_tipo_saida/visualizar_tipo_saida.html", document.querySelector(".principal"), false, tipo_de_saida, novoDado)
                     popup_aviso('Tipo de saida alterada com sucesso!');
+                    popup_carregando(true)
+                    carregarConteudo("tipo_de_saida/tipo_de_saida.html", document.querySelector(".principal"), false, tipo_de_saida, novoDado)
+                   
             
                 } else {
                     alert (`Erro: ${data.error}`);
@@ -74,7 +76,8 @@ export default function editar_tipo_saida(dado, telaAnteriorVisualizar) {
             }
         }
     })
-    document.querySelector(".btn_cancelar").addEventListener("click", () => {
-        carregarConteudo("tipo_de_saida/visualizar_tipo_saida/visualizar_tipo_saida.html", document.querySelector(".principal"), false, tipo_de_saida,dado)
+    document.querySelector(".btn_cancelar").addEventListener("click", (e) => {
+        e.preventDefault()
+        carregarConteudo("tipo_de_saida/tipo_de_saida.html", document.querySelector(".principal"), false, tipo_de_saida,dado)
     })
 }
