@@ -2126,19 +2126,18 @@ app.get('/api/tipos_de_saida', async (req, res) => {
     }
 });
 
-app.put('/tipo_de_saida/:id', async (req, res) => {
+app.put('/tipos_de_saida/:id', async (req, res) => { 
     const { id } = req.params;
     const {
         descricao,
         cfop_dentro,
         cfop_fora,
         ativo,
-        movimenta_estoque,
-        hab_agrupamento,
-        hab_movimento,
-        habilita_nf,
-        atualiza_produto,
-        padrao
+        devolução_compra,
+        remessa_conserto, 
+        trans_filiais,
+        baixa_perda_quebra,
+        saida_uso_consumo
     } = req.body;
 
     try {
@@ -2149,13 +2148,12 @@ app.put('/tipo_de_saida/:id', async (req, res) => {
                 cfop_dentro = $2,
                 cfop_fora = $3,
                 ativo = $4,
-                movimenta_estoque = $5,
-                hab_agrupamento = $6,
-                hab_movimento = $7,
-                habilita_nf = $8,
-                atualiza_produto = $9,
-                padrao = $10
-            WHERE id_tipo_de_entrada = $11
+                devolução_compra = $5,
+                remessa_conserto = $6,
+                trans_filiais = $7,
+                baixa_perda_quebra = $8,
+                saida_uso_consumo = $9 
+            WHERE id_tipos_de_saida = $10 
             RETURNING *;
         `;
 
@@ -2164,12 +2162,11 @@ app.put('/tipo_de_saida/:id', async (req, res) => {
             cfop_dentro,
             cfop_fora,
             ativo,
-            movimenta_estoque,
-            hab_agrupamento,
-            hab_movimento,
-            habilita_nf,
-            atualiza_produto,
-            padrao,
+            devolução_compra,
+            remessa_conserto,
+            trans_filiais,
+            baixa_perda_quebra,
+            saida_uso_consumo,
             id
         ];
 
@@ -2181,49 +2178,69 @@ app.put('/tipo_de_saida/:id', async (req, res) => {
 
         res.status(200).json({
             message: 'Tipo de saida atualizado com sucesso.',
-            tipo_entrada: result.rows[0]
+            tipo_de_saida: result.rows[0]
         });
 
     } catch (err) {
-        console.error('Erro ao atualizar tipo de saida:', err);
+        onsole.error('Erro ao atualizar tipo de saida:', err);
+
         res.status(500).json({ message: 'Erro ao atualizar tipo de saida', error: err.message });
     }
-});
+    });
+
 
 // Rota POST para inserir novo tipo de saida
-app.post('/tipo_de_saida', async (req, res) => {
+app.post('/tipos_de_saida', async (req, res) => { 
     const {
-        id_tipo_de_entrada,
         descricao,
         cfop_dentro,
         cfop_fora,
         ativo,
-        movimenta_estoque,
-        hab_agrupamento,
-        hab_movimento,
-        habilita_nf,
-        atualiza_produto,
-        padrao
+        devolução_compra,
+        remessa_conserto,
+        trans_filiais,
+        baixa_perda_quebra,
+        saida_uso_consumo 
+
     } = req.body;
 
     try {
         const query = `
             INSERT INTO sga.tipos_de_saida
-            (id_tipo_de_entrada, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            (descricao, cfop_dentro, cfop_fora, ativo, devolução_compra, remessa_conserto, trans_filiais, baixa_perda_quebra, saida_uso_consumo )
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) -- ERRO CORRIGIDO: Removido placeholder para o ID
             RETURNING *;
         `;
-        const values = [id_tipo_de_entrada, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao];
+        const values = [descricao, cfop_dentro, cfop_fora, ativo, devolução_compra, remessa_conserto, trans_filiais, baixa_perda_quebra, saida_uso_consumo ];
 
         const result = await pool.query(query, values);
 
         res.status(201).json({ message: 'Tipo de saida criado com sucesso!', tipo_de_saida: result.rows[0] });
     } catch (err) {
         console.error('Erro ao inserir tipo de saida:', err);
+
         res.status(500).json({ message: 'Erro ao inserir tipo de saida', error: err.message });
     }
 });
 
+// Rota DELETE para excluir um tipo de saida por ID
+app.delete('/tipos_de_saida/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const query = 'DELETE FROM sga.tipos_de_saida WHERE id_tipos_de_saida = $1 RETURNING *';
+        const result = await pool.query(query, [id]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Tipo de saida não encontrado para exclusão.' });
+        }
+
+        res.status(200).json({ message: 'Tipo de saida excluído com sucesso!', deleted_id: id });
+    } catch (err) {
+        console.error('Erro ao excluir tipo de saida:', err);
+        res.status(500).json({ message: 'Erro ao excluir tipo de saida', error: err.message });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);

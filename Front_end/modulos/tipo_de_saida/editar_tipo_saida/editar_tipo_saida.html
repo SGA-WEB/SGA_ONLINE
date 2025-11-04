@@ -1,0 +1,83 @@
+<section class="modulo" id="modulo_editar_tipo_saida">
+    <!-- Botão para retornar à lista de tipos de saída -->
+    <button class="btn_nav" id="btn_voltar_tipos_de_saida">
+        <img src="../imagens/seta_baixo.png" alt="Seta para voltar" class="seta_esquerda">
+        <p class="btn_voltar">Voltar</p>
+    </button>
+
+    <!-- Cabeçalho da tela de edição -->
+    <div class="modulo_header header_cadastro">
+        <h2 class="h2_titulo">Editar Tipo de Saída</h2>
+        <div class="container_codigo_data">
+            <p class="p_codigo_id">Código: <span class="codigo_id"></span></p>
+            <div class="div_data_cadastro">
+                <p class="p_data_cadastro">Data de cadastro:</p>
+                <p class="data_cadastro"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulário principal para edição dos dados -->
+    <form id="form_editar_tipo_saida">
+        <div class="modulo_main flex_direction_column">
+            <!-- Campos principais de texto e seleção -->
+            <div class="container_small_width" id="container_campos_principais">
+                <div class="campo_contato normal_width">
+                    <label for="descricao">Descrição:<span class="campo_obrigatorio">*</span></label>
+                    <input type="text" name="descricao" id="descricao" class="campo_input" required>
+                </div>
+
+                <div class="campo_contato small_width">
+                    <label for="cfop_dentro">CFOP (Dentro):<span class="campo_obrigatorio">*</span></label>
+                    <input type="text" name="cfop_dentro" id="cfop_dentro" class="campo_input" required>
+                </div>
+                <div class="campo_contato small_width">
+                    <label for="cfop_fora">CFOP (Fora):<span class="campo_obrigatorio">*</span></label>
+                    <input type="text" name="cfop_fora" id="cfop_fora" class="campo_input" required>
+                </div>
+                <div class="campo_contato small_width select_conainer">
+                    <label for="ativo">Ativo:</label>
+                    <select id="ativo" name="ativo" class="campo_select">
+                        <option value="true">Sim</option>
+                        <option value="false">Não</option>
+                    </select>
+                </div>
+            </div>
+
+           <div class="chekboxes flex_direction_column">
+                <label for="Devolução_compra">
+                    <input type="checkbox" name="" id="devolução_compra">
+                    Devolução de Compra
+                </label>
+                <label for="Remessa_conserto">
+                    <input type="checkbox" name="" id="remessa_conserto">
+                   Remessa para Conserto
+                </label>
+                <label for="Transferência_filiais">
+                    <input type="checkbox" name="" id="trans_filiais">
+                    Transferência entre Filiais
+                </label>
+                <label for="Baixa_perda_quebra">
+                    <input type="checkbox" name="" id="baixa_perda_quebra">
+                    Baixa por Perda/Quebra  
+                </label>
+                <label for="saida_uso_consumo">
+                    <input type="checkbox" name="" id="saida_uso_consumo">
+                    Saida para Uso ou Consumo
+                </label>
+            </div>
+        </div>
+        <!-- Botões de ação do formulário -->
+        <div class="space_between">
+            <button type="button" class="btn btn2 btn_cancelar">
+                <img src="../imagens/icone_fechar.svg" alt="Ícone Cancelar">
+                <p>Cancelar</p>
+            </button>
+            <button type="submit" class="btn btn_salvar">
+                <img src="../imagens/icone_salvar.svg" alt="Ícone Salvar">
+                <p>Salvar</p>
+            </button>
+        </div>
+    </form>
+</section>
+
