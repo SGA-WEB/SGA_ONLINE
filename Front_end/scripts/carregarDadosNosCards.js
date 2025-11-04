@@ -34,6 +34,7 @@ export default function carregarDadosNosCards(dados, colunasBancoDeDados, coluna
         card.appendChild(cardBody)
 
         let indice = 0
+        console.log(objDado)
         for(let dado in objDado) {
             if (objDado[dado] === true || objDado[dado] == "s") {
                 objDado[dado] = "Sim"
@@ -47,13 +48,13 @@ export default function carregarDadosNosCards(dados, colunasBancoDeDados, coluna
                 cardId.textContent = "Código: " + objDado[dado]
                 cardHeader.appendChild(cardId)
                 indice++
-            } else if (dado.includes("nome_")){
+            } else if (dado.includes("nome_") || indice === 1){
                 let cardTitle = document.createElement('h2')
                 cardTitle.setAttribute('class', 'card_title')
                 cardTitle.textContent = objDado[dado]
                 cardHeader.appendChild(cardTitle)
                 indice++
-            }else if (dado.includes("data_")){
+            }else if (dado.includes("Data_")){
                 let cardData = document.createElement('div')
                 cardData.setAttribute('class', 'card_data')
 

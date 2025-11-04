@@ -19,7 +19,7 @@ export default async function centro_de_estoque() {
     btn_change_view_mode.addEventListener("click", () => {
         if (btn_change_view_mode.classList.contains("table_mode")) {
             const colunasBancoDeDados = ["id_centro_estoque", "nome_centro_estoque", "data_cadastro", "localizacao_centro_estoque", "padrao_centro_estoque"]
-            const colunasExibir = ["id", "nome", "Data de Cadastro", "Localização", "Padrão"]
+            const colunasExibir = ["Id", "Nome", "Data de Cadastro", "Localização", "Padrão"]
             carregarDadosNosCards(dados, colunasBancoDeDados, colunasExibir)
             pesquisar(dados, colunasExibir, null, true, colunasBancoDeDados)
             btn_change_view_mode.classList.remove("table_mode")

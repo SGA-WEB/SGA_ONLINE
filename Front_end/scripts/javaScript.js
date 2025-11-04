@@ -66,7 +66,7 @@ btns_modulos.forEach(e => {
     })
 })
 
-carregarConteudo("centro_de_estoque/centro_de_estoque.html", document.querySelector(".principal"), false, centro_de_estoque) // Carrega por padrão assim que a página for carregada o dashboard
+carregarConteudo("produto/produto.html", document.querySelector(".principal"), false, produto) // Carrega por padrão assim que a página for carregada o dashboard
 
 let logo_sga_principal = document.querySelector("#logo_sga_principal")
 logo_sga_principal.addEventListener("click", () => {
