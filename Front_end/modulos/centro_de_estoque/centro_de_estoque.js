@@ -18,7 +18,10 @@ export default async function centro_de_estoque() {
     let btn_change_view_mode = document.querySelector(".btn_change_view_mode");
     btn_change_view_mode.addEventListener("click", () => {
         if (btn_change_view_mode.classList.contains("table_mode")) {
-            carregarDadosNosCards(dados, ["id_centro_estoque", "nome_centro_estoque", "data_cadastro", "localizacao_centro_estoque", "padrao_centro_estoque"], ["id", "nome", "Data de Cadastro", "Localização", "Padrão"])
+            const colunasBancoDeDados = ["id_centro_estoque", "nome_centro_estoque", "data_cadastro", "localizacao_centro_estoque", "padrao_centro_estoque"]
+            const colunasExibir = ["id", "nome", "Data de Cadastro", "Localização", "Padrão"]
+            carregarDadosNosCards(dados, colunasBancoDeDados, colunasExibir)
+            pesquisar(dados, colunasExibir, null, true, colunasBancoDeDados)
             btn_change_view_mode.classList.remove("table_mode")
             btn_change_view_mode.classList.add("card_mode")
             btn_change_view_mode.querySelector("span").textContent = "Exibir modo tabela"
