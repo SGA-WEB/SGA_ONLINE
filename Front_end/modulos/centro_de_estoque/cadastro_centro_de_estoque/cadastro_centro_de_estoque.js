@@ -9,11 +9,9 @@ export default async function cadastro_centro_de_estoque() {
     dataAtual() // Altera o campo data para a data atual
     select2("100%") // Aplica o select2 nos selects
 
-    let centros = await buscarDados('id_centros_estoques');
-    let centroComMaiorId = centros.reduce((prev, curr) => {
-        return prev.id_centro_estoque > curr.id_centro_estoque ? prev : curr;
-    })
-    document.querySelector(".codigo_id").innerHTML = centroComMaiorId.id_centro_estoque + 1;
+    let proximo_id_centro_estoque = await buscarDados('proximo_id_centro_estoque');
+    console.log(proximo_id_centro_estoque);
+    document.querySelector(".codigo_id").innerHTML = proximo_id_centro_estoque.proximo_id;
 
     let form = document.querySelector("form");
     form.addEventListener("submit", async (e) => {

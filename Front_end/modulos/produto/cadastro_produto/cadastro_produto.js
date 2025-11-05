@@ -17,12 +17,9 @@ export default async function cadastro_produto() {
         3
     )
 
-    // Busca o maior id de produto e adiciona +1 para o próximo produto
-    let produtos = await buscarDados('produto');
-    let produtoComMaiorId = produtos.reduce((prev, curr) => {
-        return prev.id_produto > curr.id_produto ? prev : curr;
-    })
-    document.querySelector(".codigo_id").innerHTML = produtoComMaiorId.id_produto + 1;
+    let proximo_id_produto = await buscarDados('proximo_id_produto');
+
+    document.querySelector(".codigo_id").innerHTML = proximo_id_produto.proximo_id;
 
     document.querySelector("#btn_voltar_produtos").addEventListener("click", () => {
         // Botão que volta para a tela de produtos

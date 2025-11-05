@@ -1,12 +1,10 @@
-<section class="modulo" id="modulo_visualizar_saida_produto">
-    <menu class="menu_btns space_between align_center">
-        <button class="btn_nav" id="btn_voltar_saida_produtos">
-            <img src="..//..//../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
-            <p class="btn_voltar">Voltar</p>
-        </button>
-    </menu>
+<section class="modulo" id="modulo_cadastro_saida_produto">
+    <button class="btn_nav" id="btn_voltar_saida_produtos">
+        <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
+        <p class="btn_voltar">Voltar</p>
+    </button>
     <div class="modulo_header header_cadastro">
-        <h2 class="h2_titulo">Editar saída de produtos</h2>
+        <h2 class="h2_titulo">Orçamento</h2>
         <div class="container_codigo_data">
             <p class="p_codigo_id">Código: <span class="codigo_id"></span></p>
             <div class="div_data_cadastro">
@@ -19,75 +17,36 @@
         <div class="modulo_main">
             <div class="container_normal_width" id="container_chave_nfe" style="max-width: 500px;">
                 <div class="campo_contato normal_width">
-                    <label for="chave_nfe">Chave NF-e:</label>
-                    <input required type="text" inputmode="numeric" name="chave_nfe" id="chave_nfe" class="campo_input"
-                        maxlength="44" pattern="[0-9]{1,44}"
-                        oninvalid="this.setCustomValidity('Série deve ser um número de 44 dígitos')"
-                        oninput="this.setCustomValidity('')">
+                    <label for="chave_nfe">Nome Completo <span class="campo_obrigatorio">*</span></label>
+                    <input type="text" name="nome_completo" id="nome_completo"> 
                 </div>
             </div>
             <div class="container_small_width" id="container_radios">
                 <div class="campo_contato small_width">
-                    <label for="numero_nf">Número N.F:</label>
-                    <input required type="text" name="numero_nf" id="numero_nf" class="campo_input" maxlength="20">
+                    <label for="numero_nf">Telefone<span class="campo_obrigatorio">*</span></label>
+                    <input type="text" name="telefone" id="telefone" class="campo_input" maxlength="12" required>
                 </div>
                 <div class="campo_contato small_width select_conainer">
-                    <p>Destinatário:</p>
-                    <select required name="destinatario_id" id="destinatario_id" class="campo_select"></select>
-                </div>
-            </div>
-            <div class="container_small_width">
-                <div class="campo_contato small_width select_conainer">
-                    <p>Tipo de saída:</p>
-                    <input required type="text" id="tipo_saida" class="campo_input" name="tipo_saida">
-                </div>
-                <div class="campo_contato small_width">
-                    <label for="data_saida">Data da saída:</label>
-                    <input required type="date" name="data_saida" id="data_saida" class="campo_input">
-                </div>
-            </div>
-            <div class="container_small_width">
-                <div class="campo_contato small_width select_conainer">
-                    <label for="status">Status da saída:</label>
-                    <select required name="status" id="status" class="campo_select">
-                        <option value="ENTREGUE">ENTREGUE</option>
-                        <option value="FATURADO">FATURADO</option>
-                        <option value="EM TRÂNSITO">EM TRÂNSITO</option>
-                        <option value="CONCLUÍDO">CONCLUÍDO</option>
-                        <option value="PENDENTE">PENDENTE</option>
+                    <p>Destinatário:<span class="campo_obrigatorio">*</span></p>
+                    <select id="cliente" class="campo_select" name="cliente" required>
+                        <option value=""></option>
                     </select>
-
                 </div>
+            </div>
                 <div class="campo_contato small_width">
-                    <label for="valor_total">Valor Total:</label>
-                    <input required type="number" name="valor_total" id="valor_total" class="campo_input" step="0.01" min="0">
+                    <label for="data_saida">Data do orçamento:<span class="campo_obrigatorio">*</span></label>
+                    <input type="date" name="data_orcamento" id="data_orcamento" class="campo_input" required>
                 </div>
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width">
-                    <label for="serie">Série:</label>
-                    <input required type="text" inputmode="numeric" name="serie" id="serie" class="campo_input" maxlength="3"
-                        pattern="[0-9]{1,3}"
-                        oninvalid="this.setCustomValidity('Série deve ser um número de 1 a 3 dígitos')"
-                        oninput="this.setCustomValidity('')">
-                </div>
-                <div class="campo_contato small_width">
-                    <label for="subserie">Sub-Série</label>
-                    <input type="text" inputmode="numeric" name="subserie" id="subserie" class="campo_input"
-                        maxlength="2" pattern="[0-9]{1,3}"
-                        oninvalid="this.setCustomValidity('Série deve ser um número de 1 a 3 dígitos')"
-                        oninput="this.setCustomValidity('')">
-                </div>
-            </div>
-            <div class="container_small_width">
-                <div class="campo_contato small_width">
-                    <label for="modelo_documento_fiscal">Fiscal:</label>
-                    <input required type="text" name="modelo_documento_fiscal" id="modelo_documento_fiscal" class="campo_input"
-                        maxlength="2">
+                    <label for="modelo">Gmail:<span class="campo_obrigatorio">*</span></label>
+                    <input type="text" name="modelo" id="modelo" class="campo_input" maxlength="2" required>
                 </div>
             </div>
         </div>
-        <h3 class="h3_titulo">Produtos relacionados:</h3>
+
+        <h3 class="h3_titulo">Produtos relacionados:<span class="campo_obrigatorio">*</span></h3>
         <button type="button" class="btn_add" id="btn_adicionar_relacao">
             <img src="../imagens/btn_add.svg" alt="Icone Adicionar">
             <span>Adicionar relação</span>
@@ -104,20 +63,14 @@
                         <th id="tabela_preco_atacado">Valor Total</th>
                     </tr>
                 </thead>
-                <tbody class="tbody apenas_crud_excluir">
+                <tbody class="tbody">
                 </tbody>
             </table>
         </div>
-        <div class="space_between">
-            <button class="btn btn2 btn_cancelar">
-                <img src="..//..//../imagens/icone_fechar.svg" alt="Icone Salvar">
-                <p>Cancelar</p>
-            </button>
-            <button class="btn btn_salvar">
-                <img src="..//..//../imagens/icone_salvar.svg" alt="Icone Salvar">
-                <p>Salvar</p>
-            </button>
-        </div>
+        <button type="submit" class="btn btn_salvar">
+            <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
+            <p>Salvar</p>
+        </button>
     </form>
 </section>
 <div class="container_popup popup_relacao">

@@ -33,7 +33,7 @@ export default async function saida_de_produtos() {
             document.querySelector(".principal"),
             false,
             cadastro_saida_produtos,
-            // dados
+            dados
         )
     })
 }

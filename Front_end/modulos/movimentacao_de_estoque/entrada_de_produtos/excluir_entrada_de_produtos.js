@@ -2,6 +2,7 @@ import { popup, popup_aviso, popup_carregando, popup_erro, popup_confirmar_exclu
 import buscarDados from "../../../scripts/buscarDados.js"
 import { carregarDadosNaTabela } from "../../../scripts/carregarDadosNaTabela.js"
 import { carregarConteudo } from "../../../scripts/javaScript.js"
+import entrada_de_produtos from "./entrada_de_produtos.js"
 
 export default async function excluir_entrada_de_produtos(dado, callbackFunction, ...param) {
     let confirmacao = await popup_confirmar_exclusao(`Tem certeza que deseja excluir a entrada de produto: ${dado['id_entrada_produto']} ?`)
@@ -18,7 +19,9 @@ export default async function excluir_entrada_de_produtos(dado, callbackFunction
                 popup_aviso(`entrada de produto ${dado.id_entrada_produto} excluído com sucesso!`)
                 await carregarConteudo(
                     "movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html",
-                    document.querySelector(".principal")// Não há função de callback para esta ação
+                    document.querySelector(".principal"),
+                    false,
+                    entrada_de_produtos
                 )
                 if (callbackFunction) {
                     callbackFunction(...param) // Chama a função de callback, se existir

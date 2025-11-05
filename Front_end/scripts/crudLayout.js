@@ -18,12 +18,17 @@ import excluir_tipo_de_entrada from "../modulos/tipo_de_entrada/excluir_tipos_de
 import visualizar_tipo_de_entrada from "../modulos/tipo_de_entrada/visualizar_tipos_de_entrada/visualizar_tipo_de_entrada.js"
 import editar_tipo_de_entrada from "../modulos/tipo_de_entrada/editar_tipos_de_entrada/editar_tipo_de_entrada.js"
 
+import visualizar_tipo_saida from "../modulos/tipo_de_saida/visualizar_tipo_saida/visualizar_tipo_saida.js"
+import editar_tipo_saida from "../modulos/tipo_de_saida/editar_tipo_saida/editar_tipo_saida.js"
+import excluir_tipo_saida from "../modulos/tipo_de_saida/excluir_tipo_saida.js";
+
 import visualizar_entrada_de_produto from "../modulos/movimentacao_de_estoque/entrada_de_produtos/visualizar_entrada_de_produtos/visualizar_entrada_de_produtos.js";
 import editar_entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/editar_entrada_de_produtos/editar_entrada_de_produtos.js";
 import excluir_entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/excluir_entrada_de_produtos.js";
 
 import visualizar_saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_de_produtos/visualizar_saida_de_produtos/visualizar_saida_de_produtos.js";
 import editar_saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_de_produtos/editar_saida_de_produtos/editar_saida_de_produtos.js";
+import excluir_saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_de_produtos/excluir_saida_de_produtos.js";
 
 export default function crudLayout(dadosTabela, tr, addListener = true) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
@@ -95,12 +100,17 @@ export default function crudLayout(dadosTabela, tr, addListener = true) {
             visualizar_tipo_de_entrada: visualizar_tipo_de_entrada,
             editar_tipo_de_entrada: editar_tipo_de_entrada,
 
+            visualizar_tipo_saida: visualizar_tipo_saida,
+            editar_tipo_saida: editar_tipo_saida,
+            excluir_tipo_saida: excluir_tipo_saida,
+
             visualizar_entrada_de_produto: visualizar_entrada_de_produto,
             editar_entrada_de_produto: editar_entrada_de_produtos,
             excluir_entrada_de_produtos: excluir_entrada_de_produtos,
 
             visualizar_saida_de_produtos: visualizar_saida_de_produtos,
             editar_saida_de_produtos: editar_saida_de_produtos,
+            excluir_saida_de_produtos: excluir_saida_de_produtos,
         }
         switch (nomeTabelaAtual) { // Carrega a página do CRUD de acordo com a tabela atual
             case "centro_de_estoque":
@@ -170,13 +180,26 @@ export default function crudLayout(dadosTabela, tr, addListener = true) {
                 break;
             case "saida_de_produtos":
                 if (acao == "excluir") {
-
+                    funcoes[`excluir_saida_de_produtos`](dadosTabela)
                 } else {
                     carregarConteudo(
                         `movimentacao_de_estoque/saida_de_produtos/${acao}_saida_de_produtos/${acao}_saida_de_produtos.html`,
                         document.querySelector('.principal'),
                         false,
                         funcoes[`${acao}_saida_de_produtos`],
+                        dadosTabela
+                    )
+                }
+                break;
+            case "tipo_de_saida":
+                if (acao == "excluir") {
+                    funcoes[`excluir_tipo_saida`](dadosTabela)
+                } else {
+                    carregarConteudo(
+                        `tipo_de_saida/${acao}_tipo_saida/${acao}_tipo_saida.html`,
+                        document.querySelector('.principal'),
+                        false,
+                        funcoes[`${acao}_tipo_saida`],
                         dadosTabela
                     )
                 }

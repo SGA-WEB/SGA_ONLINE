@@ -11,6 +11,9 @@ export default async function cadastro_entrada_produtos(dados) {
     dataAtual()
     let produtos = await buscarDados("produto")
     let contatos = await buscarDados("contato");
+    let ultimoIdProduto = await buscarDados("proximo_id_entrada_produto");
+    
+    document.querySelector(".codigo_id").textContent = ultimoIdProduto.proximo_id;
 
     let fornecedores = []
 
@@ -39,12 +42,8 @@ export default async function cadastro_entrada_produtos(dados) {
         produto.desconto = 0; // Inicializa o desconto como 0
     })
 
-    let ultimoIdProduto
-    dados.forEach(entrada => {
-        ultimoIdProduto = entrada.id_entrada_produto
-    })
-    document.querySelector(".codigo_id").textContent = ultimoIdProduto + 1
-
+    
+    
     let btn_adicionar_relacao = document.querySelector("#btn_adicionar_relacao");
     btn_adicionar_relacao.addEventListener("click", async () => {
         // Quando o botão de adicionar relação for clicado

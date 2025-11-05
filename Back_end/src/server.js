@@ -157,6 +157,102 @@ app.get('/api/testar-sessao', (req, res) => {
     }
 });
 
+app.get('/api/proximo_id_centro_estoque', async (req, res) => {
+    try {
+        // Busca o próximo valor da sequence correspondente
+        const { rows } = await pool.query(`SELECT last_value + 1 AS proximo_id FROM sga.centro_estqoue_id_centro_estqoue_seq`);
+
+        // Verifica se a sequence retornou um valor
+        if (rows.length === 0 || rows[0].proximo_id === null) {
+            // Tenta buscar o MAX ID da tabela como fallback (se a sequence estiver vazia/nova)
+            const maxIdResult = await pool.query(`SELECT COALESCE(MAX(id_centro_estoque), 0) + 1 AS proximo_id FROM sga.centro_estoque`);
+            return res.json(maxIdResult.rows[0]);
+        }
+
+        res.json(rows[0]);
+
+    } catch (err) {
+        console.error('Erro ao buscar próximo ID de centro_estoque:', err);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao buscar próximo ID de centro_estoque',
+            detalhes: err.message
+        });
+    }
+});
+
+app.get('/api/proximo_id_produto', async (req, res) => {
+    try {
+        // Busca o próximo valor da sequence correspondente
+        const { rows } = await pool.query(`SELECT last_value + 1 AS proximo_id FROM sga.produto_id_produto_seq`);
+
+        // Verifica se a sequence retornou um valor
+        if (rows.length === 0 || rows[0].proximo_id === null) {
+            // Tenta buscar o MAX ID da tabela como fallback (se a sequence estiver vazia/nova)
+            const maxIdResult = await pool.query(`SELECT COALESCE(MAX(id_produto), 0) + 1 AS proximo_id FROM sga.produto`);
+            return res.json(maxIdResult.rows[0]);
+        }
+
+        res.json(rows[0]);
+
+    } catch (err) {
+        console.error('Erro ao buscar próximo ID de produto:', err);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao buscar próximo ID de produto',
+            detalhes: err.message
+        });
+    }
+});
+
+app.get('/api/proximo_id_entrada_produto', async (req, res) => {
+    try {
+        // Busca o próximo valor da sequence correspondente
+        const { rows } = await pool.query(`SELECT last_value + 1 AS proximo_id FROM sga.entrada_produto_id_seq`);
+
+        // Verifica se a sequence retornou um valor
+        if (rows.length === 0 || rows[0].proximo_id === null) {
+            // Tenta buscar o MAX ID da tabela como fallback (se a sequence estiver vazia/nova)
+            const maxIdResult = await pool.query(`SELECT COALESCE(MAX(id_entrada_produto), 0) + 1 AS proximo_id FROM sga.entrada_produto`);
+            return res.json(maxIdResult.rows[0]);
+        }
+
+        res.json(rows[0]);
+
+    } catch (err) {
+        console.error('Erro ao buscar próximo ID de entrada_produto:', err);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao buscar próximo ID de entrada_produto',
+            detalhes: err.message
+        });
+    }
+});
+
+app.get('/api/proximo_id_saida_produto', async (req, res) => {
+    try {
+        // Busca o próximo valor da sequence correspondente
+        const { rows } = await pool.query(`SELECT last_value + 1 AS proximo_id FROM sga.saida_produto_id_seq`);
+
+        // Verifica se a sequence retornou um valor
+        if (rows.length === 0 || rows[0].proximo_id === null) {
+            // Tenta buscar o MAX ID da tabela como fallback (se a sequence estiver vazia/nova)
+            const maxIdResult = await pool.query(`SELECT COALESCE(MAX(id_saida_produto), 0) + 1 AS proximo_id FROM sga.saida_produto`);
+            return res.json(maxIdResult.rows[0]);
+        }
+
+        res.json(rows[0]);
+
+    } catch (err) {
+        console.error('Erro ao buscar próximo ID de saida_produto:', err);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao buscar próximo ID de saida_produto',
+            detalhes: err.message
+        });
+    }
+});
+
 app.get('/api/centro_estoque', async (req, res) => {
     try {
         const { rows } = await pool.query(`SELECT
@@ -316,7 +412,8 @@ app.get('/api/saida_produto', async (req, res) => {
                 sp.modelo_documento_fiscal,
                 sp.subserie,
                 sp.chave_nfe,
-                sp.destinatario_id, 
+                sp.destinatario_id,
+                sp.data_criacao,
                 c.razao_social AS destinatario_razao_social,
                 c.cnpj AS destinatario_cnpj,
                 COUNT(spi.id_item) AS total_itens,
@@ -869,6 +966,142 @@ app.post('/entrada_produto', async (req, res) => {
         client.release();
     }
 });
+
+/**
+ * @route   POST /api/saidas-produto
+ * @desc    Cria uma nova saída de produto, incluindo seus itens, usando uma transação.
+ * @access  Public
+ */
+app.post('/saida_produto', async (req, res) => {
+    // É crucial usar um 'client' do pool para garantir que todos os comandos
+    // executem na mesma conexão dentro da transação.
+    const client = await pool.connect();
+
+    try {
+        // 1. Extrai os dados do cabeçalho e o array de itens do corpo da requisição.
+        const {
+            tipo_saida,
+            numero_nf,
+            data_saida,
+            destinatario_id,
+            valor_total,
+            desconto,
+            status,
+            modelo_documento_fiscal,
+            serie,
+            subserie,
+            data_emissao,
+            chave_nfe,
+            inativo,
+            itens // Array de objetos, ex: [{ produto_id: 1, quantidade: 10, valor_unitario: 5.50, desconto_item: 1.00 }, ...]
+        } = req.body;
+
+        // 2. Validações principais
+        if (!tipo_saida || !numero_nf || !data_saida || !destinatario_id) {
+            return res.status(400).json({
+                sucesso: false,
+                erro: 'Campos obrigatórios do cabeçalho da saída estão faltando (tipo_saida, numero_nf, data_saida, destinatario_id).'
+            });
+        }
+        if (!Array.isArray(itens) || itens.length === 0) {
+            return res.status(400).json({
+                sucesso: false,
+                erro: 'É necessário fornecer pelo menos um item para a saída.'
+            });
+        }
+        // Validação básica de cada item
+        for (const item of itens) {
+            if (!item.id_produto || !item.quantidade || !item.valor_unitario) {
+                return res.status(400).json({
+                    sucesso: false,
+                    erro: 'Cada item deve conter id_produto, quantidade e valor_unitario.'
+                });
+            }
+        }
+
+        // =================================================================
+        // INÍCIO DA TRANSAÇÃO
+        // =================================================================
+        await client.query('BEGIN');
+
+        // 3. Insere o cabeçalho da saída para obter o 'id_saida_produto'.
+        const saidaQuery = `
+            INSERT INTO sga.saida_produto (
+                tipo_saida, numero_nf, data_saida, destinatario_id, valor_total,
+                desconto, status, modelo_documento_fiscal, serie, subserie,
+                data_emissao, chave_nfe, inativo
+            ) VALUES (
+                $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13
+            ) RETURNING *;
+        `;
+        const saidaValues = [
+            tipo_saida, numero_nf, data_saida, destinatario_id, valor_total || null,
+            desconto || 0, status || 'Pendente', modelo_documento_fiscal || null, serie || null, subserie || null,
+            data_emissao || null, chave_nfe || null, inativo || false
+        ];
+        const saidaResult = await client.query(saidaQuery, saidaValues);
+        const novaSaida = saidaResult.rows[0];
+        const novaSaidaId = novaSaida.id_saida_produto;
+
+        // 4. Insere os itens na tabela 'saida_produto_itens'.
+        const itensInseridos = [];
+        for (const item of itens) {
+            const itemQuery = `
+                INSERT INTO sga.saida_produto_itens (
+                    saida_id, id_produto, quantidade, valor_unitario, desconto_item, inativo
+                ) VALUES (
+                    $1, $2, $3, $4, $5, $6
+                ) RETURNING *;
+            `;
+            const itemValues = [
+                novaSaidaId,
+                item.id_produto,
+                item.quantidade,
+                item.valor_unitario,
+                item.desconto_item || 0,
+                item.inativo || false
+            ];
+            const itemResult = await client.query(itemQuery, itemValues);
+            itensInseridos.push(itemResult.rows[0]);
+        }
+
+        // =================================================================
+        // FIM DA TRANSAÇÃO
+        // =================================================================
+        await client.query('COMMIT');
+
+        // 5. Retorna a saída recém-criada e seus itens com status 201 (Created).
+        res.status(201).json({
+            sucesso: true,
+            mensagem: 'Saída de produto criada com sucesso!',
+            saida: novaSaida,
+            itens: itensInseridos
+        });
+
+    } catch (err) {
+        // Se qualquer um dos comandos acima falhar, desfaz todas as alterações.
+        await client.query('ROLLBACK');
+        console.error('Erro na transação de inserção de saída de produto:', err);
+
+        // Tratamento de erros específicos do PostgreSQL
+        if (err.code === '23505') { // Violação de chave única (ex: numero_nf duplicado?)
+            return res.status(409).json({ sucesso: false, erro: `Já existe um registro com este valor. Detalhe: ${err.detail || err.message}` });
+        }
+        if (err.code === '23503') { // Violação de chave estrangeira (ex: destinatario_id ou id_produto não existe)
+            return res.status(400).json({ sucesso: false, erro: 'ID do destinatário ou de algum produto não encontrado.' });
+        }
+
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro interno do servidor ao cadastrar saída de produto.',
+            detalhes: err.message
+        });
+    } finally {
+        // Libera o 'client' de volta para o pool, independentemente do resultado.
+        client.release();
+    }
+});
+
 
 // Rota para buscar todos os itens de uma entrada de produto específica
 // Exemplo: GET /entrada_produto/1/itens
@@ -1861,6 +2094,72 @@ app.delete('/entrada_produto/:id_entrada', async (req, res) => {
     }
 });
 
+app.delete('/saida_produto/:id', async (req, res) => {
+    // Extrai o ID da saída dos parâmetros da URL
+    const { id } = req.params;
+
+    // Obtém um cliente do pool para a transação
+    const client = await pool.connect();
+
+    try {
+        // Inicia a transação
+        await client.query('BEGIN');
+
+        // 1. Verifica se a saída existe e ainda está ativa
+        const saidaExistente = await client.query(
+            'SELECT 1 FROM sga.saida_produto WHERE id_saida_produto = $1 AND inativo = FALSE',
+            [id]
+        );
+
+        // Se não encontrar (rowCount === 0), retorna erro 404
+        if (saidaExistente.rowCount === 0) {
+            await client.query('ROLLBACK'); // Desfaz a transação iniciada
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Saída de produto não encontrada ou já inativada.'
+            });
+        }
+
+        // 2. Marca o registro principal da saída como inativo
+        await client.query(`
+            UPDATE sga.saida_produto
+            SET inativo = TRUE
+            WHERE id_saida_produto = $1
+        `, [id]);
+
+        // 3. Marca os itens relacionados na tabela 'saida_produto_itens' como inativos
+        await client.query(`
+            UPDATE sga.saida_produto_itens
+            SET inativo = TRUE
+            WHERE saida_id = $1
+        `, [id]);
+
+        // Confirma a transação
+        await client.query('COMMIT');
+
+        // Retorna sucesso
+        res.status(200).json({
+            sucesso: true,
+            mensagem: 'Saída de produto inativada com sucesso!',
+            id_saida_produto: id
+        });
+
+    } catch (err) {
+        // Em caso de erro, desfaz a transação
+        await client.query('ROLLBACK');
+        console.error(`Erro ao inativar saída de produto com ID ${id}:`, err);
+
+        // Retorna erro genérico 500
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao inativar saída de produto.',
+            detalhes: err.message
+        });
+    } finally {
+        // Libera o cliente de volta para o pool
+        client.release();
+    }
+});
 
 // Rota GET para listar todos os tipos_de_saida
 app.get('/api/tipos_de_saida', async (req, res) => {
@@ -1873,19 +2172,18 @@ app.get('/api/tipos_de_saida', async (req, res) => {
     }
 });
 
-app.put('/tipo_de_saida/:id', async (req, res) => {
+app.put('/tipos_de_saida/:id', async (req, res) => { 
     const { id } = req.params;
     const {
         descricao,
         cfop_dentro,
         cfop_fora,
         ativo,
-        movimenta_estoque,
-        hab_agrupamento,
-        hab_movimento,
-        habilita_nf,
-        atualiza_produto,
-        padrao
+        devolução_compra,
+        remessa_conserto, 
+        trans_filiais,
+        baixa_perda_quebra,
+        saida_uso_consumo
     } = req.body;
 
     try {
@@ -1896,13 +2194,12 @@ app.put('/tipo_de_saida/:id', async (req, res) => {
                 cfop_dentro = $2,
                 cfop_fora = $3,
                 ativo = $4,
-                movimenta_estoque = $5,
-                hab_agrupamento = $6,
-                hab_movimento = $7,
-                habilita_nf = $8,
-                atualiza_produto = $9,
-                padrao = $10
-            WHERE id_tipo_de_entrada = $11
+                devolução_compra = $5,
+                remessa_conserto = $6,
+                trans_filiais = $7,
+                baixa_perda_quebra = $8,
+                saida_uso_consumo = $9 
+            WHERE id_tipos_de_saida = $10 
             RETURNING *;
         `;
 
@@ -1911,12 +2208,11 @@ app.put('/tipo_de_saida/:id', async (req, res) => {
             cfop_dentro,
             cfop_fora,
             ativo,
-            movimenta_estoque,
-            hab_agrupamento,
-            hab_movimento,
-            habilita_nf,
-            atualiza_produto,
-            padrao,
+            devolução_compra,
+            remessa_conserto,
+            trans_filiais,
+            baixa_perda_quebra,
+            saida_uso_consumo,
             id
         ];
 
@@ -1928,49 +2224,69 @@ app.put('/tipo_de_saida/:id', async (req, res) => {
 
         res.status(200).json({
             message: 'Tipo de saida atualizado com sucesso.',
-            tipo_entrada: result.rows[0]
+            tipo_de_saida: result.rows[0]
         });
 
     } catch (err) {
-        console.error('Erro ao atualizar tipo de saida:', err);
+        onsole.error('Erro ao atualizar tipo de saida:', err);
+
         res.status(500).json({ message: 'Erro ao atualizar tipo de saida', error: err.message });
     }
-});
+    });
+
 
 // Rota POST para inserir novo tipo de saida
-app.post('/tipo_de_saida', async (req, res) => {
+app.post('/tipos_de_saida', async (req, res) => { 
     const {
-        id_tipo_de_entrada,
         descricao,
         cfop_dentro,
         cfop_fora,
         ativo,
-        movimenta_estoque,
-        hab_agrupamento,
-        hab_movimento,
-        habilita_nf,
-        atualiza_produto,
-        padrao
+        devolução_compra,
+        remessa_conserto,
+        trans_filiais,
+        baixa_perda_quebra,
+        saida_uso_consumo 
+
     } = req.body;
 
     try {
         const query = `
             INSERT INTO sga.tipos_de_saida
-            (id_tipo_de_entrada, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            (descricao, cfop_dentro, cfop_fora, ativo, devolução_compra, remessa_conserto, trans_filiais, baixa_perda_quebra, saida_uso_consumo )
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) -- ERRO CORRIGIDO: Removido placeholder para o ID
             RETURNING *;
         `;
-        const values = [id_tipo_de_entrada, descricao, cfop_dentro, cfop_fora, ativo, movimenta_estoque, hab_agrupamento, hab_movimento, habilita_nf, atualiza_produto, padrao];
+        const values = [descricao, cfop_dentro, cfop_fora, ativo, devolução_compra, remessa_conserto, trans_filiais, baixa_perda_quebra, saida_uso_consumo ];
 
         const result = await pool.query(query, values);
 
         res.status(201).json({ message: 'Tipo de saida criado com sucesso!', tipo_de_saida: result.rows[0] });
     } catch (err) {
         console.error('Erro ao inserir tipo de saida:', err);
+
         res.status(500).json({ message: 'Erro ao inserir tipo de saida', error: err.message });
     }
 });
 
+// Rota DELETE para excluir um tipo de saida por ID
+app.delete('/tipos_de_saida/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const query = 'DELETE FROM sga.tipos_de_saida WHERE id_tipos_de_saida = $1 RETURNING *';
+        const result = await pool.query(query, [id]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Tipo de saida não encontrado para exclusão.' });
+        }
+
+        res.status(200).json({ message: 'Tipo de saida excluído com sucesso!', deleted_id: id });
+    } catch (err) {
+        console.error('Erro ao excluir tipo de saida:', err);
+        res.status(500).json({ message: 'Erro ao excluir tipo de saida', error: err.message });
+    }
+});
 
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);

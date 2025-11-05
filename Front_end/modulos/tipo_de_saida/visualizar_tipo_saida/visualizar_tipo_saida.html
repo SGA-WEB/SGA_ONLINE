@@ -1,0 +1,83 @@
+<section class="modulo" id="modulo_visualizar_tipo_saida">
+   <menu class="menu_btns space_between align_center">
+        <button class="btn_nav" id="btn_voltar_tipo_de_saida">
+            <img src="..//..//../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
+            <p class="btn_voltar">Voltar</p>
+        </button>
+        <div class="container_btns space_between">
+            <button class="btn_editar btn btn2">
+                <img src="..//..//../imagens/icone_editar.svg" alt="icone_editar" >
+                <p>Editar</p>
+            </button>
+            <button class="btn_excluir btn btn5">
+                <img src="..//..//../imagens/icone_excluir.svg" alt="icone_editar" >
+                <p>Excluir</p>
+            </button>
+        </div>
+    </menu>
+
+    <!-- Cabeçalho da tela de visualização -->
+    <div class="modulo_header header_cadastro">
+        <h2 class="h2_titulo">Visualizar Tipo de Saída</h2>
+        <div class="container_codigo_data">
+            <p class="p_codigo_id">Código: <span class="codigo_id"></span></p>
+            <div class="div_data_cadastro">
+                <p class="p_data_cadastro">Data de cadastro:</p>
+                <p class="data_cadastro"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Formulário usado apenas para agrupar os campos visualmente -->
+    <form id="form_visualizar_tipo_saida">
+        <div class="modulo_main flex_direction_column">
+            <!-- Campos principais de texto e seleção -->
+            <div class="container_small_width" id="container_campos_principais">
+                <div class="campo_contato normal_width">
+                    <label for="descricao">Descrição:</label>
+                    <input type="text" name="descricao" id="descricao" class="campo_input" disabled>
+                </div>
+
+                <div class="campo_contato small_width">
+                    <label for="cfop_dentro">CFOP (Dentro):</label>
+                    <input type="text" name="cfop_dentro" id="cfop_dentro" class="campo_input" disabled>
+                </div>
+                <div class="campo_contato small_width">
+                    <label for="cfop_fora">CFOP (Fora):</label>
+                    <input type="text" name="cfop_fora" id="cfop_fora" class="campo_input" disabled>
+                </div>
+                <div class="campo_contato small_width select_conainer">
+                    <label for="ativo">Ativo:</label>
+                    <select id="ativo" name="ativo" class="campo_select" disabled>
+                        <option value="true">Sim</option>
+                        <option value="false">Não</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Grupo de checkboxes para as flags booleanas -->
+            <div class="chekboxes flex_direction_column">
+                <label for="Devolução_compra">
+                    <input type="checkbox" name="" id="devolução_compra" disabled>
+                    Devolução de Compra
+                </label>
+                <label for="Remessa_conserto">
+                    <input type="checkbox" name="" id="remessa_conserto" disabled>
+                   Remessa para Conserto
+                </label>
+                <label for="Transferência_filiais">
+                    <input type="checkbox" name="" id="trans_filiais" disabled>
+                    Transferência entre Filiais
+                </label>
+                <label for="Baixa_perda_quebra">
+                    <input type="checkbox" name="" id="baixa_perda_quebra" disabled>
+                    Baixa por Perda/Quebra  
+                </label>
+                <label for="saida_uso_consumo">
+                    <input type="checkbox" name="" id="saida_uso_consumo" disabled>
+                    Saida para Uso ou Consumo
+                </label>
+            </div>
+        </div>
+    </form>
+</section>
