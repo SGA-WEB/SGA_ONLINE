@@ -1,129 +1,52 @@
 <section class="modulo" id="modulo_cadastro_saida_produto">
-    <button class="btn_nav" id="btn_voltar_saida_produtos">
-        <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
-        <p class="btn_voltar">Voltar</p>
+    <h2 class="h2_titulo">Orçamento</h2>
+    <header class="header">
+        <div class="container_select">
+            <p>Selecione a coluna que deseja pesquisar:</p>
+            <select id="select_coluna" class="campo_select select_coluna">
+                <option value="id_codigo">Código</option>
+                <option value="cliente">Cliente</option>
+                <option value="status">Status</option>
+                <option value="criado_por">Criado por</option>
+                <option value="criado_em">Criado em</option>
+                <option value="total">Total</option>
+                <option value="desconto">Desconto</option>
+                <option value="subtotal">Subtotal</option>
+            </select>
+        </div>
+        <div class="container_campo_pesquisa_btn">
+            <div class="campo_pesquisa" id="campo_pesquisa_contato">
+                <input id="input_pesquisa_tabela" type="text" placeholder="Pesquisar por Código" class="input_pesquisa">
+                <button class="btn_limpar_pesquisa hide center" id="btn_limpar_pesquisa_contato">
+                    <img id="icone_fechar" src="../imagens/icone_fechar.svg" alt="icone_fechar">
+                </button>
+                <button class="btn_pesquisar center" id="btn_pesquisar_contato">
+                    <img id="icone_pesquisa" src="../imagens/icone_pesquisa.png" alt="icone_pesquisa">
+                </button>
+            </div>
+        </div>
+    </header>
+    <button class="btn_add btn" id="btn_criar_orcamento">
+        <img src="../imagens/btn_add.svg" alt="Icone Adicionar Orçamento">
+        <span>Adicionar Orçamento</span>
     </button>
-    <div class="modulo_header header_cadastro">
-        <h2 class="h2_titulo">Orçamento</h2>
-        <div class="container_codigo_data">
-            <p class="p_codigo_id">Código: <span class="codigo_id"></span></p>
-            <div class="div_data_cadastro">
-                <p class="p_data_cadastro">Data do cadastro:</p>
-                <p class="data_cadastro"></p>
-            </div>
-        </div>
+    <div class="container_tabela">
+        <table class="tabela" id="tabela_produtos">
+            <thead>
+                <tr>
+                    <th id="codigo">Código</th>
+                    <th id="cliente">Cliente</th>
+                    <th id="status">Status</th>
+                    <th id="criado_por">Criado por:</th>
+                    <th id="criado_em">Criado em:</th>
+                    <th id="total">Total</th>
+                    <th id="desconto">Desconto:</th>
+                    <th id="subtotal">Subtotal:</th>
+                </tr>
+            </thead>
+            <tbody class="tbody">
+            </tbody>
+        </table>
     </div>
-    <form id="form_saida_produto">
-        <div class="modulo_main">
-            <div class="container_normal_width" id="container_chave_nfe" style="max-width: 500px;">
-                <div class="campo_contato normal_width">
-                    <label for="chave_nfe">Nome Completo <span class="campo_obrigatorio">*</span></label>
-                    <input type="text" name="nome_completo" id="nome_completo"> 
-                </div>
-            </div>
-            <div class="container_small_width" id="container_radios">
-                <div class="campo_contato small_width">
-                    <label for="numero_nf">Telefone<span class="campo_obrigatorio">*</span></label>
-                    <input type="text" name="telefone" id="telefone" class="campo_input" maxlength="12" required>
-                </div>
-                <div class="campo_contato small_width select_conainer">
-                    <p>Destinatário:<span class="campo_obrigatorio">*</span></p>
-                    <select id="cliente" class="campo_select" name="cliente" required>
-                        <option value=""></option>
-                    </select>
-                </div>
-            </div>
-                <div class="campo_contato small_width">
-                    <label for="data_saida">Data do orçamento:<span class="campo_obrigatorio">*</span></label>
-                    <input type="date" name="data_orcamento" id="data_orcamento" class="campo_input" required>
-                </div>
-            </div>
-            <div class="container_small_width">
-                <div class="campo_contato small_width">
-                    <label for="modelo">Gmail:<span class="campo_obrigatorio">*</span></label>
-                    <input type="text" name="modelo" id="modelo" class="campo_input" maxlength="2" required>
-                </div>
-            </div>
-        </div>
-
-        <h3 class="h3_titulo">Produtos relacionados:<span class="campo_obrigatorio">*</span></h3>
-        <button type="button" class="btn_add" id="btn_adicionar_relacao">
-            <img src="../imagens/btn_add.svg" alt="Icone Adicionar">
-            <span>Adicionar relação</span>
-        </button>
-        <div class="container_tabela">
-            <table class="tabela" id="tabela_produtos">
-                <thead>
-                    <tr>
-                        <th id="tabela_codigo">Código</th>
-                        <th id="tabela_produto">Produto</th>
-                        <th id="tabela_quantidade">Qtde.</th>
-                        <th id="tabela_preco_varejo">Valor Unitario</th>
-                        <th id="tabela_preco_atacado">Desconto</th>
-                        <th id="tabela_preco_atacado">Valor Total</th>
-                    </tr>
-                </thead>
-                <tbody class="tbody">
-                </tbody>
-            </table>
-        </div>
-        <button type="submit" class="btn btn_salvar">
-            <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
-            <p>Salvar</p>
-        </button>
     </form>
-</section>
-<div class="container_popup popup_relacao">
-    <div class="popup">
-        <button class="btn_fechar_popup">
-            <img src="../imagens/icone_fechar.svg" alt="Icone Fechar">
-        </button>
-        <h2 class="h2_titulo">Selecione os produtos para relacionar a saida</h2>
-        <div class="header">
-            <div class="container_select">
-                <p>Coluna:</p>
-                <select id="select_coluna" class="campo_select">
-                    <option value="id_produto">Código</option>
-                    <option value="produto">Produto</option>
-                    <option value="quantidade">Quantidade</option>
-                    <option value="preco_varejo">Preço Varejo</option>
-                    <option value="preco_atacado">Preço Atacado</option>
-                </select>
-            </div>
-            <div class="container_campo_pesquisa_btn">
-                <div class="campo_pesquisa" id="campo_pesquisa_produto">
-                    <input id="input_pesquisa_tabela" type="text" placeholder="Pesquisar por Código"
-                        class="input_pesquisa">
-                    <button class="btn_limpar_pesquisa hide center" id="btn_limpar_pesquisa_produto">
-                        <img id="icone_fechar" src="../imagens/icone_fechar.svg" alt="icone_fechar">
-                    </button>
-                    <button class="btn_pesquisar center" id="btn_pesquisar_produto">
-                        <img id="icone_pesquisa" src="../imagens/icone_pesquisa.png" alt="icone_pesquisa">
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="container_tabela">
-            <table class="tabela" id="tabela_selecionar_produtos">
-                <thead>
-                    <tr>
-                        <th class="th_selecionar_todos">
-                            <input type="checkbox" name="selecionar_todos" id="selecionar_todos">
-                        </th>
-                        <th id="tabela_codigo">Código</th>
-                        <th id="tabela_produto">Produto</th>
-                        <th id="tabela_quantidade">Qtde.</th>
-                        <th id="tabela_preco_varejo">Valor Unitario</th>
-                    </tr>
-                </thead>
-                <tbody class="tbody">
-                </tbody>
-            </table>
-        </div>
-        <button class="btn margin_left_auto btn_selecionar_relacao" id="btn_selecionar_relacao_saida">
-            <img src="../imagens/btn_add.svg" alt="Icone Adicionar" class="brightness0">
-            <span>Adicionar Relação</span>
-        </button>
-    </div>
-</div>
 </section>
