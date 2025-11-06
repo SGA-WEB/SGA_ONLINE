@@ -4,12 +4,15 @@
     font-size: 0.9em;
     margin-bottom: 1rem;
 }
-.tabela th, td{
+
+.tabela th,
+td {
     padding: 7px 15px;
     border-bottom: 1px solid #ddd;
 }
 
-.tabela td:first-child, th:first-child{
+.tabela td:first-child,
+th:first-child {
     text-align: left;
 }
 
@@ -29,7 +32,8 @@
     overflow: hidden;
 }
 
-.tabela  td, .tabela th {
+.tabela td,
+.tabela th {
     border-right: 1px solid var(--cinza2);
     text-align: start;
 }
@@ -40,7 +44,8 @@
 }
 
 .tabela tr {
-    position: relative; /* Permite que os elementos filhos usem position: absolute */
+    position: relative;
+    /* Permite que os elementos filhos usem position: absolute */
 }
 
 .table_tr {
@@ -50,6 +55,7 @@
 .th_selecionar_todos {
     width: 0px;
 }
+
 /* CRUD: */
 
 .acoes_tabela {
@@ -64,22 +70,21 @@
     justify-content: space-between;
     align-items: center;
     gap: 0.5rem;
-    transform: translateX(100%); /* Move o elemento para fora da tela (direita) */
-    transition: transform 0.2s ease-in-out; /* Animação suave */
+    transform: translateX(100%);
+    /* Move o elemento para fora da tela (direita) */
+    transition: transform 0.2s ease-in-out;
+    /* Animação suave */
     padding: .2rem .6rem 0 0;
 }
 
-.acoes_tabela img {
-    /* height: 100%;
-    width: 100%; */
-}
-
 .table_tr td:not(.acoes_tabela):last-of-type {
-    padding-right: 6.25rem; /* Ajusta o padding da última célula para acomodar os botões (100px em rem) */
+    padding-right: 6.25rem;
+    /* Ajusta o padding da última célula para acomodar os botões (100px em rem) */
 }
 
 .table_tr:hover .acoes_tabela {
-    transform: translateX(0); /* Traz o elemento de volta para a posição original */
+    transform: translateX(0);
+    /* Traz o elemento de volta para a posição original */
 }
 
 .input_tabela {
@@ -103,9 +108,98 @@
 .apenas_crud_excluir .acoes_tabela .btn_visualizar {
     display: none;
 }
+
 .apenas_crud_excluir .acoes_tabela .btn_editar {
     display: none;
 }
+
 .apenas_crud_excluir .table_tr td:not(.acoes_tabela):last-of-type {
     padding-right: 3.25rem !important;
+}
+
+
+/* Cards */
+
+.container_tabela {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .6rem;
+    margin-top: 1rem;
+}
+
+.card {
+    background-color: var(--azul-1);
+    min-width: 15rem;
+    max-width: 20rem;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 5px;
+    flex-grow: 1;
+    flex-basis: 10rem;
+}
+
+.card_header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    gap: .5rem;
+}
+
+.card_title {
+    font-size: 1.2rem;
+    order: 0;
+}
+
+.card_id {
+    order: 1;
+    background-color: var(--azul1-2);
+    padding: .2rem .5rem;
+    border-radius: 5px;
+    text-wrap: nowrap;
+}
+
+.card_body {
+    border-top: 1px solid var(--cinza3);
+    padding-top: 1rem;
+}
+
+.card_data {
+    display: flex;
+    justify-content: space-between;
+}
+
+.card_info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: .5rem;
+}
+
+/* CRUD dos cards */
+
+.container_CRUD {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+    .acoes_tabela {
+        position: static;
+        transform: none;
+        translate: none;
+        justify-content: center;
+        background-color: var(--azul1-2);
+        width: fit-content;
+        padding: .2rem 1rem;
+        border-radius: 5px;
+
+        button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 2rem;
+            height: 1.3rem;
+        }
+        button:hover {
+            background-color: var(--azul1);
+            border-radius: 5px;
+        }
+    }
 }

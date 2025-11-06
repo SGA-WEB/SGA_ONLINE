@@ -1,6 +1,6 @@
 <section class="modulo" id="centro_de_estoque">
     <h1 class="titulo1">Centro de estoque</h1>
-     <div class="header">
+    <div class="header">
         <div class="container_select">
             <p>Selecione a coluna que deseja pesquisar:</p>
             <select id="campo_select_centro_estoque" class="campo_select select_coluna">
@@ -21,28 +21,33 @@
                 </button>
             </div>
         </div>
-     </div>
-     <button class="btn_add" id="btn_adicionar_centro_de_estoque">
-        <img src="..//..//imagens/btn_add.svg" alt="Icone Adicionar">
-        <span>Adicionar Centro de Estoque</span>
-    </button>
+    </div>
+    <div class="space_between margin_bottom_05rem">
+        <button class="btn btn6 btn_change_view_mode table_mode" id="btn_exibir_modo_card_centro_de_estoque">
+            <span>Exibir modo card</span>
+            <img src="..//..//imagens/icone_card_mode.svg" alt="Icone Adicionar">
+        </button>
+        <button class="btn_add btn btn6" id="btn_adicionar_centro_de_estoque">
+            <span>Adicionar Centro de Estoque</span>
+            <img src="..//..//imagens/btn_add.svg" alt="Icone Adicionar">
+        </button>
+    </div>
     <div class="container_tabela">
-    <table class="tabela" id="tabela_centro_estoque">
-        <thead>
-            <tr>
-                <th class="th_selecionar_todos">
-                    <input type="checkbox" name="selecionar_todos" id="selecionar_todos">
-                </th>
-                <th id="tabela_codigo">Código</th>
-                <th id="tabela_descricao">Nome</th>
-                <th id="tabela_localizacao">Localização</th>
-                <th id="tabela_padrao">Padrão</th>
-            </tr>
-        </thead>
-        <tbody class="tbody tbody_centro_estoque">
+        <table class="tabela" id="tabela_centro_estoque">
+            <thead>
+                <tr>
+                    <th class="th_selecionar_todos">
+                        <input type="checkbox" name="selecionar_todos" id="selecionar_todos">
+                    </th>
+                    <th id="tabela_codigo">Código</th>
+                    <th id="tabela_descricao">Nome</th>
+                    <th id="tabela_localizacao">Localização</th>
+                    <th id="tabela_padrao">Padrão</th>
+                </tr>
+            </thead>
+            <tbody class="tbody tbody_centro_estoque">
 
-        </tbody>
-    </table>
+            </tbody>
+        </table>
     </div>
 </section>
-
