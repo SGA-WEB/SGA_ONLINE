@@ -20,7 +20,7 @@
 }
 .container_btns {
     gap: 1rem;
-} 
+}
 
 .titulo {
     width: 100%;
@@ -58,7 +58,6 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin: 0 0 .5rem auto;
     gap: 0.5rem;
     width: 10rem;
     min-width: fit-content;

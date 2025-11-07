@@ -1,6 +1,7 @@
 // Objetivo: Função que carrega os dados na tabela e função que pesquisa os dados
 // Cria os botões de editar, visualizar e excluir (CRUD) e os adiciona nas tabelas
 
+import carregarDadosNosCards from "./carregarDadosNosCards.js"
 import crudLayout from "./crudLayout.js" // Importa a função que cria os botões de editar, visualizar e excluir (CRUD)
 import { formatarData } from "./funcionalidades.js"
 
@@ -167,7 +168,7 @@ function selecionarChekboxAoClicarNaLinha(e, tabela) {
 
 
 
-function pesquisar(dados, colunasExibir, tabela = document.querySelector(".tbody"), ativarCrud = true) {
+function pesquisar(dados, colunasExibir, tabela = document.querySelector(".tbody"), ativarCrud = true, colunasBancoDeDados) {
     // Função que pesquisa e manda os dados filtrados para a função carregarDadosNaTabela
 
     const btn_pesquisar = document.querySelector('.btn_pesquisar') // Botão de pesquisar
@@ -261,7 +262,12 @@ function pesquisar(dados, colunasExibir, tabela = document.querySelector(".tbody
         if (value_input_pesquisa == "") { // Se o input estiver vazio
             newData = dados // Exibe todos os dados
         }
-        carregarDadosNaTabela(newData, colunasExibir, tabela, ativarCrud) // Manda os novos dados filtrados para a função carregarDadosNaTabela
+        if (document.querySelector(".tabela")) {
+            carregarDadosNaTabela(newData, colunasExibir, tabela, ativarCrud) // Manda os novos dados filtrados para a função carregarDadosNaTabela
+        } else {
+            carregarDadosNosCards(newData, colunasBancoDeDados, colunasExibir)
+        }
+
     }
 }
 
