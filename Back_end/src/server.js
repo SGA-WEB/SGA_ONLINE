@@ -2291,3 +2291,73 @@ app.delete('/tipos_de_saida/:id', async (req, res) => {
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
+
+app.get('/api/orcamentos', async (req, res) => {
+    try {
+        // A consulta junta o orçamento com o contato (cliente)
+        const result = await pool.query(`
+            SELECT
+                o.id_orçamento,
+                o.status,
+                o.data_criacao,
+                o.subtotal,
+                o.desconto_total,
+                o.valor_total,
+                o.cliente_id,
+                c.razao_social AS cliente_razao_social,
+                c.cnpj AS cliente_cnpj
+            FROM
+                sga.orçamento o
+            INNER JOIN
+                sga.contato c ON o.cliente_id = c.id_contato
+            WHERE
+                o.inativo = FALSE
+            ORDER BY
+                o.id_orçamento DESC;
+        `);
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Erro ao buscar orçamentos:', err);
+        res.status(500).json({ error: 'Erro interno do servidor ao buscar orçamentos' });
+    }
+});
+
+
+/**
+ * @route   GET /api/orcamentos/:id
+ * @desc    Busca um orçamento específico pelo ID
+ * @access  Public
+ */
+app.get('/api/orcamentos/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        // Esta consulta busca todos os detalhes de um único orçamento,
+        // incluindo os dados completos do cliente.
+        const result = await pool.query(`
+            SELECT 
+                o.*, 
+                c.razao_social AS cliente_razao_social,
+                c.nome_fantasia AS cliente_nome_fantasia,
+                c.cnpj AS cliente_cnpj,
+                c.cpf AS cliente_cpf,
+                c.fone1,
+                c.email_padrao
+            FROM 
+                sga.orçamento o
+            LEFT JOIN 
+                sga.contato c ON o.cliente_id = c.id_contato
+            WHERE 
+                o.id_orçamento = $1;
+        `, [id]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Orçamento não encontrado.' });
+        }
+
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(`Erro ao buscar orçamento com ID ${id}:`, err);
+        res.status(500).json({ error: 'Erro interno do servidor.' });
+    }
+});
