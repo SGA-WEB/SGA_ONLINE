@@ -556,9 +556,6 @@ body {
         margin-left: 206px; /* tamalho da barra lateral */
         width: calc(100% - 206px);
     }
-    .item_dashboard {
-        /* min-width: 265px; */
-    }
     .mini.item_dashboard {
         min-width: 365px;
     }
