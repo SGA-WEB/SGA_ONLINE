@@ -11,7 +11,7 @@
 */
 
 // Modulos da tela principal:
-import dashBorad from "../modulos/dashboard/dashboard.js";
+import dashborad from "../modulos/dashboard/dashboard.js";
 import contato from "../modulos/contato/contato.js";
 import cadastro_contato from "../modulos/contato/cadastro_contato/cadastro_contato.js";
 import configuracao_usuario from "../modulos/configuracao_usuario/configuracao_usuario.js";
@@ -66,11 +66,11 @@ btns_modulos.forEach(e => {
     })
 })
 
-carregarConteudo("produto/produto.html", document.querySelector(".principal"), false, produto) // Carrega por padrão assim que a página for carregada o dashboard
+carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"), false, dashborad) // Carrega por padrão assim que a página for carregada o dashboard
 
 let logo_sga_principal = document.querySelector("#logo_sga_principal")
 logo_sga_principal.addEventListener("click", () => {
-    carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"), false, dashBorad)
+    carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"), false, dashborad)
     displayMenu("", true)
     document.querySelector(".item_hiden")?.remove() // se o .item_hiden existir ele é removido
     document.querySelector(".modulo_selecionado")?.classList.remove("modulo_selecionado") // Se tiver um módulo selecionado é retirada sua a classe
@@ -106,7 +106,7 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
         }
         if (url === "../modulos/dashboard/dashboard.html" && !funcao) {
             document.querySelector("#btn_dashboard").classList.add("modulo_selecionado")
-            dashBorad();
+            dashborad();
         }
         if (url === "../modulos/contato/contato.html" && !funcao) { // !funcao: para a função não ser chamada mais de uma fez
             contato();
