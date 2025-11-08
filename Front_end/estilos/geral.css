@@ -272,9 +272,6 @@
 }
 
 .btn_fechar_popup {
-    position: absolute;
-    top: .4rem;
-    right: .3rem;
     cursor: pointer;
     padding: .2rem;
 }
@@ -328,8 +325,8 @@
 .popup_alerta header {
     display: flex;
     background-color: var(--alerta1);
-    height: 2.5rem; /* 40px */
-    justify-content: center;
+    min-height: 2.5rem; /* 40px */
+    justify-content: space-around;
     align-items: center;
     border-radius: 5px 5px 0 0;
     margin-bottom: 1rem;
