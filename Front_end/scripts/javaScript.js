@@ -354,6 +354,13 @@ window.addEventListener("resize", () => {
     if (widthBody <= 640 && !menu_lateral.classList.contains("mini")) {
         btnMenuLateral()
     }
+
+    if (widthBody <= 480) {
+        btn_change_view_mode = document.querySelector(".btn_change_view_mode");
+        if (btn_change_view_mode) {
+
+        }
+    }
 });
 
 
