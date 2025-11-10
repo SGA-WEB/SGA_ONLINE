@@ -2292,12 +2292,12 @@ app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
 
-app.get('/api/orcamentos', async (req, res) => {
+app.get('/api/orcamento', async (req, res) => {
     try {
         // A consulta junta o orçamento com o contato (cliente)
         const result = await pool.query(`
             SELECT
-                o.id_orçamento,
+                o.id_orcamento,
                 o.status,
                 o.data_criacao,
                 o.subtotal,
@@ -2305,20 +2305,23 @@ app.get('/api/orcamentos', async (req, res) => {
                 o.valor_total,
                 o.cliente_id,
                 c.razao_social AS cliente_razao_social,
-                c.cnpj AS cliente_cnpj
+                c.cnpj AS cliente_cnpj,
+                u.nome as criado_por_nome
             FROM
-                sga.orçamento o
+                sga.orcamento o
             INNER JOIN
                 sga.contato c ON o.cliente_id = c.id_contato
+            INNER JOIN
+                sga.usuario u ON o.criado_por_id = u.id_usuario
             WHERE
                 o.inativo = FALSE
             ORDER BY
-                o.id_orçamento DESC;
+                o.id_orcamento DESC;
         `);
         res.json(result.rows);
     } catch (err) {
-        console.error('Erro ao buscar orçamentos:', err);
-        res.status(500).json({ error: 'Erro interno do servidor ao buscar orçamentos' });
+        console.error('Erro ao buscar orcamentos:', err);
+        res.status(500).json({ error: 'Erro interno do servidor ao buscar orcamentos' });
     }
 });
 
@@ -2328,7 +2331,7 @@ app.get('/api/orcamentos', async (req, res) => {
  * @desc    Busca um orçamento específico pelo ID
  * @access  Public
  */
-app.get('/api/orcamentos/:id', async (req, res) => {
+app.get('/api/orcamento/:id', async (req, res) => {
     const { id } = req.params;
 
     try {
