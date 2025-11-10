@@ -27,6 +27,7 @@ import buscarDados from "../scripts/buscarDados.js";
 import tela_balanco from "../modulos/tela_balanco/tela_balanco.js";
 import tipo_de_saida from "../modulos/tipo_de_saida/tipo_de_saida.js";
 import saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_de_produtos/saida_de_produtos.js";
+import orcamento from "../modulos/orcamento/orcamento.js";
 
 function mudarLogoParaPadrao(nome) { // Muda a logo do usuário de acordo com o nome de
     let div_logo_usuario = document.querySelectorAll(".logo_usuario");
@@ -88,6 +89,8 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
     url = "../modulos/" + url;
 
     popup_carregando(true)
+
+    console.log(url, elemento, adicionar, funcao, parametro)
     try {
         const response = await fetch(url);
         const html = await response.text();
@@ -119,6 +122,9 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
         }
         if (url === "../modulos/configuracoes/configuracoes.html") {
             configuracoes()
+        }
+        if (url === "../modulos/orcamento/orcamento.html") {
+            orcamento()
         }
 
 
