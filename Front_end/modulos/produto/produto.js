@@ -26,7 +26,7 @@ export default async function produto() {
     let btn_change_view_mode = document.querySelector(".btn_change_view_mode");
     btn_change_view_mode.addEventListener("click", () => {
         if (btn_change_view_mode.classList.contains("table_mode")) {
-            const colunasBancoDeDados = ["id_produto", "produto", "data_de_cadastro", "quantidade", "preco_varejo", "preco_atacado", "corredor", "prateleira"]
+            const colunasBancoDeDados = ["id_produto", "produto", "data_cadastro", "quantidade", "preco_varejo", "preco_atacado", "corredor", "prateleira"]
             const colunasExibir = ["Id", "Produto", "Data de Cadastro", "Quantidade", "Preço de varejo", "Preço de atacado", "Corredor", "Prateleira"]
             carregarDadosNosCards(dados, colunasBancoDeDados, colunasExibir)
             pesquisar(dados, colunasExibir, null, true, colunasBancoDeDados)

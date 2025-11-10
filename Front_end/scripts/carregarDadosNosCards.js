@@ -3,8 +3,6 @@ import { formatarData } from "./funcionalidades.js";
 
 export default function carregarDadosNosCards(dados, colunasBancoDeDados, colunasExibir, container = document.querySelector(".container_tabela")) {
     container.innerHTML = ""
-    console.log(dados)
-    console.log(colunasBancoDeDados)
     dados.map(objDado => { // Para cada objeto no array de dados
         let objDadoCompleto = objDado
 
@@ -34,11 +32,10 @@ export default function carregarDadosNosCards(dados, colunasBancoDeDados, coluna
         card.appendChild(cardBody)
 
         let indice = 0
-        console.log(objDado)
         for(let dado in objDado) {
             if (objDado[dado] === true || objDado[dado] == "s") {
                 objDado[dado] = "Sim"
-            } 
+            }
             if (objDado[dado] === false || objDado[dado] == "n") {
                 objDado[dado] = "Não"
             }
@@ -54,7 +51,7 @@ export default function carregarDadosNosCards(dados, colunasBancoDeDados, coluna
                 cardTitle.textContent = objDado[dado]
                 cardHeader.appendChild(cardTitle)
                 indice++
-            }else if (dado.includes("Data_")){
+            }else if (dado.includes("data_")){
                 let cardData = document.createElement('div')
                 cardData.setAttribute('class', 'card_data')
 

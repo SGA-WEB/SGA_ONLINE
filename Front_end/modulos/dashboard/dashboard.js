@@ -3,7 +3,7 @@ import buscarDados from "../../scripts/buscarDados.js";
 import { click_btn_menu, btnMenuLateral } from "../../scripts/javaScript.js";
 import { popup_carregando } from "../../scripts/popup.js";
 
-export default async function dashBorad() {
+export default async function dashborad() {
     /*
       Autor: matheushnunes;
 

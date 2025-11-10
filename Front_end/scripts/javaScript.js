@@ -11,7 +11,7 @@
 */
 
 // Modulos da tela principal:
-import dashBorad from "../modulos/dashboard/dashboard.js";
+import dashborad from "../modulos/dashboard/dashboard.js";
 import contato from "../modulos/contato/contato.js";
 import cadastro_contato from "../modulos/contato/cadastro_contato/cadastro_contato.js";
 import configuracao_usuario from "../modulos/configuracao_usuario/configuracao_usuario.js";
@@ -66,11 +66,11 @@ btns_modulos.forEach(e => {
     })
 })
 
-carregarConteudo("produto/produto.html", document.querySelector(".principal"), false, produto) // Carrega por padrão assim que a página for carregada o dashboard
+carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"), false, dashborad) // Carrega por padrão assim que a página for carregada o dashboard
 
 let logo_sga_principal = document.querySelector("#logo_sga_principal")
 logo_sga_principal.addEventListener("click", () => {
-    carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"), false, dashBorad)
+    carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"), false, dashborad)
     displayMenu("", true)
     document.querySelector(".item_hiden")?.remove() // se o .item_hiden existir ele é removido
     document.querySelector(".modulo_selecionado")?.classList.remove("modulo_selecionado") // Se tiver um módulo selecionado é retirada sua a classe
@@ -106,7 +106,7 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
         }
         if (url === "../modulos/dashboard/dashboard.html" && !funcao) {
             document.querySelector("#btn_dashboard").classList.add("modulo_selecionado")
-            dashBorad();
+            dashborad();
         }
         if (url === "../modulos/contato/contato.html" && !funcao) { // !funcao: para a função não ser chamada mais de uma fez
             contato();
@@ -417,72 +417,165 @@ document.addEventListener("click", (e) => {
     }
 })
 
-// Menu dropdown - Entrada e saída de produtos da movimentação de estoque:
+// =======================================================
+// SELETORES GERAIS
+// =======================================================
+let btn_movimentacao_de_estoque = document.querySelector("#btn_movimentacao_de_estoque");
+let menu_movimentacao_estoque = document.querySelector("#menu_movimentacao_estoque");
 
-let btn_movimentacao_de_estoque = document.querySelector("#btn_movimentacao_de_estoque")
-let menu_movimentacao_estoque = document.querySelector("#menu_movimentacao_estoque")
+let btn_cadastro_auxiliares = document.querySelector("#btn_cadastro_auxiliares");
+let menu_cadastro_auxiliares = document.querySelector("#menu_cadastro_auxiliares");
 
-// Se o cursor passar por cima do botão de movimentação de estoque, o menu dropdown abre
+// =======================================================
+// LÓGICA DO MENU 1: MOVIMENTAÇÃO DE ESTOQUE
+// =======================================================
+
+// --- 1.1 CLIQUE (Mobile e Desktop) ---
+btn_movimentacao_de_estoque.addEventListener("click", (e) => {
+    e.stopPropagation();
+    btn_movimentacao_de_estoque.classList.toggle("menu-travado");
+
+    if (btn_movimentacao_de_estoque.classList.contains("menu-travado")) {
+        btn_movimentacao_de_estoque.classList.remove("sub_menu_fechado");
+    } else {
+        btn_movimentacao_de_estoque.classList.add("sub_menu_fechado");
+    }
+});
+
+// --- 1.2 HOVER (Apenas Desktop) ---
 btn_movimentacao_de_estoque.addEventListener("mouseenter", () => {
-    btn_movimentacao_de_estoque.classList.remove("sub_menu_fechado")
-})
-
-// Se o cursor sair do botão de movimentação de estoque, o menu dropdown fecha
+    if (!btn_movimentacao_de_estoque.classList.contains("menu-travado")) {
+        btn_movimentacao_de_estoque.classList.remove("sub_menu_fechado");
+    }
+});
+menu_movimentacao_estoque.addEventListener("mouseenter", () => {
+    if (!btn_movimentacao_de_estoque.classList.contains("menu-travado")) {
+        btn_movimentacao_de_estoque.classList.remove("sub_menu_fechado");
+    }
+});
 btn_movimentacao_de_estoque.addEventListener("mouseleave", (e) => {
-    if (!e.toElement.classList.contains("subitem") && !menu_movimentacao_estoque.querySelector(".item_menu_selecionado")) { // Se o cursor não estiver sobre um subitem
-        btn_movimentacao_de_estoque.classList.add("sub_menu_fechado") // Fecha o menu dropdown
-    }
-})
+    // Verificamos se há um item selecionado DENTRO deste menu
+    const itemSelecionado = menu_movimentacao_estoque.querySelector(".item_menu_selecionado");
 
-// Se o cursor sair do menu de movimentação de estoque, o menu dropdown fecha
-menu_movimentacao_estoque.addEventListener("mouseleave", (e) => {
-    if(!menu_movimentacao_estoque.querySelector(".item_menu_selecionado")) {
-        btn_movimentacao_de_estoque.classList.add("sub_menu_fechado")
+    const indoParaMenu = (e.relatedTarget === menu_movimentacao_estoque || menu_movimentacao_estoque.contains(e.relatedTarget));
+
+    // SÓ FECHA se NÃO estiver travado E NÃO tiver item selecionado E não estiver indo para o menu
+    if (!btn_movimentacao_de_estoque.classList.contains("menu-travado") && !itemSelecionado && !indoParaMenu) {
+        btn_movimentacao_de_estoque.classList.add("sub_menu_fechado");
     }
-})
+});
+menu_movimentacao_estoque.addEventListener("mouseleave", (e) => {
+    // Verificamos se há um item selecionado DENTRO deste menu
+    const itemSelecionado = menu_movimentacao_estoque.querySelector(".item_menu_selecionado");
+
+    const indoParaBotao = (e.relatedTarget === btn_movimentacao_de_estoque || btn_movimentacao_de_estoque.contains(e.relatedTarget));
+
+    // SÓ FECHA se NÃO estiver travado E NÃO tiver item selecionado E não estiver indo para o botão
+    if (!btn_movimentacao_de_estoque.classList.contains("menu-travado") && !itemSelecionado && !indoParaBotao) {
+        btn_movimentacao_de_estoque.classList.add("sub_menu_fechado");
+    }
+});
+
+// =======================================================
+// LÓGICA DO MENU 2: CADASTROS AUXILIARES
+// =======================================================
+
+// --- 2.1 CLIQUE (Mobile e Desktop) ---
+btn_cadastro_auxiliares.addEventListener("click", (e) => {
+    e.stopPropagation();
+    btn_cadastro_auxiliares.classList.toggle("menu-travado");
+
+    if (btn_cadastro_auxiliares.classList.contains("menu-travado")) {
+        btn_cadastro_auxiliares.classList.remove("sub_menu_fechado");
+    } else {
+        btn_cadastro_auxiliares.classList.add("sub_menu_fechado");
+    }
+});
+
+// --- 2.2 HOVER (Apenas Desktop) ---
+btn_cadastro_auxiliares.addEventListener("mouseenter", () => {
+    if (!btn_cadastro_auxiliares.classList.contains("menu-travado")) {
+        btn_cadastro_auxiliares.classList.remove("sub_menu_fechado");
+    }
+});
+menu_cadastro_auxiliares.addEventListener("mouseenter", () => {
+    if (!btn_cadastro_auxiliares.classList.contains("menu-travado")) {
+        btn_cadastro_auxiliares.classList.remove("sub_menu_fechado");
+    }
+});
+btn_cadastro_auxiliares.addEventListener("mouseleave", (e) => {
+    // Verificamos se há um item selecionado DENTRO deste menu
+    const itemSelecionado = menu_cadastro_auxiliares.querySelector(".item_menu_selecionado");
+
+    const indoParaMenu = (e.relatedTarget === menu_cadastro_auxiliares || menu_cadastro_auxiliares.contains(e.relatedTarget));
+
+    // SÓ FECHA se NÃO estiver travado E NÃO tiver item selecionado E não estiver indo para o menu
+    if (!btn_cadastro_auxiliares.classList.contains("menu-travado") && !itemSelecionado && !indoParaMenu) {
+        btn_cadastro_auxiliares.classList.add("sub_menu_fechado");
+    }
+});
+menu_cadastro_auxiliares.addEventListener("mouseleave", (e) => {
+    // Verificamos se há um item selecionado DENTRO deste menu
+    const itemSelecionado = menu_cadastro_auxiliares.querySelector(".item_menu_selecionado");
+
+    const indoParaBotao = (e.relatedTarget === btn_cadastro_auxiliares || btn_cadastro_auxiliares.contains(e.relatedTarget));
+
+    // SÓ FECHA se NÃO estiver travado E NÃO tiver item selecionado E não estiver indo para o botão
+    if (!btn_cadastro_auxiliares.classList.contains("menu-travado") && !itemSelecionado && !indoParaBotao) {
+        btn_cadastro_auxiliares.classList.add("sub_menu_fechado");
+    }
+});
+
+
+// =======================================================
+// LÓGICA GLOBAL: CLICAR FORA (GERENCIA OS DOIS MENUS)
+// =======================================================
+document.addEventListener("click", (e) => {
+    const clicouNoBotaoMov = e.target.closest("#btn_movimentacao_de_estoque");
+    const clicouNoMenuMov = e.target.closest("#menu_movimentacao_estoque");
+    const clicouNoGrupo1 = clicouNoBotaoMov || clicouNoMenuMov;
+
+    const clicouNoBotaoAux = e.target.closest("#btn_cadastro_auxiliares");
+    const clicouNoMenuAux = e.target.closest("#menu_cadastro_auxiliares");
+    const clicouNoGrupo2 = clicouNoBotaoAux || clicouNoMenuAux;
+
+    // Se o clique foi fora do Grupo 1, fecha ele
+    if (!clicouNoGrupo1) {
+        btn_movimentacao_de_estoque.classList.add("sub_menu_fechado");
+        btn_movimentacao_de_estoque.classList.remove("menu-travado");
+    }
+
+    // Se o clique foi fora do Grupo 2, fecha ele
+    if (!clicouNoGrupo2) {
+        btn_cadastro_auxiliares.classList.add("sub_menu_fechado");
+        btn_cadastro_auxiliares.classList.remove("menu-travado");
+    }
+});
+
+// =======================================================
+// SEUS HANDLERS DE CLIQUE NOS SUB-ITENS
+// =======================================================
 
 let btn_entrada_produto = document.querySelector("#btn_entrada_produtos")
 btn_entrada_produto.addEventListener("click", () => {
-    btn_cadastro_auxiliares.classList.add("sub_menu_fechado") // Fecha o menu dropdown de cadastros auxiliares
-    btn_entrada_produto.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
+    btn_cadastro_auxiliares.classList.add("sub_menu_fechado")
+    btn_entrada_produto.classList.add("item_menu_selecionado")
     btn_movimentacao_de_estoque.classList.add("item_menu_selecionado")
     carregarConteudo("movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.html", document.querySelector(".principal"), false, entrada_de_produtos)
 })
 
-
 let btn_saida_produtos = document.querySelector("#btn_saida_produtos")
 btn_saida_produtos.addEventListener("click", () => {
-    btn_cadastro_auxiliares.classList.add("sub_menu_fechado") // Fecha o menu dropdown de cadastros auxiliares
-    btn_saida_produtos.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
+    btn_cadastro_auxiliares.classList.add("sub_menu_fechado")
+    btn_saida_produtos.classList.add("item_menu_selecionado")
     btn_movimentacao_de_estoque.classList.add("item_menu_selecionado")
     carregarConteudo("movimentacao_de_estoque/saida_de_produtos/saida_de_produtos.html", document.querySelector(".principal"), false, saida_de_produtos)
-})
-
-// Menu dropdown - cadastros auxiliares:
-
-let btn_cadastro_auxiliares = document.querySelector("#btn_cadastro_auxiliares")
-let menu_cadastro_auxiliares = document.querySelector("#menu_cadastro_auxiliares")
-
-btn_cadastro_auxiliares.addEventListener("mouseenter", () => {
-    btn_cadastro_auxiliares.classList.remove("sub_menu_fechado")
-})
-
-btn_cadastro_auxiliares.addEventListener("mouseleave", (e) => {
-    if (!e.toElement.classList.contains("subitem") && !menu_cadastro_auxiliares.querySelector(".item_menu_selecionado")) { // Se o cursor não estiver sobre um subitem
-        btn_cadastro_auxiliares.classList.add("sub_menu_fechado") // Fecha o menu dropdown
-    }
-})
-
-menu_cadastro_auxiliares.addEventListener("mouseleave", (e) => {
-    if(!menu_cadastro_auxiliares.querySelector(".item_menu_selecionado")) {
-        btn_cadastro_auxiliares.classList.add("sub_menu_fechado")
-    }
 })
 
 let btn_tipos_de_entrada = document.querySelector("#btn_tipos_de_entrada")
 btn_tipos_de_entrada.addEventListener("click", () => {
     btn_movimentacao_de_estoque.classList.add("sub_menu_fechado")
-    btn_tipos_de_entrada.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
+    btn_tipos_de_entrada.classList.add("item_menu_selecionado")
     btn_cadastro_auxiliares.classList.add("item_menu_selecionado")
     carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada)
 })
@@ -490,7 +583,7 @@ btn_tipos_de_entrada.addEventListener("click", () => {
 let btn_tipos_de_saida = document.querySelector("#btn_tipos_de_saida")
 btn_tipos_de_saida.addEventListener("click", () => {
     btn_movimentacao_de_estoque.classList.add("sub_menu_fechado")
-    btn_tipos_de_saida.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
+    btn_tipos_de_saida.classList.add("item_menu_selecionado")
     btn_cadastro_auxiliares.classList.add("item_menu_selecionado")
     carregarConteudo("tipo_de_saida/tipo_de_saida.html", document.querySelector(".principal"), false, tipo_de_saida)
 })
@@ -501,7 +594,5 @@ btn_balanco.addEventListener("click", () => {
     btn_balanco.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
     carregarConteudo("tela_balanco/tela_balanco.html", document.querySelector(".principal"), false, tela_balanco)
 })
-
-
 
 export { carregarConteudo, btnMenuLateral, click_btn_menu, fecharMenu, mudarLogoParaPadrao }
