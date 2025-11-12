@@ -1,6 +1,6 @@
 <section class="modulo" id="modulo_cadastro_produto">
     <menu class="menu_btns space_between align_center">
-        <button class="btn_nav" id="btn_voltar_produtos">
+        <button class="btn_nav" id="btn_voltar_orcamento">
             <img src="..//..//../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
             <p class="btn_voltar">Voltar</p>
         </button>
@@ -27,8 +27,8 @@
     </div>
     <div class="modulo_main">
         <div class="campo_contato normal_width">
-            <label for="nome_produto">Nome do Produto:</label>
-            <input disabled type="text" name="nome_produto" id="nome_produto" class="campo_input">
+            <label for="cliente">Cliente:</label>
+            <input disabled type="text" name="cliente" id="cliente" class="campo_input">
         </div>
         <div class="container_small_width" id="container_radios">
             <div class="campo_contato small_width">
@@ -42,29 +42,29 @@
         </div>
         <div class="container_small_width">
             <div class="campo_contato small_width">
-                <label for="quantidade_em_estoque">Quantidade em Estoque:</label>
-                <input disabled type="number" name="quantidade_em_estoque" id="quantidade_em_estoque"
+                <label for="status">Status:</label>
+                <input disabled type="text" name="status" id="status"
                     class="campo_input">
             </div>
             <div class="campo_contato small_width select_conainer">
-                <p>Centro de Estoque:</p>
-                <select disabled id="selecionar_centro_de_estoque" class="campo_select">
+                <p>Criado Por:</p>
+                <select disabled id="selecionar_vendedor" class="campo_select">
                 </select>
             </div>
         </div>
         <div class="container_small_width">
             <div class="campo_contato small_width">
-                <label for="corredor">Corredor:</label>
+                <label for="corredor">Criado Em:</label>
                 <input type="text" name="corredor" id="corredor" class="campo_input">
             </div>
             <div class="campo_contato smal_width">
-                <label for="prateleira">Prateleira:</label>
-                <input type="text" name="prateleira" id="prateleira" class="campo_input">
+                <label for="desconto">Desconto:</label>
+                <input type="text" name="desconto" id="desconto" class="campo_input">
             </div>
         </div>
         <div class="campo_contato normal_width">
-            <label for="descricao">Descrição:</label>
-            <textarea disabled name="descricao" id="descricao" class="textarea" rows="4"></textarea>
+            <label for="total">Total:</label>
+            <input disabled type="number" name="total" id="total" class="campo_input">
         </div>
     </div>
 </section>
