@@ -16,10 +16,6 @@
     <form id="form_orcamento">
         <div class="modulo_main">
             <div class="container_small_width" id="container_radios">
-                <div class="campo_contato small_width">
-                    <label for="numero_nf">Número N.F:<span class="campo_obrigatorio">*</span></label>
-                    <input type="text" name="numero_nf" id="numero_nf" class="campo_input" maxlength="20" required>
-                </div>
                 <div class="campo_contato small_width select_conainer">
                     <p>Fornecedor:<span class="campo_obrigatorio">*</span></p>
                     <select id="fornecedor" class="campo_select" name="fornecedor" required>
@@ -28,10 +24,6 @@
                 </div>
             </div>
             <div class="container_small_width">
-                <div class="campo_contato small_width">
-                    <label for="modelo">Modelo Fiscal:<span class="campo_obrigatorio">*</span></label>
-                    <input type="text" name="modelo" id="modelo" class="campo_input" maxlength="2" required>
-                </div>
                 <div class="campo_contato small_width select_conainer">
                     <p>Tipo de entrada:<span class="campo_obrigatorio">*</span></p>
                     <select id="tipo_entrada" class="campo_select" name="tipo_entrada" required>
@@ -42,35 +34,6 @@
                     </select>
                 </div>
             </div>
-            <div class="container_small_width">
-                <div class="campo_contato small_width">
-                    <label for="serie">Série:</label>
-                    <input
-                        type="text"
-                        inputmode="numeric"
-                        name="serie"
-                        id="serie"
-                        class="campo_input"
-                        maxlength="3"
-                        pattern="[0-9]{1,3}"
-                        oninvalid="this.setCustomValidity('Série deve ser um número de 1 a 3 dígitos')"
-                        oninput="this.setCustomValidity('')"
-                    >
-                </div>
-                <div class="campo_contato small_width">
-                    <label for="sub_serie">Sub-Série</label>
-                    <input
-                        type="text"
-                        inputmode="numeric"
-                        name="sub_serie"
-                        id="sub_serie"
-                        class="campo_input"
-                        maxlength="2"
-                        pattern="[0-9]{1,3}"
-                        oninvalid="this.setCustomValidity('Série deve ser um número de 1 a 3 dígitos')"
-                        oninput="this.setCustomValidity('')"
-                    >
-                </div>
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width">
