@@ -1,12 +1,10 @@
 import { carregarConteudo } from "../../../scripts/javaScript.js"
 import select2 from "../../../scripts/select.js"
-import editar_produto from "../editar_produto/editar_produto.js"
-import excluir_produto from "../excluir_produto.js"
 import { popup } from "../../../scripts/popup.js"
 import { formatarData, alterarOptionsSelect } from "../../../scripts/funcionalidades.js"
 import buscarDados from "../../../scripts/buscarDados.js"
 
-export default async function visualizar_produto (dado) {
+export default async function visualizar_orcamento (dado) {
     select2("100%")
 
     let centros_de_estoque = await buscarDados("centro_estoque")

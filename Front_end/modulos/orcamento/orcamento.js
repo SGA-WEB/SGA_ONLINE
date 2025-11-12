@@ -12,8 +12,8 @@ export default async function orcamento() {
     let dados = await buscarDados('orcamento'); // Busca os dados da tabela, exibe na tela e permite pesquisar
     console.log(dados)
     let colunas = ["cliente_id", "cliente_razao_social", "status", "criado_por_nome", "data_criacao","valor_total","desconto_total","subtotal"]
-    carregarDadosNaTabela(dados, colunas, document.querySelector(".tabela"), true, false) // Exibe na tela e permite pesquisar
-    pesquisar(dados, colunas, document.querySelector(".tabela"), true, false)
+    carregarDadosNaTabela(dados, colunas, document.querySelector(".tabela"), true, true) // Exibe na tela e permite pesquisar
+    pesquisar(dados, colunas, document.querySelector(".tabela"), true, true)
 
     // let btnAdicionar = document.querySelector("#btn_adicionar_centro_de_estoque");
     // btnAdicionar.addEventListener("click", () => {
