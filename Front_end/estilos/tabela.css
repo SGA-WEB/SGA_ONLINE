@@ -129,7 +129,7 @@ th:first-child {
 
 .card {
     background-color: var(--azul-1);
-    min-width: 16rem;
+    min-width: 17rem;
     max-width: 20rem;
     width: 100%;
     padding: 1rem;
@@ -167,6 +167,7 @@ th:first-child {
 .card_data {
     display: flex;
     justify-content: space-between;
+    margin-top: .5rem;
 }
 
 .card_info {

@@ -59,7 +59,23 @@ export default async function centro_de_estoque() {
         carregarConteudo("centro_de_estoque/cadastro_centro_de_estoque/cadastro_centro_de_estoque.html", document.querySelector(".principal"), false, cadastro_centro_de_estoque) // Carrega o módulo de cadastro de produto
     })
 
+    let widthModulo = document.querySelector(".modulo").offsetWidth;
+
     window.addEventListener("resize", () => {
-        fecharMenu(document.querySelector(".tabela").offsetWidth, 510)
+        if (document.querySelector(".tabela")) {
+            fecharMenu(document.querySelector(".tabela").offsetWidth, 510)
+        }
+
+        widthModulo = document.querySelector(".modulo").offsetWidth
+
+        // Mostra o modo card quando o body for menor que 600px
+        if (widthModulo <= 510 && !btn_change_view_mode.classList.contains("card_mode")) {
+            btn_change_view_mode.click()
+        }
     })
+
+    // Assim que a tela é carregada se o body for menor que 510px mostra a tabela em modo card
+    if (widthModuloh <= 510) {
+        btn_change_view_mode.click()
+    }
 }

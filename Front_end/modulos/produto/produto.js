@@ -17,7 +17,6 @@ export default async function produto() {
         - Exibe os produtos na tela através da busca no servidor;
     */
 
-
     let btn_add = document.querySelector("#btn_adicionar")
     btn_add.addEventListener("click", () => {
         carregarConteudo("produto/cadastro_produto/cadastro_produto.html", document.querySelector(".principal"), false, cadastro_produto) // Carrega o módulo de cadastro de produto
@@ -74,12 +73,22 @@ export default async function produto() {
     pesquisar(dados, ["id_produto", "produto", "quantidade", "preco_varejo", "preco_atacado", "corredor", "prateleira"])
 
     fecharMenu(document.querySelector(".tabela").offsetWidth, 480)
+
+    let widthModulo = document.querySelector(".modulo").offsetWidth // Pega o tamanho do body
     window.addEventListener('resize', (e) => {
         if (document.querySelector(".tabela") != null) {
             fecharMenu(document.querySelector(".tabela").offsetWidth, 750)
-
             visibilidadeMenulateral(document.querySelector(".tabela").offsetWidth, 750)
         }
+        widthModulo = document.querySelector(".modulo").offsetWidth
+        if (widthModulo <= 840 && !btn_change_view_mode.classList.contains("card_mode")) {
+            btn_change_view_mode.click()
+        }
     })
+
+    // Assim que a tela é carregada se for menor que 840px mostra a tabela em modo card
+    if (widthModulo <= 840) {
+        btn_change_view_mode.click()
+    }
 }
 
