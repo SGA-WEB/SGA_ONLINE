@@ -5,6 +5,7 @@ import { carregarConteudo, fecharMenu } from "../../scripts/javaScript.js";
 import { dataAtual } from "../../scripts/funcionalidades.js";
 import { carregarDadosNaTabela, pesquisar } from "../../scripts/carregarDadosNaTabela.js";
 import carregarDadosNosCards from "../../scripts/carregarDadosNosCards.js";
+import cadastro_orcamento from "../orcamento/cadastro_orcamento/cadastro_orcamento.js";
 
 export default async function orcamento() {
     mudarPesquisa(document.querySelector(".input_pesquisa"));
@@ -18,7 +19,7 @@ export default async function orcamento() {
     let btnAdicionar = document.querySelector("#btn_criar_orcamento");
     console.log(btnAdicionar)
     btnAdicionar.addEventListener("click", () => {
-        carregarConteudo("orcamento/cadastro_orcamento/cadastro_orcamento.html", document.querySelector(".principal"), false) // Carrega o módulo de cadastro de produto
+        carregarConteudo("orcamento/cadastro_orcamento/cadastro_orcamento.html", document.querySelector(".principal"), false, cadastro_orcamento, dados) // Carrega o módulo de cadastro de produto
     })
 
     window.addEventListener("resize", () => {

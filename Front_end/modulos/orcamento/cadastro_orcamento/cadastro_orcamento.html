@@ -24,6 +24,15 @@
                         <option value=""></option>
                     </select>
                 </div>
+                <div class="campo_contato small_width select_conainer">
+                    <p>Status:<span class="campo_obrigatorio">*</span></p>
+                    <select id="status" class="campo_select" name="status" required>
+                        <option value=""></option>
+                        <option value="FINALIZADO">FINALIZADO</option>
+                        <option value="PENDENTE">PENDENTE</option>
+                        <option value="CONCLUÍDO">CONCLUÍDO</option>
+                    </select>
+                </div>
             </div>
 
             <div class="container_small_width">
@@ -36,8 +45,6 @@
                     <input type="date" name="data_recebimento" id="data_recebimento" class="campo_input" required>
                 </div>
             </div>
-
-            <div class="modulo_main">
                 <div class="container_small_width" id="container_radios">
                     <div class="campo_contato small_width select_conainer">
                         <p>Criado por:<span class="campo_obrigatorio">*</span></p>
@@ -47,20 +54,7 @@
                     </div>
                 </div>
             </div>
-
-            <div class="container_small_width">
-                <div class="campo_contato small_width select_conainer">
-                    <p>Status:<span class="campo_obrigatorio">*</span></p>
-                    <select id="status" class="campo_select" name="status" required>
-                        <option value=""></option>
-                        <option value="FINALIZADO">FINALIZADO</option>
-                        <option value="PENDENTE">PENDENTE</option>
-                        <option value="CONCLUÍDO">CONCLUÍDO</option>
-                    </select>
-                </div>
-            </div>
         </div>
-
         <h3 class="h3_titulo">Produtos relacionados:<span class="campo_obrigatorio">*</span></h3>
         <button type="button" class="btn_add" id="btn_adicionar_relacao">
             <img src="../imagens/btn_add.svg" alt="Icone Adicionar">

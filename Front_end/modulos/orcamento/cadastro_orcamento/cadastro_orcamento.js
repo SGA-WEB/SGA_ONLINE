@@ -1,10 +1,8 @@
-import { dataAtual, mudarPesquisa } from "../../../../scripts/funcionalidades.js";
-import select2 from "../../../../scripts/select.js";
-import buscarDados from "../../../../scripts/buscarDados.js";
-import { carregarConteudo } from "../../../../scripts/javaScript.js";
-import orcamentos from "../orcamentos.js"; // Supondo que existe um módulo 'orcamentos' para voltar
-import { popup, popup_aviso, popup_carregando, popup_confirmar, popup_erro } from "../../../../scripts/popup.js";
-import { carregarDadosNaTabela, pesquisar } from "../../../../scripts/carregarDadosNaTabela.js";
+import { dataAtual, mudarPesquisa } from "../../../scripts/funcionalidades.js";
+import select2 from "../../../scripts/select.js";
+import buscarDados from "../../../scripts/buscarDados.js";
+import { popup, popup_aviso, popup_carregando, popup_confirmar, popup_erro } from "../../../scripts/popup.js";
+import { carregarDadosNaTabela, pesquisar } from "../../../scripts/carregarDadosNaTabela.js";
 
 // Renomeado para refletir o novo contexto de Orçamento
 export default async function cadastro_orcamento(dados) {
