@@ -3,6 +3,7 @@
         <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
         <p class="btn_voltar">Voltar</p>
     </button>
+
     <div class="modulo_header header_cadastro">
         <h2 class="h2_titulo">Orçamento</h2>
         <div class="container_codigo_data">
@@ -13,28 +14,18 @@
             </div>
         </div>
     </div>
+
     <form id="form_orcamento">
         <div class="modulo_main">
             <div class="container_small_width" id="container_radios">
                 <div class="campo_contato small_width select_conainer">
-                    <p>Fornecedor:<span class="campo_obrigatorio">*</span></p>
-                    <select id="fornecedor" class="campo_select" name="fornecedor" required>
+                    <p>Cliente:<span class="campo_obrigatorio">*</span></p>
+                    <select id="cliente" class="campo_select" name="cliente" required>
                         <option value=""></option>
                     </select>
                 </div>
             </div>
-            <div class="container_small_width">
-                <div class="campo_contato small_width select_conainer">
-                    <p>Tipo de entrada:<span class="campo_obrigatorio">*</span></p>
-                    <select id="tipo_entrada" class="campo_select" name="tipo_entrada" required>
-                        <option value=""></option>
-                        <option value="COMPRA">COMPRA</option>
-                        <option value="DEVOLUÇÃO">DEVOLUÇÃO</option>
-                        <option value="INVENTÁRIO">INVENTÁRIO</option>
-                    </select>
-                </div>
-            </div>
-            </div>
+
             <div class="container_small_width">
                 <div class="campo_contato small_width">
                     <label for="data_emissao">Data de Emissão:<span class="campo_obrigatorio">*</span></label>
@@ -45,6 +36,18 @@
                     <input type="date" name="data_recebimento" id="data_recebimento" class="campo_input" required>
                 </div>
             </div>
+
+            <div class="modulo_main">
+                <div class="container_small_width" id="container_radios">
+                    <div class="campo_contato small_width select_conainer">
+                        <p>Criado por:<span class="campo_obrigatorio">*</span></p>
+                        <select id="criado_por" class="campo_select" name="criado_por" required>
+                            <option value=""></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <div class="container_small_width">
                 <div class="campo_contato small_width select_conainer">
                     <p>Status:<span class="campo_obrigatorio">*</span></p>
@@ -57,11 +60,13 @@
                 </div>
             </div>
         </div>
+
         <h3 class="h3_titulo">Produtos relacionados:<span class="campo_obrigatorio">*</span></h3>
         <button type="button" class="btn_add" id="btn_adicionar_relacao">
             <img src="../imagens/btn_add.svg" alt="Icone Adicionar">
             <span>Adicionar relação</span>
         </button>
+
         <div class="container_tabela">
             <table class="tabela" id="tabela_produtos">
                 <thead>
@@ -75,20 +80,23 @@
                     </tr>
                 </thead>
                 <tbody class="tbody">
-                </tbody>
+                    </tbody>
             </table>
         </div>
+
         <button type="submit" class="btn btn_salvar">
             <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
             <p>Salvar</p>
         </button>
     </form>
+    
     <div class="container_popup popup_relacao">
         <div class="popup">
             <button class="btn_fechar_popup">
                 <img src="../imagens/icone_fechar.svg" alt="Icone Fechar">
             </button>
             <h2 class="h2_titulo">Selecione os produtos para relacionar a entrada</h2>
+
             <div class="header">
                 <div class="container_select">
                     <p>Coluna:</p>
@@ -113,6 +121,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="container_tabela">
                 <table class="tabela" id="tabela_selecionar_produtos">
                     <thead>
@@ -127,9 +136,10 @@
                         </tr>
                     </thead>
                     <tbody class="tbody">
-                    </tbody>
+                        </tbody>
                 </table>
             </div>
+
             <button class="btn margin_left_auto btn_selecionar_relacao" id="btn_selecionar_relacao_entrada">
                 <img src="../imagens/btn_add.svg" alt="Icone Adicionar" class="brightness0">
                 <span>Adicionar Relação</span>
