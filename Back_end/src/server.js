@@ -1938,21 +1938,18 @@ app.put('/tipos_entrada/:id', async (req, res) => {
     }
 });
 
-
 app.delete('/tipos_entrada/:id', async (req, res) => {
     const { id } = req.params;
     console.log(id)
     try {
-        await pool.query(
-            `
-                DELETE FROM sga.tipos_entrada
-                WHERE id_tipo_de_entrada = $1
-                RETURNING *;
-            `
-            , [id]);
-        res.status(200).json({ message: 'Tipo de entrada excluído com sucesso!' });
+        await pool.query(`
+            UPDATE sga.tipos_entrada
+            SET inativo = TRUE
+            WHERE id_tipo_de_entrada = $1
+        `, [id]);
+        res.status(200).json({ message: 'Tipo de entrada inativado com sucesso!' });
     } catch (err) {
-        res.status(500).json({ error: 'Erro ao excluir' });
+        res.status(500).json({ error: 'Erro ao inativar' });
     }
 });
 
