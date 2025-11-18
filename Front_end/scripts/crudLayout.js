@@ -31,6 +31,8 @@ import editar_saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_d
 import excluir_saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_de_produtos/excluir_saida_de_produtos.js";
 
 import visualizar_orcamento from "../modulos/orcamento/visualizar_orcamento/visualizar_orcamento.js";
+import editar_orcamento from "../modulos/orcamento/editar_orcamento/editar_orcamento.js";
+
 
 export default function crudLayout(dadosTabela, tr, addListener = true) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
@@ -115,6 +117,7 @@ export default function crudLayout(dadosTabela, tr, addListener = true) {
             excluir_saida_de_produtos: excluir_saida_de_produtos,
 
             visualizar_orcamento: visualizar_orcamento,
+            editar_orcamento: editar_orcamento,
         }
         console.log(nomeTabelaAtual)
         switch (nomeTabelaAtual) { // Carrega a página do CRUD de acordo com a tabela atual
