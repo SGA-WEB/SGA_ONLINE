@@ -2361,3 +2361,17 @@ app.get('/api/orcamento/:id', async (req, res) => {
         res.status(500).json({ error: 'Erro interno do servidor.' });
     }
 });
+
+app.delete('/orcamento/:id_orcamento', async (req, res) => {
+    const { id_orcamento} = req.params;
+    try {
+        await pool.query(`
+            UPDATE sga.orcamento
+            SET inativo = TRUE
+            WHERE id_orcamento = $1
+        `, [id_orcamento]);
+        res.status(200).json({ message: 'Orçamento excluído com sucesso!' });
+    } catch (err) {
+        res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
