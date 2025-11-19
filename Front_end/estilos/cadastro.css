@@ -229,6 +229,7 @@ a.link_nav_selecionado {
     flex-direction: column;
 }
 
+
 @media (max-width: 900px) {
     .modulo {
         padding: 0.5rem;

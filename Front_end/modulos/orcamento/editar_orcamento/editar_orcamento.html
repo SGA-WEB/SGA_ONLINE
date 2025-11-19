@@ -1,22 +1,13 @@
-<section class="modulo" id="modulo_visualizar_orcamento">
-   <menu class="menu_btns space_between align_center">
+<section class="modulo" id="modulo_editar_orcamento">
+    <menu class="menu_btns space_between align_center">
         <button class="btn_nav" id="btn_voltar_orcamento">
             <img src="..//..//../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
             <p class="btn_voltar">Voltar</p>
         </button>
-        <div class="container_btns space_between">
-            <button class="btn_editar btn btn2">
-                <img src="..//..//../imagens/icone_editar.svg" alt="icone_editar" >
-                <p>Editar</p>
-            </button>
-            <button class="btn_excluir btn btn5">
-                <img src="..//..//../imagens/icone_excluir.svg" alt="icone_editar" >
-                <p>Excluir</p>
-            </button>
         </div>
     </menu>
     <div class="modulo_header header_cadastro">
-        <h2 class="h2_titulo">Visualizar Orçamento</h2>
+        <h2 class="h2_titulo">Editar Orçamento</h2>
         <div class="container_codigo_data">
             <p class="p_codigo_id">Codigo: <span class="codigo_id"></span></p>
             <div class="div_data_cadastro">
@@ -66,6 +57,7 @@
             </div>
         </div>
         </div>
+
         <h3 class="h3_titulo">Produtos relacionados:<span class="campo_obrigatorio">*</span></h3>
         <button type="button" class="btn_add" id="btn_adicionar_relacao">
             <img src="../imagens/btn_add.svg" alt="Icone Adicionar">
@@ -88,11 +80,16 @@
                 </tbody>
             </table>
         </div>
-
-        <button type="submit" class="btn btn_salvar">
-            <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
-            <p>Salvar</p>
-        </button>
+        <div class="space_between">
+            <button class="btn btn2 btn_cancelar">
+                <img src="..//..//../imagens/icone_fechar.svg" alt="Icone Salvar">
+                <p>Cancelar</p>
+            </button>
+            <button class="btn btn_salvar">
+                <img src="..//..//../imagens/icone_salvar.svg" alt="Icone Salvar">
+                <p>Salvar</p>
+            </button>
+        </div>
     </form>
 
     <div class="container_popup popup_relacao">
