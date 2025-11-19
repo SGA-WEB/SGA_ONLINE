@@ -2,7 +2,6 @@ import select2 from "../../../scripts/select.js"
 import { carregarConteudo } from "../../../scripts/javaScript.js"
 
 export default async function visualizar_orcamento (dado) {
-    console.log("sadkfadsçlfkj")
     select2("100%")
     document.querySelector(".codigo_id").textContent = dado.id_orcamento
     document.querySelector(".codigo_id").textContent = dado._orcamento
