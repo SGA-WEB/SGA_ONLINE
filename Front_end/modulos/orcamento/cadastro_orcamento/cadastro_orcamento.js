@@ -8,19 +8,18 @@ import { carregarDadosNaTabela, pesquisar } from "../../../scripts/carregarDados
 export default async function cadastro_orcamento(dados) {
     select2("100%")
     dataAtual()
-    
-    // Altera as chamadas de dados: contatos/fornecedores/entrada para clientes/usuarios/orcamento
+
     let produtos = await buscarDados("produto")
-    let clientes = await buscarDados("contato"); // Assumindo que 'contato' pode ser usado para 'cliente'
-    let usuarios = await buscarDados("usuario"); // Novo: Para carregar o 'Criado por'
-    let ultimoIdOrcamento = await buscarDados("proximo_id_orcamento"); // Nova chamada de ID
-    
+    let clientes = await buscarDados("contato");
+    let usuarios = await buscarDados("usuario");
+    let ultimoIdOrcamento = await buscarDados("proximo_id_orcamento");
+
     document.querySelector(".codigo_id").textContent = ultimoIdOrcamento.proximo_id;
 
     // --- Lógica para popular o select de Cliente ---
     let clientesFiltrados = []
 
-    clientes.forEach(contato => { 
+    clientes.forEach(contato => {
         // Adaptação: Se a sua API tem uma flag para 'CLIENTE', use ela.
         // Se usar a mesma lógica de FORNECEDOR:
         contato.categorias.forEach(categoria => {
@@ -37,13 +36,13 @@ export default async function cadastro_orcamento(dados) {
         option.text = cliente.razao_social; // Usando razao_social
         selectCliente.appendChild(option);
     })
-    
+
     // --- Lógica para popular o select de Criado Por ---
     let selectCriadoPor = document.querySelector("#criado_por"); // ID #criado_por no novo HTML
     usuarios.forEach((usuario) => {
         let option = document.createElement("option");
         option.value = usuario.id_usuario; // Supondo id_usuario e nome são os campos
-        option.text = usuario.nome; 
+        option.text = usuario.nome;
         selectCriadoPor.appendChild(option);
     })
 
@@ -56,8 +55,8 @@ export default async function cadastro_orcamento(dados) {
         produto.desconto = 0; // Inicializa o desconto como 0
     })
 
-    
-    
+
+
     let btn_adicionar_relacao = document.querySelector("#btn_adicionar_relacao");
     btn_adicionar_relacao.addEventListener("click", async () => {
         // Quando o botão de adicionar relação for clicado
@@ -142,11 +141,11 @@ export default async function cadastro_orcamento(dados) {
             td.classList.add("td_container_input")
             let inputQuantidade = document.createElement("input");
             inputQuantidade.type = "number";
-            inputQuantidade.value = 1; 
+            inputQuantidade.value = 1;
             // ATENÇÃO: Se for Orçamento, o max deveria ser o estoque (produto.quantidade).
             // Manter a lógica anterior:
             inputQuantidade.max = td.textContent; // O valor da célula é a quantidade em estoque
-            inputQuantidade.min = 1; 
+            inputQuantidade.min = 1;
             inputQuantidade.classList.add("input_quantidade");
             inputQuantidade.classList.add("input_tabela");
             inputQuantidade.addEventListener("input", calcularValorTotal);
@@ -160,7 +159,7 @@ export default async function cadastro_orcamento(dados) {
             td.classList.add("td_container_input")
             let inputDesconto = document.createElement("input");
             inputDesconto.type = "number";
-            inputDesconto.value = 0; 
+            inputDesconto.value = 0;
             inputDesconto.classList.add("input_desconto");
             inputDesconto.addEventListener("input", calcularValorTotal);
             inputDesconto.classList.add("input_tabela");
@@ -171,7 +170,7 @@ export default async function cadastro_orcamento(dados) {
 
         calcularValorTotal();
     }
-    
+
     let valorTotalTodosProdutos = 0;
     let descontoTotal = 0
     function calcularValorTotal() {
@@ -187,7 +186,7 @@ export default async function cadastro_orcamento(dados) {
             let quantidade = input.value;
             let desconto = inputsDesconto[index].value;
             let valorTotal = (precoVarejo * quantidade) - desconto;
-            
+
             // Atualiza os valores na interface e no acumulador
             inputsPrecoVarejo[index].value = precoVarejo;
             inputsQuantidade[index].value = quantidade;
@@ -195,7 +194,7 @@ export default async function cadastro_orcamento(dados) {
             inputsValorTotal[index].textContent = valorTotal.toFixed(2)
 
             valorTotalTodosProdutos += valorTotal;
-            descontoTotal += parseFloat(desconto.replace(",", ".")) * 1; 
+            descontoTotal += parseFloat(desconto.replace(",", ".")) * 1;
 
             // Atualiza o objeto produtosRelacionados com os valores atualizados
             produtosRelacionados[index].quantidade = quantidade;

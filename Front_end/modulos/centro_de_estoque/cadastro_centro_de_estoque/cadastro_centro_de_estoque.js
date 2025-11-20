@@ -10,7 +10,6 @@ export default async function cadastro_centro_de_estoque() {
     select2("100%") // Aplica o select2 nos selects
 
     let proximo_id_centro_estoque = await buscarDados('proximo_id_centro_estoque');
-    console.log(proximo_id_centro_estoque);
     document.querySelector(".codigo_id").innerHTML = proximo_id_centro_estoque.proximo_id;
 
     let form = document.querySelector("form");

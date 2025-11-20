@@ -29,8 +29,6 @@ export default function cadastro_tipo_saida() {
             saida_uso_consumo: document.getElementById('saida_uso_consumo').checked
         };
 
-        console.log(data)
-
         try {
             const response = await fetch('http://localhost:3000/tipos_de_saida', {
                 method: 'POST',

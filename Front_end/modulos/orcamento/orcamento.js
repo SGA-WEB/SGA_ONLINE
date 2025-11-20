@@ -11,13 +11,11 @@ export default async function orcamento() {
     mudarPesquisa(document.querySelector(".input_pesquisa"));
     select2("120px");
     let dados = await buscarDados('orcamento'); // Busca os dados da tabela, exibe na tela e permite pesquisar
-    console.log(dados)
     let colunas = ["id_orcamento", "cliente_razao_social", "status", "criado_por_nome", "data_criacao","valor_total","desconto_total","subtotal"]
     carregarDadosNaTabela(dados, colunas, document.querySelector(".tabela"), true, true) // Exibe na tela e permite pesquisar
     pesquisar(dados, colunas, document.querySelector(".tabela"), true, true)
 
     let btnAdicionar = document.querySelector("#btn_criar_orcamento");
-    console.log(btnAdicionar)
     btnAdicionar.addEventListener("click", () => {
         carregarConteudo("orcamento/cadastro_orcamento/cadastro_orcamento.html", document.querySelector(".principal"), false, cadastro_orcamento, dados) // Carrega o módulo de cadastro de produto
     })

@@ -17,9 +17,8 @@ export default async function excluir_tipo_saida(dado, callbackFunction, ...para
                 popup_aviso(`Tipo de saida ${dado.descricao} excluído com sucesso!`)
                 if (callbackFunction) {
                     callbackFunction(...param) // Chama a função de callback, se existir
-                } 
+                }
                 let dados = await buscarDados('tipos_de_saida'); // Busca os dados da tabela, exibe na tela e permite pesquisar
-                console.log(dados)
                 carregarDadosNaTabela(dados, ["id_tipos_de_saida", "descricao", "cfop_dentro","cfop_fora","ativo"]) // Exibe na tela e permite pesquisar
             }
         } catch (err) {

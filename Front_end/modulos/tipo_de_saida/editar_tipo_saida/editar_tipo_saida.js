@@ -9,7 +9,6 @@ export default function editar_tipo_saida(dado, telaAnteriorVisualizar) {
     document.querySelector("#btn_voltar_tipos_de_saida").addEventListener("click", () => {
         carregarConteudo("tipo_de_saida/tipo_de_saida.html", document.querySelector(".principal"),false, tipo_de_saida)
     })
-    console.log(dado)
     document.querySelector(".data_cadastro").innerHTML = formatarData(dado.data_criacao)
     document.querySelector(".codigo_id").innerHTML = dado.id_tipos_de_saida
     document.querySelector("#descricao").value = dado.descricao
@@ -22,7 +21,7 @@ export default function editar_tipo_saida(dado, telaAnteriorVisualizar) {
     document.querySelector("#baixa_perda_quebra").checked = dado.baixa_perda_quebra
     document.querySelector("#saida_uso_consumo").checked = dado.saida_uso_consumo
 
-    document.querySelector(".btn_salvar").addEventListener("click", async (e) => {  
+    document.querySelector(".btn_salvar").addEventListener("click", async (e) => {
         e.preventDefault()
         salvarEdicao(dado.id_tipos_de_saida)
         async function salvarEdicao(id_tipos_de_saida) {
@@ -46,26 +45,25 @@ export default function editar_tipo_saida(dado, telaAnteriorVisualizar) {
                     body: JSON.stringify({ descricao, cfop_dentro, cfop_fora, ativo, devolução_compra, remessa_conserto, trans_filiais, baixa_perda_quebra, saida_uso_consumo})
                 });
 
-                const data = await response.json(); 
+                const data = await response.json();
                 if (response.ok) {
-                    const novoDado = { 
+                    const novoDado = {
                         // objeto para atualizar a tela de visualizar comforme os novos dados
                         descricao: descricao,
                         cfop_fora: cfop_fora,
                         cfop_dentro: cfop_dentro,
                         ativo: ativo,
                         devolução_compra: devolução_compra,
-                        remessa_conserto: remessa_conserto, 
+                        remessa_conserto: remessa_conserto,
                         trans_filiais: trans_filiais,
                         baixa_perda_quebra: baixa_perda_quebra,
                         saida_uso_consumo: saida_uso_consumo
                     }
-                    console.log(novoDado)
                     popup_aviso('Tipo de saida alterada com sucesso!');
                     popup_carregando(true)
                     carregarConteudo("tipo_de_saida/tipo_de_saida.html", document.querySelector(".principal"), false, tipo_de_saida, novoDado)
-                   
-            
+
+
                 } else {
                     alert (`Erro: ${data.error}`);
 

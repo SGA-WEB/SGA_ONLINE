@@ -105,7 +105,6 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         produto.valor_unitario = produto.preco_varejo;
         delete produto.preco_varejo;
     })
-    console.log(produtos);
 
     popup_carregando(true)
 

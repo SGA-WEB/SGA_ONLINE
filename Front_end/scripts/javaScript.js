@@ -90,7 +90,6 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
 
     popup_carregando(true)
 
-    console.log(url, elemento, adicionar, funcao, parametro)
     try {
         const response = await fetch(url);
         const html = await response.text();

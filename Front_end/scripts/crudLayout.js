@@ -122,7 +122,6 @@ export default function crudLayout(dadosTabela, tr, addListener = true) {
             editar_orcamento: editar_orcamento,
             excluir_orcamento: excluir_orcamento,
         }
-        console.log(nomeTabelaAtual)
         switch (nomeTabelaAtual) { // Carrega a página do CRUD de acordo com a tabela atual
             case "centro_de_estoque":
                 if (acao == 'excluir') {

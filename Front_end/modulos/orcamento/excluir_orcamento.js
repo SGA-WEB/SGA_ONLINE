@@ -4,7 +4,6 @@ import { carregarDadosNaTabela } from "../../scripts/carregarDadosNaTabela.js";
 import carregarDadosNosCards from "../../scripts/carregarDadosNosCards.js";
 import { carregarConteudo } from "../../scripts/javaScript.js";
 export default async function excluir_orcamento(dado, callbackFunction, ...param) {
-    console.log(dado)
     let confirmacao = await popup_confirmar_exclusao(`Tem certeza que deseja excluir o orcamento ${dado['id_orcamento']} do ${dado['cliente_razao_social']}?`)
 
     if (confirmacao) {

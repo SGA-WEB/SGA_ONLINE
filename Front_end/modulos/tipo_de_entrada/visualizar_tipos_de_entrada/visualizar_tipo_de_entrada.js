@@ -9,7 +9,6 @@ import excluir_tipos_de_entrada from "../excluir_tipos_de_entrada/excluir_tipo_d
 import tipos_de_entrada from "../tipos_de_entrada.js";
 
 export default function visualizar_tipo_de_entrada(dado) {
-    console.log(dado)
     select2("100%")
     document.querySelector(".data_cadastro").innerHTML = formatarData(dado.data_criacao)
     document.querySelector(".codigo_id").innerHTML = dado.id_tipo_de_entrada
