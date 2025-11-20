@@ -28,7 +28,7 @@ th:first-child {
 .tabela {
     border: 1px solid var(--cinza2);
     font-size: 1rem;
-    z-index: 6;
+    z-index: 3;
     overflow: hidden;
 }
 

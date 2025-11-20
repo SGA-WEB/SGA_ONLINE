@@ -30,7 +30,6 @@
 
 .end {
     display: flex;
-    padding: .5rem;
     justify-content: end;
 }
 

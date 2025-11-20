@@ -1888,6 +1888,129 @@ app.post('/api/contatos', async (req, res) => {
     }
 });
 
+app.post('/orcamento', async (req, res) => {
+    const {
+        cliente_id,
+        status,
+        subtotal,
+        desconto_total,
+        observacao,
+        criado_por_id,
+        itens // Array de objetos com os itens do orçamento
+    } = req.body;
+
+    // Validação básica do cabeçalho
+    if (!cliente_id) {
+        return res.status(400).json({
+            sucesso: false,
+            erro: 'O campo cliente_id é obrigatório.'
+        });
+    }
+
+    // Validação básica dos itens (opcional, mas recomendada)
+    if (itens && (!Array.isArray(itens) || itens.length === 0)) {
+        return res.status(400).json({
+            sucesso: false,
+            erro: 'É necessário fornecer pelo menos um item para o orçamento.'
+        });
+    }
+
+    const client = await pool.connect();
+
+    try {
+        await client.query('BEGIN');
+
+        // 1. Inserir o cabeçalho do orçamento
+        const queryOrcamento = `
+            INSERT INTO sga.orcamento (
+                cliente_id,
+                status,
+                subtotal,
+                desconto_total,
+                observacao,
+                criado_por_id
+            ) VALUES (
+                $1, $2, $3, $4, $5, $6
+            ) RETURNING *;
+        `;
+
+        const valuesOrcamento = [
+            cliente_id,
+            status || 'Pendente',
+            subtotal || 0,
+            desconto_total || 0,
+            observacao || null,
+            criado_por_id || null
+        ];
+
+        const resultOrcamento = await client.query(queryOrcamento, valuesOrcamento);
+        const novoOrcamento = resultOrcamento.rows[0];
+        const novoOrcamentoId = novoOrcamento.id_orcamento;
+
+        // 2. Inserir os itens do orcamento
+        const itensInseridos = [];
+        if (itens && itens.length > 0) {
+            for (const item of itens) {
+                // Validacão individual do item
+                if (!item.id_produto || !item.quantidade || !item.valor_unitario) {
+                     throw new Error(`Item inválido: produto_id, quantidade e valor_unitario são obrigatórios.`);
+                }
+
+                const queryItem = `
+                    INSERT INTO sga.orcamento_itens (
+                        orcamento_id,
+                        produto_id,
+                        quantidade,
+                        valor_unitario,
+                        desconto_item
+                    ) VALUES (
+                        $1, $2, $3, $4, $5
+                    ) RETURNING *;
+                `;
+
+                const valuesItem = [
+                    novoOrcamentoId,
+                    item.id_produto,
+                    item.quantidade,
+                    item.valor_unitario,
+                    item.desconto_item || 0
+                ];
+
+                const resultItem = await client.query(queryItem, valuesItem);
+                itensInseridos.push(resultItem.rows[0]);
+            }
+        }
+
+        await client.query('COMMIT');
+
+        res.status(201).json({
+            sucesso: true,
+            mensagem: 'Orcamento criado com sucesso!',
+            orcamento: novoOrcamento,
+            itens: itensInseridos
+        });
+
+    } catch (error) {
+        await client.query('ROLLBACK');
+        console.error('Erro ao criar orcamento:', error);
+
+        if (error.code === '23503') {
+             return res.status(400).json({
+                 sucesso: false,
+                 erro: 'Cliente ou produto informado não encontrado (violacão de chave estrangeira).'
+             });
+        }
+
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro interno do servidor ao criar orcamento.',
+            detalhes: error.message
+        });
+    } finally {
+        client.release();
+    }
+});
+
 // Rota GET para listar todos os tipos_entrada
 app.get('/api/tipos_entrada', async (req, res) => {
     try {
@@ -2337,7 +2460,7 @@ app.get('/api/orcamento', async (req, res) => {
             WHERE
                 o.inativo = FALSE
             ORDER BY
-                o.id_orcamento DESC;
+                o.id_orcamento;
         `);
         res.json(result.rows);
     } catch (err) {
