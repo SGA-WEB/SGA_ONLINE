@@ -3,6 +3,8 @@ import select2 from "../../../scripts/select.js";
 import buscarDados from "../../../scripts/buscarDados.js";
 import { popup, popup_aviso, popup_carregando, popup_confirmar, popup_erro } from "../../../scripts/popup.js";
 import { carregarDadosNaTabela, pesquisar } from "../../../scripts/carregarDadosNaTabela.js";
+import orcamento from "../orcamento.js";
+import { carregarConteudo } from "../../../scripts/javaScript.js";
 
 // Renomeado para refletir o novo contexto de Orçamento
 export default async function cadastro_orcamento(dados) {
@@ -11,51 +13,43 @@ export default async function cadastro_orcamento(dados) {
 
     let produtos = await buscarDados("produto")
     let clientes = await buscarDados("contato");
-    let usuarios = await buscarDados("usuario");
+    let usuarios = await buscarDados("usuarios");
     let ultimoIdOrcamento = await buscarDados("proximo_id_orcamento");
-
     document.querySelector(".codigo_id").textContent = ultimoIdOrcamento.proximo_id;
 
-    // --- Lógica para popular o select de Cliente ---
     let clientesFiltrados = []
 
     clientes.forEach(contato => {
-        // Adaptação: Se a sua API tem uma flag para 'CLIENTE', use ela.
-        // Se usar a mesma lógica de FORNECEDOR:
         contato.categorias.forEach(categoria => {
-            if (categoria.nome === "CLIENTE") { // Assumindo que a categoria é "CLIENTE"
+            if (categoria.nome === "CLIENTE") {
                 clientesFiltrados.push(contato)
             }
         })
     })
 
-    let selectCliente = document.querySelector("#cliente"); // ID #cliente no novo HTML
+    let selectCliente = document.querySelector("#cliente_id");
     clientesFiltrados.forEach((cliente) => {
         let option = document.createElement("option");
-        option.value = cliente.id_contato; // Usando id_contato se for a mesma estrutura
-        option.text = cliente.razao_social; // Usando razao_social
+        option.value = cliente.id_contato;
+        option.text = cliente.razao_social;
         selectCliente.appendChild(option);
     })
 
-    // --- Lógica para popular o select de Criado Por ---
-    let selectCriadoPor = document.querySelector("#criado_por"); // ID #criado_por no novo HTML
+    let selectCriadoPor = document.querySelector("#criado_por_id");
     usuarios.forEach((usuario) => {
         let option = document.createElement("option");
-        option.value = usuario.id_usuario; // Supondo id_usuario e nome são os campos
+        option.value = usuario.id_usuario;
         option.text = usuario.nome;
         selectCriadoPor.appendChild(option);
     })
 
-    // Ordena os produtos pelo id
     produtos = produtos.sort((a, b) => a.id_produto - b.id_produto);
 
     // Adiciona o campo valor_total e o desconto em cada produto
     produtos.map(produto => {
         produto.valor_total = produto.preco_varejo * produto.quantidade;
-        produto.desconto = 0; // Inicializa o desconto como 0
+        produto.desconto = 0;
     })
-
-
 
     let btn_adicionar_relacao = document.querySelector("#btn_adicionar_relacao");
     btn_adicionar_relacao.addEventListener("click", async () => {
@@ -173,13 +167,16 @@ export default async function cadastro_orcamento(dados) {
 
     let valorTotalTodosProdutos = 0;
     let descontoTotal = 0
+    let subtotal = 0; // valor antes do desconto
     function calcularValorTotal() {
         let inputsQuantidade = document.querySelectorAll(".input_quantidade");
         let inputsDesconto = document.querySelectorAll(".input_desconto");
         let inputsPrecoVarejo = document.querySelectorAll(".td_preco_varejo");
         let inputsValorTotal = document.querySelectorAll(".td_valor_total");
-        valorTotalTodosProdutos = 0; // Reseta o valor total antes de calcular
-        descontoTotal = 0; // Reseta o desconto total antes de calcular
+        // Reseta os valores antes de calcular para evitar acumulação incorreta
+        valorTotalTodosProdutos = 0;
+        descontoTotal = 0;
+        subtotal = 0
 
         inputsQuantidade.forEach((input, index) => {
             let precoVarejo = inputsPrecoVarejo[index].textContent;
@@ -194,6 +191,7 @@ export default async function cadastro_orcamento(dados) {
             inputsValorTotal[index].textContent = valorTotal.toFixed(2)
 
             valorTotalTodosProdutos += valorTotal;
+            subtotal += precoVarejo * quantidade;
             descontoTotal += parseFloat(desconto.replace(",", ".")) * 1;
 
             // Atualiza o objeto produtosRelacionados com os valores atualizados
@@ -201,4 +199,50 @@ export default async function cadastro_orcamento(dados) {
             produtosRelacionados[index].desconto = desconto;
             produtosRelacionados[index].valor_unitario = precoVarejo; // Garantir que o valor unitário no objeto é o valor inicial
         });
-    }}
+
+    }
+
+    let formOrcamento = document.querySelector("#form_orcamento");
+    formOrcamento.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        let formData = new FormData(formOrcamento);
+        let data = Object.fromEntries(formData);
+
+        data.desconto_total = descontoTotal;
+        data.subtotal = subtotal;
+        data.itens = produtosRelacionados;
+
+        console.log(data)
+
+        if (data.itens.length === 0) {
+            popup_erro('É necessário selecionar pelo menos um produto para salvar a entrada.');
+            document.querySelector("#btn_adicionar_relacao").style.border = "1px solid red";
+            setTimeout(() => {
+                document.querySelector("#btn_adicionar_relacao").style.border = "none";
+            }, 5000);
+            return;
+        }
+        try {
+            popup_carregando(false,'Salvando entrada de produto...');
+            const response = await fetch('http://localhost:3000/orcamento', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            popup_carregando(true)
+            if (response.ok) {
+                popup_aviso('Entrada salva com sucesso!');
+                carregarConteudo("orcamento/orcamento.html", document.querySelector(".principal"), false, orcamento);
+            } else {
+                popup_erro('Erro: ' + result.erro);
+            }
+        } catch (err) {
+            popup_erro('Erro ao conectar com a API.');
+            console.error(err);
+        }
+    })
+}
