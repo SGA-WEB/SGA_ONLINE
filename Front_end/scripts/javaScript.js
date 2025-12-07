@@ -361,7 +361,7 @@ window.addEventListener("resize", () => {
     }
 
     if (widthBody <= 480) {
-        btn_change_view_mode = document.querySelector(".btn_change_view_mode");
+        let btn_change_view_mode = document.querySelector(".btn_change_view_mode");
         if (btn_change_view_mode) {
 
         }
