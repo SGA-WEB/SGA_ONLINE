@@ -277,6 +277,44 @@ app.get('/api/proximo_id_orcamento', async (req, res) => {
     }
 });
 
+// Endpoint para obter o próximo ID de Tipos de Saída
+app.get('/api/proximo_id_tipos_de_saida', async (req, res) => {
+    try {
+        // 1. Descobre dinamicamente o nome da sequence associada à tabela e coluna
+        const sequenceNameQuery = `SELECT pg_get_serial_sequence('sga.tipos_de_saida', 'id_tipos_de_saida')`;
+        const sequenceResult = await pool.query(sequenceNameQuery);
+
+        // Se não encontrar a sequence, usa o fallback do MAX(ID)
+        if (sequenceResult.rows.length === 0 || !sequenceResult.rows[0].pg_get_serial_sequence) {
+             console.warn('Sequence não encontrada via pg_get_serial_sequence. Usando fallback MAX(id).');
+             const maxIdResult = await pool.query(`SELECT COALESCE(MAX(id_tipos_de_saida), 0) + 1 AS proximo_id FROM sga.tipos_de_saida`);
+             return res.json(maxIdResult.rows[0]);
+        }
+
+        const nomeCorretoSequence = sequenceResult.rows[0].pg_get_serial_sequence;
+
+        // 2. Consulta o próximo valor usando o nome correto da sequence
+        const query = `SELECT last_value + 1 AS proximo_id FROM ${nomeCorretoSequence}`;
+        const { rows } = await pool.query(query);
+
+        // Verifica se a sequence retornou um valor válido
+        if (rows.length === 0 || rows[0].proximo_id === null) {
+            const maxIdResult = await pool.query(`SELECT COALESCE(MAX(id_tipos_de_saida), 0) + 1 AS proximo_id FROM sga.tipos_de_saida`);
+            return res.json(maxIdResult.rows[0]);
+        }
+
+        res.json(rows[0]);
+
+    } catch (err) {
+        console.error('Erro ao buscar próximo ID de tipos_de_saida:', err);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao buscar próximo ID de tipos_de_saida',
+            detalhes: err.message
+        });
+    }
+});
+
 app.get('/api/centro_estoque', async (req, res) => {
     try {
         const { rows } = await pool.query(`SELECT

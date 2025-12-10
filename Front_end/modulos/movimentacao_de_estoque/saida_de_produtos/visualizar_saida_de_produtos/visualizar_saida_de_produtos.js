@@ -17,7 +17,7 @@ export default async function visualizar_saida_de_produtos(saida) {
     document.querySelector("#tipo_de_saida").value = saida.tipo_saida
     document.querySelector("#serie").value = saida.serie
     document.querySelector("#sub_serie").value = saida.subserie
-    document.querySelector("#data_saida").value = formatarData(saida.data_saida, true)
+    document.querySelector("#data_saida").value = formatarData(saida.data_saida, true, '-')
     document.querySelector("#status_da_saida").value = saida.status
     document.querySelector("#destinatario").value = saida.destinatario_razao_social
     document.querySelector("#valor_total").value = saida.valor_total
