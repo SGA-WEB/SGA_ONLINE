@@ -109,41 +109,33 @@ app.use((err, req, res, next) => {
 
 //// 🔐 Rota para validar o login
 // Rota para validar o login (POST)
+// Exemplo de como deve ser a sua rota de login no server.js
 app.post('/api/login', async (req, res) => {
+    const { email, senha } = req.body;
+
     try {
-        const { email, senha } = req.body;
+        // Busca o usuário batendo email e senha
+        // NOTA: Em produção, NUNCA busque a senha em texto limpo. Isso é apenas para seu cenário atual.
+        const query = 'SELECT id_usuario, nome, email, grupo FROM sga.usuario WHERE email = $1 AND senha = $2';
+        const { rows } = await pool.query(query, [email, senha]);
 
-        // Validações básicas
-        if (!email || !senha) {
-            return res.status(400).json({ error: 'E-mail e senha são obrigatórios' });
+        if (rows.length === 0) {
+            return res.status(401).json({ sucesso: false, erro: 'Email ou senha incorretos' });
         }
 
-        // Verifica se o e-mail existe no banco de dados
-        const userResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1', [email]);
+        const usuarioLogado = rows[0];
+        console.log('Usuário logado:', usuarioLogado);
 
-        if (userResult.rows.length === 0) {
-            return res.status(404).json({ error: 'E-mail não encontrado' });
-        }
+        // Retorna sucesso e os dados do usuário (NÃO retorne a senha)
+        res.status(200).json({
+            sucesso: true,
+            mensagem: 'Login realizado com sucesso',
+            usuario: usuarioLogado 
+        });
 
-        // Verifica se a senha está correta
-        const senhaResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1 AND senha = $2', [email, senha]);
-
-        if (senhaResult.rows.length === 0) {
-            return res.status(401).json({ error: 'Senha incorreta' });
-        }
-
-        // Cria a sessão do usuário
-        req.session.user = {
-            id: userResult.rows[0].id_usuario,
-            nome: userResult.rows[0].nome,
-            email: userResult.rows[0].email
-        };
-
-        res.json({ message: 'Login bem-sucedido' });
-
-    } catch (error) {
-        console.error('Erro interno no servidor:', error);
-        res.status(500).json({ error: 'Erro interno no servidor' });
+    } catch (err) {
+        console.error('Erro no login:', err);
+        res.status(500).json({ sucesso: false, erro: 'Erro interno no servidor' });
     }
 });
 
