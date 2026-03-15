@@ -1,3 +1,25 @@
+:root {
+    --cinza1: #F6F6F6;
+    --cinza1-2: #f2f2f2;
+    --cinza2: #E8E8E8;
+    --cinza2-3: #dbdbdb;
+    --cinza3: #BFBFBF;
+    --cinza4: #686868;
+    --azul_escuro: #172742;
+    --azul: rgb(57, 99, 167);
+    --azul1: #9CBBED;
+    --azul1-2: #bcd2f5;
+    --azul-1: #E9F0FF;
+    --principal: #ffffff;
+    --secundaria: #000000;
+    --amarelo: #EDD39D;
+    --amarelo1: #7c6a49;
+    --alerta1: #FFA9A9;
+    --alerta2: #dd7e7e;
+    --sucesso1: #BFFFB2;
+    --verde_dinheiro: #008100;
+}
+
 /* Configurações gerais */
 
 .invert80 {

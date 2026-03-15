@@ -431,6 +431,14 @@ document.addEventListener("click", (e) => {
     }
 })
 
+// Sair do sistema:
+
+let btn_sair_do_sistema = document.querySelector("#btn_sair_do_sistema")
+btn_sair_do_sistema.addEventListener("click", () => {
+    localStorage.clear() // Limpa o localStorage
+    window.location.href = "../SGA_online-login/index.html" // Redireciona para a página de login
+})
+
 // =======================================================
 // SELETORES GERAIS
 // =======================================================

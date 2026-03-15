@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +10,10 @@
   <link rel="shortcut icon" href="../imagens/icone_sga.ico" type="image/x-icon">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../estilos/geral.css">
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 </head>
+
 <body>
 
   <!-- Lado Esquerdo com a Imagem -->
@@ -26,12 +29,12 @@
         <img src="imagens do site/Logo.png" alt="logo e nome" class="logo_desktop">
       </div>
       <div id="mensagemErro" style="color: red; font-weight: bold;"></div>
-      <label for="email">Usuário:</label>
-      <input type="email" id="email" placeholder="Digite seu usuário">
+      <label for="email">E-mail:</label>
+      <input type="email" id="email" placeholder="Digite seu e-mail">
 
       <label for="senha">Senha:</label>
-      <input type="password" id="senha" placeholder="Digite sua senha">
-        <div id="conteiner-select">
+      <input type="password" id="senha" placeholder="Digite sua senha" maxlength="6">
+      <div id="conteiner-select">
         <a href="../redefinicao_senha/envio_email/envio_email.html" target="_self">Esqueci minha senha</a>
         <select name="Selecione a empresa" id="selecione-a-empresa" class="campo_select">
 
@@ -47,8 +50,43 @@
         <button type="submit" id="btn_entrar">Entrar</button>
       </div>
     </form>
+    <div class="container_popups">
+      <div class="popup_aviso hide_popup" id="popup_aviso">
+        <button class="btn_fechar_popup" id="btn_fechar_popup_aviso">
+          <img src="../imagens/icone_fechar.svg" alt="botão fechar popup" class="icone_fechar">
+        </button>
+        <main>
+          <img src="..//../imagens/check.svg" alt="icone_check">
+          <p class="mensagem_aviso">Alteração salva com sucesso!</p>
+        </main>
+        <div class="progress-container">
+          <div class="progress-bar" id="progress-bar-aviso"></div>
+        </div>
+      </div>
+      <div class="popup_erro popup_aviso hide_popup" id="popup_erro">
+        <button class="btn_fechar_popup" id="btn_fechar_popup_erro">
+          <img src="../imagens/icone_fechar.svg" alt="botão fechar popup" class="icone_fechar">
+        </button>
+        <main>
+          <img src="../imagens/icone_fechar.svg" alt="icone_check">
+          <p class="mensagem_erro">Erro ao salvar alteração</p>
+        </main>
+        <div class="progress-container">
+          <div class="progress-bar" id="progress-bar-erro"></div>
+        </div>
+      </div>
+      <div class="popup_aviso popup_carregando hide_popup" id="popup_carregando">
+        <main>
+          <div class="gear-icon">
+            <img src="../imagens/icone_carregando.svg" alt="engrenagem">
+          </div>
+          <p class="mensagem_aviso">Salvando alterações...</p>
+        </main>
+      </div>
+    </div>
   </div>
   <script type="module" src="../SGA_online-login/script.js"></script>
   <!-- <script type="MIME/javascript" src="../SGA_online-login/script.js"></script> -->
 </body>
+
 </html>
