@@ -139,6 +139,54 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+app.get('/api/usuarios/:id', async (req, res) => {
+    // Extrai o ID que vem na URL (ex: /api/usuarios/1)
+    const { id } = req.params;
+
+    try {
+        // SELECT explícito: trazemos apenas os dados seguros e necessários para a tela.
+        // A coluna 'senha' foi intencionalmente deixada de fora.
+        const query = `
+            SELECT 
+                id_usuario, 
+                nome, 
+                email, 
+                celular, 
+                data_criacao, 
+                grupo, 
+                data_cadastro,
+                senha
+            FROM 
+                sga.usuario 
+            WHERE 
+                id_usuario = $1
+        `;
+
+        const { rows } = await pool.query(query, [id]);
+
+        // Se o array de resultados estiver vazio, o usuário não existe
+        if (rows.length === 0) {
+            return res.status(404).json({ 
+                sucesso: false, 
+                erro: 'Usuário não encontrado.' 
+            });
+        }
+
+        // Retorna sucesso e o objeto com os dados do usuário
+        res.status(200).json({
+            sucesso: true,
+            usuario: rows[0]
+        });
+
+    } catch (error) {
+        console.error(`Erro ao buscar usuário com ID ${id}:`, error);
+        res.status(500).json({ 
+            sucesso: false, 
+            erro: 'Erro interno do servidor ao buscar dados do usuário.',
+            detalhes: error.message 
+        });
+    }
+});
 
 //TESTE DE ROTA
 app.get('/api/testar-sessao', (req, res) => {

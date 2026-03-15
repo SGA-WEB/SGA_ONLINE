@@ -51,10 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const dados = await resposta.json();
 
             if (resposta.ok) {
-                console.log('Resposta do servidor:', dados);
                 localStorage.setItem('usuarioLogadoId', dados.usuario.id_usuario);
-                localStorage.setItem('usuarioLogadoNome', dados.usuario.nome); // Opcional, bom para mostrar no cabeçalho
-
                 window.location.href = '/Front_end/Principal/principal.html';
             } else {
                 if (mensagemErro) {

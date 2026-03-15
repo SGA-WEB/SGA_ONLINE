@@ -4,13 +4,19 @@ import { carregarConteudo, mudarLogoParaPadrao } from "../../scripts/javaScript.
 import { popup, popup_aviso, popup_carregando, popup_confirmar, popup_erro } from "../../scripts/popup.js";
 import salvarUsuario from "./salvarUsuarios.js";
 
-export default async function configuracao_usuario( data ) {
+export default async function configuracao_usuario(data) {
     popup_carregando(false, "Carregando configurações do usuário...");
     const usuario = await buscarDados("usuarios")
     const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
     const dado = await response.json();
 
-    salvarUsuario(usuario);
+    const userId = localStorage.getItem('usuarioLogadoId');
+
+    const user = await fetch(`http://localhost:3000/api/usuarios/${userId}`);
+    const userData = await user.json();
+    console.log("Dados do usuário:", userData);
+
+    salvarUsuario(userData.usuario);
 
     if (dado.error) {
         mudarLogoParaPadrao()
