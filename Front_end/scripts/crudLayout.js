@@ -30,6 +30,10 @@ import visualizar_saida_de_produtos from "../modulos/movimentacao_de_estoque/sai
 import editar_saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_de_produtos/editar_saida_de_produtos/editar_saida_de_produtos.js";
 import excluir_saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_de_produtos/excluir_saida_de_produtos.js";
 
+import visualizar_orcamento from "../modulos/orcamento/visualizar_orcamento/visualizar_orcamento.js";
+import editar_orcamento from "../modulos/orcamento/editar_orcamento/editar_orcamento.js";
+
+
 export default function crudLayout(dadosTabela, tr, addListener = true) {
     let acoes = document.createElement('div') // Cria um div para as ações do CRUD
     acoes.setAttribute('class', 'acoes_tabela')
@@ -111,7 +115,11 @@ export default function crudLayout(dadosTabela, tr, addListener = true) {
             visualizar_saida_de_produtos: visualizar_saida_de_produtos,
             editar_saida_de_produtos: editar_saida_de_produtos,
             excluir_saida_de_produtos: excluir_saida_de_produtos,
+
+            visualizar_orcamento: visualizar_orcamento,
+            editar_orcamento: editar_orcamento,
         }
+        console.log(nomeTabelaAtual)
         switch (nomeTabelaAtual) { // Carrega a página do CRUD de acordo com a tabela atual
             case "centro_de_estoque":
                 if (acao == 'excluir') {
@@ -200,6 +208,18 @@ export default function crudLayout(dadosTabela, tr, addListener = true) {
                         document.querySelector('.principal'),
                         false,
                         funcoes[`${acao}_tipo_saida`],
+                        dadosTabela
+                    )
+                }
+            case "orcamento":
+                if (acao == "excluir") {
+
+                } else {
+                    carregarConteudo(
+                        `orcamento/${acao}_orcamento/${acao}_orcamento.html`,
+                        document.querySelector('.principal'),
+                        false,
+                        funcoes[`${acao}_orcamento`],
                         dadosTabela
                     )
                 }
