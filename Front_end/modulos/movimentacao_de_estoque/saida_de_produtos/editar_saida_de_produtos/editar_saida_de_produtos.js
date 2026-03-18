@@ -19,7 +19,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
     document.querySelector("#tipo_saida").value = saida.tipo_saida
     document.querySelector("#serie").value = saida.serie
     document.querySelector("#subserie").value = saida.subserie
-    document.querySelector("#data_saida").value = formatarData(saida.data_saida, true)
+    document.querySelector("#data_saida").value = formatarData(saida.data_saida, true, '-')
     document.querySelector("#status").value = saida.status
     document.querySelector("#destinatario_id").value = saida.destinatario_razao_social
     document.querySelector("#valor_total").value = saida.valor_total
@@ -105,7 +105,6 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
         produto.valor_unitario = produto.preco_varejo;
         delete produto.preco_varejo;
     })
-    console.log(produtos);
 
     popup_carregando(true)
 

@@ -18,6 +18,7 @@
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    flex-direction: row-reverse;
     gap: .5rem;
     margin-bottom: .5rem;
 }
@@ -30,7 +31,6 @@
 
 .end {
     display: flex;
-    padding: .5rem;
     justify-content: end;
 }
 
@@ -280,6 +280,8 @@
 }
 
 .btn_fechar_popup {
+    position: absolute;
+    right: 0;
     cursor: pointer;
     padding: .2rem;
 }
@@ -325,6 +327,10 @@
     z-index: 4;
 }
 
+#popup_excluir .btn_fechar_popup {
+    position: static;
+}
+
 .popup_alerta main {
     max-width: 21rem;
     padding: 1.2rem;
@@ -346,6 +352,7 @@
 
 .popup_alerta header h1 {
     margin-left: .4rem;
+    font-size: 1.5rem;
 }
 
 .popup_alerta main p {

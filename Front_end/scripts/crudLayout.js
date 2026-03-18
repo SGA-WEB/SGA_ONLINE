@@ -32,6 +32,8 @@ import excluir_saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_
 
 import visualizar_orcamento from "../modulos/orcamento/visualizar_orcamento/visualizar_orcamento.js";
 import editar_orcamento from "../modulos/orcamento/editar_orcamento/editar_orcamento.js";
+import excluir_orcamento from "../modulos/orcamento/excluir_orcamento.js";
+
 
 
 export default function crudLayout(dadosTabela, tr, addListener = true) {
@@ -118,8 +120,8 @@ export default function crudLayout(dadosTabela, tr, addListener = true) {
 
             visualizar_orcamento: visualizar_orcamento,
             editar_orcamento: editar_orcamento,
+            excluir_orcamento: excluir_orcamento,
         }
-        console.log(nomeTabelaAtual)
         switch (nomeTabelaAtual) { // Carrega a página do CRUD de acordo com a tabela atual
             case "centro_de_estoque":
                 if (acao == 'excluir') {
@@ -211,9 +213,10 @@ export default function crudLayout(dadosTabela, tr, addListener = true) {
                         dadosTabela
                     )
                 }
+                break;
             case "orcamento":
                 if (acao == "excluir") {
-
+                    funcoes[`excluir_orcamento`](dadosTabela)
                 } else {
                     carregarConteudo(
                         `orcamento/${acao}_orcamento/${acao}_orcamento.html`,

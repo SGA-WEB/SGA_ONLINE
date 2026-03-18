@@ -11,7 +11,6 @@ export default async function tipo_de_saida() {
     select2("fit-content")
     popup_carregando(false, "Carregando tipos de saida...");
     let dados = await buscarDados('tipos_de_saida')
-    console.log(dados)
     const colunas = ["id_tipos_de_saida", "descricao", "cfop_dentro", "cfop_fora", "ativo"]
 
     carregarDadosNaTabela(dados, colunas)

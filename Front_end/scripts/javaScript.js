@@ -90,7 +90,6 @@ async function carregarConteudo(url, elemento, adicionar, funcao, ...parametro) 
 
     popup_carregando(true)
 
-    console.log(url, elemento, adicionar, funcao, parametro)
     try {
         const response = await fetch(url);
         const html = await response.text();
@@ -359,6 +358,13 @@ window.addEventListener("resize", () => {
     let menu_lateral = document.querySelector("#menu_lateral")
     if (widthBody <= 640 && !menu_lateral.classList.contains("mini")) {
         btnMenuLateral()
+    }
+
+    if (widthBody <= 480) {
+        let btn_change_view_mode = document.querySelector(".btn_change_view_mode");
+        if (btn_change_view_mode) {
+
+        }
     }
 });
 

@@ -5,7 +5,7 @@ export function cadastroUsuario() {
     let telefone = document.querySelector("#fone")
 
     const mascaraTelefone = {
-        mask: [ 
+        mask: [
             {
                 mask: '(00) 00000-0000'
             }
@@ -19,7 +19,6 @@ export function cadastroUsuario() {
 
 
     document.querySelector("#formulario_usuario").addEventListener("submit", async (e) => {
-        console.log("bla bla")
         e.preventDefault()
         let nome = document.querySelector("#digite-nome").value
         let senha = document.querySelector("#senha").value
@@ -43,7 +42,6 @@ export function cadastroUsuario() {
             senha: senha
         };
 
-        console.log(novoObjeto);
         // Envia os dados atualizados para o backend
         if (dadosOk) {
             try {

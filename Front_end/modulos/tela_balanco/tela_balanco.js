@@ -40,7 +40,6 @@ export default async function tela_balanco() {
       return dataCadastro >= dataSelecionada;
     });
 
-    console.log(dadosFiltrados);
   });
 
   let filtro_data_final = document.querySelector("#filtro_data_inicio");
@@ -54,7 +53,6 @@ export default async function tela_balanco() {
       return dataCadastro <= dataSelecionada;
     });
 
-    console.log(dadosFiltrados);
   });
 
   // Dados dos gráficos:
@@ -539,7 +537,6 @@ export default async function tela_balanco() {
     false,
     false,
   );
-console.log(produtoSaidaItens);
 
   popup_carregando(true);
 }

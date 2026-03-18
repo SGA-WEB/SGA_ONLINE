@@ -6,7 +6,7 @@ import tipos_de_entrada from "../tipos_de_entrada.js";
 
 export default function editar_tipo_de_entrada(dado, telaAnteriorVisualizar) {
     select2("100%")
-   
+
     document.querySelector("#btn_voltar_tipos_de_entrada").addEventListener("click", () => {
         carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"),false, tipos_de_entrada)
     })
@@ -22,11 +22,11 @@ export default function editar_tipo_de_entrada(dado, telaAnteriorVisualizar) {
     document.querySelector("#hab_nf").checked = dado.habilita_nf
     document.querySelector("#atualiza_produto").checked = dado.atualiza_produto
     document.querySelector("#padrao").checked = dado.padrao
-    
+
     document.querySelector(".btn_salvar").addEventListener("click", async () => {
         salvarEdicao(dado.id_tipo_de_entrada)
         async function salvarEdicao(id_tipo_de_entrada) {
-            // const data_cadastro = document.querySelector(".data_cadastro").textContent 
+            // const data_cadastro = document.querySelector(".data_cadastro").textContent
             // const id_tipo_de_cadastro = document.querySelector(".id_tipo_de_entrada").textContent
             const descricao = document.querySelector("#descricao").value
             const cfop_dentro = document.querySelector("#cfop_dentro").value
@@ -38,7 +38,7 @@ export default function editar_tipo_de_entrada(dado, telaAnteriorVisualizar) {
             const habilita_nf = document.querySelector("#hab_nf").checked
             const atualiza_produto = document.querySelector("#atualiza_produto").checked
             const padrao = document.querySelector("#padrao").checked
-            
+
             console.log(hab_nf, movimenta_estoque)
             popup_carregando()
             try {
@@ -53,7 +53,7 @@ export default function editar_tipo_de_entrada(dado, telaAnteriorVisualizar) {
                 const data = await response.json();
 
                 if (response.ok) {
-                    const novoDado = { 
+                    const novoDado = {
                         // objeto para atualizar a tela de visualizar comforme os novos dados
                         descricao: descricao,
                         cfop_fora: cfop_fora,
@@ -66,7 +66,6 @@ export default function editar_tipo_de_entrada(dado, telaAnteriorVisualizar) {
                         atualiza_produto: atualiza_produto,
                         padrao: padrao,
                     }
-                    console.log(novoDado)
                     popup_carregando(true)
                     carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada, novoDado)
                     popup_aviso("Tipo de entrada alterado com sucesso!")
@@ -82,5 +81,5 @@ export default function editar_tipo_de_entrada(dado, telaAnteriorVisualizar) {
     document.querySelector(".btn_cancelar").addEventListener("click", () => {
         carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada, dado)
     })
-    
+
 }

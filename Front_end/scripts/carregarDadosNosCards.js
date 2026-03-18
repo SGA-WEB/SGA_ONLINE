@@ -88,7 +88,7 @@ export default function carregarDadosNosCards(dados, colunasBancoDeDados, coluna
         let conainerCRUD = document.createElement('div')
         conainerCRUD.setAttribute('class', 'container_CRUD')
         card.appendChild(conainerCRUD)
-        crudLayout(objDado, conainerCRUD)
+        crudLayout(objDadoCompleto, conainerCRUD)
 
         container.appendChild(card)
     })

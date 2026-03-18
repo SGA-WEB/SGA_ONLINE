@@ -3,10 +3,14 @@ import { popup_aviso, popup_carregando, popup_erro } from "../../../scripts/popu
 import select2 from "../../../scripts/select.js";
 import { dataAtual } from "../../../scripts/funcionalidades.js";
 import tipo_de_saida from "../tipo_de_saida.js";
+import buscarDados from "../../../scripts/buscarDados.js";
 
-export default function cadastro_tipo_saida() {
+export default async function cadastro_tipo_saida() {
     select2("100%")
     dataAtual()
+
+    let proximo_id_tipos_de_saida = await buscarDados('proximo_id_tipos_de_saida');
+    document.querySelector(".codigo_id").innerHTML = proximo_id_tipos_de_saida.proximo_id;
 
     document.querySelector("#btn_voltar_tipos_de_saida").addEventListener("click", () => {
         carregarConteudo("tipo_de_saida/tipo_de_saida.html", document.querySelector(".principal"), false, tipo_de_saida);
@@ -28,8 +32,6 @@ export default function cadastro_tipo_saida() {
             baixa_perda_quebra: document.getElementById('baixa_perda_quebra').checked,
             saida_uso_consumo: document.getElementById('saida_uso_consumo').checked
         };
-
-        console.log(data)
 
         try {
             const response = await fetch('http://localhost:3000/tipos_de_saida', {

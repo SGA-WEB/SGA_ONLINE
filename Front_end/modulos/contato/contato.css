@@ -115,7 +115,7 @@
 @media (max-width: 640px) {
     #menu_lateral {
         padding: 0px;
-        opacity: 0.85;
+        opacity: 0.92;
         position: fixed;
         height: calc(100dvh - 87px);
         z-index: 7;

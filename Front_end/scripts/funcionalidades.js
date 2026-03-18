@@ -23,8 +23,6 @@ function visibilidadeSenha(senha, img) {
     // Obter o caminho base correto para as imagens
     let path = getBasePath();
 
-    console.log(path)
-
     if (senha.type === 'password') {
         senha.type = 'text';
         img.src = `../${path}visibility_off.png`;
@@ -53,13 +51,13 @@ function dataAtual() {
     }
 }
 
-function formatarData(data, formatoUSA = false) {
+function formatarData(data, formatoUSA = false, separador = '/') {
     if (data) {
         let data_cadastro = data.split("T")[0] // Retira o horário
         const [ano, mes, dia] = data_cadastro.split('-'); // Separa o ano, mes e dia
-        data_cadastro = `${dia} / ${mes} / ${ano}`; // Formata a data
+        data_cadastro = `${dia} ${separador} ${mes} ${separador} ${ano}`; // Formata a data
         if (formatoUSA) {
-            data_cadastro = `${ano}/${mes}/${dia}`; // Formata a data para o formato USA
+            data_cadastro = `${ano}${separador}${mes}${separador}${dia}`; // Formata a data para o formato USA
         }
         return data_cadastro
     }

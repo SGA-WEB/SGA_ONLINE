@@ -108,9 +108,9 @@ export default async function cadastro_saida_produtos(dados) {
         })
 
         carregarDadosNaTabela(
-            novosDados, 
-            ["id_produto", "produto", "quantidade","preco_varejo", "desconto_item", "valor_total"], 
-            document.querySelector("#tabela_produtos tbody"), 
+            novosDados,
+            ["id_produto", "produto", "quantidade","preco_varejo", "desconto_item", "valor_total"],
+            document.querySelector("#tabela_produtos tbody"),
             true,
             false
         )
@@ -126,7 +126,7 @@ export default async function cadastro_saida_produtos(dados) {
                 tr.remove(tr)
 
                 idProdutosSelecionados = idProdutosSelecionados.filter(id => id !== id_tr);
-                produtosRelacionados = produtosRelacionados.filter(produto => {console.log(produto.id_produto, parseInt(id_tr)); return produto.id_produto !== parseInt(id_tr)});
+                produtosRelacionados = produtosRelacionados.filter(produto => {return produto.id_produto !== parseInt(id_tr)});
                 calcularValorTotal();
             });
         });
