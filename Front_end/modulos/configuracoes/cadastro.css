@@ -15,7 +15,6 @@
     flex-direction: column;
     width: max-content;
     padding: 0 .5rem 0 0;
-    background-color: var(--cinza1-2);
     border-radius: 5px;
 }
 

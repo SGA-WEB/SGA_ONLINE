@@ -10,6 +10,7 @@ import { popup_carregando } from "../../scripts/popup.js";
 export default async function tipos_de_entrada () {
     popup_carregando(false, "Carregando tipos de entrada...");
     let dados = await buscarDados('tipos_entrada')
+    console.log(dados)
     const colunas = ["id_tipo_de_entrada", "descricao", "cfop_dentro", "cfop_fora", "ativo"]
 
     select2("fit-content")
