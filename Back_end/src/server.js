@@ -109,44 +109,84 @@ app.use((err, req, res, next) => {
 
 //// 🔐 Rota para validar o login
 // Rota para validar o login (POST)
+// Exemplo de como deve ser a sua rota de login no server.js
 app.post('/api/login', async (req, res) => {
+    const { email, senha } = req.body;
+
     try {
-        const { email, senha } = req.body;
+        // Busca o usuário batendo email e senha
+        // NOTA: Em produção, NUNCA busque a senha em texto limpo. Isso é apenas para seu cenário atual.
+        const query = 'SELECT id_usuario, nome, email, grupo FROM sga.usuario WHERE email = $1 AND senha = $2';
+        const { rows } = await pool.query(query, [email, senha]);
 
-        // Validações básicas
-        if (!email || !senha) {
-            return res.status(400).json({ error: 'E-mail e senha são obrigatórios' });
+        if (rows.length === 0) {
+            return res.status(401).json({ sucesso: false, erro: 'Email ou senha incorretos' });
         }
 
-        // Verifica se o e-mail existe no banco de dados
-        const userResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1', [email]);
+        const usuarioLogado = rows[0];
+        console.log('Usuário logado:', usuarioLogado);
 
-        if (userResult.rows.length === 0) {
-            return res.status(404).json({ error: 'E-mail não encontrado' });
-        }
+        // Retorna sucesso e os dados do usuário (NÃO retorne a senha)
+        res.status(200).json({
+            sucesso: true,
+            mensagem: 'Login realizado com sucesso',
+            usuario: usuarioLogado 
+        });
 
-        // Verifica se a senha está correta
-        const senhaResult = await pool.query('SELECT * FROM sga.usuario WHERE email = $1 AND senha = $2', [email, senha]);
-
-        if (senhaResult.rows.length === 0) {
-            return res.status(401).json({ error: 'Senha incorreta' });
-        }
-
-        // Cria a sessão do usuário
-        req.session.user = {
-            id: userResult.rows[0].id_usuario,
-            nome: userResult.rows[0].nome,
-            email: userResult.rows[0].email
-        };
-
-        res.json({ message: 'Login bem-sucedido' });
-
-    } catch (error) {
-        console.error('Erro interno no servidor:', error);
-        res.status(500).json({ error: 'Erro interno no servidor' });
+    } catch (err) {
+        console.error('Erro no login:', err);
+        res.status(500).json({ sucesso: false, erro: 'Erro interno no servidor' });
     }
 });
 
+app.get('/api/usuarios/:id', async (req, res) => {
+    // Extrai o ID que vem na URL (ex: /api/usuarios/1)
+    const { id } = req.params;
+
+    try {
+        // SELECT explícito: trazemos apenas os dados seguros e necessários para a tela.
+        // A coluna 'senha' foi intencionalmente deixada de fora.
+        const query = `
+            SELECT 
+                id_usuario, 
+                nome, 
+                email, 
+                celular, 
+                data_criacao, 
+                grupo, 
+                data_cadastro,
+                senha
+            FROM 
+                sga.usuario 
+            WHERE 
+                id_usuario = $1
+        `;
+
+        const { rows } = await pool.query(query, [id]);
+
+        // Se o array de resultados estiver vazio, o usuário não existe
+        if (rows.length === 0) {
+            return res.status(404).json({ 
+                sucesso: false, 
+                erro: 'Usuário não encontrado.' 
+            });
+        }
+
+        // Retorna sucesso e o objeto com os dados do usuário
+        res.status(200).json({
+            sucesso: true,
+            usuario: rows[0]
+        });
+
+    } catch (error) {
+        console.error(`Erro ao buscar usuário com ID ${id}:`, error);
+        res.status(500).json({ 
+            sucesso: false, 
+            erro: 'Erro interno do servidor ao buscar dados do usuário.',
+            detalhes: error.message 
+        });
+    }
+});
 
 //TESTE DE ROTA
 app.get('/api/testar-sessao', (req, res) => {
@@ -272,6 +312,44 @@ app.get('/api/proximo_id_orcamento', async (req, res) => {
         res.status(500).json({
             sucesso: false,
             erro: 'Erro ao buscar próximo ID de orcamento',
+            detalhes: err.message
+        });
+    }
+});
+
+// Endpoint para obter o próximo ID de Tipos de Saída
+app.get('/api/proximo_id_tipos_de_saida', async (req, res) => {
+    try {
+        // 1. Descobre dinamicamente o nome da sequence associada à tabela e coluna
+        const sequenceNameQuery = `SELECT pg_get_serial_sequence('sga.tipos_de_saida', 'id_tipos_de_saida')`;
+        const sequenceResult = await pool.query(sequenceNameQuery);
+
+        // Se não encontrar a sequence, usa o fallback do MAX(ID)
+        if (sequenceResult.rows.length === 0 || !sequenceResult.rows[0].pg_get_serial_sequence) {
+             console.warn('Sequence não encontrada via pg_get_serial_sequence. Usando fallback MAX(id).');
+             const maxIdResult = await pool.query(`SELECT COALESCE(MAX(id_tipos_de_saida), 0) + 1 AS proximo_id FROM sga.tipos_de_saida`);
+             return res.json(maxIdResult.rows[0]);
+        }
+
+        const nomeCorretoSequence = sequenceResult.rows[0].pg_get_serial_sequence;
+
+        // 2. Consulta o próximo valor usando o nome correto da sequence
+        const query = `SELECT last_value + 1 AS proximo_id FROM ${nomeCorretoSequence}`;
+        const { rows } = await pool.query(query);
+
+        // Verifica se a sequence retornou um valor válido
+        if (rows.length === 0 || rows[0].proximo_id === null) {
+            const maxIdResult = await pool.query(`SELECT COALESCE(MAX(id_tipos_de_saida), 0) + 1 AS proximo_id FROM sga.tipos_de_saida`);
+            return res.json(maxIdResult.rows[0]);
+        }
+
+        res.json(rows[0]);
+
+    } catch (err) {
+        console.error('Erro ao buscar próximo ID de tipos_de_saida:', err);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao buscar próximo ID de tipos_de_saida',
             detalhes: err.message
         });
     }

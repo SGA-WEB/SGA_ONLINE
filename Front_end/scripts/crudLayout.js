@@ -213,6 +213,7 @@ export default function crudLayout(dadosTabela, tr, addListener = true) {
                         dadosTabela
                     )
                 }
+                break;
             case "orcamento":
                 if (acao == "excluir") {
                     funcoes[`excluir_orcamento`](dadosTabela)

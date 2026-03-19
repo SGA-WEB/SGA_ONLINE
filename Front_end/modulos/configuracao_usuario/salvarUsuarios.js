@@ -3,7 +3,6 @@ import { mudarLogoParaPadrao } from "../../scripts/javaScript.js";
 
 export default function salvarUsuario(dado) {
     'use strict';
-    dado = dado[0];
 
     // Preenche os campos do formulário
     document.querySelector("#campo_editar_nome").value = dado.nome;

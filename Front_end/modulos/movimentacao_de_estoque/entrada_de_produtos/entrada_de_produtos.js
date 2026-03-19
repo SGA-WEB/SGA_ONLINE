@@ -5,6 +5,7 @@ import { carregarConteudo } from "../../../scripts/javaScript.js";
 import select2 from "../../../scripts/select.js";
 import cadastro_entrada_produtos from "./cadastro_entrada_produtos/cadastro_entrada_produtos.js";
 import carregarDadosNosCards from "../../../scripts/carregarDadosNosCards.js";
+import { fecharMenu } from "../../../scripts/javaScript.js";
 
 export default async function entrada_de_produtos() {
     select2("10rem")
@@ -69,4 +70,24 @@ export default async function entrada_de_produtos() {
             dados
         )
     })
+
+    let widthModulo = document.querySelector(".modulo").offsetWidth;
+
+    window.addEventListener("resize", () => {
+        if (document.querySelector(".tabela")) {
+            fecharMenu(document.querySelector(".tabela").offsetWidth, 510)
+        }
+
+        widthModulo = document.querySelector(".modulo").offsetWidth
+
+        // Mostra o modo card quando o body for menor que 600px
+        if (widthModulo <= 510 && !btn_change_view_mode.classList.contains("card_mode")) {
+            btn_change_view_mode.click()
+        }
+    })
+
+    // Assim que a tela é carregada se o body for menor que 510px mostra a tabela em modo card
+    if (widthModulo <= 510) {
+        btn_change_view_mode.click()
+    }
 }

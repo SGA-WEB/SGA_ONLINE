@@ -50,12 +50,14 @@ function mudarLogoParaPadrao(nome) { // Muda a logo do usuário de acordo com o 
 // Alterar foto de perfil comforme a imagem do banco de dados (supabase):
 const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
 const data = await response.json();
-const usuario = await buscarDados("usuarios")
-document.querySelector("#nome_usuario").textContent = usuario[0].nome; // Altera o nome do usuário na tela principal
+const usuario = localStorage.getItem('usuarioLogadoNome')
+document.querySelector("#nome_usuario").textContent = usuario; // Altera o nome do usuário na tela principal
 if (data.error) {
     mudarLogoParaPadrao()
-} else {
+} else if (data.imageUrl) {
     alterarImgPerfil(data.imageUrl)
+} else {
+    mudarLogoParaPadrao(usuario.usuarioLogadoNome)
 }
 // mudarLogoParaPadrao()
 
@@ -361,7 +363,7 @@ window.addEventListener("resize", () => {
     }
 
     if (widthBody <= 480) {
-        btn_change_view_mode = document.querySelector(".btn_change_view_mode");
+        let btn_change_view_mode = document.querySelector(".btn_change_view_mode");
         if (btn_change_view_mode) {
 
         }
@@ -427,6 +429,14 @@ document.addEventListener("click", (e) => {
         usuario_seta.style.transform = "rotate(0deg)"
         usuario_seta.style.transition = ".1s"
     }
+})
+
+// Sair do sistema:
+
+let btn_sair_do_sistema = document.querySelector("#btn_sair_do_sistema")
+btn_sair_do_sistema.addEventListener("click", () => {
+    localStorage.clear() // Limpa o localStorage
+    window.location.href = "../SGA_online-login/index.html" // Redireciona para a página de login
 })
 
 // =======================================================

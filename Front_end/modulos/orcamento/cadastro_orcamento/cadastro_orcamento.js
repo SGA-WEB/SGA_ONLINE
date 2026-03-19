@@ -19,6 +19,10 @@ export default async function cadastro_orcamento(dados) {
 
     let clientesFiltrados = []
 
+    document.querySelector(".btn_voltar").addEventListener("click", () => {
+        carregarConteudo("orcamento/orcamento.html", document.querySelector(".principal"))
+    })
+
     clientes.forEach(contato => {
         contato.categorias.forEach(categoria => {
             if (categoria.nome === "CLIENTE") {

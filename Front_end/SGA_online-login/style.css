@@ -259,6 +259,16 @@ body {
   display: none;
 }
 
+.container_popups {
+  top: 50px;
+  right: 50px !important;
+}
+
+.popup_erro button {
+  background-color: transparent;
+  border: none;
+}
+
 /* Media query para telas menores que 768px */
 @media (max-width: 768px) {
   /* Define layout em coluna */

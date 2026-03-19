@@ -75,7 +75,7 @@ export default async function centro_de_estoque() {
     })
 
     // Assim que a tela é carregada se o body for menor que 510px mostra a tabela em modo card
-    if (widthModuloh <= 510) {
+    if (widthModulo <= 510) {
         btn_change_view_mode.click()
     }
 }
