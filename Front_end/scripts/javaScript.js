@@ -29,7 +29,7 @@ import tipo_de_saida from "../modulos/tipo_de_saida/tipo_de_saida.js";
 import saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_de_produtos/saida_de_produtos.js";
 import orcamento from "../modulos/orcamento/orcamento.js";
 
-function mudarLogoParaPadrao(nome) { // Muda a logo do usuário de acordo com o nome de
+function mudarLogoParaPadrao(nome = "matheus") { // Muda a logo do usuário de acordo com o nome de
     let div_logo_usuario = document.querySelectorAll(".logo_usuario");
     div_logo_usuario.forEach(e => {
         // Pega a primeira letra do primeiro nome e a primeira letra do ultimo nome no nome do usuário:
