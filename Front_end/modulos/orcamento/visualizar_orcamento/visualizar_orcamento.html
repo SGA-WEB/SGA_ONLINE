@@ -1,16 +1,16 @@
 <section class="modulo" id="modulo_visualizar_orcamento">
-   <menu class="menu_btns space_between align_center">
+    <menu class="menu_btns space_between align_center">
         <button class="btn_nav" id="btn_voltar_orcamento">
             <img src="..//..//../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
             <p class="btn_voltar">Voltar</p>
         </button>
         <div class="container_btns space_between">
             <button class="btn_editar btn btn2">
-                <img src="..//..//../imagens/icone_editar.svg" alt="icone_editar" >
+                <img src="..//..//../imagens/icone_editar.svg" alt="icone_editar">
                 <p>Editar</p>
             </button>
             <button class="btn_excluir btn btn5">
-                <img src="..//..//../imagens/icone_excluir.svg" alt="icone_editar" >
+                <img src="..//..//../imagens/icone_excluir.svg" alt="icone_editar">
                 <p>Excluir</p>
             </button>
         </div>
@@ -31,13 +31,12 @@
             <div class="container_small_width" id="container_radios">
                 <div class="campo_contato small_width select_conainer">
                     <p>Cliente:<span class="campo_obrigatorio">*</span></p>
-                    <select id="cliente" class="campo_select" name="cliente" required>
-                        <option value=""></option>
-                    </select>
+                    <input disabled id="cliente" class="campo_input" name="cliente" required>
+
                 </div>
                 <div class="campo_contato small_width select_conainer">
                     <p>Status:<span class="campo_obrigatorio">*</span></p>
-                    <select id="status" class="campo_select" name="status" required>
+                    <select disabled id="status" class="campo_input" name="status" required>
                         <option value=""></option>
                         <option value="FINALIZADO">FINALIZADO</option>
                         <option value="PENDENTE">PENDENTE</option>
@@ -48,29 +47,34 @@
 
             <div class="container_small_width">
                 <div class="campo_contato small_width">
-                    <label for="data_emissao">Data de Emissão:<span class="campo_obrigatorio">*</span></label>
-                    <input type="date" name="data_emissao" id="data_emissao" class="campo_input" required>
+                    <label for="criado_por">Criado Por:<span class="campo_obrigatorio">*</span></label>
+                    <input disabled type="text" name="criado_por" id="criado_por" class="campo_input" required>
                 </div>
                 <div class="campo_contato small_width">
-                    <label for="data_recebimento">Data de Recebimento:<span class="campo_obrigatorio">*</span></label>
-                    <input type="date" name="data_recebimento" id="data_recebimento" class="campo_input" required>
+                    <label for="subtotal">Subtotal:<span class="campo_obrigatorio">*</span></label>
+                    <input disabled type="text" name="subtotal" id="subtotal" class="campo_input" required>
                 </div>
             </div>
-            <div class="container_small_width" id="container_radios">
-                <div class="campo_contato small_width select_conainer">
-                    <p>Criado por:<span class="campo_obrigatorio">*</span></p>
-                    <select id="criado_por" class="campo_select" name="criado_por" required>
-                        <option value=""></option>
-                    </select>
+            <div class="container_small_width">
+                <div class="campo_contato small_width">
+                    <label for="valor_desconto">Valor do Desconto:<span class="campo_obrigatorio">*</span></label>
+                    <input disabled type="text" name="valor_desconto" id="valor_desconto" class="campo_input" required>
                 </div>
+                <div class="campo_contato small_width">
+                    <label for="valor_total">Total:<span class="campo_obrigatorio">*</span></label>
+                    <input disabled type="text" name="valor_total" id="valor_total" class="campo_input" required>
+                </div>
+            </div>
+            <div class="container_small_width">
+                <div class="campo_contato small_width">
+                    <label for="observação">Observação:<span class="campo_obrigatorio">*</span></label>
+                    <input disabled type="text" name="observação" id="observação" class="campo_input" required>
+                </div>
+                
             </div>
         </div>
         </div>
         <h3 class="h3_titulo">Produtos relacionados:<span class="campo_obrigatorio">*</span></h3>
-        <button type="button" class="btn_add" id="btn_adicionar_relacao">
-            <img src="../imagens/btn_add.svg" alt="Icone Adicionar">
-            <span>Adicionar relação</span>
-        </button>
 
         <div class="container_tabela">
             <table class="tabela" id="tabela_produtos">
