@@ -53,7 +53,7 @@ const data = await response.json();
 const usuario = localStorage.getItem('usuarioLogadoNome')
 document.querySelector("#nome_usuario").textContent = usuario; // Altera o nome do usuário na tela principal
 if (data.error) {
-    mudarLogoParaPadrao()
+    mudarLogoParaPadrao(usuario)
 } else if (data.imageUrl) {
     alterarImgPerfil(data.imageUrl)
 } else {
