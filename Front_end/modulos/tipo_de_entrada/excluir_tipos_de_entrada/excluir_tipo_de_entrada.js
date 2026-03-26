@@ -1,9 +1,9 @@
-import { popup, popup_aviso, popup_carregando, popup_erro, popup_confirmar } from "../../../scripts/popup.js";
+import { popup, popup_aviso, popup_carregando, popup_erro, popup_confirmar, popup_confirmar_exclusao } from "../../../scripts/popup.js";
 import buscarDados from "../../../scripts/buscarDados.js"; // Importa a função que busca os dados da tabela
 import { carregarDadosNaTabela } from "../../../scripts/carregarDadosNaTabela.js";
 
 export default async function excluir_tipos_de_entrada(dado, callbackFunction, ...param) {
-    let confirmacao = await popup_confirmar(`Tem certeza que deseja excluir o tipo de entrada ${dado.id_tipo_de_entrada} - ${dado.descricao}?`)
+    let confirmacao = await popup_confirmar_exclusao(`Tem certeza que deseja excluir o tipo de entrada ${dado.id_tipo_de_entrada} - ${dado.descricao}?`)
 
     if (confirmacao) {
         popup_carregando()
