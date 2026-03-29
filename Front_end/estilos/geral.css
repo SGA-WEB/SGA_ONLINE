@@ -56,6 +56,10 @@
     justify-content: end;
 }
 
+.flex {
+    display: flex !important;
+}
+
 .margin_left_auto {
     margin-left: auto;
 }
