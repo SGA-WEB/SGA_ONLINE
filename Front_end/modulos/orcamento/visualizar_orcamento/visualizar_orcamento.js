@@ -3,6 +3,7 @@ import { carregarConteudo } from "../../../scripts/javaScript.js"
 import { formatarData } from "../../../scripts/funcionalidades.js"
 import buscarDados from "../../../scripts/buscarDados.js"
 import { carregarDadosNaTabela } from "../../../scripts/carregarDadosNaTabela.js"
+import excluir_orcamento from "../excluir_orcamento.js"
 
 export default async function visualizar_orcamento (dado) {
     select2("100%")
@@ -17,6 +18,14 @@ export default async function visualizar_orcamento (dado) {
     const orcamento_itens_data = await orcamento_itens.itens
 
     carregarDadosNaTabela(orcamento_itens_data, ["id_item", "nome_produto", "quantidade", "valor_unitario", "desconto_item", "valor_total_item"], document.querySelector(".tbody"), false, false)
+
+    document.querySelector(".btn_editar").addEventListener("click", ()=>{
+        carregarConteudo("orcamento/editar_orcamento/editar_orcamento.html", document.querySelector(".principal"))
+    })
+
+    document.querySelector(".btn_excluir").addEventListener("click", ()=>{
+        excluir_orcamento(dado)
+    })
 
     document.querySelector("#btn_voltar_orcamento").addEventListener("click", ()=>{
         carregarConteudo("orcamento/orcamento.html", document.querySelector(".principal"))
