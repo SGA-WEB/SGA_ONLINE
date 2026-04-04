@@ -351,6 +351,11 @@
     z-index: 4;
 }
 
+.popup_alerta .icone_alerta {
+    margin: auto;
+    margin-top: 1rem;
+}
+
 #popup_excluir .btn_fechar_popup {
     position: static;
 }
