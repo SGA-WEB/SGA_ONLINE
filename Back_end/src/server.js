@@ -2089,6 +2089,52 @@ app.post('/orcamento', async (req, res) => {
     }
 });
 
+// Endpoint para buscar os itens de um orçamento específico
+app.get('/api/orcamentos/:id/itens', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const query = `
+            SELECT
+                oi.id_item,
+                oi.orcamento_id,
+                oi.produto_id,
+                p.produto AS nome_produto,
+                oi.quantidade,
+                oi.valor_unitario,
+                oi.desconto_item,
+                oi.valor_total_item
+            FROM sga.orcamento_itens oi
+            JOIN sga.produto p ON oi.produto_id = p.id_produto
+            WHERE oi.orcamento_id = $1 AND oi.inativo = false
+            ORDER BY oi.id_item
+        `;
+
+        const result = await pool.query(query, [id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Nenhum item encontrado para este orçamento ou orçamento não existe'
+            });
+        }
+
+        res.status(200).json({
+            sucesso: true,
+            quantidade_itens: result.rows.length,
+            itens: result.rows
+        });
+
+    } catch (error) {
+        console.error('Erro ao buscar itens do orçamento:', error);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao buscar itens do orçamento',
+            detalhes: error.message
+        });
+    }
+});
+
 // Rota GET para listar todos os tipos_entrada
 app.get('/api/tipos_entrada', async (req, res) => {
     try {

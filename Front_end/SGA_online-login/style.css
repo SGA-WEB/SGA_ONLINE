@@ -269,6 +269,11 @@ body {
   border: none;
 }
 
+.btn_fechar_popup {
+  background-color: transparent;
+  border: none;
+}
+
 /* Media query para telas menores que 768px */
 @media (max-width: 768px) {
   /* Define layout em coluna */

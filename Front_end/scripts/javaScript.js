@@ -29,12 +29,24 @@ import tipo_de_saida from "../modulos/tipo_de_saida/tipo_de_saida.js";
 import saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_de_produtos/saida_de_produtos.js";
 import orcamento from "../modulos/orcamento/orcamento.js";
 
-function mudarLogoParaPadrao(nome = "matheus") { // Muda a logo do usuário de acordo com o nome de
+async function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com o nome
+    let usuarioNome = localStorage.getItem('usuarioLogadoNome')
+
+    if (!usuarioNome) {
+        const usuario_dados = await buscarDados("usuarios")
+        usuarioNome = usuario_dados[0].nome
+
+        localStorage.setItem('usuarioLogadoId', usuario_dados[0].id_usuario);
+        localStorage.setItem('usuarioLogadoNome', usuario_dados[0].nome);
+    }
+
+    document.querySelector("#nome_usuario").textContent = usuarioNome; // Altera o nome do usuário na tela principal
+
     let div_logo_usuario = document.querySelectorAll(".logo_usuario");
     div_logo_usuario.forEach(e => {
         // Pega a primeira letra do primeiro nome e a primeira letra do ultimo nome no nome do usuário:
         let nome_usuario = document.querySelector("#nome_usuario").textContent.trim();
-        if (nome) nome_usuario = nome;
+        if (usuarioNome) nome_usuario = usuarioNome;
         let nome_completo = nome_usuario.split(" ");
         let primeira_letra_primeiro_nome = nome_completo[0][0].toUpperCase();
         let primeira_letra_ultimo_nome = nome_completo[nome_completo.length - 1][0].toUpperCase();
@@ -50,16 +62,12 @@ function mudarLogoParaPadrao(nome = "matheus") { // Muda a logo do usuário de a
 // Alterar foto de perfil comforme a imagem do banco de dados (supabase):
 const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
 const data = await response.json();
-const usuario = localStorage.getItem('usuarioLogadoNome')
-document.querySelector("#nome_usuario").textContent = usuario; // Altera o nome do usuário na tela principal
-if (data.error) {
-    mudarLogoParaPadrao()
-} else if (data.imageUrl) {
+
+if (data.imageUrl) {
     alterarImgPerfil(data.imageUrl)
 } else {
-    mudarLogoParaPadrao(usuario.usuarioLogadoNome)
+    mudarLogoParaPadrao()
 }
-// mudarLogoParaPadrao()
 
 let btns_modulos = document.querySelectorAll("#menu_lateral .btn, .item_dropdown:not(.subitem)") // Seleciona todos os botões dos modulos
 btns_modulos.forEach(e => {
