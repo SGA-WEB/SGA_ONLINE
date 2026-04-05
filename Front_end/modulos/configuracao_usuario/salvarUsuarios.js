@@ -40,6 +40,9 @@ export default function salvarUsuario(dado) {
 
             if (response.ok) {
                 document.querySelector("#nome_usuario").textContent = nome; // Atualiza o nome do usuário na tela principal
+                localStorage.setItem('usuarioLogadoId', dado.id_usuario);
+                localStorage.setItem('usuarioLogadoNome', nome);
+                mudarLogoParaPadrao();
                 popup_aviso('Usuário atualizado com sucesso!');
             } else {
                 const errorData = await response.json();

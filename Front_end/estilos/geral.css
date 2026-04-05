@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 :root {
     --cinza1: #F6F6F6;
     --cinza1-2: #f2f2f2;
@@ -347,6 +349,11 @@
     max-width: 21rem;
     padding: 0;
     z-index: 4;
+}
+
+.popup_alerta .icone_alerta {
+    margin: auto;
+    margin-top: 1rem;
 }
 
 #popup_excluir .btn_fechar_popup {

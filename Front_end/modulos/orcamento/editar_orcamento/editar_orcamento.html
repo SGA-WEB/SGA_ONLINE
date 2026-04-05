@@ -6,6 +6,7 @@
         </button>
         </div>
     </menu>
+
     <div class="modulo_header header_cadastro">
         <h2 class="h2_titulo">Editar Orçamento</h2>
         <div class="container_codigo_data">
@@ -18,44 +19,32 @@
     </div>
 
     <form id="form_orcamento">
-        <div class="modulo_main">
-            <div class="container_small_width" id="container_radios">
-                <div class="campo_contato small_width select_conainer">
-                    <p>Cliente:<span class="campo_obrigatorio">*</span></p>
-                    <select id="cliente" class="campo_select" name="cliente" required>
-                        <option value=""></option>
-                    </select>
-                </div>
-                <div class="campo_contato small_width select_conainer">
-                    <p>Status:<span class="campo_obrigatorio">*</span></p>
-                    <select id="status" class="campo_select" name="status" required>
-                        <option value=""></option>
-                        <option value="FINALIZADO">FINALIZADO</option>
-                        <option value="PENDENTE">PENDENTE</option>
-                        <option value="CONCLUÍDO">CONCLUÍDO</option>
-                    </select>
-                </div>
+        <div class="modulo_main flex! flex-wrap">
+            <div class="campo_contato small_width select_conainer">
+                <p>Cliente:<span class="campo_obrigatorio">*</span></p>
+                <select id="cliente" class="campo_select" name="cliente" required>
+                    <option value=""></option>
+                </select>
             </div>
-
-            <div class="container_small_width">
-                <div class="campo_contato small_width">
-                    <label for="data_emissao">Data de Emissão:<span class="campo_obrigatorio">*</span></label>
-                    <input type="date" name="data_emissao" id="data_emissao" class="campo_input" required>
-                </div>
-                <div class="campo_contato small_width">
-                    <label for="data_recebimento">Data de Recebimento:<span class="campo_obrigatorio">*</span></label>
-                    <input type="date" name="data_recebimento" id="data_recebimento" class="campo_input" required>
-                </div>
+            <div class="campo_contato small_width select_conainer">
+                <p>Status:<span class="campo_obrigatorio">*</span></p>
+                <select id="status" class="campo_select" name="status" required>
+                    <option value=""></option>
+                    <option value="FINALIZADO">FINALIZADO</option>
+                    <option value="PENDENTE">PENDENTE</option>
+                    <option value="CONCLUÍDO">CONCLUÍDO</option>
+                </select>
             </div>
-            <div class="container_small_width" id="container_radios">
-                <div class="campo_contato small_width select_conainer">
-                    <p>Criado por:<span class="campo_obrigatorio">*</span></p>
-                    <select id="criado_por" class="campo_select" name="criado_por" required>
-                        <option value=""></option>
-                    </select>
-                </div>
+            <div class="campo_contato small_width">
+                <label for="desconto_total">Desconto Total:</label>
+                <input type="number" name="desconto_total" id="desconto_total" class="campo_input">
             </div>
-        </div>
+            <div class="campo_contato small_width select_conainer">
+                <p>Criado por:<span class="campo_obrigatorio">*</span></p>
+                <select id="criado_por" class="campo_select" name="criado_por" required>
+                    <option value=""></option>
+                </select>
+            </div>
         </div>
 
         <h3 class="h3_titulo">Produtos relacionados:<span class="campo_obrigatorio">*</span></h3>
@@ -73,7 +62,7 @@
                         <th id="tabela_quantidade">Qtde.</th>
                         <th id="tabela_preco_varejo">Valor Unitario</th>
                         <th id="tabela_preco_atacado">Desconto</th>
-                        <th id="tabela_preco_atacado">Valor Total</th>
+                        <th id="tabela_valor_total">Valor Total</th>
                     </tr>
                 </thead>
                 <tbody class="tbody">

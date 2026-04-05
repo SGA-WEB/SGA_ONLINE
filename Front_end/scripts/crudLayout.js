@@ -226,6 +226,7 @@ export default function crudLayout(dadosTabela, tr, addListener = true) {
                         dadosTabela
                     )
                 }
+                break;
             default:
                 console.warn(`Nenhuma ação definida para ${nomeTabelaAtual}`);
                 break;
