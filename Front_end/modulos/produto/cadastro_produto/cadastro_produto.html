@@ -1,5 +1,5 @@
 <section class="modulo" id="modulo_cadastro_produto">
-    <button class="btn_nav" id="btn_voltar_produtos">
+    <button class="btn_nav" id="btn_voltar_produtos" type="button">
         <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
         <p class="btn_voltar">Voltar</p>
     </button>
@@ -13,55 +13,59 @@
             </div>
         </div>
     </div>
-    <div class="modulo_main">
-        <div class="campo_contato normal_width">
-            <label for="produto">Nome do Produto:<span class="campo_obrigatorio">*</span></label>
-            <input type="text" name="produto" id="produto" class="campo_input" required>
+
+    <form id="form_cadastro_produto">
+        <div class="modulo_main">
+            <div class="campo_contato normal_width">
+                <label for="produto">Nome do Produto:<span class="campo_obrigatorio">*</span></label>
+                <input type="text" name="produto" id="produto" class="campo_input" required>
+            </div>
+            <div class="container_small_width" id="container_radios">
+                <div class="campo_contato small_width">
+                    <label for="preco_varejo">Valor Varejo:<span class="campo_obrigatorio">*</span></label>
+                    <input type="number" name="preco_varejo" id="preco_varejo" class="campo_input" required>
+                </div>
+                <div class="campo_contato small_width">
+                    <label for="preco_atacado">Valor Atacado:<span class="campo_obrigatorio">*</span></label>
+                    <input type="number" name="preco_atacado" id="preco_atacado" class="campo_input" required>
+                </div>
+            </div>
+            <div class="container_small_width">
+                <div class="campo_contato small_width">
+                    <label for="quantidade">Quantidade em Estoque:<span class="campo_obrigatorio">*</span></label>
+                    <input type="number" name="quantidade" id="quantidade" class="campo_input" required>
+                </div>
+                <div class="campo_contato small_width select_conainer">
+                    <p>Centro de Estoque:<span class="campo_obrigatorio">*</span></p>
+                    <select id="id_centro_estoque" name="id_centro_estoque" class="campo_select" required>
+                    </select>
+                </div>
+            </div>
+            <div class="container_small_width">
+                <div class="campo_contato small_width">
+                    <label for="corredor">Corredor:</label>
+                    <input type="text" name="corredor" id="corredor" class="campo_input">
+                </div>
+                <div class="campo_contato small_width">
+                    <label for="prateleira">Prateleira:</label>
+                    <input type="text" name="prateleira" id="prateleira" class="campo_input">
+                </div>
+            </div>
+            <div class="campo_contato normal_width">
+                <label for="descricao">Descrição:</label>
+                <textarea name="descricao" id="descricao" class="textarea" rows="4"></textarea>
+            </div>
         </div>
-        <div class="container_small_width" id="container_radios">
-            <div class="campo_contato small_width">
-                <label for="preco_varejo">Valor Varejo:<span class="campo_obrigatorio">*</span></label>
-                <input type="number" name="preco_varejo" id="preco_varejo" class="campo_input" required>
-            </div>
-            <div class="campo_contato small_width">
-                <label for="preco_atacado">Valor Atacado:<span class="campo_obrigatorio">*</span></label>
-                <input type="number" name="preco_atacado" id="preco_atacado" class="campo_input" required>
-            </div>
+        <div class="space_between">
+            <button type="button" class="btn btn2 btn_cancelar" id="btn_cancelar_produto">
+                <img src="..//..//../imagens/icone_fechar.svg" alt="Icone Fechar">
+                <p>Cancelar</p>
+            </button>
+            <button type="submit" class="btn btn_salvar" id="btn_salvar_produto">
+                <img src="..//..//../imagens/icone_salvar.svg" alt="Icone Salvar">
+                <p>Salvar</p>
+            </button>
         </div>
-        <div class="container_small_width">
-            <div class="campo_contato small_width">
-                <label for="quantidade">Quantidade em Estoque:<span class="campo_obrigatorio">*</span></label>
-                <input type="number" name="quantidade" id="quantidade" class="campo_input" required>
-            </div>
-            <div class="campo_contato small_width select_conainer">
-                <p>Centro de Estoque:<span class="campo_obrigatorio">*</span></p>
-                <select id="id_centro_estoque" name="id_centro_estoque" class="campo_select" required>
-                </select>
-            </div>
-        </div>
-        <div class="container_small_width">
-            <div class="campo_contato small_width">
-                <label for="corredor">Corredor:</label>
-                <input type="text" name="corredor" id="corredor" class="campo_input">
-            </div>
-            <div class="campo_contato small_width">
-                <label for="prateleira">Prateleira:</label>
-                <input type="text" name="prateleira" id="prateleira" class="campo_input">
-            </div>
-        </div>
-        <div class="campo_contato normal_width">
-            <label for="descricao">Descrição:</label>
-            <textarea name="descricao" id="descricao" class="textarea" rows="4"></textarea>
-        </div>
-    </div>
-    <div class="space_between">
-        <button type="button" class="btn btn2 btn_cancelar" id="btn_cancelar_produto">
-            <img src="..//..//../imagens/icone_fechar.svg" alt="Icone Fechar">
-            <p>Cancelar</p>
-        </button>
-        <button type="button" class="btn btn_salvar" id="btn_salvar_produto">
-            <img src="..//..//../imagens/icone_salvar.svg" alt="Icone Salvar">
-            <p>Salvar</p>
-        </button>
-    </div>
+    </form>
+
 </section>
