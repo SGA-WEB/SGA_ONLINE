@@ -2089,6 +2089,52 @@ app.post('/orcamento', async (req, res) => {
     }
 });
 
+// Endpoint para buscar os itens de um orçamento específico
+app.get('/api/orcamentos/:id/itens', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const query = `
+            SELECT
+                oi.id_item,
+                oi.orcamento_id,
+                oi.produto_id,
+                p.produto AS nome_produto,
+                oi.quantidade,
+                oi.valor_unitario,
+                oi.desconto_item,
+                oi.valor_total_item
+            FROM sga.orcamento_itens oi
+            JOIN sga.produto p ON oi.produto_id = p.id_produto
+            WHERE oi.orcamento_id = $1 AND oi.inativo = false
+            ORDER BY oi.id_item
+        `;
+
+        const result = await pool.query(query, [id]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: 'Nenhum item encontrado para este orçamento ou orçamento não existe'
+            });
+        }
+
+        res.status(200).json({
+            sucesso: true,
+            quantidade_itens: result.rows.length,
+            itens: result.rows
+        });
+
+    } catch (error) {
+        console.error('Erro ao buscar itens do orçamento:', error);
+        res.status(500).json({
+            sucesso: false,
+            erro: 'Erro ao buscar itens do orçamento',
+            detalhes: error.message
+        });
+    }
+});
+
 // Rota GET para listar todos os tipos_entrada
 app.get('/api/tipos_entrada', async (req, res) => {
     try {
@@ -2598,5 +2644,56 @@ app.delete('/orcamento/:id_orcamento', async (req, res) => {
         res.status(200).json({ message: 'Orçamento excluído com sucesso!' });
     } catch (err) {
         res.status(500).json({ error: 'Erro ao excluir' });
+    }
+});
+
+
+// Rota no singular e sem o prefixo /api conforme solicitado
+app.put('/orcamento/:id', async (req, res) => {
+    const { id } = req.params;
+    const { cliente_id, criado_por_id, status, desconto_total, itens } = req.body;
+
+    const client = await pool.connect();
+    try {
+        await client.query('BEGIN');
+
+        // 1. Atualiza apenas os campos permitidos
+        const queryOrcamento = `
+            UPDATE sga.orcamento
+            SET cliente_id = $1, criado_por_id = $2, status = $3, desconto_total = $4
+            WHERE id_orcamento = $5
+        `;
+        await client.query(queryOrcamento, [cliente_id, criado_por_id, status, desconto_total, id]);
+
+        // 2. Remove itens antigos
+        await client.query('DELETE FROM sga.orcamento_itens WHERE orcamento_id = $1', [id]);
+
+        // 3. Insere novos itens SEM a coluna valor_total_item
+        if (itens && itens.length > 0) {
+            for (const item of itens) {
+                const queryItens = `
+                    INSERT INTO sga.orcamento_itens 
+                    (orcamento_id, produto_id, quantidade, valor_unitario, desconto_item, inativo)
+                    VALUES ($1, $2, $3, $4, $5, false);
+                `;
+                // Note que removemos a coluna 'valor_total_item' e seu respectivo valor ($6)
+                await client.query(queryItens, [
+                    id, 
+                    item.id_produto, 
+                    item.quantidade, 
+                    item.preco_varejo, 
+                    item.desconto
+                ]);
+            }
+        }
+
+        await client.query('COMMIT');
+        res.status(200).json({ sucesso: true });
+    } catch (err) {
+        await client.query('ROLLBACK');
+        console.error("ERRO NO BANCO:", err.message);
+        res.status(500).json({ error: 'Erro ao salvar', detalhes: err.message });
+    } finally {
+        client.release();
     }
 });

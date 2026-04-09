@@ -23,12 +23,12 @@ function carregarDadosNaTabela(
     let td_info = document.querySelector(".td_nenhum_dado") // Pega o parágrafo de informação de que não há dados (Se existir)
 
     let exibirIdColuna = true;
-    const firstDataKey = Object.keys(dados[0])[0]; // Pega a primeira chave do primeiro objeto do array de dados, que no caso é o id
-    const hasIdField = Object.keys(dados[0]).some(key => key.startsWith("id_"));
-    // Se não existir campo com prefixo "id_", desativa exibirIdColuna para evitar erros posteriores
-    if (!hasIdField) exibirIdColuna = false;
 
-    if (dados.length !== 0) { // Se houver dados
+    if (dados && dados.length !== 0) { // Se houver dados
+        const firstDataKey = Object.keys(dados[0])[0]; // Pega a primeira chave do primeiro objeto do array de dados, que no caso é o id
+        const hasIdField = Object.keys(dados[0]).some(key => key.startsWith("id_"));
+        // Se não existir campo com prefixo "id_", desativa exibirIdColuna para evitar erros posteriores
+        if (!hasIdField) exibirIdColuna = false;
         td_info ? td_info.remove() : null // Se houver o parágrafo de informação, ele é removido
 
         dados.map(objDado => { // Para cada objeto no array de dados
