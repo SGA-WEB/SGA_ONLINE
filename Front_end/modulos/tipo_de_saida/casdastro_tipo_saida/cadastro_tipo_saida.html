@@ -35,8 +35,9 @@
                 <input required type="text" name="cpopF" id="cfop_fora" class="campo_input" maxlength="4">
             </div>
             <div class="campo_contato small_width select_conainer">
-                <p>Ativo:</p>
-                <select id="ativo" class="campo_select">
+                <label for="ativo">Ativo:<span class="campo_obrigatorio">*</span></label>
+                <select id="ativo" class="campo_select" required>
+                    <option value="">Selecione...</option>
                     <option value="true">Sim</option>
                     <option value="false">Não</option>
                 </select>
