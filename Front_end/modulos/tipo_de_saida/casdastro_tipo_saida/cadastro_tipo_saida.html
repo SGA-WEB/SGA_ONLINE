@@ -1,5 +1,5 @@
 <section class="modulo" id="modulo_cadastro_tipo_saida">
-    <button class="btn_nav" id="btn_voltar_tipos_de_saida">
+    <button class="btn_nav" id="btn_voltar_tipos_de_saida" type="button">
         <img src="../imagens/seta_baixo.png" alt="Seta_direita" class="seta_esquerda">
         <p class="btn_voltar">Voltar</p>
     </button>
@@ -13,9 +13,9 @@
             </div>
         </div>
     </div>
-    <form>
+    <form id="form_cadastro_tipo_saida">
         <div class="container_btns">
-            <button class="btn btn_salvar" id="btn_salvar">
+            <button type="submit" class="btn btn_salvar" id="btn_salvar">
                 <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
                 <p>Salvar</p>
             </button>
@@ -26,13 +26,14 @@
                 <input required type="text" name="descricao" id="descricao" class="campo_input">
             </div>
             <div class="campo_contato small_width">
-                <label for="CFOP">CFOP(Dentro):<span class="campo_obrigatorio">*</span></label>
-                <input required type="text" name="cpopD" id="cfop_dentro" class="campo_input" maxlength="4">
+                <label for="cfop_dentro">CFOP(Dentro):<span class="campo_obrigatorio">*</span></label>
+                <input required type="text" name="cpopD" id="cfop_dentro" class="campo_input"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4)">
             </div>
-
             <div class="campo_contato small_width">
-                <label for="CFOP">CFOP(Fora):<span class="campo_obrigatorio">*</span></label>
-                <input required type="text" name="cpopF" id="cfop_fora" class="campo_input" maxlength="4">
+                <label for="cfop_fora">CFOP(Fora):<span class="campo_obrigatorio">*</span></label>
+                <input required type="text" name="cpopF" id="cfop_fora" class="campo_input"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4)">
             </div>
             <div class="campo_contato small_width select_conainer">
                 <label for="ativo">Ativo:<span class="campo_obrigatorio">*</span></label>
@@ -44,27 +45,30 @@
             </div>
         </div>
         <div class="flex_direction_column">
+            <p>Marque ao menos uma opção.<span class="campo_obrigatorio">*</span></p>
             <label for="devolução_compra">
-                <input type="checkbox" nome="Devolução de Compra" value="Devolução de Compra" id="devolução_compra">
+                <input type="checkbox" nome="Devolução de Compra" value="Devolução de Compra" id="devolução_compra"
+                    class="checkbox_opcao">
                 Devolução de Compra
             </label>
             <label for="remessa_conserto">
-                <input type="checkbox" nome="Remessa para Conserto" value="Remessa para Conserto" id="remessa_conserto">
+                <input type="checkbox" nome="Remessa para Conserto" value="Remessa para Conserto" id="remessa_conserto"
+                    class="checkbox_opcao">
                 Remessa para Conserto
             </label>
             <label for="trans_filiais">
                 <input type="checkbox" nome="Transferência entre Filiais" value="Transferência entre Filiais"
-                    id="trans_filiais">
+                    id="trans_filiais" class="checkbox_opcao">
                 Transferência entre Filiais
             </label>
             <label for="baixa_perda_quebra">
                 <input type="checkbox" nome="Baixa por Perda/Quebra" value="Baixa por Perda/Quebra"
-                    id="baixa_perda_quebra">
+                    id="baixa_perda_quebra" class="checkbox_opcao">
                 Baixa por Perda/Quebra
             </label>
             <label for="saida_uso_consumo">
                 <input type="checkbox" nome="Saida para Uso ou Consumo" value="Saída para Uso ou Consumo"
-                    id="saida_uso_consumo">
+                    id="saida_uso_consumo" class="checkbox_opcao">
                 Saída para Uso ou Consumo
             </label>
         </div>

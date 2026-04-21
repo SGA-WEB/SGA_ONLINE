@@ -17,12 +17,26 @@ export default function cadastro_tipo_entrada(tipos_entradas) {
 
     document.querySelector("#btn_voltar_tipos_de_entrada").addEventListener("click", () => {
         carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada);
-        // Botão que volta para a tela de tipos de entrada
     })
 
     let btn_salvar = document.querySelector("form")
     btn_salvar.addEventListener("submit", async (e) => {
         e.preventDefault()
+
+        // Validação das checkboxes
+        const checkboxes = document.querySelectorAll('.checkbox_opcao');
+        const algumaMarcada = Array.from(checkboxes).some(cb => cb.checked);
+
+        if (!algumaMarcada) {
+            const primeiraCheckbox = checkboxes[0];
+            primeiraCheckbox.setCustomValidity('Marque ao menos uma opção.');
+            primeiraCheckbox.reportValidity();
+            return;
+        }
+
+        // Limpa a validação caso esteja marcada
+        checkboxes.forEach(cb => cb.setCustomValidity(''));
+
         popup_carregando(false, "Salvando tipo de entrada...");
         const data = {
             id_tipo_de_entrada: ultimoIdProduto + 1,

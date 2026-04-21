@@ -5,9 +5,14 @@ import buscarDados from "../../../scripts/buscarDados.js";
 import { popup, popup_aviso, popup_carregando, popup_erro } from "../../../scripts/popup.js";
 import produto from "../produto.js";
 
+function formatarMoeda(input) {
+    let v = input.value.replace(/[^0-9]/g, '').padStart(3, '0');
+    input.value = v.slice(0, -2).replace(/^0+(?=\d)/, '') + ',' + v.slice(-2);
+}
+
 export default async function cadastro_produto() {
-    dataAtual() // Pega a data atual e adiciona ao input
-    select2("100%") // Inicializa o select2 como 100% da largura
+    dataAtual()
+    select2("100%")
 
     // Busca os centros de estoque e adiciona ao select
     let centros_de_estoque = await buscarDados("centro_estoque")
@@ -18,13 +23,16 @@ export default async function cadastro_produto() {
     )
 
     let proximo_id_produto = await buscarDados('proximo_id_produto');
-
     document.querySelector(".codigo_id").innerHTML = proximo_id_produto.proximo_id;
 
+    // Aplica a formatação de moeda nos campos de valor
+    document.getElementById('preco_varejo').addEventListener('input', function () { formatarMoeda(this) });
+    document.getElementById('preco_atacado').addEventListener('input', function () { formatarMoeda(this) });
+
     document.querySelector("#btn_voltar_produtos").addEventListener("click", () => {
-        // Botão que volta para a tela de produtos
         carregarConteudo("produto/produto.html", document.querySelector(".principal"))
     })
+
     let form = document.querySelector("form")
     form.addEventListener("submit", async (e) => {
         e.preventDefault()
@@ -44,9 +52,9 @@ export default async function cadastro_produto() {
     })
 
     async function enviarFormulario(dados) {
-        // Converte de strin para number usando o operador unário '+'
-        dados.preco_varejo = +dados.preco_varejo;
-        dados.preco_atacado = +dados.preco_atacado;
+        // Converte vírgula para ponto antes de enviar ao backend
+        dados.preco_varejo = parseFloat(dados.preco_varejo.replace(',', '.'));
+        dados.preco_atacado = parseFloat(dados.preco_atacado.replace(',', '.'));
         dados.quantidade = +dados.quantidade;
         dados.id_centro_estoque = +dados.id_centro_estoque;
         try {
