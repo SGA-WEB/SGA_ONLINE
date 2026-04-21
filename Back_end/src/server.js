@@ -9,6 +9,8 @@ import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
 // import { Pool } from 'pg/lib/index.js';
 import pkg from 'pg';
+import nodemailer from 'nodemailer';
+
 const { Pool } = pkg;
 
 const supabaseUrl = 'https://ertkiirzzswpxkgcxret.supabase.co';
@@ -130,7 +132,7 @@ app.post('/api/login', async (req, res) => {
         res.status(200).json({
             sucesso: true,
             mensagem: 'Login realizado com sucesso',
-            usuario: usuarioLogado 
+            usuario: usuarioLogado
         });
 
     } catch (err) {
@@ -147,18 +149,18 @@ app.get('/api/usuarios/:id', async (req, res) => {
         // SELECT explícito: trazemos apenas os dados seguros e necessários para a tela.
         // A coluna 'senha' foi intencionalmente deixada de fora.
         const query = `
-            SELECT 
-                id_usuario, 
-                nome, 
-                email, 
-                celular, 
-                data_criacao, 
-                grupo, 
+            SELECT
+                id_usuario,
+                nome,
+                email,
+                celular,
+                data_criacao,
+                grupo,
                 data_cadastro,
                 senha
-            FROM 
-                sga.usuario 
-            WHERE 
+            FROM
+                sga.usuario
+            WHERE
                 id_usuario = $1
         `;
 
@@ -166,9 +168,9 @@ app.get('/api/usuarios/:id', async (req, res) => {
 
         // Se o array de resultados estiver vazio, o usuário não existe
         if (rows.length === 0) {
-            return res.status(404).json({ 
-                sucesso: false, 
-                erro: 'Usuário não encontrado.' 
+            return res.status(404).json({
+                sucesso: false,
+                erro: 'Usuário não encontrado.'
             });
         }
 
@@ -180,20 +182,150 @@ app.get('/api/usuarios/:id', async (req, res) => {
 
     } catch (error) {
         console.error(`Erro ao buscar usuário com ID ${id}:`, error);
-        res.status(500).json({ 
-            sucesso: false, 
+        res.status(500).json({
+            sucesso: false,
             erro: 'Erro interno do servidor ao buscar dados do usuário.',
-            detalhes: error.message 
+            detalhes: error.message
         });
     }
 });
 
-//TESTE DE ROTA
-app.get('/api/testar-sessao', (req, res) => {
-    if (req.session.user) {
-        res.json({ logado: true, usuario: req.session.user });
-    } else {
-        res.json({ logado: false });
+app.post('/api/esqueci-senha', async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        // 1. Verifica se o usuário existe
+        const userQuery = await pool.query('SELECT id_usuario, nome FROM sga.usuario WHERE email = $1', [email]);
+
+        if (userQuery.rows.length === 0) {
+            return res.status(404).json({ sucesso: false, erro: 'E-mail não encontrado no sistema.' });
+        }
+
+        const usuario = userQuery.rows[0];
+
+        // 2. Gera um código de 6 dígitos (ex: 482910)
+        const codigoGerado = Math.floor(100000 + Math.random() * 900000).toString();
+
+        // 3. Define a expiração para daqui a 15 minutos
+        const expiracao = new Date();
+        expiracao.setMinutes(expiracao.getMinutes() + 15);
+
+        // 4. Salva o código e a expiração no banco de dados
+        await pool.query(
+            'UPDATE sga.usuario SET codigo_recuperacao = $1, expiracao_codigo = $2 WHERE id_usuario = $3',
+            [codigoGerado, expiracao, usuario.id_usuario]
+        );
+
+        // 5. Configura o "Caminhão de Entrega" de e-mails (Transporter)
+        const transporter = nodemailer.createTransport({
+            service: 'gmail', // Pode usar o Gmail para testes
+            auth: {
+                user: 'matheushnunes2005@gmail.com', // Coloque seu e-mail aqui
+                pass: 'berm ucpa wmsg wmte' // Coloque a Senha de App gerada no Google
+            }
+        });
+
+        // 6. Prepara o conteúdo do e-mail
+        const mailOptions = {
+            from: 'SGA Online <matheushnunes2005@gmail.com>',
+            to: email,
+            subject: 'Seu código de recuperação de senha - SGA',
+            html: `
+                <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px;">
+                    <h2>Recuperação de Senha</h2>
+                    <p>Olá, ${usuario.nome}.</p>
+                    <p>Você solicitou a redefinição de senha. Aqui está o seu código de segurança:</p>
+                    <h1 style="color: #4F46E5; letter-spacing: 5px; font-size: 36px;">${codigoGerado}</h1>
+                    <p style="color: #666; font-size: 12px;">Este código expira em 15 minutos.</p>
+                    <p style="color: #666; font-size: 12px;">Se você não solicitou isso, ignore este e-mail.</p>
+                </div>
+            `
+        };
+
+        // 7. Dispara o e-mail
+        await transporter.sendMail(mailOptions);
+
+        res.status(200).json({
+            sucesso: true,
+            mensagem: 'Código enviado com sucesso! Verifique seu e-mail.'
+        });
+
+    } catch (error) {
+        console.error('Erro ao enviar e-mail:', error);
+        res.status(500).json({ sucesso: false, erro: 'Erro interno ao tentar enviar o código.' });
+    }
+});
+
+app.post('/api/validar-codigo', async (req, res) => {
+    const { email, codigo } = req.body;
+
+    try {
+        const query = `
+            SELECT id_usuario, codigo_recuperacao, expiracao_codigo
+            FROM sga.usuario
+            WHERE email = $1
+        `;
+        const { rows } = await pool.query(query, [email]);
+
+        if (rows.length === 0) {
+            return res.status(404).json({ sucesso: false, erro: 'Usuário não encontrado.' });
+        }
+
+        const usuario = rows[0];
+
+        // Verifica se o código bate
+        if (usuario.codigo_recuperacao !== codigo) {
+            return res.status(400).json({ sucesso: false, erro: 'Código inválido ou incorreto.' });
+        }
+
+        // Verifica se o código expirou (passou dos 15 minutos)
+        const agora = new Date();
+        if (agora > new Date(usuario.expiracao_codigo)) {
+            return res.status(400).json({ sucesso: false, erro: 'Este código já expirou. Solicite um novo.' });
+        }
+
+        // Se passou em tudo, o código é válido!
+        // (Aqui você retornaria sucesso para o Front-end liberar a tela de "Digite sua nova senha")
+        res.status(200).json({
+            sucesso: true,
+            mensagem: 'Código validado com sucesso!',
+            id_usuario: usuario.id_usuario // Manda o ID para a próxima tela saber de quem alterar a senha
+        });
+
+    } catch (error) {
+        console.error('Erro ao validar código:', error);
+        res.status(500).json({ sucesso: false, erro: 'Erro interno ao validar o código.' });
+    }
+});
+
+app.patch('/api/redefinir-senha', async (req, res) => {
+    const { id_usuario, nova_senha } = req.body;
+
+    if (!id_usuario || !nova_senha) {
+        return res.status(400).json({ sucesso: false, erro: 'Dados incompletos.' });
+    }
+
+    try {
+        // No futuro, recomendo usar a biblioteca 'bcrypt' para criptografar a senha aqui
+        const query = `
+            UPDATE sga.usuario
+            SET senha = $1,
+                codigo_recuperacao = NULL,
+                expiracao_codigo = NULL
+            WHERE id_usuario = $2
+        `;
+
+        const result = await pool.query(query, [nova_senha, id_usuario]);
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ sucesso: false, erro: 'Usuário não encontrado.' });
+        }
+
+        res.status(200).json({ sucesso: true, mensagem: 'Senha atualizada com sucesso!' });
+
+    } catch (error) {
+        console.error('Erro ao atualizar senha:', error);
+        res.status(500).json({ sucesso: false, erro: 'Erro interno ao salvar a nova senha.' });
     }
 });
 
@@ -2672,16 +2804,16 @@ app.put('/orcamento/:id', async (req, res) => {
         if (itens && itens.length > 0) {
             for (const item of itens) {
                 const queryItens = `
-                    INSERT INTO sga.orcamento_itens 
+                    INSERT INTO sga.orcamento_itens
                     (orcamento_id, produto_id, quantidade, valor_unitario, desconto_item, inativo)
                     VALUES ($1, $2, $3, $4, $5, false);
                 `;
                 // Note que removemos a coluna 'valor_total_item' e seu respectivo valor ($6)
                 await client.query(queryItens, [
-                    id, 
-                    item.id_produto, 
-                    item.quantidade, 
-                    item.preco_varejo, 
+                    id,
+                    item.id_produto,
+                    item.quantidade,
+                    item.preco_varejo,
                     item.desconto
                 ]);
             }
