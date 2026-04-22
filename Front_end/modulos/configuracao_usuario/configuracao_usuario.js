@@ -2,7 +2,6 @@ import buscarDados from "../../scripts/buscarDados.js";
 import { visibilidadeSenha, alterarImgPerfil } from "../../scripts/funcionalidades.js";
 import { carregarConteudo, mudarLogoParaPadrao } from "../../scripts/javaScript.js";
 import { popup, popup_aviso, popup_carregando, popup_confirmar, popup_erro } from "../../scripts/popup.js";
-import salvarUsuario from "./salvarUsuarios.js";
 
 export default async function configuracao_usuario(data) {
     popup_carregando(false, "Carregando configurações do usuário...");
@@ -16,13 +15,16 @@ export default async function configuracao_usuario(data) {
     const userData = await user.json();
     console.log("Dados do usuário:", userData);
 
-    salvarUsuario(userData.usuario);
-
     if (dado.error) {
         mudarLogoParaPadrao()
     } else {
         alterarImgPerfil(dado.imageUrl)
     }
+
+    document.querySelector("#campo_editar_nome").value = userData.usuario.nome;
+    document.querySelector("#campo_editar_email").value = userData.usuario.email;
+    document.querySelector("#campo_editar_fone").value = userData.usuario.celular;
+    document.querySelector("#senha_usuario").value = userData.usuario.senha;
 
     function fechar_menu_editar() {
         menu_editar_foto.classList.add("hide")
@@ -182,11 +184,82 @@ export default async function configuracao_usuario(data) {
         carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"))
     })
 
+    // Função para validar o formulário
+    function validarFormulario() {
+        const email = document.querySelector("#campo_editar_email").value.trim();
+        const fone = document.querySelector("#campo_editar_fone").value.trim();
+
+        // Validar email (validação adicional para formato)
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            popup_erro("Por favor, insira um email válido!");
+            return false;
+        }
+
+        // Validar fone (validação de quantidade mínima de dígitos)
+        const apenasNumeros = fone.replace(/\D/g, '');
+        if (apenasNumeros.length < 10) {
+            popup_erro("O telefone deve ter pelo menos 10 dígitos!");
+            return false;
+        }
+
+        return true;
+    }
+
     // Botão de salvar:
-    let btn_salvar = document.querySelector(".btn_salvar")
-    btn_salvar.addEventListener('click', () => {
-        popup_aviso("Configurações salvas com sucesso!")
-        carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"))
+    const formulario = document.querySelector("#form_configuracao_usuario")
+    formulario.addEventListener('submit', async (e) => {
+        e.preventDefault()
+
+        // A validação HTML5 já foi verificada antes de chegar aqui
+        if (validarFormulario()) {
+            try {
+                popup_carregando(false, "Salvando alterações...")
+
+                const nome = document.querySelector("#campo_editar_nome").value.trim();
+                const email = document.querySelector("#campo_editar_email").value.trim();
+                const celular = document.querySelector("#campo_editar_fone").value.trim();
+                const senha = document.querySelector("#senha_usuario").value;
+
+                const novoObjeto = {
+                    id_usuario: userData.usuario.id_usuario,
+                    nome: nome,
+                    email: email,
+                    celular: celular,
+                    senha: senha
+                };
+
+                const response = await fetch(`http://localhost:3000/usuarios/${userData.usuario.id_usuario}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(novoObjeto),
+                });
+
+                popup_carregando(true)
+
+                if (response.ok) {
+                    const nomeUsuario = document.querySelector("#nome_usuario");
+                    if (nomeUsuario) {
+                        nomeUsuario.textContent = nome;
+                    }
+                    localStorage.setItem('usuarioLogadoId', userData.usuario.id_usuario);
+                    localStorage.setItem('usuarioLogadoNome', nome);
+                    popup_aviso('Configurações salvas com sucesso!');
+                    setTimeout(() => {
+                        carregarConteudo("dashboard/dashboard.html", document.querySelector(".principal"))
+                    }, 1000)
+                } else {
+                    const errorData = await response.json();
+                    popup_erro(`Erro ao atualizar: ${errorData.error}`);
+                }
+            } catch (error) {
+                popup_carregando(true)
+                console.error('Erro na requisição:', error);
+                popup_erro('Falha ao conectar ao servidor.');
+            }
+        }
     })
 
     // Pop Up ver foto:

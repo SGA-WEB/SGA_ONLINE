@@ -133,7 +133,7 @@ body {
 }
 
 /* Com o tamanho da fonte medio(padrão): 400px */
-@media (max-width: 25rem) { 
+@media (max-width: 25rem) {
     body {
         font-size: 1.4rem;
     }
@@ -146,12 +146,12 @@ body {
     .logo_sga {
         display: none;
     }
-    
+
     .janela_redefinicao {
         margin-top: 10px;
     }
 }
-@media (max-height: 500px) { 
+@media (max-height: 500px) {
     .logo_sga {
         margin-bottom: 1rem;
     }
