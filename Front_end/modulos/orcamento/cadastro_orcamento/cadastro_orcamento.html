@@ -71,9 +71,9 @@
                         <th id="tabela_codigo">Código</th>
                         <th id="tabela_produto">Produto</th>
                         <th id="tabela_quantidade">Qtde.</th>
-                        <th id="tabela_preco_varejo">Valor Unitario</th>
+                        <th id="tabela_preco_varejo">Valor Unitário</th>
                         <th id="tabela_preco_atacado">Desconto</th>
-                        <th id="tabela_preco_atacado">Valor Total</th>
+                        <th id="tabela_valor_total">Valor Total</th>
                     </tr>
                 </thead>
                 <tbody class="tbody">
@@ -89,11 +89,10 @@
 
     <div class="container_popup popup_relacao">
         <div class="popup">
-            <button class="btn_fechar_popup">
+            <button class="btn_fechar_popup" type="button">
                 <img src="../imagens/icone_fechar.svg" alt="Icone Fechar">
             </button>
-            <h2 class="h2_titulo">Selecione os produtos para relacionar a entrada</h2>
-
+            <h2 class="h2_titulo">Selecione os produtos para relacionar ao orçamento</h2>
             <div class="header">
                 <div class="container_select">
                     <p>Coluna:</p>
@@ -102,43 +101,29 @@
                         <option value="produto">Produto</option>
                         <option value="quantidade">Quantidade</option>
                         <option value="preco_varejo">Preço Varejo</option>
-                        <option value="preco_atacado">Preço Atacado</option>
                     </select>
                 </div>
                 <div class="container_campo_pesquisa_btn">
-                    <div class="campo_pesquisa" id="campo_pesquisa_produto">
-                        <input id="input_pesquisa_tabela" type="text" placeholder="Pesquisar por Código"
-                            class="input_pesquisa">
-                        <button class="btn_limpar_pesquisa hide center" id="btn_limpar_pesquisa_produto">
-                            <img id="icone_fechar" src="../imagens/icone_fechar.svg" alt="icone_fechar">
-                        </button>
-                        <button class="btn_pesquisar center" id="btn_pesquisar_produto">
-                            <img id="icone_pesquisa" src="../imagens/icone_pesquisa.png" alt="icone_pesquisa">
-                        </button>
+                    <div class="campo_pesquisa">
+                        <input id="input_pesquisa_tabela" type="text" placeholder="Pesquisar..." class="input_pesquisa">
                     </div>
                 </div>
             </div>
-
             <div class="container_tabela">
                 <table class="tabela" id="tabela_selecionar_produtos">
                     <thead>
                         <tr>
-                            <th class="th_selecionar_todos">
-                                <input type="checkbox" name="selecionar_todos" id="selecionar_todos">
-                            </th>
-                            <th id="tabela_codigo">Código</th>
-                            <th id="tabela_produto">Produto</th>
-                            <th id="tabela_quantidade">Qtde.</th>
-                            <th id="tabela_preco_varejo">Valor Unitario</th>
+                            <th class="th_selecionar_todos"><input type="checkbox" id="selecionar_todos"></th>
+                            <th>Código</th>
+                            <th>Produto</th>
+                            <th>Estoque</th>
+                            <th>Valor Unitário</th>
                         </tr>
                     </thead>
-                    <tbody class="tbody">
-                    </tbody>
+                    <tbody class="tbody"></tbody>
                 </table>
             </div>
-
-            <button class="btn margin_left_auto btn_selecionar_relacao" id="btn_selecionar_relacao_entrada">
-                <img src="../imagens/btn_add.svg" alt="Icone Adicionar" class="brightness0">
+            <button class="btn margin_left_auto btn_selecionar_relacao" type="button">
                 <span>Adicionar Relação</span>
             </button>
         </div>
