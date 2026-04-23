@@ -100,12 +100,7 @@
     cursor: pointer;
 }
 
-#container_campo_input_senha {
-    margin-bottom: .5rem;
-}
-
 .btn_alterar_senha {
-    align-self: flex-end;
     height: 1.875rem;
 }
 

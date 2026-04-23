@@ -45,11 +45,13 @@
                 </div>
                 <div class="campo_usuario">
                     <label for="senha_usuario">Senha:<span class="campo_obrigatorio">*</span></label>
-                    <div class="container_campo_input" id="container_campo_input_senha">
-                        <input type="password" name="senha_usuario" id="senha_usuario" class="campo_input_noborder" minlength="6" maxlength="6" autocomplete ="current-password">
-                        <img src="../imagens/visibility_on.png" alt="icone visualizar senha" class="icone_editar visibilidade" id="view_off">
+                    <div class="flex items-center gap-2">
+                        <div class="container_campo_input" id="container_campo_input_senha">
+                            <input type="password" name="senha_usuario" id="senha_usuario" class="campo_input_noborder" minlength="6" maxlength="6" autocomplete ="current-password" readonly>
+                            <img src="../imagens/visibility_on.png" alt="icone visualizar senha" class="icone_editar visibilidade" id="view_off">
+                        </div>
+                        <button class="btn btn2 btn_alterar_senha" >Alterar senha</button>
                     </div>
-                    <button class="btn btn2 btn_alterar_senha" >Alterar senha</button>
                 </div>
             </div>
             <div class="modulo_footer">
