@@ -24,7 +24,6 @@ import { popup_carregando } from "./popup.js";
 import tipos_de_entrada from "../modulos/tipo_de_entrada/tipos_de_entrada.js";
 import entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.js";
 import buscarDados from "../scripts/buscarDados.js";
-import tela_balanco from "../modulos/tela_balanco/tela_balanco.js";
 import tipo_de_saida from "../modulos/tipo_de_saida/tipo_de_saida.js";
 import saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_de_produtos/saida_de_produtos.js";
 import orcamento from "../modulos/orcamento/orcamento.js";
@@ -616,13 +615,6 @@ btn_tipos_de_saida.addEventListener("click", () => {
     btn_tipos_de_saida.classList.add("item_menu_selecionado")
     btn_cadastro_auxiliares.classList.add("item_menu_selecionado")
     carregarConteudo("tipo_de_saida/tipo_de_saida.html", document.querySelector(".principal"), false, tipo_de_saida)
-})
-
-let btn_balanco = document.querySelector("#tela_balanco")
-btn_balanco.addEventListener("click", () => {
-    btn_movimentacao_de_estoque.classList.add("sub_menu_fechado")
-    btn_balanco.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
-    carregarConteudo("tela_balanco/tela_balanco.html", document.querySelector(".principal"), false, tela_balanco)
 })
 
 export { carregarConteudo, btnMenuLateral, click_btn_menu, fecharMenu, mudarLogoParaPadrao }
