@@ -17,7 +17,6 @@ export default async function editar_orcamento(dado, telaAnteriorVisualizar = tr
 
     let produtos, contatos, usuarios, itensDaAPI;
     try {
-        // 1. Busca de dados inicial (Plural orcamentos conforme seu padrão)
         [produtos, contatos, usuarios, itensDaAPI] = await Promise.all([
             buscarDados("produto"),
             buscarDados("contato"),
@@ -30,38 +29,53 @@ export default async function editar_orcamento(dado, telaAnteriorVisualizar = tr
         return;
     }
 
-    // 2. Mapeamento dos produtos para o estado da tabela
-    let produtosRelacionados = (itensDaAPI?.itens || itensDaAPI || []).map(item => ({
-        codigo: item.produto_id,         
-        produto: item.nome_produto,      
-        quantidade: Number(item.quantidade) || 1, 
-        preco_varejo: Number(item.valor_unitario) || 0, 
-        desconto: Number(item.desconto_item) || 0, 
-        valor_total: Number(item.valor_total_item) || 0 
-    }));
+    // 2. Mapeamento dos produtos (Converte o Valor Real do Banco para % na Tela de Edição)
+    let produtosRelacionados = (itensDaAPI?.itens || itensDaAPI || []).map(item => {
+        let vUnit = Number(item.valor_unitario) || 0;
+        let qtde = Number(item.quantidade) || 0;
+        let vDescReal = Number(item.desconto_item) || 0;
+        let brutoItem = vUnit * qtde;
+        
+        // Calcula a porcentagem baseada no valor que veio do banco para preencher o input
+        let porcentagemParaInput = brutoItem > 0 ? (vDescReal / brutoItem) * 100 : 0;
 
-    // 3. Preenchimento de campos fixos e selects
+        return {
+            codigo: item.produto_id,         
+            produto: item.nome_produto,      
+            quantidade: qtde, 
+            preco_varejo: vUnit, 
+            desconto: porcentagemParaInput, // Guardamos a % para o input
+            valor_total: Number(item.valor_total_item) || 0 
+        };
+    });
+
+    // 3. Preenchimento de campos fixos
     document.querySelector(".codigo_id").textContent = dado.id_orcamento;
     document.querySelector(".data_cadastro").textContent = formatarData(dado.data_criacao);
     document.querySelector("#status").value = dado.status || "PENDENTE";
-    document.querySelector("#desconto_total").value = Number(dado.desconto_total || 0).toFixed(2);
 
+    // Correção dos Selects (Usando os IDs exatos do seu HTML de Edição)
     const selectCliente = document.querySelector("#cliente");
-    selectCliente.innerHTML = '<option value=""></option>';
-    contatos.filter(c => c.categorias?.some(cat => cat.nome === "CLIENTE"))
-            .forEach(c => selectCliente.add(new Option(c.razao_social || c.nome, c.id_contato)));
-    selectCliente.value = dado.cliente_id;
+    if (selectCliente) {
+        selectCliente.innerHTML = '<option value=""></option>';
+        contatos.filter(c => c.categorias?.some(cat => cat.nome === "CLIENTE"))
+                .forEach(c => selectCliente.add(new Option(c.razao_social || c.nome, c.id_contato)));
+        selectCliente.value = dado.cliente_id;
+    }
 
     const selectCriadoPor = document.querySelector("#criado_por");
-    selectCriadoPor.innerHTML = '<option value=""></option>';
-    usuarios.forEach(u => selectCriadoPor.add(new Option(u.nome || u.nome_usuario, u.id_usuario)));
-    selectCriadoPor.value = dado.criado_por_id || usuarios.find(u => u.nome === dado.criado_por_nome)?.id_usuario || "";
+    if (selectCriadoPor) {
+        selectCriadoPor.innerHTML = '<option value=""></option>';
+        usuarios.forEach(u => selectCriadoPor.add(new Option(u.nome || u.nome_usuario, u.id_usuario)));
+        selectCriadoPor.value = dado.criado_por_id || "";
+    }
 
     select2("100%");
 
-    // 4. Funções de Renderização e Lógica da Tabela
+    // 4. Funções de Renderização e Lógica
     function renderizarTabelaPrincipal() {
         const tbody = document.querySelector("#tabela_produtos .tbody");
+        // A função global carregarDadosNaTabela já cuidará da exibição da %
         carregarDadosNaTabela(
             produtosRelacionados,
             ["codigo", "produto", "quantidade", "preco_varejo", "desconto", "valor_total"],
@@ -89,7 +103,8 @@ export default async function editar_orcamento(dado, telaAnteriorVisualizar = tr
 
             const inputDesc = document.createElement("input");
             inputDesc.type = "number"; inputDesc.className = "input_tabela";
-            inputDesc.value = produtosRelacionados[index].desconto;
+            inputDesc.placeholder = "%";
+            inputDesc.value = produtosRelacionados[index].desconto.toFixed(2);
             inputDesc.oninput = () => {
                 produtosRelacionados[index].desconto = Number(inputDesc.value);
                 atualizarTotaisEmTela();
@@ -106,21 +121,32 @@ export default async function editar_orcamento(dado, telaAnteriorVisualizar = tr
         });
     }
 
+    let descontoTotalAcumuladoReal = 0;
+    let subtotalGeralCalculado = 0;
+
     function atualizarTotaisEmTela() {
-        let somaDescontos = 0;
+        descontoTotalAcumuladoReal = 0;
+        subtotalGeralCalculado = 0;
+
         produtosRelacionados.forEach(p => {
-            p.valor_total = (p.preco_varejo * p.quantidade) - p.desconto;
-            somaDescontos += p.desconto;
+            let brutoItem = p.preco_varejo * p.quantidade;
+            // Cálculo da porcentagem convertida para valor real
+            let descontoRealItem = (brutoItem * p.desconto) / 100;
+            p.valor_total = brutoItem - descontoRealItem;
+
+            subtotalGeralCalculado += brutoItem;
+            descontoTotalAcumuladoReal += descontoRealItem;
+
             const tr = document.getElementById(`tr_${p.codigo}`);
             if(tr) {
                 const tdTotal = tr.querySelector(".td_valor_total");
                 if(tdTotal) tdTotal.textContent = p.valor_total.toFixed(2);
             }
         });
-        document.querySelector("#desconto_total").value = somaDescontos.toFixed(2);
+        document.querySelector("#desconto_total").value = descontoTotalAcumuladoReal.toFixed(2);
     }
 
-    // 5. Popup de Adicionar Relação
+    // 5. Popup de Seleção
     document.querySelector("#btn_adicionar_relacao").onclick = () => {
         popup("abrir", 0);
         const tbodyPopup = document.querySelector("#tabela_selecionar_produtos .tbody");
@@ -142,44 +168,47 @@ export default async function editar_orcamento(dado, telaAnteriorVisualizar = tr
 
     document.querySelectorAll(".btn_fechar_popup").forEach(btn => btn.onclick = () => popup("fechar", 0));
 
-    // 6. Salvamento Final (PUT)
+    // 6. Salvamento Final (Envia R$ para o Banco)
     document.querySelector(".btn_salvar").onclick = async (e) => {
         e.preventDefault();
+        
         const payload = {
             cliente_id: selectCliente.value,
             criado_por_id: selectCriadoPor.value,
             status: document.querySelector("#status").value,
-            desconto_total: Number(document.querySelector("#desconto_total").value),
+            desconto_total: descontoTotalAcumuladoReal,
+            subtotal: subtotalGeralCalculado,
             itens: produtosRelacionados.map(p => ({
                 id_produto: p.codigo,
                 quantidade: p.quantidade,
                 preco_varejo: p.preco_varejo,
-                desconto: p.desconto
+                desconto: ((p.preco_varejo * p.quantidade) * p.desconto) / 100 // Salva em R$
             }))
         };
 
         try {
-            popup_carregando(false, "Salvando...");
+            popup_carregando(false, "Salvando alterações...");
             const res = await fetch(`http://localhost:3000/orcamento/${dado.id_orcamento}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+            popup_carregando(true);
             if (res.ok) {
                 popup_aviso("Orçamento atualizado!");
                 Object.assign(dado, payload);
                 carregarConteudo(caminhoRetorno, principal, false, funcaoRetorno, dado);
             } else { 
-                const erroRes = await res.json();
-                popup_erro("Erro ao salvar: " + (erroRes.detalhes || "Erro no servidor.")); 
+                popup_erro("Erro ao salvar alterações.");
             }
-        } catch (err) { popup_erro("Erro de conexão."); }
-        finally { popup_carregando(true); }
+        } catch (err) {
+            popup_carregando(true);
+            popup_erro("Erro de conexão.");
+        }
     };
 
     document.querySelector("#btn_voltar_orcamento").onclick = () => carregarConteudo(caminhoRetorno, principal, false, funcaoRetorno, dado);
 
-    // INICIALIZAÇÃO DA TELA
     renderizarTabelaPrincipal();
     popup_carregando(true);
 }

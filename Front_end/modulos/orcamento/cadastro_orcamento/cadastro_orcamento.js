@@ -30,7 +30,6 @@ export default async function cadastro_orcamento(dados) {
         })
     })
 
-    // CORREÇÃO SELECT DUPLICADO
     let selectCliente = document.querySelector("#cliente_id");
     selectCliente.innerHTML = '<option value=""></option>'; 
     clientesFiltrados.forEach((cliente) => {
@@ -49,7 +48,6 @@ export default async function cadastro_orcamento(dados) {
         selectCriadoPor.appendChild(option);
     })
 
-    // Reset visual do Select2 para garantir que não haja fantasmas de seleções anteriores
     if (typeof $ !== 'undefined') {
         $(selectCliente).val(null).trigger('change');
         $(selectCriadoPor).val(null).trigger('change');
@@ -65,17 +63,8 @@ export default async function cadastro_orcamento(dados) {
     let btn_adicionar_relacao = document.querySelector("#btn_adicionar_relacao");
     btn_adicionar_relacao.addEventListener("click", async () => {
         popup("abrir", 0, btn_adicionar_relacao)
-        carregarDadosNaTabela(
-            produtos,
-            ["id_produto", "produto", "quantidade","preco_varejo"],
-            document.querySelector("#tabela_selecionar_produtos"),
-        )
-        pesquisar(
-            produtos,
-            ["id_produto", "produto", "quantidade","preco_varejo"],
-            document.querySelector("#tabela_selecionar_produtos"),
-            false
-        )
+        carregarDadosNaTabela(produtos, ["id_produto", "produto", "quantidade","preco_varejo"], document.querySelector("#tabela_selecionar_produtos"))
+        pesquisar(produtos, ["id_produto", "produto", "quantidade","preco_varejo"], document.querySelector("#tabela_selecionar_produtos"), false)
         mudarPesquisa(document.querySelector(".input_pesquisa"),"#select_coluna")
         select2("200px")
 
@@ -94,6 +83,7 @@ export default async function cadastro_orcamento(dados) {
     let produtosRelacionados = []
     let btn_selecionar_relacao = document.querySelector(".btn_selecionar_relacao");
     let btn_fechar_popup = document.querySelector(".btn_fechar_popup");
+    
     btn_fechar_popup.addEventListener("click", selecionarProdutos)
     btn_selecionar_relacao.addEventListener("click", selecionarProdutos)
 
@@ -104,18 +94,11 @@ export default async function cadastro_orcamento(dados) {
             idProdutosSelecionados.push(checkbox.id.replace("checkbox_", ""))
         })
 
-        let novosDados = produtos.filter(produto => {
-            return idProdutosSelecionados.includes(produto.id_produto.toString())
-        })
+        let novosDados = produtos.filter(produto => idProdutosSelecionados.includes(produto.id_produto.toString()))
 
         produtosRelacionados = []
         novosDados.forEach(produto => {
-            produtosRelacionados.push({
-                id_produto: produto.id_produto,
-                quantidade: 1,
-                valor_unitario: produto.preco_varejo,
-                desconto: 0,
-            });
+            produtosRelacionados.push({ id_produto: produto.id_produto, quantidade: 1, valor_unitario: produto.preco_varejo, desconto: 0 });
         })
 
         carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade","preco_varejo", "desconto", "valor_total"], document.querySelector("#tabela_produtos"), true, false)
@@ -124,39 +107,31 @@ export default async function cadastro_orcamento(dados) {
         document.querySelectorAll(".btn_excluir").forEach(btn => {
             btn.addEventListener("click", (e) => {
                 let id_tr = e.currentTarget.parentElement.parentElement.id.replace("tr_", "");
-                let tr = e.currentTarget.parentElement.parentElement;
-                tr.remove(tr)
+                e.currentTarget.parentElement.parentElement.remove();
                 idProdutosSelecionados = idProdutosSelecionados.filter(id => id !== id_tr);
-                produtosRelacionados = produtosRelacionados.filter(produto => {return produto.id_produto !== parseInt(id_tr)});
+                produtosRelacionados = produtosRelacionados.filter(p => p.id_produto !== parseInt(id_tr));
                 calcularValorTotal();
             });
         });
 
         document.querySelectorAll(".td_quantidade").forEach(td => {
             td.classList.add("td_container_input")
-            let inputQuantidade = document.createElement("input");
-            inputQuantidade.type = "number";
-            inputQuantidade.step = "0.01";
-            inputQuantidade.value = 1;
-            inputQuantidade.min = 0.01;
-            inputQuantidade.classList.add("input_quantidade", "input_tabela");
-            inputQuantidade.addEventListener("input", calcularValorTotal);
-            td.textContent = "";
-            td.appendChild(inputQuantidade);
+            let input = document.createElement("input");
+            input.type = "number"; input.step = "0.01"; input.value = 1; input.min = 0.01;
+            input.classList.add("input_quantidade", "input_tabela");
+            input.addEventListener("input", calcularValorTotal);
+            td.textContent = ""; td.appendChild(input);
         })
 
         document.querySelectorAll(".td_desconto").forEach(td => {
             td.classList.add("td_container_input")
-            let inputDesconto = document.createElement("input");
-            inputDesconto.type = "number";
-            inputDesconto.step = "0.01";
-            inputDesconto.value = 0;
-            inputDesconto.classList.add("input_desconto", "input_tabela");
-            inputDesconto.addEventListener("input", calcularValorTotal);
-            td.textContent = "";
-            td.appendChild(inputDesconto);
+            let input = document.createElement("input");
+            input.type = "number"; input.step = "0.01"; input.value = 0;
+            input.placeholder = "%";
+            input.classList.add("input_desconto", "input_tabela");
+            input.addEventListener("input", calcularValorTotal);
+            td.textContent = ""; td.appendChild(input);
         })
-
         calcularValorTotal();
     }
 
@@ -170,25 +145,26 @@ export default async function cadastro_orcamento(dados) {
         let inputsPrecoVarejo = document.querySelectorAll(".td_preco_varejo");
         let inputsValorTotal = document.querySelectorAll(".td_valor_total");
         
-        valorTotalTodosProdutos = 0;
-        descontoTotal = 0;
-        subtotal = 0;
+        valorTotalTodosProdutos = 0; descontoTotal = 0; subtotal = 0;
 
         inputsQuantidade.forEach((input, index) => {
             let precoVarejo = parseFloat(inputsPrecoVarejo[index].textContent.replace(',', '.')) || 0;
             let quantidade = parseFloat(input.value) || 0;
-            let desconto = inputsDesconto[index].value || 0;
-            let valorTotal = (precoVarejo * quantidade) - parseFloat(desconto);
+            
+            // --- NOVA CONTA: DESCONTO POR PORCENTAGEM ---
+            let porcentagem = parseFloat(inputsDesconto[index].value) || 0;
+            let bruto = precoVarejo * quantidade;
+            let descontoReal = (bruto * porcentagem) / 100;
+            let valorTotal = bruto - descontoReal;
 
             inputsValorTotal[index].textContent = valorTotal.toFixed(2);
-
             valorTotalTodosProdutos += valorTotal;
-            subtotal += precoVarejo * quantidade;
-            descontoTotal += parseFloat(desconto.toString().replace(",", ".")) || 0;
+            subtotal += bruto;
+            descontoTotal += descontoReal;
 
             if (produtosRelacionados[index]) {
                 produtosRelacionados[index].quantidade = quantidade;
-                produtosRelacionados[index].desconto = desconto;
+                produtosRelacionados[index].desconto = descontoReal.toFixed(2);
                 produtosRelacionados[index].valor_unitario = precoVarejo;
             }
         });
@@ -199,38 +175,31 @@ export default async function cadastro_orcamento(dados) {
         e.preventDefault();
         let formData = new FormData(formOrcamento);
         let data = Object.fromEntries(formData);
-
         data.desconto_total = descontoTotal;
         data.subtotal = subtotal;
         data.itens = produtosRelacionados;
 
         if (data.itens.length === 0) {
-            popup_erro('É necessário selecionar pelo menos um produto para salvar o orçamento.');
-            document.querySelector("#btn_adicionar_relacao").style.border = "1px solid red";
-            setTimeout(() => { document.querySelector("#btn_adicionar_relacao").style.border = "none"; }, 5000);
+            popup_erro('É necessário selecionar pelo menos um produto.');
             return;
         }
 
         try {
-            popup_carregando(false, 'Salvando orçamento...');
+            popup_carregando(false, 'Salvando...');
             const response = await fetch('http://localhost:3000/orcamento', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data)
             });
-
-            const result = await response.json();
             popup_carregando(true)
             if (response.ok) {
-                popup_aviso('Orçamento salvo com sucesso!');
+                popup_aviso('Sucesso!');
                 carregarConteudo("orcamento/orcamento.html", document.querySelector(".principal"), false, orcamento);
             } else {
-                popup_erro('Erro: ' + result.erro);
+                popup_erro('Erro ao salvar');
             }
         } catch (err) {
-            popup_carregando(true)
-            popup_erro('Erro ao conectar com a API.');
-            console.error(err);
+            popup_carregando(true); popup_erro('Erro de conexão');
         }
     })
 }
