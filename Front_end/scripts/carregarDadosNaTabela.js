@@ -83,16 +83,26 @@ function carregarDadosNaTabela(
                 td.setAttribute('id', e + "_" + objDado[e]) // nome do campo + valor do campo
 
                 // --- INÍCIO DA REGRA DE PORCENTAGEM GLOBAL ---
-                if (e === "tabela_preco_atacado" || e === "desconto" || e === "desconto_total" || e === "desconto_item") {
-                    let vDesconto = Number(objDado[e]) || 0;
-                    // Procura o valor base para o cálculo (Unitário)
-                    let vBase = Number(objDadoCompleto["subtotal"] || objDadoCompleto["preco_varejo"] || objDadoCompleto["valor_unitario"] || objDadoCompleto["tabela_preco_varejo"]) || 0;
+                const camposDesconto = ["tabela_preco_atacado", "desconto", "desconto_item"];
 
-                    if (vBase > 0) {
-                        td.textContent = ((vDesconto / vBase) * 100).toFixed(2) + "%";
+                if (camposDesconto.includes(e)) {
+                    let vDescontoReal = Number(objDado[e]) || 0;
+                    
+                    // Pega a quantidade e o preço unitário do objeto completo
+                    let qtde = Number(objDadoCompleto["quantidade"] || objDadoCompleto["tabela_quantidade"]) || 1;
+                    let vUnitario = Number(objDadoCompleto["preco_varejo"] || objDadoCompleto["valor_unitario"] || objDadoCompleto["tabela_preco_varejo"]) || 0;
+                    
+                    let vBaseTotalItem = vUnitario * qtde;
+
+                    if (vBaseTotalItem > 0) {
+                        td.textContent = ((vDescontoReal / vBaseTotalItem) * 100).toFixed(2) + "%";
                     } else {
                         td.textContent = "0.00%";
                     }
+                } 
+                // Para a Tabela Principal (Resumo), apenas exibe o valor em R$ sem calcular %
+                else if (e === "desconto_total") {
+                    td.textContent = "R$ " + (Number(objDado[e]) || 0).toFixed(2);
                 } 
                 // --- FIM DA REGRA ---
                 else if (typeof (objDado[e]) == 'boolean') {
