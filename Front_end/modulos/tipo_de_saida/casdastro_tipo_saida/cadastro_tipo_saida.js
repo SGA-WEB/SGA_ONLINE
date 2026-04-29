@@ -12,6 +12,13 @@ export default async function cadastro_tipo_saida() {
     let proximo_id_tipos_de_saida = await buscarDados('proximo_id_tipos_de_saida');
     document.querySelector(".codigo_id").innerHTML = proximo_id_tipos_de_saida.proximo_id;
 
+    // Limpa o erro ao marcar qualquer checkbox
+    document.querySelectorAll('.checkbox_opcao').forEach(cb => {
+        cb.addEventListener('change', () => {
+            document.querySelectorAll('.checkbox_opcao').forEach(c => c.setCustomValidity(''));
+        });
+    });
+
     document.querySelector("#btn_voltar_tipos_de_saida").addEventListener("click", () => {
         carregarConteudo("tipo_de_saida/tipo_de_saida.html", document.querySelector(".principal"), false, tipo_de_saida);
     })

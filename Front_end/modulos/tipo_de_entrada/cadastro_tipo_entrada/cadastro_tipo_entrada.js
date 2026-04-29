@@ -15,6 +15,13 @@ export default function cadastro_tipo_entrada(tipos_entradas) {
     })
     document.querySelector(".codigo_id").textContent = ultimoIdProduto + 1
 
+    // Limpa o erro ao marcar qualquer checkbox
+    document.querySelectorAll('.checkbox_opcao').forEach(cb => {
+        cb.addEventListener('change', () => {
+            document.querySelectorAll('.checkbox_opcao').forEach(c => c.setCustomValidity(''));
+        });
+    });
+
     document.querySelector("#btn_voltar_tipos_de_entrada").addEventListener("click", () => {
         carregarConteudo("tipo_de_entrada/tipos_de_entrada.html", document.querySelector(".principal"), false, tipos_de_entrada);
     })
