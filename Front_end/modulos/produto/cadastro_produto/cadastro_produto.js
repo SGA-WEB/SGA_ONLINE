@@ -16,7 +16,8 @@ export default async function cadastro_produto() {
         3
     );
 
-    let proximo_id_produto = await buscarDados('proximo_id_produto');
+    const resProximoId = await fetch('http://localhost:3000/api/proximo_id_produto');
+    const proximo_id_produto = await resProximoId.json();
     const spanCodigo = document.querySelector(".codigo_id");
     spanCodigo.innerHTML = proximo_id_produto.proximo_id;
 
