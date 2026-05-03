@@ -31,6 +31,10 @@ function carregarDadosNaTabela(
         if (!hasIdField) exibirIdColuna = false;
         td_info ? td_info.remove() : null // Se houver o parágrafo de informação, ele é removido
 
+        if (exibirIdColuna) {
+            dados.sort((a, b) => a[firstDataKey] - b[firstDataKey]) // Ordena os dados pelo id
+        }
+
         dados.map(objDado => { // Para cada objeto no array de dados
             let objDadoCompleto = objDado
 
@@ -49,7 +53,6 @@ function carregarDadosNaTabela(
             let tr = document.createElement('tr') // Cria uma linha
             tr.setAttribute('class', 'table_tr')
             if (exibirIdColuna) {
-                dados.sort((a, b) => a[firstDataKey] - b[firstDataKey]) // Ordena os dados pelo id
                 tr.setAttribute('id', 'tr_' + objDado[firstDataKey]) // Define o id da linha como tr_id
             }
 
