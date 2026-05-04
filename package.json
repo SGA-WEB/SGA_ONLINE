@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "css": "tailwindcss -i ./Front_end/estilos/input.css -o ./Front_end/estilos/tailwind.css --watch",
+    "css:build": "tailwindcss -i ./Front_end/estilos/input.css -o ./Front_end/estilos/tailwind.css"
+  },
   "devDependencies": {
     "@tailwindcss/cli": "^4.2.2",
     "tailwindcss": "^4.2.2"
