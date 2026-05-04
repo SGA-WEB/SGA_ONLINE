@@ -16,7 +16,6 @@ export default async function cadastro_produto() {
         3
     );
 
-<<<<<<< HEAD
   let dadosRecebidos = await buscarDados('proximo_id_produto');
 console.log("O que o banco devolveu:", dadosRecebidos);
 
@@ -26,12 +25,10 @@ if (dadosRecebidos) {
     // Isso vai mostrar todas as chaves disponíveis no objeto
     console.log("Chaves disponíveis:", Object.keys(Array.isArray(dadosRecebidos) ? dadosRecebidos[0] : dadosRecebidos));
 }
-=======
     const resProximoId = await fetch('http://localhost:3000/api/proximo_id_produto');
     const proximo_id_produto = await resProximoId.json();
     const spanCodigo = document.querySelector(".codigo_id");
     spanCodigo.innerHTML = proximo_id_produto.proximo_id;
->>>>>>> origin/Teste
 
     document.querySelector("#btn_voltar_produtos").addEventListener("click", () => {
         carregarConteudo("produto/produto.html", document.querySelector(".principal"), false, produto);
