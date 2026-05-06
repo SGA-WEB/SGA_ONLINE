@@ -329,7 +329,7 @@ export default async function dashborad() {
                 labels: ['Clientes', 'Fornecedores', 'Funcionários'],
                 datasets: [{
                     data: arrContatos,
-                    backgroundColor: [azul_1, azul, azul1],
+                    backgroundColor: [azul, azul1, azul_1],
                     hoverOffset: 4
                 }]
             },
