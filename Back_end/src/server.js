@@ -1929,6 +1929,7 @@ app.post('/produtos', async (req, res) => {
         inativo,          // Opcional (padrão: false)
         id_centro_estoque // Opcional (padrão: 1)
     } = req.body;
+    console.log(descricao)
 
     // 2. Validação dos campos obrigatórios e seus tipos.
     if (!produto || typeof quantidade !== 'number' || typeof preco_varejo !== 'number' || typeof preco_atacado !== 'number') {
@@ -1942,7 +1943,7 @@ app.post('/produtos', async (req, res) => {
         // 4. Comando SQL parametrizado para evitar SQL Injection.
         const insertQuery = `
       INSERT INTO sga.produto
-        (produto, quantidade, preco_varejo, preco_atacado, corredor, prateleira descricao, inativo, id_centro_estoque)
+        (produto, quantidade, preco_varejo, preco_atacado, corredor, prateleira, descricao, inativo, id_centro_estoque)
       VALUES
         ($1, $2, $3, $4, $5, $6, $7, $8, $9)
       RETURNING *;
@@ -1962,6 +1963,7 @@ app.post('/produtos', async (req, res) => {
         ];
 
         // 6. Executa a query no banco de dados.
+        console.log(values)
         const result = await pool.query(insertQuery, values);
 
         // 7. Retorna o registro recém-criado com status 201 (Created).

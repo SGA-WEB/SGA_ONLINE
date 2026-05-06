@@ -42,6 +42,9 @@
 #validador_senhas {
     margin-bottom: 3rem;
 }
+#btn_redefinir {
+    padding: 2rem;
+}
 @media (max-width: 25rem) {
     body {
         font-size: 1.6rem;

@@ -6,68 +6,100 @@ import { popup, popup_aviso, popup_carregando, popup_erro } from "../../../scrip
 import produto from "../produto.js";
 
 export default async function cadastro_produto() {
-    dataAtual() // Pega a data atual e adiciona ao input
-    select2("100%") // Inicializa o select2 como 100% da largura
+    dataAtual(); 
+    select2("100%");
 
-    // Busca os centros de estoque e adiciona ao select
-    let centros_de_estoque = await buscarDados("centro_estoque")
+    let centros_de_estoque = await buscarDados("centro_estoque");
     alterarOptionsSelect(
         document.querySelector("#id_centro_estoque"),
         centros_de_estoque,
         3
-    )
+    );
 
-    let proximo_id_produto = await buscarDados('proximo_id_produto');
+<<<<<<< HEAD
+  let dadosRecebidos = await buscarDados('proximo_id_produto');
+console.log("O que o banco devolveu:", dadosRecebidos);
 
-    document.querySelector(".codigo_id").innerHTML = proximo_id_produto.proximo_id;
+const spanCodigo = document.querySelector(".codigo_id");
+
+if (dadosRecebidos) {
+    // Isso vai mostrar todas as chaves disponíveis no objeto
+    console.log("Chaves disponíveis:", Object.keys(Array.isArray(dadosRecebidos) ? dadosRecebidos[0] : dadosRecebidos));
+}
+=======
+    const resProximoId = await fetch('http://localhost:3000/api/proximo_id_produto');
+    const proximo_id_produto = await resProximoId.json();
+    const spanCodigo = document.querySelector(".codigo_id");
+    spanCodigo.innerHTML = proximo_id_produto.proximo_id;
+>>>>>>> origin/Teste
 
     document.querySelector("#btn_voltar_produtos").addEventListener("click", () => {
-        // Botão que volta para a tela de produtos
-        carregarConteudo("produto/produto.html", document.querySelector(".principal"))
-    })
-    let form = document.querySelector("form")
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault()
-        popup_carregando()
+        carregarConteudo("produto/produto.html", document.querySelector(".principal"), false, produto);
+    });
 
-        let dados = Object.fromEntries(new FormData(form))
-        let sucesso = await enviarFormulario(dados)
+    let form = document.querySelector("#form_cadastro_produto");
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        popup_carregando();
+
+        // Captura os dados do formulário
+        let formData = new FormData(form);
+        let dados = Object.fromEntries(formData);
+
+        // --- CORREÇÕES CRÍTICAS ---
+        
+        // 1. Incluir campos que não são inputs (ID e Data)
+        dados.id_produto = spanCodigo.textContent;
+        dados.data_cadastro = document.querySelector(".data_cadastro").textContent;
+
+        // 2. Função para converter string "1.200,50" ou "10,50" em número decimal puro
+        const formatarNumero = (valor) => {
+            if (!valor) return 0;
+            return Number(valor.toString().replace(/\./g, '').replace(',', '.'));
+        };
+
+        dados.preco_varejo = formatarNumero(dados.preco_varejo);
+        dados.preco_atacado = formatarNumero(dados.preco_atacado);
+        dados.quantidade = formatarNumero(dados.quantidade);
+        dados.id_centro_estoque = parseInt(dados.id_centro_estoque);
+
+        // Validação básica antes de enviar
+        if (isNaN(dados.preco_varejo) || isNaN(dados.quantidade)) {
+            popup_carregando(true);
+            popup_erro("Verifique os valores numéricos informados.");
+            return;
+        }
+
+        let sucesso = await enviarFormulario(dados);
 
         if (sucesso) {
-            popup_aviso("Produto cadastrado com sucesso!")
-            form.reset()
-            carregarConteudo("produto/produto.html", document.querySelector(".principal"), false, produto)
+            popup_aviso("Produto cadastrado com sucesso!");
+            form.reset();
+            carregarConteudo("produto/produto.html", document.querySelector(".principal"), false, produto);
         } else {
-            popup_erro("Erro ao cadastrar produto. Tente novamente.")
+            popup_erro("Erro ao cadastrar produto no servidor.");
         }
-        popup_carregando(true)
-    })
+        popup_carregando(true);
+    });
 
     async function enviarFormulario(dados) {
-        // Converte de strin para number usando o operador unário '+'
-        dados.preco_varejo = +dados.preco_varejo;
-        dados.preco_atacado = +dados.preco_atacado;
-        dados.quantidade = +dados.quantidade;
-        dados.id_centro_estoque = +dados.id_centro_estoque;
         try {
+            console.log(dados)
             const response = await fetch('http://localhost:3000/produtos', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dados),
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || `Erro ${response.status}: ${response.statusText}`);
+                throw new Error(errorData.error || "Erro na resposta do servidor");
             }
 
-            const data = await response.json();
-            return true
+            return true;
         } catch (error) {
-            console.error('Erro ao enviar formulário:', error);
-            return false
+            console.error('Erro no Fetch:', error);
+            return false;
         }
     }
 }
