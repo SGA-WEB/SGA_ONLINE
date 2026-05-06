@@ -2345,16 +2345,20 @@ app.put('/tipos_entrada/:id', async (req, res) => {
 
 app.delete('/tipos_entrada/:id', async (req, res) => {
     const { id } = req.params;
-    console.log(id)
     try {
-        await pool.query(`
-            UPDATE sga.tipos_entrada
-            SET inativo = TRUE
-            WHERE id_tipo_de_entrada = $1
-        `, [id]);
-        res.status(200).json({ message: 'Tipo de entrada inativado com sucesso!' });
+        const result = await pool.query(
+            'DELETE FROM sga.tipos_entrada WHERE id_tipo_de_entrada = $1',
+            [id]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'Tipo de entrada não encontrado.' });
+        }
+
+        res.status(200).json({ message: 'Tipo de entrada excluído com sucesso!' });
     } catch (err) {
-        res.status(500).json({ error: 'Erro ao inativar' });
+        console.error('ERRO:', err.message, err.code);
+        res.status(500).json({ error: err.message });
     }
 });
 
@@ -2438,127 +2442,50 @@ app.delete('/contato/:id_contato', async (req, res) => {
     }
 });
 
-// Endpoint para inativar entrada de produto (DELETE)
-app.delete('/entrada_produto/:id_entrada', async (req, res) => {
-    const { id_entrada } = req.params;
 
-    const client = await pool.connect();
-
-    try {
-        await client.query('BEGIN');
-
-        // 1. Verificar se a entrada existe
-        const entradaExistente = await client.query(
-            'SELECT 1 FROM sga.entrada_produto WHERE id_entrada_produto = $1 AND inativo = FALSE',
-            [id_entrada]
-        );
-
-        if (entradaExistente.rowCount === 0) {
-            return res.status(404).json({
-                sucesso: false,
-                mensagem: 'Entrada não encontrada ou já inativada'
-            });
-        }
-
-        // 2. Inativar a entrada principal
-        await client.query(`
-            UPDATE sga.entrada_produto
-            SET inativo = TRUE
-            WHERE id_entrada_produto = $1
-        `, [id_entrada]);
-
-        // 3. Opcional: Inativar também os itens relacionados
-        await client.query(`
-            UPDATE sga.entrada_produto_itens
-            SET inativo = TRUE
-            WHERE entrada_id = $1
-        `, [id_entrada]);
-
-        await client.query('COMMIT');
-
-        res.status(200).json({
-            sucesso: true,
-            mensagem: 'Entrada de produto inativada com sucesso!',
-            id_entrada: id_entrada
-        });
-
-    } catch (err) {
-        await client.query('ROLLBACK');
-        console.error('Erro ao inativar entrada:', err);
-
-        res.status(500).json({
-            sucesso: false,
-            erro: 'Erro ao inativar entrada de produto',
-            detalhes: err.message
-        });
-    } finally {
-        client.release();
-    }
-});
-
-app.delete('/saida_produto/:id', async (req, res) => {
-    // Extrai o ID da saída dos parâmetros da URL
+app.delete('/tipos_de_saida/:id', async (req, res) => {
     const { id } = req.params;
-
-    // Obtém um cliente do pool para a transação
     const client = await pool.connect();
 
     try {
-        // Inicia a transação
         await client.query('BEGIN');
 
-        // 1. Verifica se a saída existe e ainda está ativa
-        const saidaExistente = await client.query(
-            'SELECT 1 FROM sga.saida_produto WHERE id_saida_produto = $1 AND inativo = FALSE',
+        // Verifica se existe
+        const existe = await client.query(
+            'SELECT 1 FROM sga.tipos_de_saida WHERE id_tipos_de_saida = $1',
             [id]
         );
 
-        // Se não encontrar (rowCount === 0), retorna erro 404
-        if (saidaExistente.rowCount === 0) {
-            await client.query('ROLLBACK'); // Desfaz a transação iniciada
+        if (existe.rowCount === 0) {
+            await client.query('ROLLBACK');
             return res.status(404).json({
                 sucesso: false,
-                mensagem: 'Saída de produto não encontrada ou já inativada.'
+                mensagem: 'Tipo de saída não encontrado.'
             });
         }
 
-        // 2. Marca o registro principal da saída como inativo
-        await client.query(`
-            UPDATE sga.saida_produto
-            SET inativo = TRUE
-            WHERE id_saida_produto = $1
-        `, [id]);
+        // Deleta (ou inativa, se preferir)
+        await client.query(
+            'DELETE FROM sga.tipos_de_saida WHERE id_tipos_de_saida = $1',
+            [id]
+        );
 
-        // 3. Marca os itens relacionados na tabela 'saida_produto_itens' como inativos
-        await client.query(`
-            UPDATE sga.saida_produto_itens
-            SET inativo = TRUE
-            WHERE saida_id = $1
-        `, [id]);
-
-        // Confirma a transação
         await client.query('COMMIT');
 
-        // Retorna sucesso
         res.status(200).json({
             sucesso: true,
-            mensagem: 'Saída de produto inativada com sucesso!',
-            id_saida_produto: id
+            mensagem: 'Tipo de saída excluído com sucesso!'
         });
 
     } catch (err) {
-        // Em caso de erro, desfaz a transação
         await client.query('ROLLBACK');
-        console.error(`Erro ao inativar saída de produto com ID ${id}:`, err);
-
-        // Retorna erro genérico 500
+        console.error(`Erro ao excluir tipo de saída com ID ${id}:`, err);
         res.status(500).json({
             sucesso: false,
-            erro: 'Erro ao inativar saída de produto.',
+            erro: 'Erro ao excluir tipo de saída.',
             detalhes: err.message
         });
     } finally {
-        // Libera o cliente de volta para o pool
         client.release();
     }
 });
