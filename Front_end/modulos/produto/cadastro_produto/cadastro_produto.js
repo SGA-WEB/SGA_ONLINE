@@ -11,11 +11,10 @@ function formatarMoeda(input) {
 }
 
 export default async function cadastro_produto() {
-    dataAtual()
-    select2("100%")
+    dataAtual() // Pega a data atual e adiciona ao input
+    select2("100%") // Inicializa o select2 como 100% da largura
 
-    // Busca os centros de estoque e adiciona ao select
-    let centros_de_estoque = await buscarDados("centro_estoque")
+    let centros_de_estoque = await buscarDados("centro_estoque");
     alterarOptionsSelect(
         document.querySelector("#id_centro_estoque"),
         centros_de_estoque,
@@ -23,59 +22,81 @@ export default async function cadastro_produto() {
     )
 
     let proximo_id_produto = await buscarDados('proximo_id_produto');
+
     document.querySelector(".codigo_id").innerHTML = proximo_id_produto.proximo_id;
 
-    // Aplica a formatação de moeda nos campos de valor
-    document.getElementById('preco_varejo').addEventListener('input', function () { formatarMoeda(this) });
-    document.getElementById('preco_atacado').addEventListener('input', function () { formatarMoeda(this) });
-
     document.querySelector("#btn_voltar_produtos").addEventListener("click", () => {
+        // Botão que volta para a tela de produtos
         carregarConteudo("produto/produto.html", document.querySelector(".principal"))
     })
-
     let form = document.querySelector("form")
     form.addEventListener("submit", async (e) => {
-        e.preventDefault()
-        popup_carregando()
+        e.preventDefault();
+        popup_carregando();
 
-        let dados = Object.fromEntries(new FormData(form))
-        let sucesso = await enviarFormulario(dados)
+        // Captura os dados do formulário
+        let formData = new FormData(form);
+        let dados = Object.fromEntries(formData);
+
+        // --- CORREÇÕES CRÍTICAS ---
+        
+        // 1. Incluir campos que não são inputs (ID e Data)
+        dados.id_produto = spanCodigo.textContent;
+        dados.data_cadastro = document.querySelector(".data_cadastro").textContent;
+
+        // 2. Função para converter string "1.200,50" ou "10,50" em número decimal puro
+        const formatarNumero = (valor) => {
+            if (!valor) return 0;
+            return Number(valor.toString().replace(/\./g, '').replace(',', '.'));
+        };
+
+        dados.preco_varejo = formatarNumero(dados.preco_varejo);
+        dados.preco_atacado = formatarNumero(dados.preco_atacado);
+        dados.quantidade = formatarNumero(dados.quantidade);
+        dados.id_centro_estoque = parseInt(dados.id_centro_estoque);
+
+        // Validação básica antes de enviar
+        if (isNaN(dados.preco_varejo) || isNaN(dados.quantidade)) {
+            popup_carregando(true);
+            popup_erro("Verifique os valores numéricos informados.");
+            return;
+        }
+
+        let sucesso = await enviarFormulario(dados);
 
         if (sucesso) {
-            popup_aviso("Produto cadastrado com sucesso!")
-            form.reset()
-            carregarConteudo("produto/produto.html", document.querySelector(".principal"), false, produto)
+            popup_aviso("Produto cadastrado com sucesso!");
+            form.reset();
+            carregarConteudo("produto/produto.html", document.querySelector(".principal"), false, produto);
         } else {
-            popup_erro("Erro ao cadastrar produto. Tente novamente.")
+            popup_erro("Erro ao cadastrar produto no servidor.");
         }
-        popup_carregando(true)
-    })
+        popup_carregando(true);
+    });
 
     async function enviarFormulario(dados) {
-        // Converte vírgula para ponto antes de enviar ao backend
-        dados.preco_varejo = parseFloat(dados.preco_varejo.replace(',', '.'));
-        dados.preco_atacado = parseFloat(dados.preco_atacado.replace(',', '.'));
+        // Converte de strin para number usando o operador unário '+'
+        dados.preco_varejo = +dados.preco_varejo;
+        dados.preco_atacado = +dados.preco_atacado;
         dados.quantidade = +dados.quantidade;
         dados.id_centro_estoque = +dados.id_centro_estoque;
         try {
+            console.log(dados)
             const response = await fetch('http://localhost:3000/produtos', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(dados),
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || `Erro ${response.status}: ${response.statusText}`);
+                throw new Error(errorData.error || "Erro na resposta do servidor");
             }
 
-            const data = await response.json();
-            return true
+            return true;
         } catch (error) {
-            console.error('Erro ao enviar formulário:', error);
-            return false
+            console.error('Erro no Fetch:', error);
+            return false;
         }
     }
 }

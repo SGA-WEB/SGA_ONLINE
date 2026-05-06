@@ -20,44 +20,47 @@
                 <a id="btn_remover_foto" class="item_editar_foto">Remover Foto</a>
             </div>
         </div>
-        <form
-           class="container_dados_usuario">
-            <div class="campo_usuario">
-                <label for="campo_editar_nome">Nome:<span class="campo_obrigatorio">*</span></label>
-                <div class="container_campo_input">
-                    <input type="text" name="campo_editar_nome" id="campo_editar_nome" class="campo_input_noborder" value="Nome do Usuário">
-                    <img src="../imagens/icone_editar.svg" alt="icone_editar" class="icone_editar">
+        <form id="form_configuracao_usuario">
+            <div class="container_dados_usuario">
+                <div class="campo_usuario">
+                    <label for="campo_editar_nome">Nome:<span class="campo_obrigatorio">*</span></label>
+                    <div class="container_campo_input">
+                        <input type="text" name="campo_editar_nome" id="campo_editar_nome" class="campo_input_noborder" minlength="3" required>
+                        <img src="../imagens/icone_editar.svg" alt="icone_editar" class="icone_editar">
+                    </div>
+                </div>
+                <div class="campo_usuario">
+                    <label for="campo_editar_email">E-mail:<span class="campo_obrigatorio">*</span></label>
+                    <div class="container_campo_input">
+                        <input type="email" name="campo_editar_email" id="campo_editar_email" class="campo_input_noborder" autocomplete="username" required>
+                        <img src="../imagens/icone_editar.svg" alt="icone_editar" class="icone_editar">
+                    </div>
+                </div>
+                <div class="campo_usuario">
+                    <label for="campo_editar_fone">Fone:<span class="campo_obrigatorio">*</span></label>
+                    <div class="container_campo_input">
+                        <input type="tel" name="campo_editar_fone" id="campo_editar_fone" class="campo_input_noborder" minlength="10" required>
+                        <img src="../imagens/icone_editar.svg" alt="icone_editar" class="icone_editar">
+                    </div>
+                </div>
+                <div class="campo_usuario">
+                    <label for="senha_usuario">Senha:<span class="campo_obrigatorio">*</span></label>
+                    <div class="flex items-center gap-2">
+                        <div class="container_campo_input" id="container_campo_input_senha">
+                            <input type="password" name="senha_usuario" id="senha_usuario" class="campo_input_noborder" minlength="6" maxlength="6" autocomplete ="current-password" readonly>
+                            <img src="../imagens/visibility_on.png" alt="icone visualizar senha" class="icone_editar visibilidade" id="view_off">
+                        </div>
+                        <button class="btn btn2 btn_alterar_senha" >Alterar senha</button>
+                    </div>
                 </div>
             </div>
-            <div class="campo_usuario">
-                <label for="campo_editar_email">E-mail:<span class="campo_obrigatorio">*</span></label>
-                <div class="container_campo_input">
-                    <input type="email" name="campo_editar_email" id="campo_editar_email" class="campo_input_noborder" value="emailusuario@gmail.com" autocomplete="username">
-                    <img src="../imagens/icone_editar.svg" alt="icone_editar" class="icone_editar">
-                </div>
-            </div>
-            <div class="campo_usuario">
-                <label for="campo_editar_fone">Fone:<span class="campo_obrigatorio">*</span></label>
-                <div class="container_campo_input">
-                    <input type="tel" name="campo_editar_fone" id="campo_editar_fone" class="campo_input_noborder" value="(12) 3456-7890">
-                    <img src="../imagens/icone_editar.svg" alt="icone_editar" class="icone_editar">
-                </div>
-            </div>
-            <div class="campo_usuario">
-                <label for="senha_usuario">Senha:<span class="campo_obrigatorio">*</span></label>
-                <div class="container_campo_input" id="container_campo_input_senha">
-                    <input type="password" name="senha_usuario" id="senha_usuario" class="campo_input_noborder" value="123456" autocomplete ="current-password">
-                    <img src="../imagens/visibility_on.png" alt="icone visualizar senha" class="icone_editar visibilidade" id="view_off">
-                </div>
-                <button class="btn btn2 btn_alterar_senha" >Alterar senha</button>
+            <div class="modulo_footer">
+                <button type="submit" class="btn_salvar btn" id="btn_salvar_configuracoes_usuario">
+                    <img src="../imagens/icone_salvar.png" alt="Icone Salvar">
+                    <p>Salvar</p>
+                </button>
             </div>
         </form>
-    </div>
-    <div class="modulo_footer">
-        <button class="btn_salvar btn" id="btn_salvar_configuracoes_usuario">
-            <img src="../imagens/icone_salvar.png" alt="Icone Salvar">
-            <p>Salvar</p>
-        </button>
     </div>
 </section>
 <section class="container_popup" id="container_popup_alterar_foto">

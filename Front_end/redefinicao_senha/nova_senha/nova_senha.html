@@ -1,36 +1,78 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificação de código</title>
     <link rel="stylesheet" href="../estilo_redefinicao.css">
     <link rel="stylesheet" href="nova_senha.css">
+    <link rel="stylesheet" href="../../estilos/geral.css">
     <link rel="shortcut icon" href="../../imagens/icone_sga.ico" type="image/x-icon">
 </head>
+
 <body>
     <main class="principal">
         <img class="logo_sga" src="../../imagens/logo_sga.png" alt="">
-        <section class="janela_redefinicao">
+        <form class="janela_redefinicao">
             <h1 class="titulo_redefinicao">Redefinição de senha</h1>
             <label class="campo" for="senha">
                 <p>Crie uma senha nova:</p>
                 <div class="campo_senha" id="campo_senha">
-                    <input class="campo_input" type="password" name="senha" id="senha" placeholder="Digite uma senha">
-                    <img class="visibilidade" id="view_senha" src="../../imagens/visibility_on.png" alt="visibilidade da senha off">
+                    <input class="campo_input" type="password" name="senha" id="senha" placeholder="Digite uma senha"
+                        required maxlength="6" minlength="6">
+                    <img class="visibilidade" id="view_senha" src="../../imagens/visibility_on.png"
+                        alt="visibilidade da senha off">
                 </div>
             </label>
             <label class="campo" for="confirmacao_senha">
                 <p>Digite a senha novamente:</p>
                 <div class="campo_senha" id="campo_confirmacao_senha">
-                    <input class="campo_input" type="password" name="confirmacao_senha" id="confirmacao_senha" placeholder="Confirme a sua senha">
-                    <img class="visibilidade" id="view_confirmacao" src="../../imagens/visibility_on.png" alt="visibilidade da senha off">
+                    <input class="campo_input" type="password" name="confirmacao_senha" id="confirmacao_senha"
+                        placeholder="Confirme a sua senha" required maxlength="6" minlength="6">
+                    <img class="visibilidade" id="view_confirmacao" src="../../imagens/visibility_on.png"
+                        alt="visibilidade da senha off">
                 </div>
                 <p class="validador" id="validador_senhas"></p>
             </label>
-            <a class="btn" id="btn_redefinir">Redefinir</a>
-        </section>
+            <button type="submit" class="btn p-2" id="btn_redefinir">Redefinir</button>
+        </form>
     </main>
+    <div class="container_popups">
+        <div class="popup_aviso hide_popup" id="popup_aviso">
+            <button class="btn_fechar_popup" id="btn_fechar_popup_aviso">
+                <img src="../../imagens/icone_fechar.svg" alt="botão fechar popup" class="icone_fechar">
+            </button>
+            <main>
+                <img src="../../imagens/check.svg" alt="icone_check">
+                <p class="mensagem_aviso">Alteração salva com sucesso!</p>
+            </main>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar-aviso"></div>
+            </div>
+        </div>
+        <div class="popup_erro popup_aviso hide_popup" id="popup_erro">
+            <button class="btn_fechar_popup" id="btn_fechar_popup_erro">
+                <img src="../imagens/icone_fechar.svg" alt="botão fechar popup" class="icone_fechar">
+            </button>
+            <main>
+                <img src="../imagens/icone_fechar.svg" alt="icone_check">
+                <p class="mensagem_erro">Erro ao salvar alteração</p>
+            </main>
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar-erro"></div>
+            </div>
+        </div>
+        <div class="popup_aviso popup_carregando hide_popup" id="popup_carregando">
+            <main>
+                <div class="gear-icon">
+                    <img src="../../imagens/icone_carregando.svg" alt="engrenagem">
+                </div>
+                <p class="mensagem_aviso">Salvando alterações...</p>
+            </main>
+        </div>
+    </div>
     <script type="module" src="nova_senha.js"></script>
 </body>
+
 </html>

@@ -5,12 +5,17 @@ import { dataAtual } from "../../../scripts/funcionalidades.js";
 import tipo_de_saida from "../tipo_de_saida.js";
 import buscarDados from "../../../scripts/buscarDados.js";
 
-export default async function cadastro_tipo_saida() {
+export default async function cadastro_tipo_saida(tipos_de_saida) {
     select2("100%")
     dataAtual()
-
-    let proximo_id_tipos_de_saida = await buscarDados('proximo_id_tipos_de_saida');
-    document.querySelector(".codigo_id").innerHTML = proximo_id_tipos_de_saida.proximo_id;
+    console.log(
+        tipos_de_saida
+    )
+    let ultimoIdProduto
+    tipos_de_saida.forEach(saida => {
+        ultimoIdProduto = saida.id_tipos_de_saida
+    })
+    document.querySelector(".codigo_id").textContent = ultimoIdProduto + 1
 
     // Limpa o erro ao marcar qualquer checkbox
     document.querySelectorAll('.checkbox_opcao').forEach(cb => {

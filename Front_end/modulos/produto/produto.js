@@ -7,88 +7,75 @@ import cadastro_produto from "./cadastro_produto/cadastro_produto.js"
 import carregarDadosNosCards from "../../scripts/carregarDadosNosCards.js"
 
 export default async function produto() {
-    /*
-        Autor: matheushnunes
-        Data: 23/02/2025
-
-        Função:
-        - Carrega o módulo de produtos;
-        - Ao clicar no botão de adicionar produto, o módulo de cadastro de produto é carregado;
-        - Exibe os produtos na tela através da busca no servidor;
-    */
-
     let btn_add = document.querySelector("#btn_adicionar")
     btn_add.addEventListener("click", () => {
-        carregarConteudo("produto/cadastro_produto/cadastro_produto.html", document.querySelector(".principal"), false, cadastro_produto) // Carrega o módulo de cadastro de produto
+        carregarConteudo("produto/cadastro_produto/cadastro_produto.html", document.querySelector(".principal"), false, cadastro_produto)
     })
 
     let btn_change_view_mode = document.querySelector(".btn_change_view_mode");
+    
+    // Definição das colunas para evitar repetição
+    const colunasBD = ["id_produto", "produto", "quantidade", "preco_varejo", "preco_atacado", "corredor", "prateleira"];
+    const colunasExibir = ["Id", "Produto", "Quantidade", "Preço Varejo", "Preço Atacado", "Corredor", "Prateleira"];
+
     btn_change_view_mode.addEventListener("click", () => {
         if (btn_change_view_mode.classList.contains("table_mode")) {
-            const colunasBancoDeDados = ["id_produto", "produto", "data_cadastro", "quantidade", "preco_varejo", "preco_atacado", "corredor", "prateleira"]
-            const colunasExibir = ["Id", "Produto", "Data de Cadastro", "Quantidade", "Preço de varejo", "Preço de atacado", "Corredor", "Prateleira"]
-            carregarDadosNosCards(dados, colunasBancoDeDados, colunasExibir)
-            pesquisar(dados, colunasExibir, null, true, colunasBancoDeDados)
-            btn_change_view_mode.classList.remove("table_mode")
-            btn_change_view_mode.classList.add("card_mode")
+            // MODO CARD
+            carregarDadosNosCards(dados, colunasBD, colunasExibir)
+            pesquisar(dados, colunasExibir, null, true, colunasBD)
+            
+            btn_change_view_mode.classList.replace("table_mode", "card_mode")
             btn_change_view_mode.querySelector("span").textContent = "Exibir modo tabela"
         } else {
-            // Exibir modo tabela
-            // Cria a tabela novamente e exibe os dados
+            // MODO TABELA
             document.querySelector('.container_tabela').innerHTML = `
                 <table class="tabela" id="tabela_produtos">
                     <thead>
                         <tr>
-                            <th class="th_selecionar_todos">
-                                <input type="checkbox" name="selecionar_todos" id="selecionar_todos">
-                            </th>
-                            <th id="tabela_codigo">Código</th>
-                            <th id="tabela_produto">Produto</th>
-                            <th id="tabela_quantidade">Qtde.</th>
-                            <th id="tabela_preco_varejo">Preço Varejo</th>
-                            <th id="tabela_preco_atacado">Preço Atacado</th>
-                            <th id="corredor">Corredor</th>
-                            <th id="prateleira">Prateleira</th>
+                            <th class="th_selecionar_todos"><input type="checkbox" id="selecionar_todos"></th>
+                            <th>Código</th>
+                            <th>Produto</th>
+                            <th>Qtde.</th>
+                            <th>Preço Varejo</th>
+                            <th>Preço Atacado</th>
+                            <th>Corredor</th>
+                            <th>Prateleira</th>
                         </tr>
                     </thead>
-                    <tbody class="tbody">
-
-                    </tbody>
-                </table>
-            `
-            carregarDadosNaTabela(dados, ["id_produto", "produto", "quantidade", "preco_varejo", "preco_atacado", "corredor", "prateleira"])
-            pesquisar(dados, ["id_produto", "produto", "quantidade", "preco_varejo", "preco_atacado", "corredor", "prateleira"])
-            btn_change_view_mode.classList.remove("card_mode")
-            btn_change_view_mode.classList.add("table_mode")
+                    <tbody class="tbody"></tbody>
+                </table>`;
+            
+            carregarDadosNaTabela(dados, colunasBD)
+            pesquisar(dados, colunasBD)
+            
+            btn_change_view_mode.classList.replace("card_mode", "table_mode")
             btn_change_view_mode.querySelector("span").textContent = "Exibir modo card"
         }
     })
 
     mudarPesquisa(document.querySelector(".input_pesquisa"))
-
     select2("9em")
 
     let dados = await buscarDados("produto")
-    carregarDadosNaTabela(dados, ["id_produto", "produto", "quantidade", "preco_varejo", "preco_atacado", "corredor", "prateleira"])
-    pesquisar(dados, ["id_produto", "produto", "quantidade", "preco_varejo", "preco_atacado", "corredor", "prateleira"])
+    carregarDadosNaTabela(dados, colunasBD)
+    pesquisar(dados, colunasBD)
 
     fecharMenu(document.querySelector(".tabela").offsetWidth, 480)
 
-    let widthModulo = document.querySelector(".modulo").offsetWidth // Pega o tamanho do body
-    window.addEventListener('resize', (e) => {
-        if (document.querySelector(".tabela") != null) {
-            fecharMenu(document.querySelector(".tabela").offsetWidth, 750)
-            visibilidadeMenulateral(document.querySelector(".tabela").offsetWidth, 750)
+    window.addEventListener('resize', () => {
+        const tabela = document.querySelector(".tabela");
+        if (tabela) {
+            fecharMenu(tabela.offsetWidth, 750)
+            visibilidadeMenulateral(tabela.offsetWidth, 750)
         }
-        widthModulo = document.querySelector(".modulo").offsetWidth
+        
+        let widthModulo = document.querySelector(".modulo").offsetWidth
         if (widthModulo <= 840 && !btn_change_view_mode.classList.contains("card_mode")) {
             btn_change_view_mode.click()
         }
     })
 
-    // Assim que a tela é carregada se for menor que 840px mostra a tabela em modo card
-    if (widthModulo <= 840) {
+    if (document.querySelector(".modulo").offsetWidth <= 840) {
         btn_change_view_mode.click()
     }
 }
-
