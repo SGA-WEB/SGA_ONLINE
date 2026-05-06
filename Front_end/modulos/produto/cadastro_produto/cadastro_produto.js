@@ -5,36 +5,31 @@ import buscarDados from "../../../scripts/buscarDados.js";
 import { popup, popup_aviso, popup_carregando, popup_erro } from "../../../scripts/popup.js";
 import produto from "../produto.js";
 
+function formatarMoeda(input) {
+    let v = input.value.replace(/[^0-9]/g, '').padStart(3, '0');
+    input.value = v.slice(0, -2).replace(/^0+(?=\d)/, '') + ',' + v.slice(-2);
+}
+
 export default async function cadastro_produto() {
-    dataAtual(); 
-    select2("100%");
+    dataAtual() // Pega a data atual e adiciona ao input
+    select2("100%") // Inicializa o select2 como 100% da largura
 
     let centros_de_estoque = await buscarDados("centro_estoque");
     alterarOptionsSelect(
         document.querySelector("#id_centro_estoque"),
         centros_de_estoque,
         3
-    );
+    )
 
-  let dadosRecebidos = await buscarDados('proximo_id_produto');
-console.log("O que o banco devolveu:", dadosRecebidos);
+    let proximo_id_produto = await buscarDados('proximo_id_produto');
 
-const spanCodigo = document.querySelector(".codigo_id");
-
-if (dadosRecebidos) {
-    // Isso vai mostrar todas as chaves disponíveis no objeto
-    console.log("Chaves disponíveis:", Object.keys(Array.isArray(dadosRecebidos) ? dadosRecebidos[0] : dadosRecebidos));
-}
-    const resProximoId = await fetch('http://localhost:3000/api/proximo_id_produto');
-    const proximo_id_produto = await resProximoId.json();
-    const spanCodigo = document.querySelector(".codigo_id");
-    spanCodigo.innerHTML = proximo_id_produto.proximo_id;
+    document.querySelector(".codigo_id").innerHTML = proximo_id_produto.proximo_id;
 
     document.querySelector("#btn_voltar_produtos").addEventListener("click", () => {
-        carregarConteudo("produto/produto.html", document.querySelector(".principal"), false, produto);
-    });
-
-    let form = document.querySelector("#form_cadastro_produto");
+        // Botão que volta para a tela de produtos
+        carregarConteudo("produto/produto.html", document.querySelector(".principal"))
+    })
+    let form = document.querySelector("form")
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
         popup_carregando();
@@ -80,6 +75,11 @@ if (dadosRecebidos) {
     });
 
     async function enviarFormulario(dados) {
+        // Converte de strin para number usando o operador unário '+'
+        dados.preco_varejo = +dados.preco_varejo;
+        dados.preco_atacado = +dados.preco_atacado;
+        dados.quantidade = +dados.quantidade;
+        dados.id_centro_estoque = +dados.id_centro_estoque;
         try {
             console.log(dados)
             const response = await fetch('http://localhost:3000/produtos', {

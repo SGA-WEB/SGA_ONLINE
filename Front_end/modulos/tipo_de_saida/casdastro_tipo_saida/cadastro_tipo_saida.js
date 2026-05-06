@@ -17,14 +17,35 @@ export default async function cadastro_tipo_saida(tipos_de_saida) {
     })
     document.querySelector(".codigo_id").textContent = ultimoIdProduto + 1
 
+    // Limpa o erro ao marcar qualquer checkbox
+    document.querySelectorAll('.checkbox_opcao').forEach(cb => {
+        cb.addEventListener('change', () => {
+            document.querySelectorAll('.checkbox_opcao').forEach(c => c.setCustomValidity(''));
+        });
+    });
+
     document.querySelector("#btn_voltar_tipos_de_saida").addEventListener("click", () => {
         carregarConteudo("tipo_de_saida/tipo_de_saida.html", document.querySelector(".principal"), false, tipo_de_saida);
-        // Botão que volta para a tela de tipos de saída
     })
 
     let btn_salvar = document.querySelector("form")
     btn_salvar.addEventListener("submit", async (e) => {
         e.preventDefault()
+
+        // Validação das checkboxes
+        const checkboxes = document.querySelectorAll('.checkbox_opcao');
+        const algumaMarcada = Array.from(checkboxes).some(cb => cb.checked);
+
+        if (!algumaMarcada) {
+            const primeiraCheckbox = checkboxes[0];
+            primeiraCheckbox.setCustomValidity('Marque ao menos uma opção.');
+            primeiraCheckbox.reportValidity();
+            return;
+        }
+
+        // Limpa a validação caso esteja marcada
+        checkboxes.forEach(cb => cb.setCustomValidity(''));
+
         popup_carregando(false, "Salvando tipo de saída...");
         const data = {
             descricao: document.getElementById('descricao').value,
@@ -58,4 +79,3 @@ export default async function cadastro_tipo_saida(tipos_de_saida) {
         }
     })
 }
-
