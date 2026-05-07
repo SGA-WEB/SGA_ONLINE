@@ -27,11 +27,13 @@
             </div>
             <div class="campo_contato small_width">
                 <label for="cfop_dentro">CFOP(Dentro):<span class="campo_obrigatorio">*</span></label>
-                <input type="text" name="cpopD" id="cfop_dentro" class="campo_input" required>
+                <input type="number" name="cpopD" id="cfop_dentro" class="campo_input" min="0" max="9999"
+                    oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4)" required>
             </div>
             <div class="campo_contato small_width">
                 <label for="cfop_fora">CFOP(Fora):<span class="campo_obrigatorio">*</span></label>
-                <input type="text" name="cpopF" id="cfop_fora" class="campo_input" required>
+                <input type="number" name="cpopF" id="cfop_fora" class="campo_input" min="0" max="9999"
+                    oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4)" required>
             </div>
             <div class="campo_contato small_width select_conainer">
                 <label for="ativo">Ativo:<span class="campo_obrigatorio">*</span></label>
@@ -42,35 +44,42 @@
                 </select>
             </div>
         </div>
+
+        <p>Marque ao menos uma opção.<span class="campo_obrigatorio">*</span></p>
+
         <label for="movimenta_estoque">
-            <input type="checkbox" nome="Movimenta Estoque" value="Movimenta Estoque" id="movimenta_estoque">
+            <input type="checkbox" nome="Movimenta Estoque" value="Movimenta Estoque" id="movimenta_estoque"
+                class="checkbox_opcao">
             Movimenta Estoque
         </label><br>
 
         <label for="hab_agrupamento">
-            <input type="checkbox" nome="Hab.Agrupamento" value="Hab.Agrupamento" id="hab_agrupamento">
+            <input type="checkbox" nome="Hab.Agrupamento" value="Hab.Agrupamento" id="hab_agrupamento"
+                class="checkbox_opcao">
             Habilita Agrupamento
         </label><br>
 
         <label for="hab_movimento">
-            <input type="checkbox" nome="Hab.Movimento" value="Hab.Movimento" id="hab_movimento">
+            <input type="checkbox" nome="Hab.Movimento" value="Hab.Movimento" id="hab_movimento" class="checkbox_opcao">
             Habilita Movimento
         </label><br>
 
         <label for="hab_nf">
-            <input type="checkbox" nome="habilitaNF" value="Habilita N.F" id="hab_nf">
+            <input type="checkbox" nome="habilitaNF" value="Habilita N.F" id="hab_nf" class="checkbox_opcao">
             Habilita N.F
         </label><br>
 
         <label for="atualiza_produto">
-            <input type="checkbox" nome="Atualiza Produto" value="Atualiza Produto" id="atualiza_produto">
+            <input type="checkbox" nome="Atualiza Produto" value="Atualiza Produto" id="atualiza_produto"
+                class="checkbox_opcao">
             Atualiza Produto
         </label><br>
 
         <label for="padrao">
-            <input type="checkbox" nome="Padrão" value="Padrão" id="padrao">
+            <input type="checkbox" nome="Padrão" value="Padrão" id="padrao" class="checkbox_opcao">
             Padrão
         </label><br>
+
 
     </form>
 </section>

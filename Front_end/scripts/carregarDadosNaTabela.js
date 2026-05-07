@@ -84,15 +84,37 @@ function carregarDadosNaTabela(
                 td.setAttribute('class', 'dado_tabela')
                 td.classList.add('td_' + e) // Adiciona a classe da célula como td_nomeDoCampo
                 td.setAttribute('id', e + "_" + objDado[e]) // nome do campo + valor do campo
-                if (typeof (objDado[e]) == 'boolean') {
-                    // Se o campo for booleano, exibe "S" ou "N"
+
+                // --- INÍCIO DA REGRA DE PORCENTAGEM GLOBAL ---
+                const camposDesconto = ["tabela_preco_atacado", "desconto", "desconto_item"];
+
+                if (camposDesconto.includes(e)) {
+                    let vDescontoReal = Number(objDado[e]) || 0;
+                    
+                    // Pega a quantidade e o preço unitário do objeto completo
+                    let qtde = Number(objDadoCompleto["quantidade"] || objDadoCompleto["tabela_quantidade"]) || 1;
+                    let vUnitario = Number(objDadoCompleto["preco_varejo"] || objDadoCompleto["valor_unitario"] || objDadoCompleto["tabela_preco_varejo"]) || 0;
+                    
+                    let vBaseTotalItem = vUnitario * qtde;
+
+                    if (vBaseTotalItem > 0) {
+                        td.textContent = ((vDescontoReal / vBaseTotalItem) * 100).toFixed(2) + "%";
+                    } else {
+                        td.textContent = "0.00%";
+                    }
+                } 
+                // Para a Tabela Principal (Resumo), apenas exibe o valor em R$ sem calcular %
+                else if (e === "desconto_total") {
+                    td.textContent = "R$ " + (Number(objDado[e]) || 0).toFixed(2);
+                } 
+                // --- FIM DA REGRA ---
+                else if (typeof (objDado[e]) == 'boolean') {
                     if (objDado[e]) {
                         td.textContent = "S"
                     } else {
                         td.textContent = "N"
                     }
                 } else {
-                    // Se não, exibe o valor do campo
                     td.textContent = objDado[e]
                 }
 
@@ -101,25 +123,23 @@ function carregarDadosNaTabela(
 
             // CRUD:
             if (ativarCrud) {
-                crudLayout(objDadoCompleto, tr, addListener) // Adiciona os botões de editar, visualizar e excluir na linha
+                crudLayout(objDadoCompleto, tr, addListener) 
             }
 
             if (addListener) {
                 checkbox.addEventListener("change", (e) => {
-                    // Adiciona o evento de mudança no checkbox
-                    let tr = e.target.parentElement.parentElement // Pega a linha da célula do checkbox
-                    if (e.target.checked) { // Se o checkbox estiver marcado
-                        tr.classList.add("linha_selecionada") // Adiciona a classe "selecionado" na linha
-                    } else { // Se o checkbox estiver desmarcado
-                        tr.classList.remove("linha_selecionada") // Remove a classe "selecionado" da linha
+                    let tr = e.target.parentElement.parentElement 
+                    if (e.target.checked) { 
+                        tr.classList.add("linha_selecionada") 
+                    } else { 
+                        tr.classList.remove("linha_selecionada") 
                     }
                 })
             }
-            tabela.appendChild(tr) // Adiciona a linha na tabela
+            tabela.appendChild(tr) 
         })
-    } else { // Se não houver dados
-        if (!td_info) { // Se o parágrafo de informação não existir
-            // Cria o parágrafo com a informação de que não há dados
+    } else { 
+        if (!td_info) { 
             td_info = document.createElement('td')
             td_info.setAttribute('class', 'td_nenhum_dado')
             td_info.setAttribute('colspan', '5')
@@ -128,7 +148,6 @@ function carregarDadosNaTabela(
         }
     }
 
-    // Primeiro remove (caso já exista)
     if (handlersPorTabela.has(tabela)) {
         tabela.removeEventListener("click", handlersPorTabela.get(tabela));
     }
@@ -137,10 +156,9 @@ function carregarDadosNaTabela(
         selecionarChekboxAoClicarNaLinha(e, tabela)
     }
 
-    // Depois adiciona
     if (addListener) {
         tabela.addEventListener("click", novoHandler);
-        handlersPorTabela.set(tabela, novoHandler); // Armazena o handler da tabela para evitar múltiplos handlers na mesma tabela
+        handlersPorTabela.set(tabela, novoHandler); 
     }
 
     let selecionar_todos = tabela.parentElement.querySelector("#selecionar_todos");
@@ -169,109 +187,82 @@ function selecionarChekboxAoClicarNaLinha(e, tabela) {
     tr.classList.toggle("linha_selecionada", checkbox.checked);
 }
 
-
-
 function pesquisar(dados, colunasExibir, tabela = document.querySelector(".tbody"), ativarCrud = true, colunasBancoDeDados) {
-    // Função que pesquisa e manda os dados filtrados para a função carregarDadosNaTabela
+    const btn_pesquisar = document.querySelector('.btn_pesquisar') 
+    const campo_select = document.querySelector('.select_coluna') 
+    const btn_limpar = document.querySelector('.btn_limpar_pesquisa') 
+    const input_pesquisar = document.querySelector('.input_pesquisa') 
 
-    const btn_pesquisar = document.querySelector('.btn_pesquisar') // Botão de pesquisar
-    const campo_select = document.querySelector('.select_coluna') // Select que contém os campos da tabela
-    const btn_limpar = document.querySelector('.btn_limpar_pesquisa') // Botão de fechar
-    const input_pesquisar = document.querySelector('.input_pesquisa') // Input de pesquisa
-
-    btn_pesquisar.addEventListener('click', handlePesquisar) // Quando o botão de pesquisar for clicado
-    input_pesquisar.addEventListener('keyup', handlePesquisar) // Quando uma tecla for pressionada
-    btn_limpar.addEventListener('click', () => { // Quando o botão de limpar for clicado
-        input_pesquisar.value = "" // Limpa o input
-        handlePesquisar() // Chama a função de pesquisa
-    })
-    $('#select_coluna').on('change', () => {
-        input_pesquisar.value = "" // Limpa o input
-        handlePesquisar()
-    }) // Quando o select for alterado
+    if (btn_pesquisar) btn_pesquisar.addEventListener('click', handlePesquisar) 
+    if (input_pesquisar) input_pesquisar.addEventListener('keyup', handlePesquisar) 
+    if (btn_limpar && input_pesquisar) {
+        btn_limpar.addEventListener('click', () => { 
+            input_pesquisar.value = "" 
+            handlePesquisar() 
+        })
+    }
+    
+    if ($('#select_coluna').length > 0 && input_pesquisar) {
+        $('#select_coluna').on('change', () => {
+            input_pesquisar.value = "" 
+            handlePesquisar()
+        })
+    }
 
     function handlePesquisar() {
-        let value_input_pesquisa = document.querySelector('.input_pesquisa').value // Valor do input de pesquisa
+        if (!input_pesquisar) return;
+        let value_input_pesquisa = input_pesquisar.value 
 
-        if (value_input_pesquisa == "") { // Se o input estiver vazio
-            btn_limpar.classList.add('hide') // Esconde o botão de fechar
-        } else { // Se tiver algum valor
-            btn_limpar.classList.remove('hide') // Mostra o botão de fechar
+        if (btn_limpar) {
+            value_input_pesquisa == "" ? btn_limpar.classList.add('hide') : btn_limpar.classList.remove('hide')
         }
 
         dados = dados.map(e => {
-            // Converte os campos booleanos para "s" ou "n"
             if (typeof (e.padrao_centro_estoque) === 'boolean') {
                 e.padrao_centro_estoque = e.padrao_centro_estoque ? "s" : "n"
             }
             return e
         })
 
-        let threshold // Define a tolerância da pesquisa
-        if (campo_select.value == "padrao_centro_estoque") {
-            // Se o campo selecionado for o "padrão", a pesquisa será feita com mais tolerância a variação de valores
+        let threshold 
+        if (campo_select && campo_select.value == "padrao_centro_estoque") {
             threshold = 0.7
-        } else if (campo_select.value == "localizacao_centro_estoque") {
-            // Se o campo selecionado for "localização", a pesquisa será feita com tolerancia 0
-            threshold = 0
-        } else if (campo_select.value.includes("id")) {
-            // Se o campo selecionado contiver "id" em alguma parte do valor, a pesquisa será feita com tolerancia 0
+        } else if (campo_select && (campo_select.value == "localizacao_centro_estoque" || campo_select.value.includes("id"))) {
             threshold = 0
         } else {
             threshold = 0.3
         }
+
         const options = {
-            keys: [campo_select.value],
+            keys: [campo_select ? campo_select.value : ""],
             threshold: threshold,
         }
-        const fuse = new Fuse(dados, options) // Inicializa o fuse com os dados e as configurações
+        const fuse = new Fuse(dados, options) 
 
         let newData
 
         if (value_input_pesquisa.includes('*')) {
-            // Remove o curinga e ajusta a lógica de pesquisa
-            let padrao = value_input_pesquisa.replace(/\*/g, ''); // Remove todos os "*"
+            let padrao = value_input_pesquisa.replace(/\*/g, '').toUpperCase();
+            let buscaUpperCase = value_input_pesquisa.toUpperCase();
+            const chave = campo_select.value;
 
-            value_input_pesquisa = value_input_pesquisa.toUpperCase() // Converte o valor da pesquisa para maiúsculo
-            padrao = padrao.toUpperCase() // Converte o padrão para maiúsculo
-
-            // Se tiver algum caractere coringa "*" na pesquisa:
-            if (value_input_pesquisa.startsWith('*') && value_input_pesquisa.endsWith('*')) {
-                // *a*: Contém "a" em qualquer lugar
-                newData = dados.filter(item => {
-                    let itemUpperCase = item[campo_select.value].toUpperCase()
-                    return itemUpperCase.includes(padrao)
-                });
-
-            } else if (value_input_pesquisa.startsWith('*')) {
-                // *a: Termina com "a"
-                newData = dados.filter(item => {
-                    let itemUpperCase = item[campo_select.value].toUpperCase()
-                    return itemUpperCase.endsWith(padrao)
-                });
-
-            } else if (value_input_pesquisa.endsWith('*')) {
-                // a*: Começa com "a"
-                newData = dados.filter(item => {
-                    let itemUpperCase = item[campo_select.value].toUpperCase()
-                    return itemUpperCase.startsWith(padrao)
-                });
+            if (buscaUpperCase.startsWith('*') && buscaUpperCase.endsWith('*')) {
+                newData = dados.filter(item => String(item[chave]).toUpperCase().includes(padrao));
+            } else if (buscaUpperCase.startsWith('*')) {
+                newData = dados.filter(item => String(item[chave]).toUpperCase().endsWith(padrao));
+            } else if (buscaUpperCase.endsWith('*')) {
+                newData = dados.filter(item => String(item[chave]).toUpperCase().startsWith(padrao));
             }
-        } else { // Se não tiver o caractere coringa "*" na pesquisa o fuse é utilizado
-            newData = fuse.search(value_input_pesquisa) // Faz a pesquisa
-            newData = newData.map(e => e.item) // Pega apenas os itens do resultado da pesquisa
+        } else { 
+            newData = value_input_pesquisa == "" ? dados : fuse.search(value_input_pesquisa).map(e => e.item) 
         }
 
-        if (value_input_pesquisa == "") { // Se o input estiver vazio
-            newData = dados // Exibe todos os dados
-        }
         if (document.querySelector(".tabela")) {
-            carregarDadosNaTabela(newData, colunasExibir, tabela, ativarCrud) // Manda os novos dados filtrados para a função carregarDadosNaTabela
+            carregarDadosNaTabela(newData, colunasExibir, tabela, ativarCrud) 
         } else {
             carregarDadosNosCards(newData, colunasBancoDeDados, colunasExibir)
         }
-
     }
 }
 
-export { carregarDadosNaTabela, pesquisar } // Exporta as funções para serem usadas em outros arquivos
+export { carregarDadosNaTabela, pesquisar }

@@ -24,130 +24,140 @@ export default async function dashborad() {
     let azul_1 = "#E9F0FF";
     let vermelho = 'rgba(255, 0, 0, 0.15)';
 
-    popup_carregando(false,"Carregando informações...")
+    popup_carregando(false, "Carregando informações...")
 
-    let dadosProduto = await buscarDados('produto').then((e) => { // Pega os dados do servidor
-        return e
+    let dadosProduto = await buscarDados('produto')
+    let dadosCentroEstoque = await buscarDados('centro_estoque')
+    let dadosContatos = await buscarDados('contato')
+    let dadosTiposSaida = await buscarDados('tipos_de_saida')
+    let dadosTiposEntrada = await buscarDados('tipos_entrada')
+
+    // -------------------------------------------------------
+    // Agrupa entradas por ano usando data_criacao da API
+    // -------------------------------------------------------
+    let entradaPorAno = {}
+    dadosTiposEntrada.forEach(e => {
+        let ano = new Date(e.data_criacao).getFullYear()
+        entradaPorAno[ano] = (entradaPorAno[ano] || 0) + 1
     })
-    let dadosCentroEstoque = await buscarDados('centro_estoque').then((e) => { // Pega os dados do servidor
-        return e
+
+    // Agrupa saídas por ano usando data_criacao da API
+    let saidaPorAno = {}
+    dadosTiposSaida.forEach(e => {
+        let ano = new Date(e.data_criacao).getFullYear()
+        saidaPorAno[ano] = (saidaPorAno[ano] || 0) + 1
     })
-    let dadosContatos = await buscarDados('contato').then((e) => { // Pega os dados do servidor
-        return e
-    })
+
+    // Gera os labels (anos únicos ordenados)
+    let anosSet = new Set([...Object.keys(entradaPorAno), ...Object.keys(saidaPorAno)])
+    let anos = Array.from(anosSet).sort()
+
+    let dado_entrada = anos.map(ano => entradaPorAno[ano] || 0)
+    let dado_saida = anos.map(ano => saidaPorAno[ano] || 0)
+    let dado_diferenca = dado_entrada.map((v, i) => v - dado_saida[i])
+    // -------------------------------------------------------
 
     // Dados dos gráficos:
     let precoAtacado = 0
     let precoVarejo = 0
     let qtdeTotal = 0
-    let dado_entrada = [4, 12, 15, 8]
-    let dado_saida = [2, 16, 4, 9]
-    let dado_diferenca = dado_entrada.map((valor, indice) => valor - dado_saida[indice]);
-    let produtos_centro_estoque = [] // Array com todos os centros de estoque e seus respectivos produtos
+    let produtos_centro_estoque = []
     let produtosEmFalta = []
     let produtosComMaiorQuantidade = []
 
     dadosProduto.forEach(e => {
-        qtdeTotal += e.quantidade // Pega a quantidade total de produtos
-        precoAtacado += Number(e.preco_atacado) * e.quantidade// Pega o preço de atacado total
-        precoVarejo += Number(e.preco_varejo) * e.quantidade // Pega o preço de varejo total
+        qtdeTotal += e.quantidade
+        precoAtacado += Number(e.preco_atacado) * e.quantidade
+        precoVarejo += Number(e.preco_varejo) * e.quantidade
         if (e.quantidade <= 30) {
             produtosEmFalta.push(e)
         }
     })
 
-    // Inserir dados nos gráficos:
-
-    document.querySelector(".quantidade_produtos").textContent = qtdeTotal // Insere a quantidade de produtos no dashboard
-    document.querySelector("#valor_total_atacado").textContent = `R$ ${precoAtacado.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, '.').replace(/\.(?=[^.]*$)/g, ',')}` // Insere o valor total de atacado no dashboard
-    document.querySelector("#valor_total_varejo").textContent = `R$ ${precoVarejo.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, '.').replace(/\.(?=[^.]*$)/g, ',')}` // Insere o valor total de varejo no dashboard
+    // Inserir dados nos cards:
+    document.querySelector(".quantidade_produtos").textContent = qtdeTotal
+    document.querySelector("#valor_total_atacado").textContent = `R$ ${precoAtacado.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, '.').replace(/\.(?=[^.]*$)/g, ',')}`
+    document.querySelector("#valor_total_varejo").textContent = `R$ ${precoVarejo.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, '.').replace(/\.(?=[^.]*$)/g, ',')}`
 
     dadosCentroEstoque.forEach(e => {
-        // Cria um objeto para cada centro de estoque e adiciona os seus respectivos produtos:
         let centro_estoque = {
             id_centro_estoque: e.id_centro_estoque,
             nome_centro_estoque: e.nome_centro_estoque,
         }
-        let produtos = [] // Cria um array vazio para os produtos do centro de estoque
+        let produtos = []
         let qtdeTotalProdutos = 0
         let valorTotalVarejo = 0
         let valorTotalAtacado = 0
         dadosProduto.forEach(e => {
-            if (e.fk_id_centro_estoque == centro_estoque.id_centro_estoque) { // Se o id do centro de estoque for igual ao id do produto
+            if (e.fk_id_centro_estoque == centro_estoque.id_centro_estoque) {
                 qtdeTotalProdutos += e.quantidade
-                valorTotalVarejo += Number(e.preco_varejo) * e.quantidade // Pega o preço de varejo total
-                valorTotalAtacado += Number(e.preco_atacado) * e.quantidade // Pega o preço de atacado total
-                produtos.push(e) // Adiciona o produto ao array de produtos
+                valorTotalVarejo += Number(e.preco_varejo) * e.quantidade
+                valorTotalAtacado += Number(e.preco_atacado) * e.quantidade
+                produtos.push(e)
             }
         })
         centro_estoque.qtdeTotalProdutos = qtdeTotalProdutos
         centro_estoque.valorTotalVarejo = valorTotalVarejo
         centro_estoque.valorTotalAtacado = valorTotalAtacado
-        centro_estoque.produtos = produtos // Adiciona o array de produtos ao objeto centro_estoque
+        centro_estoque.produtos = produtos
         produtos_centro_estoque.push(centro_estoque)
 
-        // Cria os cards de informações para cada centro de estoque:
         let porcentagem = qtdeTotalProdutos * 100 / qtdeTotal
 
-        let card = document.createElement("div") // Cria o card
+        let card = document.createElement("div")
         card.classList.add("card_info_porcentagem")
         card.classList.add("card_contato")
 
-        let container_porcentagem_estoque = document.createElement("div") // Cria o container da porcentagem
-        container_porcentagem_estoque.classList.add("container_porcentagem_estoque") // Adiciona a classe container_porcentagem_estoque
+        let container_porcentagem_estoque = document.createElement("div")
+        container_porcentagem_estoque.classList.add("container_porcentagem_estoque")
 
-        let porcentagem_estoque = document.createElement("span") // Cria a porcentagem
-        porcentagem_estoque.classList.add("porcentagem_estoque") // Adiciona a classe porcentagem_estoque
-        porcentagem_estoque.textContent = porcentagem.toFixed(1) + "%" // Adiciona a porcentagem ao card
+        let porcentagem_estoque = document.createElement("span")
+        porcentagem_estoque.classList.add("porcentagem_estoque")
+        porcentagem_estoque.textContent = porcentagem.toFixed(1) + "%"
 
-        let quantidade_card = document.createElement("span") // Cria a quantidade do card
-        quantidade_card.classList.add("quantidade_card") // Adiciona a classe quantidade_card
+        let quantidade_card = document.createElement("span")
+        quantidade_card.classList.add("quantidade_card")
         quantidade_card.textContent = centro_estoque.qtdeTotalProdutos
 
-        let pEstoque = document.createElement("p") // Cria o p da porcentagem
-        pEstoque.textContent = e.nome_centro_estoque // Adiciona o nome do centro de estoque
+        let pEstoque = document.createElement("p")
+        pEstoque.textContent = e.nome_centro_estoque
 
-        card.appendChild(container_porcentagem_estoque) // Adiciona o container ao card
+        card.appendChild(container_porcentagem_estoque)
         container_porcentagem_estoque.appendChild(porcentagem_estoque)
-        container_porcentagem_estoque.appendChild(pEstoque) // Adiciona a quantidade ao container
-        card.appendChild(quantidade_card) // Adiciona a quantidade ao card
+        container_porcentagem_estoque.appendChild(pEstoque)
+        card.appendChild(quantidade_card)
 
         document.querySelector(".container_card_info_porcentagem").appendChild(card)
 
+        let porcentagemValorEstoque = centro_estoque.valorTotalVarejo * 100 / precoVarejo
 
-        // Cria o item do dashboard com as informações do centro de estoque:
+        let container_info_valor_estoque = document.createElement("div")
+        container_info_valor_estoque.classList.add("container_info_valor_estoque")
 
-        let porcentagemValorEstoque = centro_estoque.valorTotalVarejo * 100 / precoVarejo // Pega a porcentagem do centro de estoque
+        let pNomeEstoque = document.createElement("p")
+        pNomeEstoque.textContent = e.nome_centro_estoque
 
-        let container_info_valor_estoque = document.createElement("div") // Cria o container da porcentagem
-        container_info_valor_estoque.classList.add("container_info_valor_estoque") // Adiciona a classe container_porcentagem_estoque
+        let container_barra_valor_estoque = document.createElement("div")
+        container_barra_valor_estoque.classList.add("container_barra_valor_estoque")
 
-        let pNomeEstoque = document.createElement("p") // Cria o p da porcentagem
-        pNomeEstoque.textContent = e.nome_centro_estoque // Adiciona o nome do centro de estoque
+        let spanValorEstoque = document.createElement("span")
+        spanValorEstoque.classList.add("valor_estoque")
+        spanValorEstoque.textContent = `R$ ${centro_estoque.valorTotalVarejo.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, '.').replace(/\.(?=[^.]*$)/g, ',')}`
 
-        let container_barra_valor_estoque = document.createElement("div") // Cria o container da porcentagem
-        container_barra_valor_estoque.classList.add("container_barra_valor_estoque") // Adiciona a classe container_porcentagem_estoque
+        let barra_estoque = document.createElement("div")
+        barra_estoque.classList.add("barra_estoque")
 
-        let spanValorEstoque = document.createElement("span") // Cria a porcentagem
-        spanValorEstoque.classList.add("valor_estoque") // Adiciona a classe porcentagem_estoque
-        spanValorEstoque.textContent = `R$ ${centro_estoque.valorTotalVarejo.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, '.').replace(/\.(?=[^.]*$)/g, ',')}` // Adiciona a porcentagem ao card
+        let barra_valor_estoque = document.createElement("div")
+        barra_valor_estoque.classList.add("barra_valor_estoque")
+        barra_valor_estoque.style.width = `${porcentagemValorEstoque}%`
 
-        let barra_estoque = document.createElement("div") // Cria a porcentagem
-        barra_estoque.classList.add("barra_estoque") // Adiciona a classe porcentagem_estoque
-
-        let barra_valor_estoque = document.createElement("div") // Cria a porcentagem
-        barra_valor_estoque.classList.add("barra_valor_estoque") // Adiciona a classe porcentagem_estoque
-        barra_valor_estoque.style.width = `${porcentagemValorEstoque}%` // Adiciona a porcentagem ao card
-
-        container_info_valor_estoque.appendChild(pNomeEstoque) // Adiciona o container ao card
+        container_info_valor_estoque.appendChild(pNomeEstoque)
         container_info_valor_estoque.appendChild(container_barra_valor_estoque)
-
         container_barra_valor_estoque.appendChild(spanValorEstoque)
-        container_barra_valor_estoque.appendChild(barra_estoque) // Adiciona a quantidade ao container
+        container_barra_valor_estoque.appendChild(barra_estoque)
+        barra_estoque.appendChild(barra_valor_estoque)
 
-        barra_estoque.appendChild(barra_valor_estoque) // Adiciona a quantidade ao card
-
-        document.querySelector(".container_info_valores_estoques").appendChild(container_info_valor_estoque) // Adiciona o card ao container de valores
+        document.querySelector(".container_info_valores_estoques").appendChild(container_info_valor_estoque)
     })
 
     // Ordena os cards dos centros de estoque pela porcentagem de estoque:
@@ -165,27 +175,24 @@ export default async function dashborad() {
         return porcentagemB - porcentagemA
     })
 
-    let cor = 44 // brilho padrão do azul dos cards
-    cards.forEach(card => { // insere os cards dos centros de estoque ordenados pela porcentagem de estoque
-        // E adicina a cor ao card
-        let novaCor = `hsl(217, 49%, ${cor}%)` // Cria uma nova cor para o gráfico
+    let cor = 44
+    cards.forEach(card => {
+        let novaCor = `hsl(217, 49%, ${cor}%)`
         let aumentarBrilho = 44 / (dadosCentroEstoque.length - 1)
         cor = cor + aumentarBrilho
-        card.style.borderLeft = `10px solid ${novaCor}` // Adiciona a cor ao card
+        card.style.borderLeft = `10px solid ${novaCor}`
         document.querySelector("#container_card_info_porcentagem_distribuicao").appendChild(card)
 
         produtos_centro_estoque.forEach(e => {
-            if (e.nome_centro_estoque == card.querySelector("p").textContent) { // Se o nome do centro de estoque for igual ao nome do card
-                e.cor = novaCor // Adiciona a cor ao objeto centro_estoque
+            if (e.nome_centro_estoque == card.querySelector("p").textContent) {
+                e.cor = novaCor
             }
         })
     })
 
-    // Insere na tela os cards de valores dos centros de estoque ordenados:
     barasValores.forEach(barra => {
-        document.querySelector(".container_info_valores_estoques").appendChild(barra) // Adiciona o card ao container de valores
+        document.querySelector(".container_info_valores_estoques").appendChild(barra)
     })
-
 
     // Contatos:
     let cliente = 0
@@ -196,25 +203,18 @@ export default async function dashborad() {
     dadosContatos.forEach(e => {
         e.categorias.forEach(c => {
             totalContatos++
-            if(c.nome === "CLIENTE") {
-                cliente++;
-            }
-            if(c.nome === "FORNECEDOR") {
-                fornecedor++;
-            }
-            if(c.nome === "FUNCIONÁRIO") {
-                funcionario++;
-            }
+            if (c.nome === "CLIENTE") cliente++;
+            if (c.nome === "FORNECEDOR") fornecedor++;
+            if (c.nome === "FUNCIONÁRIO") funcionario++;
         })
     })
-    let arrContatos = [cliente, fornecedor, funcionario] // Array com os contatos
-    document.querySelector("#quantidade_card_cliente").textContent = cliente // Insere a quantidade de clientes no dashboard
+    let arrContatos = [cliente, fornecedor, funcionario]
+    document.querySelector("#quantidade_card_cliente").textContent = cliente
     document.querySelector("#quantidade_card_funcionario").textContent = funcionario
     document.querySelector("#quantidade_card_fornecedor").textContent = fornecedor
-
-    document.querySelector("#porcentagem_card_cliente").textContent = `${(cliente * 100 / totalContatos).toFixed(1)}%` // Insere a porcentagem de clientes no dashboard
-    document.querySelector("#porcentagem_card_funcionario").textContent = `${(funcionario * 100 / totalContatos).toFixed(1)}%` // Insere a porcentagem de funcionarios no dashboard
-    document.querySelector("#porcentagem_card_fornecedor").textContent = `${(fornecedor * 100 / totalContatos).toFixed(1)}%` // Insere a porcentagem de fornecedores no dashboard
+    document.querySelector("#porcentagem_card_cliente").textContent = `${(cliente * 100 / totalContatos).toFixed(1)}%`
+    document.querySelector("#porcentagem_card_funcionario").textContent = `${(funcionario * 100 / totalContatos).toFixed(1)}%`
+    document.querySelector("#porcentagem_card_fornecedor").textContent = `${(fornecedor * 100 / totalContatos).toFixed(1)}%`
 
     let cardClientes = document.querySelectorAll(".card_info_porcentagem_contato")
     cardClientes = Array.from(cardClientes).sort((a, b) => {
@@ -222,46 +222,33 @@ export default async function dashborad() {
         let porcentagemB = parseFloat(b.querySelector(".porcentagem_card").textContent.replace("%", ""))
         return porcentagemB - porcentagemA
     })
-
     cardClientes.forEach(e => {
         document.querySelector("#container_card_info_porcentagem_contatos").appendChild(e)
     })
 
-
     // Tabela Produtos em falta no estoque:
-
     let tbodyProdutosEmFalta = document.querySelector("#tbody_produtos_em_falta")
     produtosEmFalta.forEach(produto => {
         let tr = document.createElement("tr")
-
         let tdNome = document.createElement("td")
         tdNome.textContent = produto.produto
-
         let tdQuantidade = document.createElement("td")
         tdQuantidade.textContent = produto.quantidade
-
         tr.appendChild(tdNome)
         tr.appendChild(tdQuantidade)
         tbodyProdutosEmFalta.appendChild(tr)
     })
 
-
-    // Tabela Produtos com mainor quantidade no estoque:
-
+    // Tabela Produtos com maior quantidade no estoque:
     const tbodyProdutosMaiorQuantidade = document.querySelector("#tbody_prdutos_maior_quantidade")
     const produtosOrdenados = [...dadosProduto].sort((a, b) => b.quantidade - a.quantidade);
-    // 2. Selecionar apenas os 4 primeiros itens
     const top4Produtos = produtosOrdenados.slice(0, 4);
-
     top4Produtos.forEach(produto => {
         let tr = document.createElement("tr")
-
         let tdNome = document.createElement("td")
         tdNome.textContent = produto.produto
-
         let tdQuantidade = document.createElement("td")
         tdQuantidade.textContent = produto.quantidade
-
         tr.appendChild(tdNome)
         tr.appendChild(tdQuantidade)
         tbodyProdutosMaiorQuantidade.appendChild(tr)
@@ -269,14 +256,14 @@ export default async function dashborad() {
 
     // Gráfico de distribuição de produtos em estoque:
     function criarGraficoDistribuicaoProdutosEstoque() {
-        produtos_centro_estoque.sort((a, b) => b.qtdeTotalProdutos - a.qtdeTotalProdutos) // Ordena os produtos do centro de estoque pela quantidade
+        produtos_centro_estoque.sort((a, b) => b.qtdeTotalProdutos - a.qtdeTotalProdutos)
         const ctx = document.getElementById('grafico_distribuicao_produtos_estoque').getContext('2d');
         const myChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: produtos_centro_estoque.map(e => e.nome_centro_estoque),
                 datasets: [{
-                    data: produtos_centro_estoque.map(e => e.qtdeTotalProdutos), // Pega quantidade diretamente do objeto
+                    data: produtos_centro_estoque.map(e => e.qtdeTotalProdutos),
                     backgroundColor: produtos_centro_estoque.map(e => e.cor),
                     borderWidth: 1,
                     hoverOffset: 4
@@ -285,9 +272,7 @@ export default async function dashborad() {
             options: {
                 responsive: true,
                 plugins: {
-                    legend: {
-                        display: false // Remove as legendas
-                    },
+                    legend: { display: false },
                     tooltip: {
                         callbacks: {
                             label: function (context) {
@@ -302,14 +287,10 @@ export default async function dashborad() {
                         const ctx = this.ctx;
                         const centerX = this.width / 2;
                         const centerY = this.height / 2;
-
-                        // Texto superior
                         ctx.font = 'bold 16px Arial';
                         ctx.fillStyle = '#666';
                         ctx.textAlign = 'center';
                         ctx.fillText('Qtde. Total', centerX, centerY - 15);
-
-                        // Texto inferior (soma todas as quantidades)
                         const total = produtos_centro_estoque.reduce((sum, item) => sum + item.qtdeTotalProdutos, 0);
                         ctx.font = 'bold 24px Arial';
                         ctx.fillStyle = '#333';
@@ -319,7 +300,7 @@ export default async function dashborad() {
             }
         });
     }
-    criarGraficoDistribuicaoProdutosEstoque() // Cria o gráfico de distribuição de produtos em estoque quando a página é carregada
+    criarGraficoDistribuicaoProdutosEstoque()
 
     function criarGraficoContatos() {
         const ctx = document.getElementById('grafico_contatos').getContext('2d');
@@ -329,40 +310,31 @@ export default async function dashborad() {
                 labels: ['Clientes', 'Fornecedores', 'Funcionários'],
                 datasets: [{
                     data: arrContatos,
-                    backgroundColor: [azul_1, azul, azul1],
+                    backgroundColor: [azul, azul1, azul_1],
                     hoverOffset: 4
                 }]
             },
             options: {
                 cutout: '70%',
                 plugins: {
-                    legend: {
-                        display: false // Remove a legenda abaixo do gráfico
-                    },
+                    legend: { display: false },
                     tooltip: {
                         callbacks: {
-                            label: function(context) {
-                                // Personaliza o texto do tooltip
-                                const label = context.label || '';
-                                const value = context.formattedValue || '';
-                                return `${label}: ${value}`;
+                            label: function (context) {
+                                return `${context.label || ''}: ${context.formattedValue || ''}`;
                             }
                         }
                     }
                 },
                 animation: {
-                    onComplete: function() {
+                    onComplete: function () {
                         const ctx = this.ctx;
                         const centerX = this.width / 2;
                         const centerY = this.height / 2;
-
-                        // Texto superior
                         ctx.font = 'bold 1rem Arial';
                         ctx.fillStyle = '#333';
                         ctx.textAlign = 'center';
                         ctx.fillText('Qtde. Total', centerX, centerY - 15);
-
-                        // Texto inferior (total)
                         ctx.font = 'bold 1.4rem Arial';
                         ctx.fillText(dadosContatos.length.toString(), centerX, centerY + 15);
                     }
@@ -372,189 +344,175 @@ export default async function dashborad() {
     }
     criarGraficoContatos()
 
-    // Gráfico Entrada de produtos:
+    // -------------------------------------------------------
+    // Gráfico Entrada de produtos — usa dados reais da API
+    // -------------------------------------------------------
     let gfc_entrada
     function criarGraficoEntrada(tipo, font) {
         const c_gfc_entrada = document.getElementById('grafico_entrada_produtos').getContext('2d');
-        if (gfc_entrada) {
-            gfc_entrada.destroy()
-        }
+        if (gfc_entrada) gfc_entrada.destroy()
         gfc_entrada = new Chart(c_gfc_entrada, {
-            type: tipo, // Gráfico de linha (que pode ser usado para gráficos de área)
+            type: tipo,
             data: {
-                labels: ['2020', '2021', '2022', '2023'], // Anos no eixo X
+                labels: anos, // anos reais vindos da API
                 datasets: [{
-                    label: 'Entradas', // Legenda
-                    data: dado_entrada, // Valores no eixo Y
-                    fill: true, // Preencher a área abaixo da linha
-                    backgroundColor: azul_1, // Cor de fundo (azul claro)
-                    borderColor: azul, // Cor da linha
-                    tension: 0.1 // Suavizar a curva da linha
+                    label: 'Entradas',
+                    data: dado_entrada, // dados reais vindos da API
+                    fill: true,
+                    backgroundColor: azul_1,
+                    borderColor: azul,
+                    tension: 0.1
                 }]
             },
             options: {
                 scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Ano', // Rótulo do eixo X
-                            font: {
-                                size: font
-                            }
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Entradas', // Rótulo do eixo Y
-                            font: {
-                                size: font
-                            }
-                        }
-                    },
+                    x: { title: { display: true, text: 'Ano', font: { size: font } } },
+                    y: { beginAtZero: true, title: { display: true, text: 'Entradas', font: { size: font } } },
                 },
-                plugins: {
-                    legend: {
-                        display: false // Ocultar a legenda
-                    }
-                }
+                plugins: { legend: { display: false } }
             }
         });
     }
-    criarGraficoEntrada('line') // Cria o primeiro gráfico quando a página é carregada
+    criarGraficoEntrada('line')
 
-    // Gráfico Saída de produtos:
+    // -------------------------------------------------------
+    // Gráfico Saída de produtos — usa dados reais da API
+    // -------------------------------------------------------
     let gfc_saida
     function criarGraficoSaida(tipo, font) {
         const c_gfc_saida = document.getElementById('grafico_saida_produtos').getContext('2d');
-        if (gfc_saida) { // Se o gráfico ja exister ele é destruido para poder ser criado outro
-            gfc_saida.destroy()
-        }
+        if (gfc_saida) gfc_saida.destroy()
         gfc_saida = new Chart(c_gfc_saida, {
-            type: tipo, // Gráfico de linha (que pode ser usado para gráficos de área)
+            type: tipo,
             data: {
-                labels: ['2020', '2021', '2022', '2023'], // Anos no eixo X
+                labels: anos, // anos reais vindos da API
                 datasets: [{
-                    label: 'Saídas', // Legenda
-                    data: dado_saida, // Valores no eixo Y
-                    fill: true, // Preencher a área abaixo da linha
-                    backgroundColor: azul_1, // Cor de fundo (azul claro)
-                    borderColor: azul, // Cor da linha
-                    tension: 0.1 // Suavizar a curva da linha
+                    label: 'Saídas',
+                    data: dado_saida, // dados reais vindos da API
+                    fill: true,
+                    backgroundColor: azul_1,
+                    borderColor: azul,
+                    tension: 0.1
                 }]
             },
             options: {
                 responsive: true,
                 scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Ano', // Rótulo do eixo X
-                            font: {
-                                size: font
-                            }
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Saídas', // Rótulo do eixo Y
-                            font: {
-                                size: font
-                            }
-                        }
-                    },
+                    x: { title: { display: true, text: 'Ano', font: { size: font } } },
+                    y: { beginAtZero: true, title: { display: true, text: 'Saídas', font: { size: font } } },
                 },
-                plugins: {
-                    legend: {
-                        display: false // Ocultar a legenda
-                    }
-                }
+                plugins: { legend: { display: false } }
             }
         });
     }
     criarGraficoSaida('line')
 
-    // Gráfico Diferença entre Entrada e Saída de produtos:
+    // -------------------------------------------------------
+    // Gráfico Diferença — calculado automaticamente
+    // -------------------------------------------------------
     let gfc_diferenca
     function criarGraficoDiferenca(tipo, font) {
         const c_gfc_diferenca = document.getElementById('grafico_diferenca_produtos').getContext('2d');
-        if (gfc_diferenca) {
-            gfc_diferenca.destroy()
-        }
+        if (gfc_diferenca) gfc_diferenca.destroy()
         gfc_diferenca = new Chart(c_gfc_diferenca, {
             type: tipo,
             data: {
-                labels: ['2020', '2021', '2022', '2023'], // Anos no eixo X
+                labels: anos, // anos reais vindos da API
                 datasets: [{
                     label: 'Entradas - Saídas',
-                    data: dado_diferenca, // Valores no eixo Y
+                    data: dado_diferenca, // calculado automaticamente
                     fill: {
-                        target: {
-                            value: 0 // Define o valor de referência (eixo Y = 0)
-                        },
-                        above: '#e9f0ff73', // Preenchimento azul claro acima de 0
-                        below: vermelho // Preenchimento vermelho claro abaixo de 0
+                        target: { value: 0 },
+                        above: '#e9f0ff73',
+                        below: vermelho
                     },
                     backgroundColor: function (context) {
                         const value = context.dataset.data[context.dataIndex];
-                        // Se o valor é negativo, retorna vermelho, senão retorna azul
                         return value < 0 ? vermelho : azul_1;
                     },
-                    borderColor: azul, // Cor da linha (azul)
-                    tension: 0.1 // Suaviza a curva da linha
+                    borderColor: azul,
+                    tension: 0.1
                 }]
             },
             options: {
                 responsive: true,
                 scales: {
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Ano',
-                            font: {
-                                size: font
-                            }
-                        }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Fluxo total',
-                            font: {
-                                size: font
-                            }
-                        }
-                    },
+                    x: { title: { display: true, text: 'Ano', font: { size: font } } },
+                    y: { beginAtZero: true, title: { display: true, text: 'Fluxo total', font: { size: font } } },
                 },
-                plugins: {
-                    legend: {
-                        display: false // Ocultar a legenda
-                    }
-                }
+                plugins: { legend: { display: false } }
             }
         });
     }
     criarGraficoDiferenca('line')
 
-    // Alterar gráficos e fechar menu quando o body for menor que 480px:
+    // -------------------------------------------------------
+    // Filtro por data — atualiza os três gráficos ao filtrar
+    // -------------------------------------------------------
+    function aplicarFiltroData(dataInicio, dataFim) {
+        let entradaFiltrada = {}
+        let saidaFiltrada = {}
+
+        dadosTiposEntrada.forEach(e => {
+            let data = new Date(e.data_criacao)
+            if (data >= dataInicio && data <= dataFim) {
+                let ano = data.getFullYear()
+                entradaFiltrada[ano] = (entradaFiltrada[ano] || 0) + 1
+            }
+        })
+
+        dadosTiposSaida.forEach(e => {
+            let data = new Date(e.data_criacao)
+            if (data >= dataInicio && data <= dataFim) {
+                let ano = data.getFullYear()
+                saidaFiltrada[ano] = (saidaFiltrada[ano] || 0) + 1
+            }
+        })
+
+        let anosF = Array.from(new Set([...Object.keys(entradaFiltrada), ...Object.keys(saidaFiltrada)])).sort()
+        anos = anosF
+        dado_entrada = anosF.map(a => entradaFiltrada[a] || 0)
+        dado_saida = anosF.map(a => saidaFiltrada[a] || 0)
+        dado_diferenca = dado_entrada.map((v, i) => v - dado_saida[i])
+
+        criarGraficoEntrada(gfc_entrada?.config?.type || 'line', fontSize)
+        criarGraficoSaida(gfc_saida?.config?.type || 'line', fontSize)
+        criarGraficoDiferenca(gfc_diferenca?.config?.type || 'line', fontSize)
+    }
+
+    // Conecta os inputs de data de cada painel individualmente:
+    function conectarFiltros(idPainel) {
+        let inputs = document.querySelectorAll(`#${idPainel} .input_date`)
+        if (inputs.length === 2) {
+            inputs.forEach(input => {
+                input.addEventListener("change", () => {
+                    let ini = new Date(inputs[0].value)
+                    let fim = new Date(inputs[1].value)
+                    if (ini && fim && ini <= fim) {
+                        aplicarFiltroData(ini, fim)
+                    }
+                })
+            })
+        }
+    }
+    conectarFiltros('div_entrada_de_produtos')
+    conectarFiltros('div_saida_de_produtos')
+    conectarFiltros('div_diferenca_entrada_saida')
+
+    // -------------------------------------------------------
+
     function atualizarGraficos(graficos, width) {
-        graficos.forEach(grafico => { // Muda o tamanho da fonte dos gráficos
+        graficos.forEach(grafico => {
             grafico.options.scales.x.title.font.size = fontSize;
             grafico.options.scales.y.title.font.size = fontSize;
-            grafico.update(); // Atualiza o gráfico com as alterações
+            grafico.update();
         });
-
-        if (width <= 300) { // Retira e adiciona o texto produto e ano dos gráficos
+        if (width <= 300) {
             graficos.forEach(e => {
                 e.options.scales.x.title.display = false
                 e.options.scales.y.title.display = false
             })
-        }
-        else {
+        } else {
             graficos.forEach(e => {
                 e.options.scales.x.title.display = true
                 e.options.scales.y.title.display = true
@@ -563,39 +521,17 @@ export default async function dashborad() {
     }
 
     let fontSize = 16
-    // function fecharMenu() {
-    //     let widthGrafico = document.querySelector(".graficos").offsetWidth
-    //     if (widthGrafico <= 480) {
-    //         let nav = document.querySelector("#menu_lateral")
-    //         fontSize = 12
-    //         if (!nav.classList.contains("mini") && !local_click_btn_menu)
-    //             btnMenuLateral()
-    //     } else {
-    //         local_click_btn_menu = false
-    //         fontSize = 16
-    //     }
-    //     atualizarGraficos([gfc_entrada, gfc_saida, gfc_diferenca], widthGrafico); // Adicione todos os gráficos aqui
-    // }
-    // fecharMenu()
-
-
-    // window.addEventListener('resize', (e) => {
-    //     if (document.querySelector(".graficos") !== null) { // So vai chamar a função se estiver na tela de dashboard
-    //         fecharMenu()
-    //     }
-    // })
 
     // Alterar tipo do gráfico:
-
-    $('.tipo_grafico').select2({ // Inicia o select2
+    $('.tipo_grafico').select2({
         placeholder: 'Selecione a coluna',
         width: '80px',
         minimumResultsForSearch: Infinity,
     });
 
-    $('.tipo_grafico').on('change', function () { // Quando o select for alterado
-        let tipoGrafico = this.id // Pega o id do select
-        let tipo = this.value // Pega o valor selecionado no select
+    $('.tipo_grafico').on('change', function () {
+        let tipoGrafico = this.id
+        let tipo = this.value
         switch (tipoGrafico) {
             case "tipo_grafico_entrada":
                 criarGraficoEntrada(tipo, fontSize)
