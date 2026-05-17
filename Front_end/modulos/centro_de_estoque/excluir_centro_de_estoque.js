@@ -9,7 +9,7 @@ export default async function excluir_centro_de_estoque(dado, callbackFunction, 
     if (confirmacao) {
         popup_carregando()
         try {
-            const response = await fetch(`http://localhost:3000/centro_estoque/${dado.id_centro_estoque}`, {
+            const response = await fetch(`https://sga-online-api.onrender.com/api/centro_estoque/${dado.id_centro_estoque}`, {
                 method: 'DELETE'
             });
             const data = await response.json();

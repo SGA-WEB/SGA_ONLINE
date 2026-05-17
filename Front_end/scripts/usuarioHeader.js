@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Elemento id="nome_usuario" encontrado.');
     }
 
-    fetch('http://127.0.0.1:3000/api/usuario', {
+    fetch('https://sga-online-api.onrender.com/api/usuario', {
         credentials: 'include'
     })
     .then(response => {

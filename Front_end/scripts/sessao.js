@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-        const apiUrl = 'http://127.0.0.1:3000/api/usuario';
+        const apiUrl = 'https://sga-online-api.onrender.com/api/usuario';
         console.log(`Tentando acessar a API em: ${apiUrl}`);
         
         fetch(apiUrl, {
