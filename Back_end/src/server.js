@@ -8,10 +8,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 // import { createClient } from '@supabase/supabase-js';
 // import { Pool } from 'pg/lib/index.js';
-import pkg from 'pg';
 import nodemailer from 'nodemailer';
+import pg from 'pg/lib/index.js';
 
-const { Pool } = pkg;
+const { Pool } = pg;
 
 // const supabaseUrl = 'https://ertkiirzzswpxkgcxret.supabase.co';
 // const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVydGtpaXJ6enN3cHhrZ2N4cmV0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjEyMzMwNCwiZXhwIjoyMDYxNjk5MzA0fQ.sldy2ROLnO14WI-Iam1iqjCyfHA2wfWFNWcbwcI1snE';
