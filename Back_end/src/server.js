@@ -41,8 +41,6 @@ app.use(cors({
     credentials: true
 }));
 
-// Configuração do PostgreSQL
-const { Pool } = require('pg');
 
 // O Render vai preencher process.env.DATABASE_URL automaticamente
 const pool = new Pool({
