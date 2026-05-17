@@ -59,7 +59,9 @@ async function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com 
 }
 
 // Alterar foto de perfil comforme a imagem do banco de dados (supabase):
-const response = await fetch(`https://sga-online-api.onrender.com/api/imagem/${1}`);
+const response = await fetch(`https://sga-online-api.onrender.com/api/imagem/${1}`, {
+    credentials: 'include'
+});
 const data = await response.json();
 
 if (data.imageUrl) {

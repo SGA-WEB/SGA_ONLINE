@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     fetch('https://sga-online-api.onrender.com/api/usuario', {
+        method: 'GET',
         credentials: 'include'
     })
     .then(response => {
