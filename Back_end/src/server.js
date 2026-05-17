@@ -37,7 +37,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 // Configuração do Content Security Policy
 
 app.use(cors({
-    origin: 'http://127.0.0.1:5503', // ou 'http://localhost:5503'
+    origin: 'https://sga-web.github.io', // ou 'http://localhost:5503'
     credentials: true
 }));
 
