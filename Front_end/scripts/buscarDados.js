@@ -1,6 +1,9 @@
 export default async function buscarDados(query) {
     try {
-        const response = await fetch(`https://sga-online-api.onrender.com/api/${query}`);
+        const response = await fetch(`https://sga-online-api.onrender.com/api/${query}`, {
+            method: 'GET',
+            credentials: 'include'
+        });
         
         // Se a rota não existir ou der erro no servidor
         if (!response.ok) {
