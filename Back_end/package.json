@@ -4,10 +4,16 @@
   "type": "module",
   "description": "Back-end do sistema SGA",
   "main": "src/server.js",
+
+  "engines": {
+    "node": "20.x"
+  },
+
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js"
   },
+
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -19,6 +25,7 @@
     "pg": "^8.13.1",
     "sharp": "^0.33.5"
   },
+
   "devDependencies": {
     "nodemon": "^3.0.2"
   }
