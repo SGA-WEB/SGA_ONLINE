@@ -6,7 +6,7 @@ import multer from 'multer';
 import sharp from 'sharp';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { createClient } from '@supabase/supabase-js';
+// import { createClient } from '@supabase/supabase-js';
 // import { Pool } from 'pg/lib/index.js';
 import pkg from 'pg';
 import nodemailer from 'nodemailer';
