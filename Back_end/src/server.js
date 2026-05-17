@@ -13,9 +13,9 @@ import nodemailer from 'nodemailer';
 
 const { Pool } = pkg;
 
-const supabaseUrl = 'https://ertkiirzzswpxkgcxret.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVydGtpaXJ6enN3cHhrZ2N4cmV0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjEyMzMwNCwiZXhwIjoyMDYxNjk5MzA0fQ.sldy2ROLnO14WI-Iam1iqjCyfHA2wfWFNWcbwcI1snE';
-const supabase = createClient(supabaseUrl, supabaseKey);
+// const supabaseUrl = 'https://ertkiirzzswpxkgcxret.supabase.co';
+// const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVydGtpaXJ6enN3cHhrZ2N4cmV0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjEyMzMwNCwiZXhwIjoyMDYxNjk5MzA0fQ.sldy2ROLnO14WI-Iam1iqjCyfHA2wfWFNWcbwcI1snE';
+// const supabase = createClient(supabaseUrl, supabaseKey);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
