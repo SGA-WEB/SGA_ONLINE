@@ -54,35 +54,34 @@ const pool = new Pool({
 app.use(express.json()); // Permite que o servidor processe JSON no corpo da requisição
 
 app.use(session({
-    secret: 'seuSuperSegredoUltraSeguro', // depois guarde em .env
+    secret: 'seuSuperSegredoUltraSeguro', 
     resave: false,
     saveUninitialized: false,
+    proxy: true,
     cookie: {
         maxAge: 1000 * 60 * 30, // 30 minutos
-        sameSite: 'none', // ou 'none' se for https
-        secure: true    // true só se for https
+        sameSite: 'none', 
+        secure: true    
     }
 }));
-
-
-//TESTE DE ROTA
-app.get('/', (req, res) => {
-    res.send('API SGA rodando!');
-});
 
 app.get('/', (req, res) => res.send('API rodando!'));
 
 // Rota para retornar o usuário logado
 app.get('/api/usuario', (req, res) => {
-    if (req.session.user) {
-        res.json({
-            logado: true,
-            usuario: req.session.user
-        });
-    } else {
-        res.json({
-            logado: false
-        });
+    try {
+        // O ?. garante que se req.session não existir, ele não quebra o servidor
+        if (req.session?.user) {
+            return res.json({
+                logado: true,
+                usuario: req.session.user
+            });
+        } 
+        
+        return res.json({ logado: false });
+    } catch (error) {
+        console.error("Erro na rota de checagem de sessão:", error);
+        return res.status(500).json({ erro: "Erro interno no servidor" });
     }
 });
 
