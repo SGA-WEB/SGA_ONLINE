@@ -13,64 +13,73 @@
             </div>
         </div>  
     </div>
-    <div class="modulo_main flex_direction_column">
-        <div class="container_small_width" id="container_radios"> 
-            <div class="campo_contato normal_width">
-                <label for="nome_tipo_de_entrada">Descrição:</label>
-                <input  type="text" name="nome_tipo_de_entrada" id="descricao" class="campo_input">
-            </div>
-    
+     <form id="form_cadastro_tipo_entrada">
+        <div class="container_btns">
+            <button type="submit" class="btn btn_salvar" id="btn_salvar">
+                <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
+                <p>Salvar</p>
+            </button>
+        </div>
+        <div class="modulo_main">
             <div class="campo_contato small_width">
-                <label for="cfop_dentro">CFOP(Dentro):</label>
-                <input  type="text" name="cfopD" id="cfop_dentro" class="campo_input">
+                <label for="descricao">Descrição:<span class="campo_obrigatorio">*</span></label>
+                <input type="text" name="descricao" id="descricao" class="campo_input" required>
             </div>
-             <div class="campo_contato small_width">
-                <label for="cfop_fora">CFOP(Fora):</label>
-                <input  type="text" name="cfopD" id="cfop_fora" class="campo_input">
+            <div class="campo_contato small_width">
+                <label for="cfop_dentro">CFOP(Dentro):<span class="campo_obrigatorio">*</span></label>
+                <input type="number" name="cpopD" id="cfop_dentro" class="campo_input" min="0" max="9999"
+                    oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4)" required>
+            </div>
+            <div class="campo_contato small_width">
+                <label for="cfop_fora">CFOP(Fora):<span class="campo_obrigatorio">*</span></label>
+                <input type="number" name="cpopF" id="cfop_fora" class="campo_input" min="0" max="9999"
+                    oninput="if(this.value.length > 4) this.value = this.value.slice(0, 4)" required>
             </div>
             <div class="campo_contato small_width select_conainer">
-                <label for="ativo_tipo_de_entrada">Ativo:</label>
-                <select  id="ativo" class="campo_select">
+                <label for="ativo">Ativo:<span class="campo_obrigatorio">*</span></label>
+                <select id="ativo" class="campo_select" required>
+                    <option value="">Selecione...</option>
                     <option value="true">Sim</option>
                     <option value="false">Não</option>
                 </select>
             </div>
         </div>
-        <div class="chekboxes flex_direction_column">
-            <label for="movimenta_estoque">
-                <input  type="checkbox" nome="Movimenta Estoque" value="Movimenta Estoque" id="movimenta_estoque">
-                Movimenta Estoque
-            </label>
-            <label for="hab_agrupamento">
-                <input  type="checkbox" nome="Hab.Agrupamento" value="Hab.Agrupamento" id="hab_agrupamento">
-                Habilita Agrupamento
-            </label>
-            <label for="hab_movimento">
-                <input  type="checkbox" nome="Hab.Movimento"  value="Hab.Movimento" id="hab_movimento">
-                Habilita Movimento
-            </label>
-                <label for="hab_nf">
-                <input  type="checkbox" nome="habilitaNF"  value="Habilita N.F" id="hab_nf">
-                Habilita N.F
-            </label>
-            <label for="atualiza_produto">
-                <input  type="checkbox" nome= "Atualiza Produto" value="Atualiza Produto" id="atualiza_produto">
-                Atualiza Produto
-            </label>
-            <label for="padrao">
-                <input type="checkbox" nome= "Padrão" value="Padrão" id="padrao">
-                Padrão
-            </label>
-        </div>
-    </div>
-    <div class="space_between">
-        <button class="btn btn2 btn_cancelar">
-            <img src="..//..//../imagens/icone_fechar.svg" alt="Icone Salvar">
-            <p>Cancelar</p>
-        </button>
-        <button class="btn btn_salvar">
-            <img src="..//..//../imagens/icone_salvar.svg" alt="Icone Salvar">
-            <p>Salvar</p>
-        </button>
-    </div>
+
+        <p>Marque ao menos uma opção.<span class="campo_obrigatorio">*</span></p>
+
+        <label for="movimenta_estoque">
+            <input type="checkbox" nome="Movimenta Estoque" value="Movimenta Estoque" id="movimenta_estoque"
+                class="checkbox_opcao">
+            Movimenta Estoque
+        </label><br>
+
+        <label for="hab_agrupamento">
+            <input type="checkbox" nome="Hab.Agrupamento" value="Hab.Agrupamento" id="hab_agrupamento"
+                class="checkbox_opcao">
+            Habilita Agrupamento
+        </label><br>
+
+        <label for="hab_movimento">
+            <input type="checkbox" nome="Hab.Movimento" value="Hab.Movimento" id="hab_movimento" class="checkbox_opcao">
+            Habilita Movimento
+        </label><br>
+
+        <label for="hab_nf">
+            <input type="checkbox" nome="habilitaNF" value="Habilita N.F" id="hab_nf" class="checkbox_opcao">
+            Habilita N.F
+        </label><br>
+
+        <label for="atualiza_produto">
+            <input type="checkbox" nome="Atualiza Produto" value="Atualiza Produto" id="atualiza_produto"
+                class="checkbox_opcao">
+            Atualiza Produto
+        </label><br>
+
+        <label for="padrao">
+            <input type="checkbox" nome="Padrão" value="Padrão" id="padrao" class="checkbox_opcao">
+            Padrão
+        </label><br>
+
+
+    </form>
 </section>

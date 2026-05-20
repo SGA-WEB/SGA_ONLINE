@@ -1,13 +1,11 @@
 export default async function buscarDados(query) {
     try {
-        const response = await fetch(`https://sga-online-api.onrender.com/api/${query}`, {
-            method: 'GET',
-            credentials: 'include'
-        });
-
+        const response = await fetch(`http://localhost:3000/api/${query}`);
+        
+        // Se a rota não existir ou der erro no servidor
         if (!response.ok) {
             console.warn(`Atenção: Rota /api/${query} retornou erro ${response.status}`);
-            return [];
+            return []; 
         }
 
         const contentType = response.headers.get("content-type");
@@ -18,6 +16,7 @@ export default async function buscarDados(query) {
 
         const result = await response.json();
 
+        // Padronização do retorno: Garante que sempre seja um Array
         if (Array.isArray(result)) return result;
         return result.itens || result.dados || result.clientes || result.usuarios || [];
 
