@@ -15,6 +15,7 @@ function carregarDadosNaTabela(
     addListener = true,
     removerLinhasTabela = true
 ) {
+    if (!tabela) return;
     // ColunasExibir: Array com os nomes das colunas do banco de dados que serão exibidas na tabela
     let [...tr_tabela] = document.querySelectorAll(".table_tr")
     if (removerLinhasTabela) { // Se removerLinhasTabela for true, remove as linhas da tabela
