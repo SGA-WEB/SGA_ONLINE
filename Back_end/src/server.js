@@ -2551,7 +2551,7 @@ app.put('/tipos_de_saida/:id', async (req, res) => {
         });
 
     } catch (err) {
-        onsole.error('Erro ao atualizar tipo de saida:', err);
+        console.error('Erro ao atualizar tipo de saida:', err);
 
         res.status(500).json({ message: 'Erro ao atualizar tipo de saida', error: err.message });
     }
