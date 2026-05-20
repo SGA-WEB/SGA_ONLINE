@@ -37,21 +37,18 @@ const upload = multer({ storage: multer.memoryStorage() });
 // Configuração do Content Security Policy
 
 app.use(cors({
-    origin: ['https://sga-web.github.io', 'http://127.0.0.1:5503', 'http://localhost:5503'],
+    origin: 'https://sga-web.github.io', // ou 'http://localhost:5503'
     credentials: true
 }));
 
 // Configuração do PostgreSQL
+const { Pool } = require('pg');
+
+// O Render vai preencher process.env.DATABASE_URL automaticamente
 const pool = new Pool({
-    user: 'neondb_owner',
-    /* host: 'ep-small-bar-a8bydmrx-pooler.eastus2.azure.neon.tech', */
-    host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
-    // host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech', // Branch: Renata
-    database: 'neondb',
-    password: 'npg_Y3ZNL6fxehGI',
-    port: 5432,
+    connectionString: process.env.DATABASE_URL,
     ssl: {
-        rejectUnauthorized: false, // Permite a conexão mesmo sem verificar o certificado
+        rejectUnauthorized: false,
     },
 });
 
