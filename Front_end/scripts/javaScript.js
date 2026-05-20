@@ -19,7 +19,7 @@ import select2 from "./select.js";
 import produto from "../modulos/produto/produto.js";
 import centro_de_estoque from "../modulos/centro_de_estoque/centro_de_estoque.js";
 import configuracoes from "../modulos/configuracoes/configuracoes.js";
-import { aguardarRenderizacao, alterarImgPerfil } from "./funcionalidades.js";
+import { aguardarRenderizacao } from "./funcionalidades.js";
 import { popup_carregando } from "./popup.js";
 import tipos_de_entrada from "../modulos/tipo_de_entrada/tipos_de_entrada.js";
 import entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.js";
