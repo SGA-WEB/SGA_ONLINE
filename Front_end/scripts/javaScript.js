@@ -19,33 +19,22 @@ import select2 from "./select.js";
 import produto from "../modulos/produto/produto.js";
 import centro_de_estoque from "../modulos/centro_de_estoque/centro_de_estoque.js";
 import configuracoes from "../modulos/configuracoes/configuracoes.js";
-import { aguardarRenderizacao, alterarImgPerfil } from "./funcionalidades.js";
+import { aguardarRenderizacao } from "./funcionalidades.js";
 import { popup_carregando } from "./popup.js";
 import tipos_de_entrada from "../modulos/tipo_de_entrada/tipos_de_entrada.js";
 import entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.js";
 import buscarDados from "../scripts/buscarDados.js";
+import tela_balanco from "../modulos/tela_balanco/tela_balanco.js";
 import tipo_de_saida from "../modulos/tipo_de_saida/tipo_de_saida.js";
 import saida_de_produtos from "../modulos/movimentacao_de_estoque/saida_de_produtos/saida_de_produtos.js";
 import orcamento from "../modulos/orcamento/orcamento.js";
 
-async function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com o nome
-    let usuarioNome = localStorage.getItem('usuarioLogadoNome')
-
-    if (!usuarioNome) {
-        const usuario_dados = await buscarDados("usuarios")
-        usuarioNome = usuario_dados[0].nome
-
-        localStorage.setItem('usuarioLogadoId', usuario_dados[0].id_usuario);
-        localStorage.setItem('usuarioLogadoNome', usuario_dados[0].nome);
-    }
-
-    document.querySelector("#nome_usuario").textContent = usuarioNome; // Altera o nome do usuário na tela principal
-
+function mudarLogoParaPadrao(nome) { // Muda a logo do usuário de acordo com o nome de
     let div_logo_usuario = document.querySelectorAll(".logo_usuario");
     div_logo_usuario.forEach(e => {
         // Pega a primeira letra do primeiro nome e a primeira letra do ultimo nome no nome do usuário:
         let nome_usuario = document.querySelector("#nome_usuario").textContent.trim();
-        if (usuarioNome) nome_usuario = usuarioNome;
+        if (nome) nome_usuario = nome;
         let nome_completo = nome_usuario.split(" ");
         let primeira_letra_primeiro_nome = nome_completo[0][0].toUpperCase();
         let primeira_letra_ultimo_nome = nome_completo[nome_completo.length - 1][0].toUpperCase();
@@ -58,14 +47,18 @@ async function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com 
     });
 }
 
-// Alterar foto de perfil comforme a imagem do banco de dados (supabase):
-const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
-const data = await response.json();
-
-if (data.imageUrl) {
-    alterarImgPerfil(data.imageUrl)
+const usuarioNome = localStorage.getItem('usuarioLogadoNome')
+if (usuarioNome) {
+    document.querySelector("#nome_usuario").textContent = usuarioNome
+    mudarLogoParaPadrao(usuarioNome)
 } else {
-    mudarLogoParaPadrao()
+    const usuarios = await buscarDados("usuarios")
+    if (usuarios.length > 0) {
+        document.querySelector("#nome_usuario").textContent = usuarios[0].nome
+        mudarLogoParaPadrao(usuarios[0].nome)
+        localStorage.setItem('usuarioLogadoNome', usuarios[0].nome)
+        localStorage.setItem('usuarioLogadoId', usuarios[0].id_usuario)
+    }
 }
 
 let btns_modulos = document.querySelectorAll("#menu_lateral .btn, .item_dropdown:not(.subitem)") // Seleciona todos os botões dos modulos
@@ -438,14 +431,6 @@ document.addEventListener("click", (e) => {
     }
 })
 
-// Sair do sistema:
-
-let btn_sair_do_sistema = document.querySelector("#btn_sair_do_sistema")
-btn_sair_do_sistema.addEventListener("click", () => {
-    localStorage.clear() // Limpa o localStorage
-    window.location.href = "../SGA_online-login/index.html" // Redireciona para a página de login
-})
-
 // =======================================================
 // SELETORES GERAIS
 // =======================================================
@@ -615,6 +600,13 @@ btn_tipos_de_saida.addEventListener("click", () => {
     btn_tipos_de_saida.classList.add("item_menu_selecionado")
     btn_cadastro_auxiliares.classList.add("item_menu_selecionado")
     carregarConteudo("tipo_de_saida/tipo_de_saida.html", document.querySelector(".principal"), false, tipo_de_saida)
+})
+
+let btn_balanco = document.querySelector("#tela_balanco")
+btn_balanco.addEventListener("click", () => {
+    btn_movimentacao_de_estoque.classList.add("sub_menu_fechado")
+    btn_balanco.classList.add("item_menu_selecionado") // Adiciona a classe "item_menu_selecionado" somente no item clicado
+    carregarConteudo("tela_balanco/tela_balanco.html", document.querySelector(".principal"), false, tela_balanco)
 })
 
 export { carregarConteudo, btnMenuLateral, click_btn_menu, fecharMenu, mudarLogoParaPadrao }
