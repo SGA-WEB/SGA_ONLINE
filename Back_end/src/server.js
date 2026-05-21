@@ -1,15 +1,14 @@
 import express from 'express';
 import session from 'express-session';
-// import pkg from 'pg';
 import cors from 'cors';
 import multer from 'multer';
 import sharp from 'sharp';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
-// import { Pool } from 'pg/lib/index.js';
 import pkg from 'pg';
 import nodemailer from 'nodemailer';
+import dotenv from 'dotenv';
 
 const { Pool } = pkg;
 
@@ -19,6 +18,8 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 // const { Pool } = pkg;
 const app = express();
@@ -36,22 +37,32 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 // Configuração do Content Security Policy
 
+// Altere a configuração do CORS para aceitar múltiplos domínios:
+const origensPermitidas = [
+    'https://sga-web.github.io',   // Produção (GitHub Pages)
+    'http://127.0.0.1:5503',       // Local (Live Server do VS Code)
+    'http://localhost:5503'        // Local alternativo
+];
+
 app.use(cors({
-    origin: 'https://sga-web.github.io', // ou 'http://localhost:5503'
+    origin: function (origin, callback) {
+        // Permite requisições sem origem (como aplicativos mobile ou ferramentas como Postman)
+        if (!origin) return callback(null, true);
+
+        if (origensPermitidas.indexOf(origin) !== -1) {
+            callback(null, true);
+        } else {
+            callback(new Error('Bloqueado pelo CORS do SGA'));
+        }
+    },
     credentials: true
 }));
 
-// Configuração do PostgreSQL
-const { Pool } = require('pg');
-
-// O Render vai preencher process.env.DATABASE_URL automaticamente
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false,
     },
 });
-
 
 app.use(express.json()); // Permite que o servidor processe JSON no corpo da requisição
 
@@ -61,7 +72,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         maxAge: 1000 * 60 * 30, // 30 minutos
-        sameSite: 'lax', // ou 'none' se for https
+        sameSite: 'none', // ou 'none' se for https
         secure: false    // true só se for https
     }
 }));
@@ -455,9 +466,9 @@ app.get('/api/proximo_id_tipos_de_saida', async (req, res) => {
 
         // Se não encontrar a sequence, usa o fallback do MAX(ID)
         if (sequenceResult.rows.length === 0 || !sequenceResult.rows[0].pg_get_serial_sequence) {
-             console.warn('Sequence não encontrada via pg_get_serial_sequence. Usando fallback MAX(id).');
-             const maxIdResult = await pool.query(`SELECT COALESCE(MAX(id_tipos_de_saida), 0) + 1 AS proximo_id FROM sga.tipos_de_saida`);
-             return res.json(maxIdResult.rows[0]);
+            console.warn('Sequence não encontrada via pg_get_serial_sequence. Usando fallback MAX(id).');
+            const maxIdResult = await pool.query(`SELECT COALESCE(MAX(id_tipos_de_saida), 0) + 1 AS proximo_id FROM sga.tipos_de_saida`);
+            return res.json(maxIdResult.rows[0]);
         }
 
         const nomeCorretoSequence = sequenceResult.rows[0].pg_get_serial_sequence;
@@ -2162,7 +2173,7 @@ app.post('/orcamento', async (req, res) => {
             for (const item of itens) {
                 // Validacão individual do item
                 if (!item.id_produto || !item.quantidade || !item.valor_unitario) {
-                     throw new Error(`Item inválido: produto_id, quantidade e valor_unitario são obrigatórios.`);
+                    throw new Error(`Item inválido: produto_id, quantidade e valor_unitario são obrigatórios.`);
                 }
 
                 const queryItem = `
@@ -2204,10 +2215,10 @@ app.post('/orcamento', async (req, res) => {
         console.error('Erro ao criar orcamento:', error);
 
         if (error.code === '23503') {
-             return res.status(400).json({
-                 sucesso: false,
-                 erro: 'Cliente ou produto informado não encontrado (violacão de chave estrangeira).'
-             });
+            return res.status(400).json({
+                sucesso: false,
+                erro: 'Cliente ou produto informado não encontrado (violacão de chave estrangeira).'
+            });
         }
 
         res.status(500).json({
@@ -2558,7 +2569,7 @@ app.put('/tipos_de_saida/:id', async (req, res) => {
 
         res.status(500).json({ message: 'Erro ao atualizar tipo de saida', error: err.message });
     }
-    });
+});
 
 
 // Rota POST para inserir novo tipo de saida
@@ -2583,7 +2594,7 @@ app.post('/tipos_de_saida', async (req, res) => {
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) -- ERRO CORRIGIDO: Removido placeholder para o ID
             RETURNING *;
         `;
-        const values = [descricao, cfop_dentro, cfop_fora, ativo, devolução_compra, remessa_conserto, trans_filiais, baixa_perda_quebra, saida_uso_consumo ];
+        const values = [descricao, cfop_dentro, cfop_fora, ativo, devolução_compra, remessa_conserto, trans_filiais, baixa_perda_quebra, saida_uso_consumo];
 
         const result = await pool.query(query, values);
 
@@ -2692,7 +2703,7 @@ app.get('/api/orcamento/:id', async (req, res) => {
 });
 
 app.delete('/orcamento/:id_orcamento', async (req, res) => {
-    const { id_orcamento} = req.params;
+    const { id_orcamento } = req.params;
     try {
         await pool.query(`
             UPDATE sga.orcamento
