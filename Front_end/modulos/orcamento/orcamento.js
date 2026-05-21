@@ -20,6 +20,7 @@ export default async function orcamento() {
         carregarConteudo("orcamento/cadastro_orcamento/cadastro_orcamento.html", document.querySelector(".principal"), false, cadastro_orcamento, dados) // Carrega o módulo de cadastro de produto
     })
 
+    
     window.addEventListener("resize", () => {
         fecharMenu(document.querySelector(".tabela").offsetWidth, 510)
     })
