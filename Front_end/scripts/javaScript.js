@@ -19,7 +19,7 @@ import select2 from "./select.js";
 import produto from "../modulos/produto/produto.js";
 import centro_de_estoque from "../modulos/centro_de_estoque/centro_de_estoque.js";
 import configuracoes from "../modulos/configuracoes/configuracoes.js";
-import { aguardarRenderizacao, alterarImgPerfil } from "./funcionalidades.js";
+import { aguardarRenderizacao } from "./funcionalidades.js";
 import { popup_carregando } from "./popup.js";
 import tipos_de_entrada from "../modulos/tipo_de_entrada/tipos_de_entrada.js";
 import entrada_de_produtos from "../modulos/movimentacao_de_estoque/entrada_de_produtos/entrada_de_produtos.js";
@@ -58,15 +58,7 @@ async function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com 
     });
 }
 
-// Alterar foto de perfil comforme a imagem do banco de dados (supabase):
-const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
-const data = await response.json();
-
-if (data.imageUrl) {
-    alterarImgPerfil(data.imageUrl)
-} else {
-    mudarLogoParaPadrao()
-}
+mudarLogoParaPadrao()
 
 let btns_modulos = document.querySelectorAll("#menu_lateral .btn, .item_dropdown:not(.subitem)") // Seleciona todos os botões dos modulos
 btns_modulos.forEach(e => {

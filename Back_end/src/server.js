@@ -6,16 +6,16 @@ import multer from 'multer';
 import sharp from 'sharp';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { createClient } from '@supabase/supabase-js';
+// import { createClient } from '@supabase/supabase-js';
 // import { Pool } from 'pg/lib/index.js';
-import pkg from 'pg';
 import nodemailer from 'nodemailer';
+import pg from 'pg/lib/index.js';
 
-const { Pool } = pkg;
+const { Pool } = pg;
 
-const supabaseUrl = 'https://ertkiirzzswpxkgcxret.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVydGtpaXJ6enN3cHhrZ2N4cmV0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjEyMzMwNCwiZXhwIjoyMDYxNjk5MzA0fQ.sldy2ROLnO14WI-Iam1iqjCyfHA2wfWFNWcbwcI1snE';
-const supabase = createClient(supabaseUrl, supabaseKey);
+// const supabaseUrl = 'https://ertkiirzzswpxkgcxret.supabase.co';
+// const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVydGtpaXJ6enN3cHhrZ2N4cmV0Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc0NjEyMzMwNCwiZXhwIjoyMDYxNjk5MzA0fQ.sldy2ROLnO14WI-Iam1iqjCyfHA2wfWFNWcbwcI1snE';
+// const supabase = createClient(supabaseUrl, supabaseKey);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,21 +37,16 @@ const upload = multer({ storage: multer.memoryStorage() });
 // Configuração do Content Security Policy
 
 app.use(cors({
-    origin: 'http://127.0.0.1:5503', // ou 'http://localhost:5503'
+    origin: 'https://sga-web.github.io', // ou 'http://localhost:5503'
     credentials: true
 }));
 
-// Configuração do PostgreSQL
+
+// O Render vai preencher process.env.DATABASE_URL automaticamente
 const pool = new Pool({
-    user: 'neondb_owner',
-    /* host: 'ep-small-bar-a8bydmrx-pooler.eastus2.azure.neon.tech', */
-    host: 'ep-weathered-hill-a8qiljz1-pooler.eastus2.azure.neon.tech', // Brach: Matheus
-    // host: 'ep-super-dawn-a8jw0z8d-pooler.eastus2.azure.neon.tech', // Branch: Renata
-    database: 'neondb',
-    password: 'npg_Y3ZNL6fxehGI',
-    port: 5432,
+    connectionString: process.env.DATABASE_URL,
     ssl: {
-        rejectUnauthorized: false, // Permite a conexão mesmo sem verificar o certificado
+        rejectUnauthorized: false,
     },
 });
 
@@ -59,35 +54,34 @@ const pool = new Pool({
 app.use(express.json()); // Permite que o servidor processe JSON no corpo da requisição
 
 app.use(session({
-    secret: 'seuSuperSegredoUltraSeguro', // depois guarde em .env
+    secret: 'seuSuperSegredoUltraSeguro', 
     resave: false,
     saveUninitialized: false,
+    proxy: true,
     cookie: {
         maxAge: 1000 * 60 * 30, // 30 minutos
-        sameSite: 'lax', // ou 'none' se for https
-        secure: false    // true só se for https
+        sameSite: 'none', 
+        secure: true    
     }
 }));
-
-
-//TESTE DE ROTA
-app.get('/', (req, res) => {
-    res.send('API SGA rodando!');
-});
 
 app.get('/', (req, res) => res.send('API rodando!'));
 
 // Rota para retornar o usuário logado
 app.get('/api/usuario', (req, res) => {
-    if (req.session.user) {
-        res.json({
-            logado: true,
-            usuario: req.session.user
-        });
-    } else {
-        res.json({
-            logado: false
-        });
+    try {
+        // O ?. garante que se req.session não existir, ele não quebra o servidor
+        if (req.session?.user) {
+            return res.json({
+                logado: true,
+                usuario: req.session.user
+            });
+        } 
+        
+        return res.json({ logado: false });
+    } catch (error) {
+        console.error("Erro na rota de checagem de sessão:", error);
+        return res.status(500).json({ erro: "Erro interno no servidor" });
     }
 });
 
@@ -2557,7 +2551,7 @@ app.put('/tipos_de_saida/:id', async (req, res) => {
         });
 
     } catch (err) {
-        onsole.error('Erro ao atualizar tipo de saida:', err);
+        console.error('Erro ao atualizar tipo de saida:', err);
 
         res.status(500).json({ message: 'Erro ao atualizar tipo de saida', error: err.message });
     }
