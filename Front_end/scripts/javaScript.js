@@ -61,12 +61,14 @@ async function mudarLogoParaPadrao() { // Muda a logo do usuário de acordo com 
 // Alterar foto de perfil comforme a imagem do banco de dados (supabase):
 const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
 const data = await response.json();
-
-if (data.imageUrl) {
-    alterarImgPerfil(data.imageUrl)
-} else {
+const usuario = await buscarDados("usuarios")
+document.querySelector("#nome_usuario").textContent = usuario[0].nome; // Altera o nome do usuário na tela principal
+if (data.error) {
     mudarLogoParaPadrao()
+} else {
+    alterarImgPerfil(data.imageUrl)
 }
+// mudarLogoParaPadrao()
 
 let btns_modulos = document.querySelectorAll("#menu_lateral .btn, .item_dropdown:not(.subitem)") // Seleciona todos os botões dos modulos
 btns_modulos.forEach(e => {
