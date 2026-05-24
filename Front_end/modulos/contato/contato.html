@@ -8,7 +8,7 @@
                 <option value="razao_social">Razão Social</option>
                 <option value="nome_fantasia">Nome Fantasia</option>
                 <option value="fone1">Fone 1</option>
-                <option value="categoria">Categoria</option>
+                <option value="classificacao">Classificação</option>
             </select>
         </div>
         <div class="container_campo_pesquisa_btn">
@@ -23,10 +23,14 @@
             </div>
         </div>
     </header>
-    <div class="end">
+    <div class="container_btns">
         <button class="btn_add btn" id="btn_criar_contato">
             <img src="../imagens/person_add.svg" alt="Icone Adicionar Contato">
             <span>Adicionar Contato</span>
+        </button>
+        <button class="btn btn6 btn_change_view_mode table_mode" id="btn_exibir_modo_card_contato">
+            <img src="..//..//imagens/icone_card_mode.svg" alt="Icone Card Mode">
+            <span>Exibir modo card</span>
         </button>
     </div>
     <div class="container_tabela">
@@ -41,6 +45,7 @@
                     <th id="tabela_nome">Nome Fantasia</th>
                     <th id="tabela_fone">Fone 1</th>
                     <th id="tabela_categoria">Tipo Pessoa</th>
+                    <th id="tabela_classificacao">Classificação</th>
                 </tr>
             </thead>
             <tbody class="tbody">

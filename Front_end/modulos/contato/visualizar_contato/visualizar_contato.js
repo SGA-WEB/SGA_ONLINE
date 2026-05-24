@@ -22,7 +22,7 @@ export default async function visualizar_contato(dado) {
 
             let btnProximo = document.querySelector('.btn_proximo');
             if (btnProximo) { // Adiciona verificação para evitar erro se o botão não existir
-                btnProximo.style.display = (idAlvo === 'aba_endereco') ? 'none' : 'block';
+                btnProximo.style.display = (idAlvo === 'aba_endereco') ? 'none' : 'flex';
             }
         });
     });
