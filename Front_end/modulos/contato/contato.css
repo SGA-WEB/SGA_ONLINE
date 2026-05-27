@@ -140,6 +140,10 @@
 }
 
 
+.card_info--classificacao .card_valor {
+    text-align: right;
+}
+
 /* Tela de cadastro de contato: */
 
 .nav_contato {

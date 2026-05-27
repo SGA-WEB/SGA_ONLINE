@@ -6,45 +6,47 @@ import { popup, popup_aviso, popup_carregando, popup_erro } from "../../../scrip
 import produto from "../produto.js";
 
 function formatarMoeda(input) {
-    let v = input.value.replace(/[^0-9]/g, '').padStart(3, '0');
-    input.value = v.slice(0, -2).replace(/^0+(?=\d)/, '') + ',' + v.slice(-2);
+    let valor = input.value.replace(/\D/g, '');
+    if (valor.length > 13) valor = valor.slice(0, 13);
+    const numero = (parseInt(valor || '0', 10) / 100).toFixed(2);
+    input.value = numero
+        .replace('.', ',')
+        .replace(/\B(?=(\d{3})+(?!\d))/g, '.');
 }
 
+window.formatarMoeda = formatarMoeda;
+
 export default async function cadastro_produto() {
-    dataAtual() // Pega a data atual e adiciona ao input
-    select2("100%") // Inicializa o select2 como 100% da largura
+    dataAtual();
+    select2("100%");
 
     let centros_de_estoque = await buscarDados("centro_estoque");
     alterarOptionsSelect(
         document.querySelector("#id_centro_estoque"),
         centros_de_estoque,
         3
-    )
+    );
 
     let proximo_id_produto = await buscarDados('proximo_id_produto');
-
     document.querySelector(".codigo_id").innerHTML = proximo_id_produto.proximo_id;
 
     document.querySelector("#btn_voltar_produtos").addEventListener("click", () => {
-        // Botão que volta para a tela de produtos
-        carregarConteudo("produto/produto.html", document.querySelector(".principal"))
-    })
-    let form = document.querySelector("form")
+        carregarConteudo("produto/produto.html", document.querySelector(".principal"));
+    });
+
+    const spanCodigo = document.querySelector(".codigo_id");
+
+    let form = document.querySelector("form");
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
         popup_carregando();
 
-        // Captura os dados do formulário
         let formData = new FormData(form);
         let dados = Object.fromEntries(formData);
 
-        // --- CORREÇÕES CRÍTICAS ---
-        
-        // 1. Incluir campos que não são inputs (ID e Data)
         dados.id_produto = spanCodigo.textContent;
         dados.data_cadastro = document.querySelector(".data_cadastro").textContent;
 
-        // 2. Função para converter string "1.200,50" ou "10,50" em número decimal puro
         const formatarNumero = (valor) => {
             if (!valor) return 0;
             return Number(valor.toString().replace(/\./g, '').replace(',', '.'));
@@ -55,7 +57,6 @@ export default async function cadastro_produto() {
         dados.quantidade = formatarNumero(dados.quantidade);
         dados.id_centro_estoque = parseInt(dados.id_centro_estoque);
 
-        // Validação básica antes de enviar
         if (isNaN(dados.preco_varejo) || isNaN(dados.quantidade)) {
             popup_carregando(true);
             popup_erro("Verifique os valores numéricos informados.");
@@ -75,13 +76,13 @@ export default async function cadastro_produto() {
     });
 
     async function enviarFormulario(dados) {
-        // Converte de strin para number usando o operador unário '+'
         dados.preco_varejo = +dados.preco_varejo;
         dados.preco_atacado = +dados.preco_atacado;
         dados.quantidade = +dados.quantidade;
         dados.id_centro_estoque = +dados.id_centro_estoque;
+
         try {
-            console.log(dados)
+            console.log(dados);
             const response = await fetch('http://localhost:3000/produtos', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

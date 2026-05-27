@@ -21,7 +21,7 @@ export default async function editar_contato(dado, telaAnteriorVisualizar) {
             botao.classList.add('ativo');
             document.getElementById(idAlvo).classList.add('ativa');
             if (btnProximo) { // Adiciona verificação para evitar erro se o botão não existir
-                btnProximo.style.display = (idAlvo === 'aba_endereco') ? 'none' : 'block';
+                btnProximo.style.display = (idAlvo === 'aba_endereco') ? 'none' : 'flex';
             }
         });
     });
