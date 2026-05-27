@@ -5,17 +5,10 @@ import multer from 'multer';
 import sharp from 'sharp';
 import path from 'path';
 import { fileURLToPath } from 'url';
-<<<<<<< HEAD
 // import { createClient } from '@supabase/supabase-js';
 // import { Pool } from 'pg/lib/index.js';
 import nodemailer from 'nodemailer';
 import pg from 'pg/lib/index.js';
-=======
-import { createClient } from '@supabase/supabase-js';
-import pkg from 'pg';
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
->>>>>>> origin/Principal
 
 const { Pool } = pg;
 
@@ -65,11 +58,8 @@ app.use(cors({
     credentials: true
 }));
 
-<<<<<<< HEAD
 
 // O Render vai preencher process.env.DATABASE_URL automaticamente
-=======
->>>>>>> origin/Principal
 const pool = new Pool({
     ssl: {
         rejectUnauthorized: false,
@@ -85,13 +75,8 @@ app.use(session({
     proxy: true,
     cookie: {
         maxAge: 1000 * 60 * 30, // 30 minutos
-<<<<<<< HEAD
         sameSite: 'none', 
         secure: true    
-=======
-        sameSite: 'none', // ou 'none' se for https
-        secure: false    // true só se for https
->>>>>>> origin/Principal
     }
 }));
 
