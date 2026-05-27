@@ -13,16 +13,11 @@ export default async function buscarDados(query) {
     */
 
     try {
-<<<<<<< HEAD
         const response = await fetch(`https://sga-online-api.onrender.com/api/${query}`, {
             method: 'GET',
             credentials: 'include'
         });
         
-=======
-        const response = await fetch(`http://localhost:3000/api/${query}`);
-
->>>>>>> origin/Principal
         // Se a rota não existir ou der erro no servidor
         if (!response.ok) {
             console.warn(`Atenção: Rota /api/${query} retornou erro ${response.status}`);
