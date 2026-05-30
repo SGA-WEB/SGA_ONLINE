@@ -1,8 +1,14 @@
 import { popup_erro, popup_aviso } from "../../scripts/popup.js";
+import { visibilidadeSenha } from "../../scripts/funcionalidades.js";
 
 export function cadastroUsuario() {
     'use strict';
     let telefone = document.querySelector("#fone")
+
+    document.querySelectorAll(".visibilidade").forEach((img) => {
+        const input = img.closest(".container_campo_input").querySelector("input")
+        img.addEventListener("click", () => visibilidadeSenha(input, img))
+    })
 
     const mascaraTelefone = {
         mask: [

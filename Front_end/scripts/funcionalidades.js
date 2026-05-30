@@ -29,7 +29,7 @@ function visibilidadeSenha(senha, img) {
         img.id = "view_on";
     } else {
         senha.type = 'password';
-        img.src = `../${path}visibility_off.png`;
+        img.src = `../${path}visibility_on.png`;
         img.id = "view_off";
     }
 }
