@@ -223,8 +223,60 @@
 
 .titulo1 {
     font: bolder 1.8rem arial;
-    margin-bottom: 1rem;
+    margin-bottom: 0;
     width: 100%;
+}
+
+.titulo1_container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.dropdown_exportar {
+    position: relative;
+}
+
+.btn_exportar {
+    gap: .4rem;
+}
+
+.dropdown_menu_exportar {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: calc(100% + .3rem);
+    background-color: var(--branco);
+    border: 1px solid var(--cinza2);
+    border-radius: .4rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,.12);
+    list-style: none;
+    padding: .3rem 0;
+    min-width: 8rem;
+    z-index: 100;
+}
+
+.dropdown_menu_exportar.aberto {
+    display: block;
+}
+
+.dropdown_item_exportar {
+    display: block;
+    width: 100%;
+    padding: .5rem 1rem;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    font-size: .9rem;
+    color: var(--preto);
+}
+
+.dropdown_item_exportar:hover {
+    background-color: var(--azul1-2);
+    color: var(--branco);
 }
 .titulo2 {
     margin-bottom: 1rem;

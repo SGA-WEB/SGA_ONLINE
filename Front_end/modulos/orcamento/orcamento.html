@@ -1,5 +1,18 @@
 <section class="modulo" id="orcamento">
-    <h2 class="h2_titulo">Orçamento</h2>
+<div class="titulo1_container">
+    <h1 class="titulo1">Orçamento</h1>
+    <div class="dropdown_exportar">
+        <button class="btn btn6 btn_exportar" id="btn_exportar_orcamento">
+        <img src="../imagens/icone_download.svg" alt="Exportar" onerror="this.style.display='none'">
+            <span>Exportar</span>
+            <img src="../imagens/icone_seta_baixo.svg" alt="" class="icone_seta_exportar" onerror="this.style.display='none'">
+        </button>
+        <ul class="dropdown_menu_exportar" id="dropdown_menu_exportar">
+            <li><button class="dropdown_item_exportar" id="btn_exportar_pdf">PDF</button></li>
+            <li><button class="dropdown_item_exportar" id="btn_exportar_xlsx">XLSX</button></li>
+        </ul>
+    </div>
+</div>
     <header class="header">
         <div class="container_select">
             <p>Selecione a coluna que deseja pesquisar:</p>
