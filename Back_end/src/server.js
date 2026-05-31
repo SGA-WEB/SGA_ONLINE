@@ -1307,6 +1307,14 @@ app.post('/saida_produto', async (req, res) => {
             itensInseridos.push(itemResult.rows[0]);
         }
 
+        // 5. Decrementa a quantidade no estoque de cada produto.
+        for (const item of itens) {
+            await client.query(
+                `UPDATE sga.produto SET quantidade = quantidade - $1 WHERE id_produto = $2`,
+                [item.quantidade, item.id_produto]
+            );
+        }
+
         // =================================================================
         // FIM DA TRANSAÇÃO
         // =================================================================
