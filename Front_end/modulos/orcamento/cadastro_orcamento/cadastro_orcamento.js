@@ -148,7 +148,7 @@ export default async function cadastro_orcamento(dados) {
         valorTotalTodosProdutos = 0; descontoTotal = 0; subtotal = 0;
 
         inputsQuantidade.forEach((input, index) => {
-            let precoVarejo = parseFloat(inputsPrecoVarejo[index].textContent.replace(',', '.')) || 0;
+            let precoVarejo = parseFloat(inputsPrecoVarejo[index].textContent.replace('R$', '').replace(',', '.').trim()) || 0;
             let quantidade = parseFloat(input.value) || 0;
             
             // --- NOVA CONTA: DESCONTO POR PORCENTAGEM ---

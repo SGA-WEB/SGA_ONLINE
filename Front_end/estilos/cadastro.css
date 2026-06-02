@@ -137,6 +137,12 @@ a.link_nav_selecionado {
     margin: 0;
 }
 
+.modulo_main > .normal_width,
+.modulo_main > .campo_contato.normal_width {
+    grid-column: 1 / -1;
+    max-width: 100%;
+}
+
 .radio_contato {
     width: 100%;
     max-width: 250px;
@@ -194,6 +200,7 @@ a.link_nav_selecionado {
     border-radius: 5px;
     padding: .625rem;
     font-size: 1rem;
+    max-width: 500px;
 }
 
 .select_conainer .select2-selection {

@@ -78,7 +78,10 @@ export default function carregarDadosNosCards(dados, colunasBancoDeDados, coluna
 
                 let cardValor = document.createElement('p')
                 cardValor.setAttribute('class', 'card_valor')
-                cardValor.textContent = objDado[dado]
+                const camposMoeda = ["subtotal", "valor_total", "desconto_total"];
+                cardValor.textContent = camposMoeda.includes(dado)
+                    ? "R$ " + (Number(objDado[dado]) || 0).toFixed(2)
+                    : objDado[dado]
                 cardInfo.appendChild(cardValor)
 
                 cardBody.appendChild(cardInfo)

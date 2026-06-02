@@ -87,15 +87,15 @@ function carregarDadosNaTabela(
                 td.setAttribute('id', e + "_" + objDado[e]) // nome do campo + valor do campo
 
                 // --- INÍCIO DA REGRA DE PORCENTAGEM GLOBAL ---
-                const camposDesconto = ["tabela_preco_atacado", "desconto", "desconto_item"];
+                const camposDesconto = ["desconto", "desconto_item"];
 
                 if (camposDesconto.includes(e)) {
                     let vDescontoReal = Number(objDado[e]) || 0;
-                    
+
                     // Pega a quantidade e o preço unitário do objeto completo
                     let qtde = Number(objDadoCompleto["quantidade"] || objDadoCompleto["tabela_quantidade"]) || 1;
                     let vUnitario = Number(objDadoCompleto["preco_varejo"] || objDadoCompleto["valor_unitario"] || objDadoCompleto["tabela_preco_varejo"]) || 0;
-                    
+
                     let vBaseTotalItem = vUnitario * qtde;
 
                     if (vBaseTotalItem > 0) {
@@ -103,11 +103,11 @@ function carregarDadosNaTabela(
                     } else {
                         td.textContent = "0.00%";
                     }
-                } 
-                // Para a Tabela Principal (Resumo), apenas exibe o valor em R$ sem calcular %
-                else if (e === "desconto_total") {
+                }
+                // Campos monetários com prefixo R$
+                else if (["desconto_total", "subtotal", "valor_total", "preco_varejo", "tabela_preco_varejo", "tabela_preco_atacado"].includes(e)) {
                     td.textContent = "R$ " + (Number(objDado[e]) || 0).toFixed(2);
-                } 
+                }
                 // --- FIM DA REGRA ---
                 else if (typeof (objDado[e]) == 'boolean') {
                     if (objDado[e]) {
