@@ -1095,7 +1095,6 @@ app.post('/entrada_produto', async (req, res) => {
     } = req.body;
 
     const client = await pool.connect();
-    console.log(req.body);
 
     try {
         await client.query('BEGIN');
