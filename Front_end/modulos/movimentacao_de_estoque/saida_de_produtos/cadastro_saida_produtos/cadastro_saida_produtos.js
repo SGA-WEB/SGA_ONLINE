@@ -190,6 +190,15 @@ export default async function cadastro_saida_produtos(dados) {
             produtosRelacionados[index].quantidade = quantidade;
             produtosRelacionados[index].desconto_item = desconto;
         });
+
+        let spanTotal = document.querySelector("#valor_total_produtos");
+        let containerTotal = document.querySelector(".container_totalizador");
+        if (spanTotal) {
+            spanTotal.textContent = "R$ " + valorTotalTodosProdutos.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        if (containerTotal) {
+            containerTotal.style.display = inputsQuantidade.length > 0 ? "flex" : "none";
+        }
     }
 
     let formsaidaProduto = document.querySelector("#form_saida_produto");
@@ -198,8 +207,8 @@ export default async function cadastro_saida_produtos(dados) {
         let formData = new FormData(formsaidaProduto);
         let data = Object.fromEntries(formData);
 
-        data.desconto_item = descontoTotal;
-        data.total = valorTotalTodosProdutos;
+        data.desconto = descontoTotal;
+        data.valor_total = valorTotalTodosProdutos;
         data.itens = produtosRelacionados;
 
         if (data.itens.length === 0) {

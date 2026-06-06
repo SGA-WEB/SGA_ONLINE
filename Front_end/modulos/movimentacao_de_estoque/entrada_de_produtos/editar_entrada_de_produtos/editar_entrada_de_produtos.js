@@ -19,7 +19,6 @@ export default async function editar_entrada_de_produtos(entrada, telaAnteriorVi
     document.querySelector("#tipo_entrada").value = entrada.tipo_entrada
     document.querySelector("#serie").value = entrada.serie
     document.querySelector("#sub_serie").value = entrada.subserie
-    document.querySelector("#data_emissao").value = formatarData(entrada.data_emissao, true)
     document.querySelector("#data_recebimento").value = formatarData(entrada.data_recebimento, true)
     document.querySelector("#status").value = entrada.status
 
