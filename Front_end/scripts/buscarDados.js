@@ -31,7 +31,7 @@ export default async function buscarDados(query) {
 
         // Padronização do retorno: Garante que sempre seja um Array
         if (Array.isArray(result)) return result;
-        return result.itens || result.dados || result.clientes || result.usuarios || [];
+        return result.itens || result.dados || result.clientes || result.usuarios || result;
 
     } catch (err) {
         console.error('Erro ao buscar dados:', err);
