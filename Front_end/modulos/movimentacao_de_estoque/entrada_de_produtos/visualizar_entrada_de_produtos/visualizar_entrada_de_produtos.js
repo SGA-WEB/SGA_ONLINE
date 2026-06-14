@@ -22,7 +22,10 @@ export default async function visualizar_entrada_de_produtos(entrada) {
     document.querySelector("#fornecedor").value = entrada.fornecedor_razao_social
 
     let produtosRelacionados = await buscarDados(`entrada_produto/${entrada.id_entrada_produto}/itens`)
-    carregarDadosNaTabela(produtosRelacionados.itens, ["id_item", "nome_produto", "quantidade", "valor_unitario", "desconto_item", "valor_total_item"], document.querySelector(".tbody"), false, false)
+    if (!Array.isArray(produtosRelacionados)) {
+        produtosRelacionados = produtosRelacionados?.itens || [];
+    }
+    carregarDadosNaTabela(produtosRelacionados, ["id_item", "nome_produto", "quantidade", "valor_unitario", "desconto_item", "valor_total_item"], document.querySelector(".tbody"), false, false)
 
     document.querySelector(".btn_editar").addEventListener("click", () => {
         carregarConteudo(

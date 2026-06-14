@@ -93,15 +93,17 @@ function carregarDadosNaTabela(
                     let vDescontoReal = Number(objDado[e]) || 0;
                     
                     // Pega a quantidade e o preço unitário do objeto completo
-                    let qtde = Number(objDadoCompleto["quantidade"] || objDadoCompleto["tabela_quantidade"]) || 1;
+                    let qtde = Number(objDadoCompleto["quantidade"] || objDadoCompleto["tabela_quantidade"]) || 0;
                     let vUnitario = Number(objDadoCompleto["preco_varejo"] || objDadoCompleto["valor_unitario"] || objDadoCompleto["tabela_preco_varejo"]) || 0;
                     
                     let vBaseTotalItem = vUnitario * qtde;
 
                     if (vBaseTotalItem > 0) {
                         td.textContent = ((vDescontoReal / vBaseTotalItem) * 100).toFixed(2) + "%";
+                    } else if (e === "desconto") {
+                        td.textContent = "R$ " + vDescontoReal.toFixed(2);
                     } else {
-                        td.textContent = "0.00%";
+                        td.textContent = vDescontoReal.toFixed(2);
                     }
                 } 
                 // Para a Tabela Principal (Resumo), apenas exibe o valor em R$ sem calcular %

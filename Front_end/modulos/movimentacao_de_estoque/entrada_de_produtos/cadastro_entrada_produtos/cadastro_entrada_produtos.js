@@ -151,8 +151,10 @@ export default async function cadastro_entrada_produtos(dados) {
         document.querySelectorAll(".td_desconto").forEach(td => {
             td.classList.add("td_container_input")
             let inputDesconto = document.createElement("input");
-            inputDesconto.type = "number";
-            inputDesconto.value = 0; // Define o valor inicial como 0
+            inputDesconto.type = "text";
+            inputDesconto.inputMode = "decimal";
+            inputDesconto.value = ""; // Mantém o campo vazio para exibir placeholder
+            inputDesconto.placeholder = "0%";
             inputDesconto.classList.add("input_desconto");
             inputDesconto.addEventListener("input", calcularValorTotal);
             inputDesconto.classList.add("input_tabela");
@@ -174,18 +176,24 @@ export default async function cadastro_entrada_produtos(dados) {
         descontoTotal = 0; // Reseta o desconto total antes de calcular
 
         inputsQuantidade.forEach((input, index) => {
-            // Para cada input de quantidade e desconto, calcula o valor total
-            let precoVarejo = inputsPrecoVarejo[index].textContent;
-            let quantidade = input.value;
-            let desconto = inputsDesconto[index].value;
-            let valorTotal = (precoVarejo * quantidade) - desconto;
-            inputsPrecoVarejo[index].value = precoVarejo;
+            // Para cada input de quantidade e desconto, calcula o valor total com desconto em porcentagem
+            let precoVarejo = parseFloat(inputsPrecoVarejo[index].textContent.replace(",", ".")) || 0;
+            let quantidade = Number(input.value) || 0;
+            let descontoInput = inputsDesconto[index];
+            let descontoRaw = descontoInput.value;
+            let porcentagem = descontoRaw.trim() === "" ? 0 : parseFloat(descontoRaw.replace(",", ".")) || 0;
+            let bruto = precoVarejo * quantidade;
+            let descontoReal = (bruto * porcentagem) / 100;
+            let valorTotal = bruto - descontoReal;
+
             inputsQuantidade[index].value = quantidade;
-            inputsDesconto[index].value = desconto;
+            if (descontoRaw.trim() !== "") {
+                descontoInput.value = porcentagem;
+            }
             inputsValorTotal[index].textContent = valorTotal.toFixed(2)
 
             valorTotalTodosProdutos += valorTotal;
-            descontoTotal += desconto.replace(",", ".") * 1; // Converte o desconto para número e acumula
+            descontoTotal += descontoReal;
 
             // Atualiza o objeto produtosRelacionados pelo id_produto da linha (não por índice)
             const tr = input.closest("tr");
@@ -193,7 +201,7 @@ export default async function cadastro_entrada_produtos(dados) {
             const item = idProduto ? produtosRelacionados.find(p => p.id_produto === idProduto) : produtosRelacionados[index];
             if (item) {
                 item.quantidade = Number(quantidade);
-                item.desconto = Number(desconto) || 0;
+                item.desconto = Number(descontoReal.toFixed(2)) || 0;
             }
         });
 

@@ -39,7 +39,9 @@ export default async function editar_entrada_de_produtos(entrada, telaAnteriorVi
     let itemsRelacionados = await buscarDados(`entrada_produto/${entrada.id_entrada_produto}/itens`)
     let produtos = await buscarDados("produto")
     let contatos = await buscarDados("contato");
-    itemsRelacionados = itemsRelacionados.itens;
+    if (!Array.isArray(itemsRelacionados)) {
+        itemsRelacionados = itemsRelacionados?.itens || [];
+    }
 
     // Adiciona no array produtosRelacionados os produtos que estão relacionados com a entrada de produtos
     produtos.forEach(produto => {
@@ -54,7 +56,8 @@ export default async function editar_entrada_de_produtos(entrada, telaAnteriorVi
                         quantidade: item.quantidade,
                         preco_varejo: item.valor_unitario,
                         desconto: item.desconto_item,
-                        valor_total: item.valor_total_item
+                        valor_total: item.valor_total_item,
+                        id_item: item.id_item
                     });
                 }
             }
@@ -210,23 +213,33 @@ export default async function editar_entrada_de_produtos(entrada, telaAnteriorVi
         descontoTotal = 0; // Reseta o desconto total antes de calcular
 
         inputsQuantidade.forEach((input, index) => {
-            // Para cada input de quantidade e desconto, calcula o valor total
-            let precoVarejo = inputsPrecoVarejo[index].textContent;
-            let quantidade = input.value;
-            let desconto = inputsDesconto[index].value;
-            let valorTotal = (precoVarejo * quantidade) - desconto;
+            // Para cada input de quantidade e desconto, calcula o valor total com desconto em porcentagem
+            let precoVarejo = parseFloat(inputsPrecoVarejo[index].textContent.replace(",", ".")) || 0;
+            let quantidade = Number(input.value) || 0;
+            let descontoInput = inputsDesconto[index];
+            let descontoRaw = descontoInput.value;
+            let porcentagem = descontoRaw.trim() === "" ? 0 : parseFloat(descontoRaw.replace(",", ".")) || 0;
+            let bruto = precoVarejo * quantidade;
+            let descontoReal = (bruto * porcentagem) / 100;
+            let valorTotal = bruto - descontoReal;
 
-            inputsPrecoVarejo[index].value = precoVarejo;
             inputsQuantidade[index].value = quantidade;
-            inputsDesconto[index].value = desconto;
+            if (descontoRaw.trim() !== "") {
+                descontoInput.value = porcentagem;
+            }
             inputsValorTotal[index].textContent = valorTotal.toFixed(2)
 
             valorTotalTodosProdutos += valorTotal;
-            descontoTotal += desconto.replace(",", ".") * 1; // Converte o desconto para número e acumula
+            descontoTotal += descontoReal;
 
             // Atualiza o objeto produtosRelacionados com os valores atualizados
-            produtosRelacionados[index].quantidade = quantidade;
-            produtosRelacionados[index].desconto = desconto;
+            const tr = input.closest("tr");
+            const idProduto = tr ? parseInt(tr.id.replace("tr_", "")) : null;
+            const item = idProduto ? produtosRelacionados.find(p => p.id_produto === idProduto) : produtosRelacionados[index];
+            if (item) {
+                item.quantidade = Number(quantidade);
+                item.desconto = Number(descontoReal.toFixed(2)) || 0;
+            }
         });
     }
 
@@ -250,8 +263,12 @@ export default async function editar_entrada_de_produtos(entrada, telaAnteriorVi
         document.querySelectorAll(".td_desconto").forEach(td => {
             td.classList.add("td_container_input")
             let inputDesconto = document.createElement("input");
-            inputDesconto.type = "number";
-            inputDesconto.value = td.firstChild.textContent; // valor inicial do desconto salvo no banco de dados
+            inputDesconto.type = "text";
+            inputDesconto.inputMode = "decimal";
+            let descontoTexto = td.firstChild ? td.firstChild.textContent.replace("%", "").trim() : "";
+            let descontoNumero = Number(descontoTexto.replace(",", "."));
+            inputDesconto.value = descontoTexto === "" || descontoNumero === 0 ? "" : descontoTexto;
+            inputDesconto.placeholder = "0%";
             inputDesconto.classList.add("input_desconto");
             inputDesconto.addEventListener("input", calcularValorTotal);
             inputDesconto.classList.add("input_tabela");
