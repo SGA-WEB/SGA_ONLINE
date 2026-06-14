@@ -42,7 +42,7 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
     let contatos = await buscarDados("contato");
     let tipos_de_saida = await buscarDados("tipos_de_saida/" + 1);
 
-    itemsRelacionados = itemsRelacionados.itens;
+    itemsRelacionados = itemsRelacionados?.itens || itemsRelacionados || [];
 
     // Adiciona no array produtosRelacionados os produtos que estão relacionados com a saida de produtos
     produtos.forEach(produto => {
@@ -233,22 +233,29 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
 
         inputsQuantidade.forEach((input, index) => {
             // Para cada input de quantidade e desconto, calcula o valor total
-            let precoVarejo = inputsValorUnitario[index].textContent;
-            let quantidade = input.value;
-            let desconto = inputsDesconto[index].value;
-            let valorTotal = (precoVarejo * quantidade) - desconto;
+            let precoVarejoText = inputsValorUnitario[index].textContent;
+            let precoVarejo = Number(String(precoVarejoText).replace(',', '.')) || 0;
+            let quantidade = Number(inputsQuantidade[index].value) || 0;
+            // Desconto informado pelo usuário em porcentagem (ex: "12.5%" ou "12,5")
+            let descontoInput = inputsDesconto[index].value || "";
+            let descontoPercent = Number(String(descontoInput).replace('%', '').replace(',', '.')) || 0;
+
+            let baseTotal = precoVarejo * quantidade;
+            let descontoReal = (descontoPercent > 0) ? (baseTotal * (descontoPercent / 100)) : 0;
+            let valorTotal = baseTotal - descontoReal;
 
             inputsValorUnitario[index].value = precoVarejo;
             inputsQuantidade[index].value = quantidade;
-            inputsDesconto[index].value = desconto;
-            inputsValorTotal[index].textContent = valorTotal.toFixed(2)
+            // Mantém o valor do input de desconto como porcentagem para o usuário
+            inputsDesconto[index].value = descontoInput;
+            inputsValorTotal[index].textContent = valorTotal.toFixed(2);
 
             valorTotalTodosProdutos += valorTotal;
-            descontoTotal += desconto.replace(",", ".") * 1; // Converte o desconto para número e acumula
+            descontoTotal += descontoReal;
 
-            // Atualiza o objeto produtosRelacionados com os valores atualizados
+            // Atualiza o objeto produtosRelacionados com os valores atualizados (server espera desconto em valor monetário)
             produtosRelacionados[index].quantidade = quantidade;
-            produtosRelacionados[index].desconto_item = desconto;
+            produtosRelacionados[index].desconto_item = Number(descontoReal.toFixed(2));
         });
     }
 
@@ -269,14 +276,32 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
             td.appendChild(inputQuantidade);
         })
 
-        document.querySelectorAll(".td_desconto:not(.td_container_input)").forEach(td => {
+        document.querySelectorAll(".td_desconto:not(.td_container_input)").forEach((td, index) => {
             td.classList.add("td_container_input")
             let inputDesconto = document.createElement("input");
-            inputDesconto.type = "number";
-            inputDesconto.value = td.firstChild.textContent; // valor inicial do desconto salvo no banco de dados
+            // Usar texto com inputMode decimal para permitir porcentagens (ex: "12.5%")
+            inputDesconto.type = "text";
+            inputDesconto.inputMode = "decimal";
+            inputDesconto.placeholder = "0%";
             inputDesconto.classList.add("input_desconto");
             inputDesconto.addEventListener("input", calcularValorTotal);
             inputDesconto.classList.add("input_tabela");
+
+            // Inicializa o input com a porcentagem equivalente ao desconto monetário salvo
+            let inicialPercent = "";
+            try {
+                let produto = produtosRelacionados[index];
+                if (produto) {
+                    let base = (produto.valor_unitario || 0) * (produto.quantidade || 1);
+                    if (base > 0 && produto.desconto_item) {
+                        inicialPercent = ((produto.desconto_item / base) * 100).toFixed(2) + "%";
+                    }
+                }
+            } catch (err) {
+                inicialPercent = "";
+            }
+
+            inputDesconto.value = (inicialPercent === "0.00%" ? "" : inicialPercent);
 
             td.textContent = ""
             td.appendChild(inputDesconto);

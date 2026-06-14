@@ -24,7 +24,8 @@ export default async function visualizar_saida_de_produtos(saida) {
     document.querySelector("#modelo").value = saida.modelo_documento_fiscal
 
     let produtosRelacionados = await buscarDados(`saida_produto/${saida.id_saida_produto}/itens`)
-    carregarDadosNaTabela(produtosRelacionados.itens, ["id_produto", "nome_produto", "quantidade", "valor_unitario", "desconto_item", "valor_total_item"], document.querySelector(".tbody"), false, false)
+    produtosRelacionados = produtosRelacionados?.itens || produtosRelacionados || [];
+    carregarDadosNaTabela(produtosRelacionados, ["id_produto", "nome_produto", "quantidade", "valor_unitario", "desconto_item", "valor_total_item"], document.querySelector(".tbody"), false, false)
 
     document.querySelector(".btn_editar").addEventListener("click", () => {
         carregarConteudo(
