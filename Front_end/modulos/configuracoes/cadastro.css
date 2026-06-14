@@ -52,6 +52,12 @@
     margin-bottom: 1rem;
 }
 
+.cadastro-usuario {
+    .titulo1 {
+        margin-bottom: 2rem;
+    }
+}
+
 .topico_nav{
     margin: .35rem .5rem;
     font-weight: bold;
