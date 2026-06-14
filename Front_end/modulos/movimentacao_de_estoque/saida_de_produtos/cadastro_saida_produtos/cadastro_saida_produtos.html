@@ -41,6 +41,7 @@
                     <p>Tipo de saída:<span class="campo_obrigatorio">*</span></p>
                     <select id="tipo_saida" class="campo_select" name="tipo_saida" required>
                         <option value=""></option>
+                        <option value="VENDA">VENDA</option>
                         <option value="TRANSFERÊNCIA">TRANSFERÊNCIA ENTRE ESTOQUES / FILIAIS</option>
                         <option value="AJUSTE">AJUSTE DE ESTOQUE</option>
                         <option value="AJUSTE">CONSUMO INTERNO</option>
@@ -64,9 +65,8 @@
                     </select>
                 </div>
                 <div class="campo_contato small_width">
-                    <label for="valor_total">Valor Total:<span class="campo_obrigatorio">*</span></label>
-                    <input type="number" name="valor_total" id="valor_total" class="campo_input" required step="0.01"
-                        min="0">
+                    <label for="modelo">Modelo Fiscal:<span class="campo_obrigatorio">*</span></label>
+                    <input type="text" name="modelo" id="modelo" class="campo_input" maxlength="2" required>
                 </div>
             </div>
             <div class="container_small_width">
@@ -79,16 +79,11 @@
                     </div>
                     <div class="campo_contato small_width">
                         <label for="sub_serie">Sub-Série</label>
-                    <input type="text" inputmode="numeric" name="sub_serie" id="sub_serie" class="campo_input"
+                        <input type="text" inputmode="numeric" name="sub_serie" id="sub_serie" class="campo_input"
                         maxlength="2" pattern="[0-9]{1,3}"
                         oninvalid="this.setCustomValidity('Série deve ser um número de 1 a 3 dígitos')"
                         oninput="this.setCustomValidity('')">
-                </div>
-            </div>
-            <div class="container_small_width">
-                <div class="campo_contato small_width">
-                    <label for="modelo">Modelo Fiscal:<span class="campo_obrigatorio">*</span></label>
-                    <input type="text" name="modelo" id="modelo" class="campo_input" maxlength="2" required>
+                    </div>
                 </div>
             </div>
         </div>
@@ -98,7 +93,7 @@
             <span>Adicionar relação</span>
         </button>
         <div class="container_tabela">
-            <table class="tabela" id="tabela_produtos">
+            <table class="tabela mb-0!" id="tabela_produtos">
                 <thead>
                     <tr>
                         <th id="tabela_codigo">Código</th>
@@ -113,6 +108,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="container_totalizador">
+            <p class="p_totalizador">Total dos produtos: <strong id="valor_total_produtos">R$ 0,00</strong></p>
+        </div>
         <button type="submit" class="btn btn_salvar">
             <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">
             <p>Salvar</p>
@@ -126,7 +124,7 @@
         </button>
         <h2 class="h2_titulo">Selecione os produtos para relacionar a saida</h2>
         <div class="header">
-            <div class="container_select">
+            <div class="container_select flex-nowrap!">
                 <p>Coluna:</p>
                 <select id="select_coluna" class="campo_select">
                     <option value="id_produto">Código</option>

@@ -17,7 +17,6 @@ export default async function visualizar_entrada_de_produtos(entrada) {
     document.querySelector("#tipo_entrada").value = entrada.tipo_entrada
     document.querySelector("#serie").value = entrada.serie
     document.querySelector("#sub_serie").value = entrada.subserie
-    document.querySelector("#data_emissão").value = formatarData(entrada.data_emissao, true)
     document.querySelector("#data_recebimento").value = formatarData(entrada.data_recebimento, true)
     document.querySelector("#status").value = entrada.status
     document.querySelector("#fornecedor").value = entrada.fornecedor_razao_social

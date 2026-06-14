@@ -99,17 +99,23 @@ export default async function cadastro_entrada_produtos(dados) {
             return idProdutosSelecionados.includes(produto.id_produto.toString())
         })
 
+        // Remove produtos desmarcados e adiciona apenas os novos
+        produtosRelacionados = produtosRelacionados.filter(p =>
+            idProdutosSelecionados.includes(p.id_produto.toString())
+        );
         novosDados.forEach(produto => {
-            // Adiciona o produto selecionado na lista de produtos relacionados
-            produtosRelacionados.push({
-                id_produto: produto.id_produto,
-                quantidade: 1,
-                valor_unitario: produto.preco_varejo,
-                desconto: 0,
-            });
+            const jaExiste = produtosRelacionados.some(p => p.id_produto === produto.id_produto);
+            if (!jaExiste) {
+                produtosRelacionados.push({
+                    id_produto: produto.id_produto,
+                    quantidade: 1,
+                    valor_unitario: produto.preco_varejo,
+                    desconto: 0,
+                });
+            }
         })
 
-        carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade","preco_varejo", "desconto", "valor_total"], document.querySelector("#tabela_produtos"), true, false)
+        carregarDadosNaTabela(novosDados, ["id_produto", "produto", "quantidade","preco_varejo", "desconto", "valor_total"], document.querySelector("#tabela_produtos tbody"), true, false)
 
         popup("fechar", 0, btn_selecionar_relacao)
 
@@ -133,7 +139,6 @@ export default async function cadastro_entrada_produtos(dados) {
             let inputQuantidade = document.createElement("input");
             inputQuantidade.type = "number";
             inputQuantidade.value = 1; // Define o valor inicial como 1
-            inputQuantidade.max = td.textContent; // Define o valor máximo como a quantidade do produto
             inputQuantidade.min = 1; // Define o valor mínimo como 1
             inputQuantidade.classList.add("input_quantidade");
             inputQuantidade.classList.add("input_tabela");
@@ -182,10 +187,24 @@ export default async function cadastro_entrada_produtos(dados) {
             valorTotalTodosProdutos += valorTotal;
             descontoTotal += desconto.replace(",", ".") * 1; // Converte o desconto para número e acumula
 
-            // Atualiza o objeto produtosRelacionados com os valores atualizados
-            produtosRelacionados[index].quantidade = quantidade;
-            produtosRelacionados[index].desconto = desconto;
+            // Atualiza o objeto produtosRelacionados pelo id_produto da linha (não por índice)
+            const tr = input.closest("tr");
+            const idProduto = tr ? parseInt(tr.id.replace("tr_", "")) : null;
+            const item = idProduto ? produtosRelacionados.find(p => p.id_produto === idProduto) : produtosRelacionados[index];
+            if (item) {
+                item.quantidade = Number(quantidade);
+                item.desconto = Number(desconto) || 0;
+            }
         });
+
+        let spanTotal = document.querySelector("#valor_total_produtos");
+        let containerTotal = document.querySelector(".container_totalizador");
+        if (spanTotal) {
+            spanTotal.textContent = "R$ " + valorTotalTodosProdutos.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        if (containerTotal) {
+            containerTotal.style.display = inputsQuantidade.length > 0 ? "flex" : "none";
+        }
     }
 
     let formEntradaProduto = document.querySelector("#form_entrada_produto");
@@ -195,7 +214,7 @@ export default async function cadastro_entrada_produtos(dados) {
         let data = Object.fromEntries(formData);
 
         data.desconto = descontoTotal;
-        data.total = valorTotalTodosProdutos;
+        data.valor_total = valorTotalTodosProdutos;
         data.itens = produtosRelacionados;
 
         if (data.itens.length === 0) {

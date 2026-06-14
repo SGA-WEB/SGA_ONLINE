@@ -201,6 +201,12 @@
       max-width: 96rem;
     }
   }
+  .mb-0 {
+    margin-bottom: calc(var(--spacing) * 0);
+  }
+  .mb-0\! {
+    margin-bottom: calc(var(--spacing) * 0) !important;
+  }
   .block {
     display: block;
   }
@@ -230,6 +236,12 @@
   }
   .resize {
     resize: both;
+  }
+  .flex-nowrap {
+    flex-wrap: nowrap;
+  }
+  .flex-nowrap\! {
+    flex-wrap: nowrap !important;
   }
   .flex-wrap {
     flex-wrap: wrap;

@@ -91,15 +91,9 @@
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width">
-                    <label for="data_emissao">Data de Emissão:<span class="campo_obrigatorio">*</span></label>
-                    <input type="date" name="data_emissao" id="data_emissao" class="campo_input" required>
-                </div>
-                <div class="campo_contato small_width">
                     <label for="data_recebimento">Data de Recebimento:<span class="campo_obrigatorio">*</span></label>
                     <input type="date" name="data_recebimento" id="data_recebimento" class="campo_input" required>
                 </div>
-            </div>
-            <div class="container_small_width">
                 <div class="campo_contato small_width select_conainer">
                     <p>Status:<span class="campo_obrigatorio">*</span></p>
                     <select id="status" class="campo_select" name="status" required>
@@ -117,7 +111,7 @@
             <span>Adicionar relação</span>
         </button>
         <div class="container_tabela">
-            <table class="tabela" id="tabela_produtos">
+            <table class="tabela mb-0!" id="tabela_produtos">
                 <thead>
                     <tr>
                         <th id="tabela_codigo">Código</th>
@@ -128,9 +122,12 @@
                         <th id="tabela_preco_atacado">Valor Total</th>
                     </tr>
                 </thead>
-                <tbody class="tbody">
+                <tbody class="tbody apenas_crud_excluir">
                 </tbody>
             </table>
+        </div>
+        <div class="container_totalizador">
+            <p class="p_totalizador">Total dos produtos: <strong id="valor_total_produtos">R$ 0,00</strong></p>
         </div>
         <button type="submit" class="btn btn_salvar">
             <img src="../imagens/icone_salvar.svg" alt="Icone Salvar">

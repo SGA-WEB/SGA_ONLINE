@@ -1090,7 +1090,6 @@ app.post('/entrada_produto', async (req, res) => {
         modelo,
         serie,
         sub_serie,
-        data_emissao,
         chave_nfe,
         itens
     } = req.body;
@@ -1135,11 +1134,11 @@ app.post('/entrada_produto', async (req, res) => {
             `INSERT INTO sga.entrada_produto (
         tipo_entrada, numero_nf, data_recebimento, fornecedor_id, valor_total,
         desconto, status, data_criacao,
-        modelo_documento_fiscal, serie, subserie, data_emissao, chave_nfe
+        modelo_documento_fiscal, serie, subserie, chave_nfe
       ) VALUES (
         $1, $2, $3, $4, $5,
         $6, $7, CURRENT_TIMESTAMP,
-        $8, $9, $10, $11, $12
+        $8, $9, $10, $11
       ) RETURNING id_entrada_produto`,
             [
                 tipo_entrada,
@@ -1152,7 +1151,6 @@ app.post('/entrada_produto', async (req, res) => {
                 modelo,
                 serie,
                 sub_serie,
-                data_emissao,
                 chave_nfe
             ]
         );
@@ -1175,6 +1173,14 @@ app.post('/entrada_produto', async (req, res) => {
                     item.valor_unitario,
                     item.desconto || 0
                 ]
+            );
+        }
+
+        // 6. Incrementa a quantidade no estoque de cada produto
+        for (const item of itens) {
+            await client.query(
+                `UPDATE sga.produto SET quantidade = quantidade + $1 WHERE id_produto = $2`,
+                [Number(item.quantidade), Number(item.id_produto)]
             );
         }
 
@@ -1305,6 +1311,14 @@ app.post('/saida_produto', async (req, res) => {
             ];
             const itemResult = await client.query(itemQuery, itemValues);
             itensInseridos.push(itemResult.rows[0]);
+        }
+
+        // 5. Decrementa a quantidade no estoque de cada produto.
+        for (const item of itens) {
+            await client.query(
+                `UPDATE sga.produto SET quantidade = quantidade - $1 WHERE id_produto = $2`,
+                [Number(item.quantidade), Number(item.id_produto)]
+            );
         }
 
         // =================================================================
@@ -1539,7 +1553,6 @@ app.put('/entrada_produto/:id', async (req, res) => {
         modelo,
         serie,
         sub_serie,
-        data_emissao,
         chave_nfe,
         itens
     } = req.body;
@@ -1563,9 +1576,8 @@ app.put('/entrada_produto/:id', async (req, res) => {
         modelo_documento_fiscal = $8,
         serie = $9,
         subserie = $10,
-        data_emissao = $11,
-        chave_nfe = $12
-      WHERE id_entrada_produto = $13
+        chave_nfe = $11
+      WHERE id_entrada_produto = $12
       RETURNING *;
     `;
 
@@ -1580,7 +1592,6 @@ app.put('/entrada_produto/:id', async (req, res) => {
             modelo,
             serie,
             sub_serie,
-            data_emissao,
             chave_nfe,
             id
         ]);
