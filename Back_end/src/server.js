@@ -1781,6 +1781,25 @@ app.put('/saida_produto/:id', async (req, res) => {
     }
 });
 
+app.delete('/saida_produto/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await pool.query(
+            'UPDATE sga.saida_produto SET inativo = TRUE WHERE id_saida_produto = $1 RETURNING id_saida_produto',
+            [id]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Saída de produto não encontrada.' });
+        }
+
+        res.status(200).json({ message: 'Saída de produto excluída com sucesso!' });
+    } catch (err) {
+        console.error('Erro ao excluir saída de produto:', err);
+        res.status(500).json({ error: 'Erro interno ao excluir saída de produto.' });
+    }
+});
+
 // Rota para upload da imagem
 app.post('/upload-avatar', upload.single('avatar'), async (req, res) => {
     try {

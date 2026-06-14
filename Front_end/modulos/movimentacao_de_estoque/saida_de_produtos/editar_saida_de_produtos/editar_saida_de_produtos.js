@@ -246,17 +246,36 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
 
             inputsValorUnitario[index].value = precoVarejo;
             inputsQuantidade[index].value = quantidade;
-            // Mantém o valor do input de desconto como porcentagem para o usuário
             inputsDesconto[index].value = descontoInput;
-            inputsValorTotal[index].textContent = valorTotal.toFixed(2);
+
+            let tdValor = inputsValorTotal[index];
+            if (tdValor) {
+                const inputChild = tdValor.querySelector && tdValor.querySelector('input');
+                if (inputChild) {
+                    tdValor.removeChild(inputChild);
+                }
+                tdValor.textContent = Number(valorTotal).toFixed(2);
+            }
 
             valorTotalTodosProdutos += valorTotal;
             descontoTotal += descontoReal;
 
-            // Atualiza o objeto produtosRelacionados com os valores atualizados (server espera desconto em valor monetário)
             produtosRelacionados[index].quantidade = quantidade;
             produtosRelacionados[index].desconto_item = Number(descontoReal.toFixed(2));
         });
+
+        let spanTotal = document.querySelector("#valor_total_produtos");
+        let campoValorTotal = document.querySelector("#valor_total");
+        let containerTotal = document.querySelector(".container_totalizador");
+        if (spanTotal) {
+            spanTotal.textContent = "R$ " + valorTotalTodosProdutos.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        if (campoValorTotal) {
+            campoValorTotal.value = Number(valorTotalTodosProdutos.toFixed(2));
+        }
+        if (containerTotal) {
+            containerTotal.style.display = document.querySelectorAll(".input_quantidade").length > 0 ? "flex" : "none";
+        }
     }
 
     function criarInputsQuantidadeDesconto() {
@@ -293,8 +312,8 @@ export default async function editar_saida_de_produtos(saida, telaAnteriorVisual
                 let produto = produtosRelacionados[index];
                 if (produto) {
                     let base = (produto.valor_unitario || 0) * (produto.quantidade || 1);
-                    if (base > 0 && produto.desconto_item) {
-                        inicialPercent = ((produto.desconto_item / base) * 100).toFixed(2) + "%";
+                    if (base > 0 && produto.desconto) {
+                        inicialPercent = ((produto.desconto / base) * 100).toFixed(2) + "%";
                     }
                 }
             } catch (err) {
