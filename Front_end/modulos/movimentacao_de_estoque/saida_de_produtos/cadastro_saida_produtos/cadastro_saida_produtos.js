@@ -155,8 +155,25 @@ export default async function cadastro_saida_produtos(dados) {
             inputDesconto.inputMode = "decimal";
             inputDesconto.placeholder = "0%";
             inputDesconto.classList.add("input_desconto");
-            inputDesconto.addEventListener("input", calcularValorTotal);
             inputDesconto.classList.add("input_tabela");
+            
+            // Evento input para apenas calcular, sem adicionar automaticamente %
+            inputDesconto.addEventListener("input", calcularValorTotal);
+            
+            // Remove % ao entrar no campo (focus) para edição livre
+            inputDesconto.addEventListener("focus", (e) => {
+                e.target.value = e.target.value.replace(/%/g, '').trim();
+            });
+            
+            // Adiciona % apenas ao sair do campo (blur) se houver valor
+            inputDesconto.addEventListener("blur", (e) => {
+                let valor = e.target.value.replace(/%/g, '').trim();
+                if (valor !== '' && valor !== '0') {
+                    e.target.value = valor + '%';
+                } else if (valor === '0' || valor === '') {
+                    e.target.value = '';
+                }
+            });
 
             // Inicializa vazio para que o placeholder seja visível quando for 0
             inputDesconto.value = "";

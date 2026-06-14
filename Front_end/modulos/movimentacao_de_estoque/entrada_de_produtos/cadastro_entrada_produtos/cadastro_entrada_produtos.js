@@ -153,11 +153,29 @@ export default async function cadastro_entrada_produtos(dados) {
             let inputDesconto = document.createElement("input");
             inputDesconto.type = "text";
             inputDesconto.inputMode = "decimal";
-            inputDesconto.value = ""; // Mantém o campo vazio para exibir placeholder
             inputDesconto.placeholder = "0%";
             inputDesconto.classList.add("input_desconto");
-            inputDesconto.addEventListener("input", calcularValorTotal);
             inputDesconto.classList.add("input_tabela");
+            
+            // Evento input para apenas calcular, sem adicionar automaticamente %
+            inputDesconto.addEventListener("input", calcularValorTotal);
+            
+            // Remove % ao entrar no campo (focus) para edição livre
+            inputDesconto.addEventListener("focus", (e) => {
+                e.target.value = e.target.value.replace(/%/g, '').trim();
+            });
+            
+            // Adiciona % apenas ao sair do campo (blur) se houver valor
+            inputDesconto.addEventListener("blur", (e) => {
+                let valor = e.target.value.replace(/%/g, '').trim();
+                if (valor !== '' && valor !== '0') {
+                    e.target.value = valor + '%';
+                } else if (valor === '0' || valor === '') {
+                    e.target.value = '';
+                }
+            });
+
+            inputDesconto.value = ""; // Mantém o campo vazio para exibir placeholder
 
             td.textContent = ""
             td.appendChild(inputDesconto);
@@ -187,9 +205,6 @@ export default async function cadastro_entrada_produtos(dados) {
             let valorTotal = bruto - descontoReal;
 
             inputsQuantidade[index].value = quantidade;
-            if (descontoRaw.trim() !== "") {
-                descontoInput.value = porcentagem;
-            }
             inputsValorTotal[index].textContent = valorTotal.toFixed(2)
 
             valorTotalTodosProdutos += valorTotal;
