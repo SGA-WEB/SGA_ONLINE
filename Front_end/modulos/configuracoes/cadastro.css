@@ -26,6 +26,10 @@
     margin-left: 1rem;
 }
 
+#modulo_cadastro_orcamento .titulo1 {
+    margin-bottom: 1rem;
+}
+
 /* ⚠️ CORREÇÃO 1: Layout principal para telas pequenas (ex: mobile/tablet) */
 @media (max-width: 768px) {
     .container {
