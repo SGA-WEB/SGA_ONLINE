@@ -65,7 +65,7 @@
         </button>
 
         <div class="container_tabela">
-            <table class="tabela" id="tabela_produtos">
+            <table class="tabela mb-0!" id="tabela_produtos">
                 <thead>
                     <tr>
                         <th id="tabela_codigo">Código</th>
@@ -76,9 +76,12 @@
                         <th id="tabela_valor_total">Valor Total</th>
                     </tr>
                 </thead>
-                <tbody class="tbody">
+                <tbody class="tbody apenas_crud_excluir">
                 </tbody>
             </table>
+        </div>
+        <div class="container_totalizador">
+            <p class="p_totalizador">Total dos produtos: <strong id="valor_total_produtos">R$ 0,00</strong></p>
         </div>
 
         <button type="submit" class="btn btn_salvar">

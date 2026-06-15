@@ -168,6 +168,15 @@ export default async function cadastro_orcamento(dados) {
                 produtosRelacionados[index].valor_unitario = precoVarejo;
             }
         });
+
+        let spanTotal = document.querySelector("#valor_total_produtos");
+        let containerTotal = document.querySelector(".container_totalizador");
+        if (spanTotal) {
+            spanTotal.textContent = "R$ " + valorTotalTodosProdutos.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+        if (containerTotal) {
+            containerTotal.style.display = inputsQuantidade.length > 0 ? "flex" : "none";
+        }
     }
 
     let formOrcamento = document.querySelector("#form_orcamento");
