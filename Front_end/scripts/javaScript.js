@@ -236,7 +236,11 @@ function btnMenuLateral(target) {
 let btns_menu = document.querySelectorAll(".btn_menu") // Seleciona todos os botões dos modulos
 btns_menu.forEach((e) => {
     e.addEventListener("click", (e) => {
-        localStorage.clear() // limpa o storage sempre que um botão do modulo for clicado
+        const _uid = localStorage.getItem('usuarioLogadoId');
+        const _unome = localStorage.getItem('usuarioLogadoNome');
+        localStorage.clear();
+        if (_uid) localStorage.setItem('usuarioLogadoId', _uid);
+        if (_unome) localStorage.setItem('usuarioLogadoNome', _unome);
         let modulo = e.currentTarget // Pega o modulo que foi clicado
         let btnMini = modulo.classList.contains("mini") // Verifica se o botão tem a classe "mini"
         let btn = (modulo.classList[0] == 'btn') // Verifica se a opção selecionada é um botão que não tem um menu dropdown

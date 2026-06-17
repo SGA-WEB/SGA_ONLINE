@@ -6,14 +6,26 @@ import { popup, popup_aviso, popup_carregando, popup_confirmar, popup_erro } fro
 export default async function configuracao_usuario(data) {
     popup_carregando(false, "Carregando configurações do usuário...");
     const usuario = await buscarDados("usuarios")
-    const response = await fetch(`http://localhost:3000/api/imagem/${1}`);
-    const dado = await response.json();
 
     const userId = localStorage.getItem('usuarioLogadoId');
 
+    if (!userId) {
+        popup_carregando(true);
+        popup_erro("Sessão expirada. Faça login novamente.");
+        return;
+    }
+
+    const response = await fetch(`http://localhost:3000/api/imagem/${userId}`);
+    const dado = await response.json();
+
     const user = await fetch(`http://localhost:3000/api/usuarios/${userId}`);
     const userData = await user.json();
-    console.log("Dados do usuário:", userData);
+
+    if (!userData.sucesso || !userData.usuario) {
+        popup_carregando(true);
+        popup_erro("Erro ao carregar dados do usuário. Tente novamente.");
+        return;
+    }
 
     if (dado.error) {
         mudarLogoParaPadrao()

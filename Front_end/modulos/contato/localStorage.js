@@ -276,7 +276,11 @@ async function salvarDadosDoLocalStorageNoBanco(dado, caminho, elementoPai, func
         popup_carregando(true)
         popup_aviso("Contato atualizado com sucesso!")
         carregarConteudo(caminho, elementoPai, false, funcao, dadosCompletos)
-        localStorage.clear()
+        const _uid = localStorage.getItem('usuarioLogadoId');
+        const _unome = localStorage.getItem('usuarioLogadoNome');
+        localStorage.clear();
+        if (_uid) localStorage.setItem('usuarioLogadoId', _uid);
+        if (_unome) localStorage.setItem('usuarioLogadoNome', _unome);
         return data.endereco;
     } catch (error) {
         console.error('Erro:', error);

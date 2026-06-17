@@ -11,8 +11,9 @@ export default async function cadastro_saida_produtos(dados) {
     dataAtual()
     let produtos = await buscarDados("produto")
     let contatos = await buscarDados("contato");
-    let ultimoIdProduto = await buscarDados("proximo_id_saida_produto");
-    document.querySelector(".codigo_id").textContent = ultimoIdProduto.proximo_id;
+    const proximoIdResp = await fetch('http://localhost:3000/api/proximo_id_saida_produto');
+    const proximoIdData = await proximoIdResp.json();
+    document.querySelector(".codigo_id").textContent = proximoIdData.proximo_id;
 
     let clientes = []
 
