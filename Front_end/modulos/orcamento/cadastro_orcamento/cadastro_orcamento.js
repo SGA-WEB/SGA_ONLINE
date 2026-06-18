@@ -123,13 +123,26 @@ export default async function cadastro_orcamento(dados) {
             td.textContent = ""; td.appendChild(input);
         })
 
-        document.querySelectorAll(".td_desconto").forEach(td => {
+        document.querySelectorAll(".td_desconto").forEach((td, idx) => {
             td.classList.add("td_container_input")
             let input = document.createElement("input");
-            input.type = "number"; input.step = "0.01"; input.value = 0;
-            input.placeholder = "%";
+            input.type = "text"; input.step = "0.01"; 
+            input.placeholder = "0%";
             input.classList.add("input_desconto", "input_tabela");
-            input.addEventListener("input", calcularValorTotal);
+
+            // initialize empty (use placeholder 0%) and handlers to keep numeric value in produtosRelacionados
+            input.value = "";
+            input.addEventListener('focus', () => {
+                input.value = input.value.toString().replace('%', '');
+                input.select();
+            });
+            input.addEventListener('input', calcularValorTotal);
+            input.addEventListener('blur', () => {
+                const numeric = input.value.toString().replace(',', '.').replace(/[^0-9.-]/g, '');
+                const v = Number(numeric) || 0;
+                input.value = v.toFixed(2) + '%';
+            });
+
             td.textContent = ""; td.appendChild(input);
         })
         calcularValorTotal();
@@ -152,7 +165,8 @@ export default async function cadastro_orcamento(dados) {
             let quantidade = parseFloat(input.value) || 0;
             
             // --- NOVA CONTA: DESCONTO POR PORCENTAGEM ---
-            let porcentagem = parseFloat(inputsDesconto[index].value) || 0;
+            let rawDesconto = inputsDesconto[index].value || '';
+            let porcentagem = parseFloat(rawDesconto.toString().replace('%', '').replace(',', '.').replace(/[^0-9.-]/g, '')) || 0;
             let bruto = precoVarejo * quantidade;
             let descontoReal = (bruto * porcentagem) / 100;
             let valorTotal = bruto - descontoReal;

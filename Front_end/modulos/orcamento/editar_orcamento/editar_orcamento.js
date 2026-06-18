@@ -102,13 +102,27 @@ export default async function editar_orcamento(dado, telaAnteriorVisualizar = tr
             if(tdQtde) tdQtde.replaceChildren(inputQtde);
 
             const inputDesc = document.createElement("input");
-            inputDesc.type = "number"; inputDesc.className = "input_tabela";
-            inputDesc.placeholder = "%";
-            inputDesc.value = produtosRelacionados[index].desconto.toFixed(2);
-            inputDesc.oninput = () => {
-                produtosRelacionados[index].desconto = Number(inputDesc.value);
+            inputDesc.type = "text"; inputDesc.className = "input_tabela";
+            inputDesc.placeholder = "0%";
+            const descVal = Number(produtosRelacionados[index].desconto) || 0;
+            inputDesc.value = descVal > 0 ? descVal.toFixed(2) + '%' : '';
+
+            inputDesc.addEventListener('focus', () => {
+                inputDesc.value = inputDesc.value.toString().replace('%', '');
+                inputDesc.select();
+            });
+
+            inputDesc.addEventListener('input', () => {
+                const numeric = inputDesc.value.toString().replace(',', '.').replace(/[^0-9.-]/g, '');
+                produtosRelacionados[index].desconto = Number(numeric) || 0;
                 atualizarTotaisEmTela();
-            };
+            });
+
+            inputDesc.addEventListener('blur', () => {
+                const v = Number(produtosRelacionados[index].desconto) || 0;
+                inputDesc.value = v.toFixed(2) + '%';
+            });
+
             if(tdDesc) tdDesc.replaceChildren(inputDesc);
 
             const btnExcluir = tr.querySelector(".btn_excluir");
@@ -143,7 +157,8 @@ export default async function editar_orcamento(dado, telaAnteriorVisualizar = tr
                 if(tdTotal) tdTotal.textContent = p.valor_total.toFixed(2);
             }
         });
-        document.querySelector("#desconto_total").value = descontoTotalAcumuladoReal.toFixed(2);
+        const descontoTotalInput = document.querySelector("#desconto_total");
+        if (descontoTotalInput) descontoTotalInput.value = descontoTotalAcumuladoReal.toFixed(2);
     }
 
     // 5. Popup de Seleção

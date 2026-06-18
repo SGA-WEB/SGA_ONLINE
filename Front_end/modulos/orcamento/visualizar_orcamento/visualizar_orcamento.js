@@ -13,7 +13,8 @@ export default async function visualizar_orcamento (dado) {
     // Preenchimento dos campos de cabeçalho
     document.querySelector(".codigo_id").textContent = dado.id_orcamento;
     document.querySelector("#cliente").value = dado.cliente_razao_social || "";
-    document.querySelector("#desconto_total").value = Number(dado.desconto_total || 0).toFixed(2);
+    const descontoInput = document.querySelector("#desconto_total");
+    if (descontoInput) descontoInput.value = Number(dado.desconto_total || 0).toFixed(2);
     document.querySelector("#criado_por_nome").value = dado.criado_por_nome || "";
     document.querySelector("#status").value = dado.status || "";
     document.querySelector(".data_cadastro").textContent = formatarData(dado.data_criacao);
