@@ -62,6 +62,9 @@ const pool = new Pool({
     ssl: {
         rejectUnauthorized: false,
     },
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 5000,
+    keepAlive: true,
 });
 
 app.use(express.json()); // Permite que o servidor processe JSON no corpo da requisição
@@ -71,9 +74,8 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 1000 * 60 * 30, // 30 minutos
-        sameSite: 'none', // ou 'none' se for https
-        secure: false    // true só se for https
+        sameSite: 'none',
+        secure: false
     }
 }));
 
@@ -134,7 +136,6 @@ app.post('/api/login', async (req, res) => {
         }
 
         const usuarioLogado = rows[0];
-        console.log('Usuário logado:', usuarioLogado);
 
         // Retorna sucesso e os dados do usuário (NÃO retorne a senha)
         res.status(200).json({
@@ -411,12 +412,19 @@ app.get('/api/proximo_id_entrada_produto', async (req, res) => {
 
 app.get('/api/proximo_id_saida_produto', async (req, res) => {
     try {
-        // Busca o próximo valor da sequence correspondente
-        const { rows } = await pool.query(`SELECT last_value + 1 AS proximo_id FROM sga.saida_produto_id_seq`);
+        const sequenceResult = await pool.query(
+            `SELECT pg_get_serial_sequence('sga.saida_produto', 'id_saida_produto')`
+        );
 
-        // Verifica se a sequence retornou um valor
+        if (sequenceResult.rows.length === 0 || !sequenceResult.rows[0].pg_get_serial_sequence) {
+            const maxIdResult = await pool.query(`SELECT COALESCE(MAX(id_saida_produto), 0) + 1 AS proximo_id FROM sga.saida_produto`);
+            return res.json(maxIdResult.rows[0]);
+        }
+
+        const nomeSequence = sequenceResult.rows[0].pg_get_serial_sequence;
+        const { rows } = await pool.query(`SELECT last_value + 1 AS proximo_id FROM ${nomeSequence}`);
+
         if (rows.length === 0 || rows[0].proximo_id === null) {
-            // Tenta buscar o MAX ID da tabela como fallback (se a sequence estiver vazia/nova)
             const maxIdResult = await pool.query(`SELECT COALESCE(MAX(id_saida_produto), 0) + 1 AS proximo_id FROM sga.saida_produto`);
             return res.json(maxIdResult.rows[0]);
         }
@@ -1778,6 +1786,25 @@ app.put('/saida_produto/:id', async (req, res) => {
     } finally {
         // Libera o cliente de volta para o pool
         client.release();
+    }
+});
+
+app.delete('/saida_produto/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await pool.query(
+            'UPDATE sga.saida_produto SET inativo = TRUE WHERE id_saida_produto = $1 RETURNING id_saida_produto',
+            [id]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ error: 'Saída de produto não encontrada.' });
+        }
+
+        res.status(200).json({ message: 'Saída de produto excluída com sucesso!' });
+    } catch (err) {
+        console.error('Erro ao excluir saída de produto:', err);
+        res.status(500).json({ error: 'Erro interno ao excluir saída de produto.' });
     }
 });
 

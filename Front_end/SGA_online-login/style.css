@@ -33,8 +33,7 @@ body {
 
   /* Lado direito - Formulário */
   .logo {
-    width: 400px;
-    height: 200px;
+      height: 200px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -164,7 +163,6 @@ body {
 
 /* Lado direito - Formulário */
 .logo {
-  width: 400px;
   height: 200px;
   display: flex;
   justify-content: center;

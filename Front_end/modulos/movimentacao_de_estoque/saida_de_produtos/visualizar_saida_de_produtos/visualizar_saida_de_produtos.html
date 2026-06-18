@@ -5,11 +5,11 @@
             <p class="btn_voltar">Voltar</p>
         </button>
         <div class="container_btns space_between">
-            <button class="btn_editar btn btn2">
+            <button type="button" class="btn_editar btn btn2">
                 <img src="..//..//../imagens/icone_editar.svg" alt="icone_editar" >
                 <p>Editar</p>
             </button>
-            <button class="btn_excluir btn btn5">
+            <button type="button" class="btn_excluir btn btn5">
                 <img src="..//..//../imagens/icone_excluir.svg" alt="icone_editar" >
                 <p>Excluir</p>
             </button>
@@ -69,11 +69,7 @@
                     <p>Status da saída:</p>
                     <input disabled type="text" id="status_da_saida" class="campo_input" name="status_da_saida">
                 </div>
-                <div class="campo_contato small_width">
-                    <label for="valor_total">Valor Total:</label>
-                    <input disabled type="number" name="valor_total" id="valor_total" class="campo_input" step="0.01"
-                        min="0">
-                </div>
+                <input type="hidden" name="valor_total" id="valor_total" value="0">
             </div>
             <div class="container_small_width">
                 <div class="campo_contato small_width">
@@ -114,6 +110,9 @@
                 <tbody class="tbody">
                 </tbody>
             </table>
+        </div>
+        <div class="container_totalizador">
+            <p class="p_totalizador">Total dos produtos: <strong id="valor_total_produtos">R$ 0,00</strong></p>
         </div>
         <div class="space_between">
             <button class="btn btn2 btn_cancelar">

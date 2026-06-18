@@ -11,8 +11,9 @@ export default async function cadastro_saida_produtos(dados) {
     dataAtual()
     let produtos = await buscarDados("produto")
     let contatos = await buscarDados("contato");
-    let ultimoIdProduto = await buscarDados("proximo_id_saida_produto");
-    document.querySelector(".codigo_id").textContent = ultimoIdProduto.proximo_id;
+    const proximoIdResp = await fetch('http://localhost:3000/api/proximo_id_saida_produto');
+    const proximoIdData = await proximoIdResp.json();
+    document.querySelector(".codigo_id").textContent = proximoIdData.proximo_id;
 
     let clientes = []
 
@@ -147,14 +148,36 @@ export default async function cadastro_saida_produtos(dados) {
             td.appendChild(inputQuantidade);
         })
 
-        document.querySelectorAll(".td_desconto_item").forEach(td => {
+        document.querySelectorAll(".td_desconto_item").forEach((td, index) => {
             td.classList.add("td_container_input")
             let inputDesconto = document.createElement("input");
-            inputDesconto.type = "number";
-            inputDesconto.value = 0; // Define o valor inicial como 0
+            // Permitir entrada em porcentagem (ex: 12.5%)
+            inputDesconto.type = "text";
+            inputDesconto.inputMode = "decimal";
+            inputDesconto.placeholder = "0%";
             inputDesconto.classList.add("input_desconto");
-            inputDesconto.addEventListener("input", calcularValorTotal);
             inputDesconto.classList.add("input_tabela");
+            
+            // Evento input para apenas calcular, sem adicionar automaticamente %
+            inputDesconto.addEventListener("input", calcularValorTotal);
+            
+            // Remove % ao entrar no campo (focus) para edição livre
+            inputDesconto.addEventListener("focus", (e) => {
+                e.target.value = e.target.value.replace(/%/g, '').trim();
+            });
+            
+            // Adiciona % apenas ao sair do campo (blur) se houver valor
+            inputDesconto.addEventListener("blur", (e) => {
+                let valor = e.target.value.replace(/%/g, '').trim();
+                if (valor !== '' && valor !== '0') {
+                    e.target.value = valor + '%';
+                } else if (valor === '0' || valor === '') {
+                    e.target.value = '';
+                }
+            });
+
+            // Inicializa vazio para que o placeholder seja visível quando for 0
+            inputDesconto.value = "";
 
             td.textContent = ""
             td.appendChild(inputDesconto);
@@ -174,21 +197,27 @@ export default async function cadastro_saida_produtos(dados) {
 
         inputsQuantidade.forEach((input, index) => {
             // Para cada input de quantidade e desconto, calcula o valor total
-            let precoVarejo = inputsPrecoVarejo[index].textContent;
-            let quantidade = input.value;
-            let desconto = inputsDesconto[index].value;
-            let valorTotal = (precoVarejo * quantidade) - desconto;
+            let precoVarejoText = inputsPrecoVarejo[index].textContent;
+            let precoVarejo = Number(String(precoVarejoText).replace(',', '.')) || 0;
+            let quantidade = Number(inputsQuantidade[index].value) || 0;
+            let descontoInput = inputsDesconto[index].value || "";
+            let descontoPercent = Number(String(descontoInput).replace('%', '').replace(',', '.')) || 0;
+
+            let baseTotal = precoVarejo * quantidade;
+            let descontoReal = (descontoPercent > 0) ? (baseTotal * (descontoPercent / 100)) : 0;
+            let valorTotal = baseTotal - descontoReal;
+
             inputsPrecoVarejo[index].value = precoVarejo;
             inputsQuantidade[index].value = quantidade;
-            inputsDesconto[index].value = desconto;
-            inputsValorTotal[index].textContent = valorTotal.toFixed(2)
+            inputsDesconto[index].value = descontoInput;
+            inputsValorTotal[index].textContent = valorTotal.toFixed(2);
 
             valorTotalTodosProdutos += valorTotal;
-            descontoTotal += desconto.replace(",", ".") * 1; // Converte o desconto para número e acumula
+            descontoTotal += descontoReal;
 
             // Atualiza o objeto produtosRelacionados com os valores atualizados
             produtosRelacionados[index].quantidade = quantidade;
-            produtosRelacionados[index].desconto_item = desconto;
+            produtosRelacionados[index].desconto_item = Number(descontoReal.toFixed(2));
         });
 
         let spanTotal = document.querySelector("#valor_total_produtos");

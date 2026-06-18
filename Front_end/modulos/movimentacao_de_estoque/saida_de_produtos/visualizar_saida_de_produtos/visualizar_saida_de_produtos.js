@@ -24,7 +24,36 @@ export default async function visualizar_saida_de_produtos(saida) {
     document.querySelector("#modelo").value = saida.modelo_documento_fiscal
 
     let produtosRelacionados = await buscarDados(`saida_produto/${saida.id_saida_produto}/itens`)
-    carregarDadosNaTabela(produtosRelacionados.itens, ["id_produto", "nome_produto", "quantidade", "valor_unitario", "desconto_item", "valor_total_item"], document.querySelector(".tbody"), false, false)
+    produtosRelacionados = produtosRelacionados?.itens || produtosRelacionados || [];
+    carregarDadosNaTabela(produtosRelacionados, ["id_produto", "nome_produto", "quantidade", "valor_unitario", "desconto_item", "valor_total_item"], document.querySelector(".tbody"), false, false)
+
+    let valorTotalProdutos = produtosRelacionados.reduce((total, item) => {
+        let quantidade = Number(item.quantidade) || 0;
+        let valorUnitario = Number(item.valor_unitario) || 0;
+        let desconto = Number(item.desconto_item) || 0;
+        return total + ((valorUnitario * quantidade) - desconto);
+    }, 0);
+
+    let spanTotal = document.querySelector('#valor_total_produtos');
+    let containerTotal = document.querySelector('.container_totalizador');
+
+    if (!containerTotal) {
+        const tabelaContainer = document.querySelector('.container_tabela');
+        if (tabelaContainer) {
+            containerTotal = document.createElement('div');
+            containerTotal.className = 'container_totalizador';
+            containerTotal.innerHTML = '<p class="p_totalizador">Total dos produtos: <strong id="valor_total_produtos">R$ 0,00</strong></p>';
+            tabelaContainer.after(containerTotal);
+            spanTotal = containerTotal.querySelector('#valor_total_produtos');
+        }
+    }
+
+    if (spanTotal) {
+        spanTotal.textContent = 'R$ ' + valorTotalProdutos.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    if (containerTotal) {
+        containerTotal.style.display = 'flex';
+    }
 
     document.querySelector(".btn_editar").addEventListener("click", () => {
         carregarConteudo(
