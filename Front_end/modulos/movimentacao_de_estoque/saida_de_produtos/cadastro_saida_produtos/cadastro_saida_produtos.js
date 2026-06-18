@@ -198,7 +198,7 @@ export default async function cadastro_saida_produtos(dados) {
         inputsQuantidade.forEach((input, index) => {
             // Para cada input de quantidade e desconto, calcula o valor total
             let precoVarejoText = inputsPrecoVarejo[index].textContent;
-            let precoVarejo = Number(String(precoVarejoText).replace(',', '.')) || 0;
+            let precoVarejo = parseFloat(String(precoVarejoText).replace("R$", "").replace(",", ".").trim()) || 0;
             let quantidade = Number(inputsQuantidade[index].value) || 0;
             let descontoInput = inputsDesconto[index].value || "";
             let descontoPercent = Number(String(descontoInput).replace('%', '').replace(',', '.')) || 0;

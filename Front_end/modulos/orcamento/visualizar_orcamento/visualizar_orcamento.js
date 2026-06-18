@@ -13,8 +13,6 @@ export default async function visualizar_orcamento (dado) {
     // Preenchimento dos campos de cabeçalho
     document.querySelector(".codigo_id").textContent = dado.id_orcamento;
     document.querySelector("#cliente").value = dado.cliente_razao_social || "";
-    const descontoInput = document.querySelector("#desconto_total");
-    if (descontoInput) descontoInput.value = Number(dado.desconto_total || 0).toFixed(2);
     document.querySelector("#criado_por_nome").value = dado.criado_por_nome || "";
     document.querySelector("#status").value = dado.status || "";
     document.querySelector(".data_cadastro").textContent = formatarData(dado.data_criacao);
@@ -26,25 +24,30 @@ export default async function visualizar_orcamento (dado) {
     // Força a extração da lista de itens independente do formato da API
     const itensBrutos = orcamento_itens?.itens || orcamento_itens || [];
 
-    // Mapeamento para bater com os IDs das colunas no seu HTML (tabela_codigo, tabela_produto, etc)
-    const orcamento_itens_data = itensBrutos.map(item => ({
-        tabela_codigo: item.id_item || item.produto_id,
-        tabela_produto: item.nome_produto || item.produto,
-        tabela_quantidade: item.quantidade,
-        tabela_preco_varejo: item.valor_unitario,
-        tabela_preco_atacado: item.desconto_item || 0, // No seu HTML ambos os IDs de desconto/total são 'tabela_preco_atacado'
-        valor_total_exibicao: item.valor_total_item || 0
-    }));
+    // Mapeamento dos itens — desconto convertido de R$ para % para exibição
+    const orcamento_itens_data = itensBrutos.map(item => {
+        const bruto = Number(item.valor_unitario || 0) * Number(item.quantidade || 0);
+        const descPct = bruto > 0
+            ? ((Number(item.desconto_item || 0) / bruto) * 100).toFixed(2) + '%'
+            : '0.00%';
+        return {
+            tabela_codigo:    item.id_item || item.produto_id,
+            tabela_produto:   item.nome_produto || item.produto,
+            tabela_quantidade: item.quantidade,
+            tabela_preco_varejo: item.valor_unitario,
+            tabela_desconto:  descPct,
+            valor_total_exibicao: item.valor_total_item || 0
+        };
+    });
 
     // 3. Renderização da Tabela
     const tbody = document.querySelector(".tbody");
     if (orcamento_itens_data.length > 0) {
-        // Passamos as chaves mapeadas para carregarDadosNaTabela
         carregarDadosNaTabela(
-            orcamento_itens_data, 
-            ["tabela_codigo", "tabela_produto", "tabela_quantidade", "tabela_preco_varejo", "tabela_preco_atacado", "valor_total_exibicao"], 
-            tbody, 
-            false, 
+            orcamento_itens_data,
+            ["tabela_codigo", "tabela_produto", "tabela_quantidade", "tabela_preco_varejo", "tabela_desconto", "valor_total_exibicao"],
+            tbody,
+            false,
             false
         );
     } else {

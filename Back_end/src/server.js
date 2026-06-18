@@ -2231,7 +2231,7 @@ app.post('/orcamento', async (req, res) => {
                     item.id_produto,
                     item.quantidade,
                     item.valor_unitario,
-                    item.desconto_item || 0
+                    item.desconto || item.desconto_item || 0
                 ];
 
                 const resultItem = await client.query(queryItem, valuesItem);

@@ -43,9 +43,9 @@ export default async function orcamento() {
                             <th id="status">Status</th>
                             <th id="criado_por">Criado por:</th>
                             <th id="criado_em">Criado em:</th>
-                            <th id="total">Total</th>
-                            <th id="desconto">Desconto:</th>
                             <th id="subtotal">Subtotal:</th>
+                            <th id="desconto">Desconto:</th>
+                            <th id="total">Total</th>
                         </tr>
                     </thead>
                     <tbody class="tbody">

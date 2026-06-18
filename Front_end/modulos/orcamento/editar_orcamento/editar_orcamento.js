@@ -157,8 +157,6 @@ export default async function editar_orcamento(dado, telaAnteriorVisualizar = tr
                 if(tdTotal) tdTotal.textContent = p.valor_total.toFixed(2);
             }
         });
-        const descontoTotalInput = document.querySelector("#desconto_total");
-        if (descontoTotalInput) descontoTotalInput.value = descontoTotalAcumuladoReal.toFixed(2);
     }
 
     // 5. Popup de Seleção
