@@ -1,5 +1,6 @@
 import select2 from "../scripts/select.js";
 import { popup_aviso, popup_carregando, popup_erro } from "../scripts/popup.js";
+import { visibilidadeSenha } from "../scripts/funcionalidades.js";
 
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('.login-form');
@@ -8,6 +9,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const empresa = document.getElementById('selecione-a-empresa');
     console.log('Script de login carregado');
     select2("fit-content"); // Chama a função select2 para estilizar o select
+
+    const imgVisibilidade = document.getElementById('view_off_login');
+    imgVisibilidade.addEventListener("click", () => visibilidadeSenha(senha, imgVisibilidade, 'imagens/'));
 
     // Função para validar os campos do formulário
     function validarFormulario() {

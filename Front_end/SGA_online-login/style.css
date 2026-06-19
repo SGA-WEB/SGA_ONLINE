@@ -73,7 +73,7 @@ body {
 
   .login-form input[type="email"],
   .login-form input[type="password"] {
-    width: 95%;
+    width: 100%;
     padding: 10px;
     margin-bottom: 5px;
     border: 1px solid #ccc;
@@ -251,6 +251,31 @@ body {
 
 .login-form button:hover {
   background-color: #0056b3;
+}
+
+#container_senha_login {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 5px;
+  padding-right: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#container_senha_login input[type="password"],
+#container_senha_login input[type="text"] {
+  flex: 1;
+  border: none;
+  outline: none;
+  margin-bottom: 0;
+  width: auto;
+}
+
+#container_senha_login .visibilidade {
+  width: 1.2rem;
+  flex-shrink: 0;
 }
 
 .logo_mobile {

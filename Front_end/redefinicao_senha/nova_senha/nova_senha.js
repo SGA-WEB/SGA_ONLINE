@@ -47,8 +47,8 @@ let view_confirmacao = document.querySelector("#view_confirmacao");
 let validador = document.querySelector("#validador_senhas");
 let btn_redefinir = document.querySelector("#btn_redefinir");
 
-view_senha.addEventListener("click", () => visibilidadeSenha(nova_senha, view_senha));
-view_confirmacao.addEventListener("click", () => visibilidadeSenha(confirmacao_senha, view_confirmacao));
+view_senha.addEventListener("click", () => visibilidadeSenha(nova_senha, view_senha, '../imagens/'));
+view_confirmacao.addEventListener("click", () => visibilidadeSenha(confirmacao_senha, view_confirmacao, '../imagens/'));
 
 confirmacao_senha.addEventListener("input", () => confirmacao());
 nova_senha.addEventListener("input", () => confirmacao());

@@ -19,9 +19,11 @@ function getBasePath() {
     }
 }
 
-function visibilidadeSenha(senha, img) {
+function visibilidadeSenha(senha, img, path) {
     // Obter o caminho base correto para as imagens
-    let path = getBasePath();
+    if (!path) {
+        path = getBasePath();
+    }
 
     if (senha.type === 'password') {
         senha.type = 'text';
