@@ -23,10 +23,9 @@ cd SGA-WEB
 - HTML
 - CSS
 - JavaScript
-- React
 - node.js
 - PostgreSQL
-- Railway
+- Neon DB
   
 ## licence
 license GNU
